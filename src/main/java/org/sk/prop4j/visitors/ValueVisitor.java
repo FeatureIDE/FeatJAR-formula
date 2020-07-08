@@ -2,6 +2,7 @@ package org.sk.prop4j.visitors;
 
 import java.util.*;
 
+import org.sk.prop4j.assignment.*;
 import org.sk.prop4j.structure.atomic.*;
 import org.sk.prop4j.structure.compound.*;
 import org.sk.prop4j.structure.functions.*;
@@ -19,10 +20,10 @@ public class ValueVisitor implements NodeVisitor {
 
 	private UnkownVariableHandling unkownVariableHandling = UnkownVariableHandling.FALSE;
 
-	private final Map<String, ?> variableMap;
+	private final Assignment assignment;
 
-	public ValueVisitor(Map<String, ?> variableMap) {
-		this.variableMap = new HashMap<>(variableMap);
+	public ValueVisitor(Assignment assignment) {
+		this.assignment = assignment;
 	}
 
 	public UnkownVariableHandling getUnkown() {
@@ -49,22 +50,19 @@ public class ValueVisitor implements NodeVisitor {
 			} else if (node instanceof ErrorLiteral) {
 				values.push(((Literal) node).isPositive());
 			} else {
-				Object value = variableMap.get(((Literal) node).getName());
-				if (!(value instanceof Boolean)) {
-					if (value == null) {
-						switch (unkownVariableHandling) {
-						case ERROR:
-							throw new NullPointerException();
-						case FALSE:
-							value = false;
-							break;
-						case TRUE:
-							value = true;
-							break;
-						default:
-							throw new IllegalStateException(String.valueOf(unkownVariableHandling));
-						}
+				Object value = assignment.get(((Literal) node).getName()).orElseGet(() -> {
+					switch (unkownVariableHandling) {
+					case ERROR:
+						throw new NullPointerException();
+					case FALSE:
+						return Boolean.FALSE;
+					case TRUE:
+						return Boolean.TRUE;
+					default:
+						throw new IllegalStateException(String.valueOf(unkownVariableHandling));
 					}
+				});
+				if (!(value instanceof Boolean)) {
 					throw new IllegalArgumentException(String.valueOf(value));
 				}
 				values.push(value);
@@ -143,22 +141,18 @@ public class ValueVisitor implements NodeVisitor {
 			values.push(constant.getValue());
 		} else if (node instanceof Variable) {
 			final Variable<?> variable = (Variable<?>) node;
-			Object value = variableMap.get(variable.getName());
-			if (!variable.getType().isInstance(value)) {
-				if (value == null) {
-					switch (unkownVariableHandling) {
-					case ERROR:
-						throw new NullPointerException();
-					case FALSE:
-						value = false;
-						break;
-					case TRUE:
-						value = true;
-						break;
-					default:
-						throw new IllegalStateException(String.valueOf(unkownVariableHandling));
-					}
+			Object value = assignment.get(variable.getName()).orElseGet(() -> {
+				switch (unkownVariableHandling) {
+				case ERROR:
+					throw new NullPointerException();
+				case FALSE:
+				case TRUE:
+					return Objects.requireNonNull(variable.getDefaultValue());
+				default:
+					throw new IllegalStateException(String.valueOf(unkownVariableHandling));
 				}
+			});
+			if (!variable.getType().isInstance(value)) {
 				throw new IllegalArgumentException(String.valueOf(value));
 			}
 			values.push(value);

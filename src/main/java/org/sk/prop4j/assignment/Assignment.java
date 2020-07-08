@@ -36,19 +36,17 @@ public class Assignment {
 		assignments.set(index, assignment);
 	}
 
-	@SuppressWarnings("unchecked")
-	public <T> Optional<T> get(int index) {
+	public Optional<Object> get(int index) {
 		if (variables.hasVariable(index)) {
-			return Optional.ofNullable((T) assignments.get(index));
+			return Optional.ofNullable(assignments.get(index));
 		} else {
 			throw new NoSuchElementException(String.valueOf(index));
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	public <T> Optional<T> get(String name) {
+	public Optional<Object> get(String name) {
 		final int index = variables.getIndex(name).orElseThrow(() -> new NoSuchElementException(name));
-		return Optional.ofNullable((T) assignments.get(index));
+		return Optional.ofNullable(assignments.get(index));
 	}
 
 }

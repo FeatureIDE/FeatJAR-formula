@@ -6,6 +6,7 @@ public class Variable<T> extends Terminal implements Term<T> {
 
 	protected String name;
 	protected final Class<T> type;
+	protected T defaultValue;
 
 	public Variable(String name, Class<T> type) {
 		this.name = name;
@@ -23,6 +24,14 @@ public class Variable<T> extends Terminal implements Term<T> {
 
 	public Class<T> getType() {
 		return type;
+	}
+
+	public T getDefaultValue() {
+		return defaultValue;
+	}
+
+	public void setDefaultValue(T defaultValue) {
+		this.defaultValue = defaultValue;
 	}
 
 	@Override
