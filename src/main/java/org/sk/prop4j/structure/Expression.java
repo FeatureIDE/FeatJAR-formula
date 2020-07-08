@@ -1,8 +1,8 @@
 package org.sk.prop4j.structure;
 
-import java.util.List;
+import java.util.*;
 
-import org.sk.trees.structure.Tree;
+import org.sk.trees.structure.*;
 
 /**
  * A propositional node that can be transformed into conjunctive normal form

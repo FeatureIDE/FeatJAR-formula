@@ -1,13 +1,13 @@
 package org.sk.prop4j.manipulators;
 
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.stream.*;
 
 import org.sk.prop4j.structure.*;
 import org.sk.prop4j.structure.atomic.*;
 import org.sk.prop4j.structure.compound.*;
-import org.sk.trees.structure.Tree;
-import org.sk.trees.visitors.NodeVisitor;
+import org.sk.trees.structure.*;
+import org.sk.trees.visitors.*;
 
 public class EquivalenceTransformer implements NodeVisitor {
 

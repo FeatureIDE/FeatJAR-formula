@@ -2,7 +2,7 @@ package org.sk.prop4j.structure;
 
 import java.util.*;
 
-import org.sk.trees.structure.NonTerminalNode;
+import org.sk.trees.structure.*;
 
 /**
  * A propositional node that can be transformed into conjunctive normal form

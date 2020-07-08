@@ -1,9 +1,9 @@
 package org.sk.prop4j.structure.atomic;
 
-import java.util.List;
+import java.util.*;
 
-import org.sk.prop4j.structure.Term;
-import org.sk.trees.structure.NonTerminalNode;
+import org.sk.prop4j.structure.*;
+import org.sk.trees.structure.*;
 
 public interface Predicate<T> extends Atomic, NonTerminalNode<Term<T>> {
 

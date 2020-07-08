@@ -1,6 +1,6 @@
 package org.sk.prop4j.structure.functions;
 
-import java.util.Arrays;
+import java.util.*;
 
 import org.sk.prop4j.structure.*;
 

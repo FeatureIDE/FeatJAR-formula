@@ -1,6 +1,7 @@
 package org.sk.prop4j.structure.compound;
 
 import org.sk.prop4j.structure.*;
+import org.sk.prop4j.structure.terms.*;
 
 public class Exists extends Quantifier {
 

@@ -1,8 +1,8 @@
 package org.sk.prop4j.structure.compound;
 
-import java.util.List;
+import java.util.*;
 
-import org.sk.prop4j.structure.Formula;
+import org.sk.prop4j.structure.*;
 
 /**
  * A logical connector that is {@code true} iff at least a given number of its

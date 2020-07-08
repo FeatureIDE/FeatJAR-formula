@@ -1,6 +1,6 @@
 package org.sk.prop4j.structure.compound;
 
-import java.util.List;
+import java.util.*;
 
 import org.sk.prop4j.structure.*;
 

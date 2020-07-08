@@ -2,7 +2,7 @@ package org.sk.prop4j.parse;
 
 import java.util.*;
 
-import org.sk.prop4j.structure.Formula;
+import org.sk.prop4j.structure.*;
 import org.sk.prop4j.structure.compound.*;
 
 public abstract class Symbols {

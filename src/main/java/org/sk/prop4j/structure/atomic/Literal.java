@@ -1,8 +1,8 @@
 package org.sk.prop4j.structure.atomic;
 
-import java.util.Objects;
+import java.util.*;
 
-import org.sk.prop4j.structure.Terminal;
+import org.sk.prop4j.structure.*;
 
 /**
  * A variable or negated variable.

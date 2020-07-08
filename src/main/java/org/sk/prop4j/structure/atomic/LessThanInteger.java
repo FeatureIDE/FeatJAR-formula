@@ -1,8 +1,8 @@
 package org.sk.prop4j.structure.atomic;
 
-import java.util.List;
+import java.util.*;
 
-import org.sk.prop4j.structure.Term;
+import org.sk.prop4j.structure.*;
 
 /**
  *

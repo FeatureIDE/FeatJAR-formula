@@ -1,10 +1,10 @@
 package org.sk.prop4j.parse;
 
-import java.util.List;
+import java.util.*;
 
-import org.sk.prop4j.parse.Symbols.Operator;
-import org.sk.prop4j.structure.Formula;
-import org.sk.prop4j.structure.atomic.Literal;
+import org.sk.prop4j.parse.Symbols.*;
+import org.sk.prop4j.structure.*;
+import org.sk.prop4j.structure.atomic.*;
 import org.sk.prop4j.structure.compound.*;
 
 /**

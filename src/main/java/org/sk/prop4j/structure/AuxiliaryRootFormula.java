@@ -1,7 +1,5 @@
 package org.sk.prop4j.structure;
 
-import org.sk.prop4j.structure.compound.Compound;
-
 /**
  * A propositional node that can be transformed into conjunctive normal form
  * (cnf).

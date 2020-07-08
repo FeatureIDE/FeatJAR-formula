@@ -1,8 +1,8 @@
 package org.sk.prop4j.structure.functions;
 
-import java.util.List;
+import java.util.*;
 
-import org.sk.prop4j.structure.Term;
+import org.sk.prop4j.structure.*;
 
 public class AddInteger extends Add<Long> {
 

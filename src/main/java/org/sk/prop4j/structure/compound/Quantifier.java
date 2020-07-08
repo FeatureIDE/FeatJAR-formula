@@ -3,6 +3,7 @@ package org.sk.prop4j.structure.compound;
 import java.util.*;
 
 import org.sk.prop4j.structure.*;
+import org.sk.prop4j.structure.terms.*;
 
 public abstract class Quantifier extends NonTerminal<Formula> {
 

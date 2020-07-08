@@ -1,6 +1,6 @@
 package org.sk.prop4j.structure.atomic;
 
-import java.util.Comparator;
+import java.util.*;
 
 /**
  * Compares two literals based on their {@code var} object and {@code positive}

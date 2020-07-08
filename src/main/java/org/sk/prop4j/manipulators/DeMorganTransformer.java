@@ -5,8 +5,8 @@ import java.util.*;
 import org.sk.prop4j.structure.*;
 import org.sk.prop4j.structure.atomic.*;
 import org.sk.prop4j.structure.compound.*;
-import org.sk.trees.structure.Tree;
-import org.sk.trees.visitors.NodeVisitor;
+import org.sk.trees.structure.*;
+import org.sk.trees.visitors.*;
 
 public class DeMorganTransformer implements NodeVisitor {
 

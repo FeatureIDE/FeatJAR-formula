@@ -2,12 +2,12 @@ package org.sk.prop4j.visitors;
 
 import java.util.*;
 
-import org.sk.prop4j.structure.*;
 import org.sk.prop4j.structure.atomic.*;
 import org.sk.prop4j.structure.compound.*;
-import org.sk.prop4j.structure.functions.Function;
-import org.sk.trees.structure.Tree;
-import org.sk.trees.visitors.NodeVisitor;
+import org.sk.prop4j.structure.functions.*;
+import org.sk.prop4j.structure.terms.*;
+import org.sk.trees.structure.*;
+import org.sk.trees.visitors.*;
 
 public class ValueVisitor implements NodeVisitor {
 

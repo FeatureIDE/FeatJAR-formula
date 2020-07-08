@@ -1,9 +1,9 @@
 package org.sk.prop4j.structure.functions;
 
-import java.util.List;
+import java.util.*;
 
-import org.sk.prop4j.structure.Term;
-import org.sk.trees.structure.NonTerminalNode;
+import org.sk.prop4j.structure.*;
+import org.sk.trees.structure.*;
 
 public interface Function<R, T> extends Term<R>, NonTerminalNode<Term<T>> {
 

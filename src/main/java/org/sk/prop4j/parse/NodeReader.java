@@ -1,15 +1,15 @@
 package org.sk.prop4j.parse;
 
-import java.text.ParseException;
+import java.text.*;
 import java.util.*;
 import java.util.regex.*;
 
-import org.sk.prop4j.parse.ErrorType.ErrorEnum;
-import org.sk.prop4j.parse.Symbols.Operator;
-import org.sk.prop4j.structure.Formula;
+import org.sk.prop4j.parse.ErrorType.*;
+import org.sk.prop4j.parse.Symbols.*;
+import org.sk.prop4j.structure.*;
 import org.sk.prop4j.structure.atomic.*;
 import org.sk.prop4j.structure.compound.*;
-import org.w3c.dom.Node;
+import org.w3c.dom.*;
 
 /**
  * This class can be used to parse propositional formulas.
@@ -37,7 +37,8 @@ public class NodeReader {
 		INVALID_CLOSING_PARENTHESES("To many closing parentheses."),
 		INVALID_NUMBER_OF_QUOTATION_MARKS("Invalid number of quotation marks."),
 		INVALID_OPENING_PARENTHESES("There are unclosed opening parentheses."),
-		EMPTY_EXPRESSION("Sub expression is empty."), MISSING_NAME("Missing feature name or expression: %s"),
+		EMPTY_EXPRESSION("Sub expression is empty."),
+		MISSING_NAME("Missing feature name or expression: %s"),
 		MISSING_NAME_LEFT("Missing feature name or expression on left side: %s"),
 		MISSING_NAME_RIGHT("Missing feature name or expression on right side: %s"),
 		MISSING_OPERATOR("Missing operator: %s");
