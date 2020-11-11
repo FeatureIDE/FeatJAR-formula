@@ -2,11 +2,21 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.sk</groupId>
-	<artifactId>prop4j</artifactId>
-	<version>1.0</version>
-	<name>Prop4j</name>
+	<groupId>org.spldev</groupId>
+	<artifactId>formulas</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>Formulas</name>
 	<description></description>
+	<url>https://github.com/skrieter/prop4j</url>
+
+	<licenses>
+		<license>
+			<name>GNU General Public License, Version 3</name>
+			<url>https://www.gnu.org/licenses/gpl-3.0.html</url>
+		</license>
+	</licenses>
 
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -16,14 +26,14 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.sk</groupId>
+			<groupId>org.spldev</groupId>
 			<artifactId>trees</artifactId>
-			<version>1.0</version>
+			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>org.sk</groupId>
+			<groupId>org.spldev</groupId>
 			<artifactId>utils</artifactId>
-			<version>1.0</version>
+			<version>1.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 
