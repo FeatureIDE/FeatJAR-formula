@@ -3,8 +3,8 @@ package org.spldev.structure;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.*;
-import org.spldev.formula.structure.*;
-import org.spldev.formula.structure.atomic.literal.*;
+import org.spldev.formula.expression.*;
+import org.spldev.formula.expression.atomic.literal.*;
 
 public class AuxiliaryRootTest {
 
