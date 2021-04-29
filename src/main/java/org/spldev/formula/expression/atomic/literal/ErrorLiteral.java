@@ -6,24 +6,37 @@ package org.spldev.formula.expression.atomic.literal;
  *
  * @author Sebastian Krieter
  */
-public class ErrorLiteral extends LiteralVariable {
+public class ErrorLiteral extends Literal {
 
+	private String error;
+	private boolean positive;
+	
 	public ErrorLiteral(String error) {
-		super(error, true);
+		this(error, true);
 	}
 
 	public ErrorLiteral(String error, boolean positive) {
-		super(error, positive);
+		this.error = error;
+		this.positive = positive;
 	}
 
 	@Override
 	public ErrorLiteral cloneNode() {
-		final ErrorLiteral errorLiteral = new ErrorLiteral(name, positive);
-		return errorLiteral;
+		return new ErrorLiteral(error, positive);
 	}
 
 	@Override
-	public void setName(String name) {
+	public String getName() {
+		return "Error: " + error;
+	}
+
+	@Override
+	public Literal flip() {
+		return new ErrorLiteral(error, !positive);
+	}
+
+	public boolean isPositive() {
+		return positive;
 	}
 
 }

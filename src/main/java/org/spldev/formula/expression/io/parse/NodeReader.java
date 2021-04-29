@@ -1,9 +1,9 @@
 package org.spldev.formula.expression.io.parse;
 
-import java.text.*;
 import java.util.*;
 import java.util.regex.*;
 
+import org.spldev.formula.*;
 import org.spldev.formula.expression.*;
 import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.formula.expression.compound.*;
@@ -82,7 +82,8 @@ public class NodeReader {
 		Collections.sort(Arrays.asList(operators), (o1, o2) -> o2.getPriority() - o1.getPriority());
 	}
 
-	private HashSet<String> variableNames;
+	private VariableMap map;
+	private boolean hasVariableNames;
 
 	private Symbols symbols = ShortSymbols.INSTANCE;
 
@@ -92,8 +93,8 @@ public class NodeReader {
 	private ErrorHandling ignoreUnparsableSubExpressions = ErrorHandling.THROW;
 	private List<Problem> problemList;
 
-	public Collection<String> getFeatureNames() {
-		return variableNames;
+	public VariableMap getFeatureNames() {
+		return map;
 	}
 
 	public Symbols getSymbols() {
@@ -105,7 +106,13 @@ public class NodeReader {
 	}
 
 	public void setVariableNames(Collection<String> variableNames) {
-		this.variableNames = (variableNames == null) ? null : new HashSet<>(variableNames);
+		if (variableNames == null) {
+			map = new VariableMap();
+			hasVariableNames = false;
+		} else {
+			map = new VariableMap(variableNames);
+			hasVariableNames = true;
+		}
 	}
 
 	public ErrorHandling ignoresMissingFeatures() {
@@ -264,12 +271,15 @@ public class NodeReader {
 			}
 			featureName = featureName.replace(replacedFeatureNameMarker, featureNameMarker)
 				.replace(replacedSubExpressionMarker, subExpressionMarker);
-			if ((variableNames != null) && !variableNames.contains(featureName)) {
-
+			if (hasVariableNames && map.getIndex(featureName).isEmpty()) {
 				errorType = new ErrorType(ErrorEnum.InvalidFeatureName, featureName);
 				return handleInvalidFeatureName(featureName);
 			}
-			return new LiteralVariable(featureName);
+			if (map.getIndex(featureName).isEmpty()) {
+				map.addVariable(featureName);
+			}
+
+			return new LiteralVariable(featureName, map);
 		}
 	}
 

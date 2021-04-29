@@ -2,6 +2,8 @@ package org.spldev.formula.expression.atomic.literal;
 
 import java.util.*;
 
+import org.spldev.formula.*;
+
 /**
  * A variable or negated variable.
  *
@@ -9,63 +11,61 @@ import java.util.*;
  */
 public class LiteralVariable extends Literal {
 
-	// TODO replace with id to decrease memory footprint
-	protected String name;
-	protected boolean positive;
+	private int value;
+	private VariableMap map;
 
-	private boolean hasHashCode;
-	private int hashCode;
-
-	public LiteralVariable(String name) {
-		this(name, true);
+	public LiteralVariable(String name, VariableMap map) {
+		this(name, map , true);
 	}
 
-	public LiteralVariable(String name, boolean positive) {
-		Objects.requireNonNull(name);
-		this.name = name;
-		this.positive = positive;
+	public LiteralVariable(String name, VariableMap map, boolean positive) {
+		this.map = Objects.requireNonNull(map);
+		int index = map.getIndex(name).orElse(0);
+		if (index == 0) {
+			throw new IllegalArgumentException(name);
+		}
+		this.value = positive ? index : -index;
+	}
+
+	public LiteralVariable(int value, VariableMap map) {
+		this.map = Objects.requireNonNull(map);
+		if (value == 0) {
+			throw new IllegalArgumentException();
+		}
+		this.value = value;
 	}
 
 	@Override
 	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
+		return map.getName(Math.abs(value)).orElse("??");
 	}
 
 	@Override
 	public boolean isPositive() {
-		return positive;
+		return value > 0;
 	}
 
 	public void setPositive(boolean positive) {
-		this.positive = positive;
+		if (value > 0 != positive) {
+			value = -value;
+		}
 	}
 
 	@Override
 	public LiteralVariable flip() {
 		final LiteralVariable clonedNode = cloneNode();
-		clonedNode.positive = !clonedNode.positive;
+		clonedNode.value = -clonedNode.value;
 		return clonedNode;
 	}
 
 	@Override
 	public LiteralVariable cloneNode() {
-		final LiteralVariable literalVariable = new LiteralVariable(name, positive);
-		literalVariable.hasHashCode = hasHashCode;
-		literalVariable.hashCode = hashCode;
-		return literalVariable;
+		return new LiteralVariable(value, map);
 	}
 
 	@Override
 	public int hashCode() {
-		if (!hasHashCode) {
-			hashCode = Objects.hashCode(name) + (positive ? 31 : 37);
-			hasHashCode = true;
-		}
-		return hashCode;
+		return value;
 	}
 
 	@Override
@@ -74,13 +74,12 @@ public class LiteralVariable extends Literal {
 			return false;
 		}
 		final LiteralVariable otherLiteralVariable = (LiteralVariable) other;
-		return (positive == otherLiteralVariable.positive) &&
-			Objects.equals(name, otherLiteralVariable.name);
+		return (value == otherLiteralVariable.value);
 	}
 
 	@Override
 	public String toString() {
-		return (positive ? "+" : "-") + name;
+		return (value > 0 ? "+" : "-") + getName();
 	}
 
 }

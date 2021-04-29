@@ -5,7 +5,7 @@ import java.util.*;
 import org.spldev.formula.expression.*;
 import org.spldev.formula.expression.atomic.*;
 import org.spldev.formula.expression.compound.*;
-import org.spldev.tree.visitor.*;
+import org.spldev.util.tree.visitor.*;
 
 public class DNFVisitor extends NFVisitor {
 

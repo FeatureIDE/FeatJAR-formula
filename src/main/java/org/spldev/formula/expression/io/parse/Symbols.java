@@ -5,7 +5,7 @@ import java.util.*;
 import org.spldev.formula.expression.*;
 import org.spldev.formula.expression.compound.*;
 
-public abstract class Symbols {
+public class Symbols {
 
 	public enum Operator {
 		NOT("not", 0), AND("and", 6), OR("or", 5), IMPLIES("implies", 4), EQUALS("equals", 3), CHOOSE("choose", 2),
@@ -30,13 +30,19 @@ public abstract class Symbols {
 
 	private boolean textual = true;
 
-	protected Symbols() {
-		for (final Operator operator : Operator.values()) {
-			setSymbol(operator, operator.defaultName);
+	public Symbols() {
+		this(true);
+	}
+
+	public Symbols(boolean addTextualSymbols) {
+		if (addTextualSymbols) {
+			for (final Operator operator : Operator.values()) {
+				setSymbol(operator, operator.defaultName);
+			}
 		}
 	}
 
-	protected final void setSymbol(Operator operator, String name) {
+	public final void setSymbol(Operator operator, String name) {
 		symbolToOperator.put(name, operator);
 		operatorToSymbol.put(operator, name);
 	}
@@ -95,7 +101,7 @@ public abstract class Symbols {
 		return textual;
 	}
 
-	protected void setTextual(boolean textual) {
+	public void setTextual(boolean textual) {
 		this.textual = textual;
 	}
 

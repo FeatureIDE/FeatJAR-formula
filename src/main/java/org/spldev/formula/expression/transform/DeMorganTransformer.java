@@ -7,7 +7,7 @@ import org.spldev.formula.expression.*;
 import org.spldev.formula.expression.atomic.*;
 import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.formula.expression.compound.*;
-import org.spldev.tree.visitor.*;
+import org.spldev.util.tree.visitor.*;
 
 public class DeMorganTransformer implements TreeVisitor<Void, Expression> {
 
@@ -17,10 +17,10 @@ public class DeMorganTransformer implements TreeVisitor<Void, Expression> {
 		if (node instanceof Atomic) {
 			return VistorResult.SkipChildren;
 		} else if (node instanceof Compound) {
-			node.replaceChildren(this::replace);
+			node.mapChildren(this::replace);
 			return VistorResult.Continue;
 		} else if (node instanceof AuxiliaryRoot) {
-			node.replaceChildren(this::replace);
+			node.mapChildren(this::replace);
 			return VistorResult.Continue;
 		} else {
 			return VistorResult.Fail;
@@ -28,8 +28,8 @@ public class DeMorganTransformer implements TreeVisitor<Void, Expression> {
 	}
 
 	private Expression replace(Expression node) {
-		Expression newNode = null;
-		if (node instanceof Not) {
+		Expression newNode = node;
+		while (newNode instanceof Not) {
 			final Formula notChild = (Formula) node.getChildren().iterator().next();
 			if (notChild instanceof Literal) {
 				newNode = ((Literal) notChild).flip();

@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<extensions>
+	<point id="org.spldev.util.cli.CLIFunctionManager">
+	    <extension id="org.spldev.formula.clause.cli.ConfigurationGenerator" />
+	</point>
+	<point id="org.spldev.util.cli.CLIFunctionManager">
+	    <extension id="org.spldev.formula.clause.cli.ConfigurationGenerator" />
+	</point>
+</extensions>

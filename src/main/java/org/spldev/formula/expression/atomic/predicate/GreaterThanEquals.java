@@ -4,7 +4,7 @@ import java.util.*;
 
 import org.spldev.formula.expression.*;
 import org.spldev.formula.expression.term.*;
-import org.spldev.tree.structure.*;
+import org.spldev.util.tree.structure.*;
 
 /**
  *

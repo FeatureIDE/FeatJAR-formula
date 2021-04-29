@@ -6,7 +6,7 @@ import org.spldev.formula.expression.*;
 import org.spldev.formula.expression.atomic.*;
 import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.formula.expression.compound.*;
-import org.spldev.tree.visitor.*;
+import org.spldev.util.tree.visitor.*;
 
 public class TreeSimplifier implements TreeVisitor<Void, Expression> {
 
@@ -32,18 +32,18 @@ public class TreeSimplifier implements TreeVisitor<Void, Expression> {
 						node.setChildren(Arrays.asList(Literal.False));
 					}
 				}
-				node.replaceChildrenWithList(this::mergeAnd);
+				node.flatMapChildren(this::mergeAnd);
 			} else if (node instanceof Or) {
 				for (final Expression child : node.getChildren()) {
 					if (child == Literal.True) {
 						node.setChildren(Arrays.asList(Literal.True));
 					}
 				}
-				node.replaceChildrenWithList(this::mergeOr);
+				node.flatMapChildren(this::mergeOr);
 			}
-			if (node.getChildren().size() > 1) {
-				node.setChildren(new HashSet<>(node.getChildren()));
-			}
+//			if (node.getChildren().size() > 1) {
+//				node.setChildren(new HashSet<>(node.getChildren()));
+//			}
 		}
 		return VistorResult.Continue;
 	}

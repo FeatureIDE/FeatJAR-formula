@@ -2,7 +2,7 @@ package org.spldev.formula.expression;
 
 import java.util.*;
 
-import org.spldev.tree.structure.*;
+import org.spldev.util.tree.structure.*;
 
 /**
  * A propositional node that can be transformed into conjunctive normal form

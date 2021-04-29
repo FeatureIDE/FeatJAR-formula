@@ -1,23 +1,19 @@
 package org.spldev.formula.expression.transform;
 
 import java.util.*;
+import java.util.function.*;
 
 import org.spldev.formula.expression.*;
 import org.spldev.formula.expression.atomic.*;
 import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.formula.expression.compound.*;
-import org.spldev.tree.visitor.*;
+import org.spldev.util.tree.*;
+import org.spldev.util.tree.visitor.*;
 
 public class DistributiveLawTransformer implements TreeVisitor<Void, Expression> {
 
-	public enum NormalForm {
-		CNF, DNF
-	}
-
-	private boolean simplify = false;
+	private boolean simplify = true;
 	private boolean subsume = false;
-
-	private NormalForm normalForm = NormalForm.CNF;
 
 	public boolean isSimplify() {
 		return simplify;
@@ -33,14 +29,6 @@ public class DistributiveLawTransformer implements TreeVisitor<Void, Expression>
 
 	public void setSubsume(boolean subsume) {
 		this.subsume = subsume;
-	}
-
-	public NormalForm getNormalForm() {
-		return normalForm;
-	}
-
-	public void setNormalForm(NormalForm normalForm) {
-		this.normalForm = normalForm;
 	}
 
 	@Override
@@ -62,183 +50,131 @@ public class DistributiveLawTransformer implements TreeVisitor<Void, Expression>
 		final Expression node = TreeVisitor.getCurrentNode(path);
 		if (node instanceof Atomic) {
 			return VistorResult.Continue;
-		} else if ((node instanceof Compound) || (node instanceof AuxiliaryRoot)) {
-			switch (normalForm) {
-			case DNF:
-				if (!(node instanceof Or)) {
-					node.replaceChildren(this::clausifyDNF);
-				}
-				break;
-			case CNF:
-				if (!(node instanceof And)) {
-					node.replaceChildren(this::clausifyCNF);
-				}
-				break;
-			default:
-				break;
+		} else if (node instanceof Or) {
+			if (Trees.preOrderStream(node).skip(1).anyMatch(n -> n instanceof Or)) {
+				node.flatMapChildren(n -> convert(n, And::new));
 			}
+			return VistorResult.Continue;
+		} else if (node instanceof And) {
+			if (Trees.preOrderStream(node).skip(1).anyMatch(n -> n instanceof And)) {
+				node.flatMapChildren(n -> convert(n, Or::new));
+			}
+			return VistorResult.Continue;
+		} else if (node instanceof AuxiliaryRoot) {
+			final AuxiliaryRoot auxiliaryRoot = (AuxiliaryRoot) node;
+			auxiliaryRoot.setChild(Trees.cloneTree(auxiliaryRoot.getChild()));
 			return VistorResult.Continue;
 		} else {
 			return VistorResult.Fail;
 		}
 	}
 
-	protected Formula clausifyCNF(Expression node) {
-		if (node instanceof And) {
-			final List<Formula> children = ((And) node).getChildren();
-			final LinkedList<Collection<Formula>> newClauseList = new LinkedList<>();
-			for (final Formula child : children) {
-				createNF(child, newClauseList);
-				if (simplify) {
-					if (newClauseList.isEmpty()) {
-						return Literal.True;
-					} else {
-						if (unitPropagation(newClauseList)) {
-							return Literal.False;
-						}
-					}
-				}
-			}
-			final ArrayList<Formula> newChildren = new ArrayList<>(newClauseList.size());
-			for (final Collection<Formula> clause : newClauseList) {
-				newChildren.add(new Or(clause));
-			}
-			return (Formula) Formulas.manipulate(new And(newChildren), new TreeSimplifier());
-		}
-		return null;
-	}
-
-	protected Formula clausifyDNF(Expression node) {
-		if (node instanceof Or) {
-			final List<Formula> children = ((Or) node).getChildren();
-			final LinkedList<Collection<Formula>> newClauseList = new LinkedList<>();
-			for (final Formula child : children) {
-				createNF(child, newClauseList);
-				if (simplify) {
-					if (newClauseList.isEmpty()) {
-						return Literal.False;
-					} else {
-						if (unitPropagation(newClauseList)) {
-							return Literal.True;
-						}
-					}
-				}
-			}
-			final ArrayList<Formula> newChildren = new ArrayList<>(newClauseList.size());
-			for (final Collection<Formula> clause : newClauseList) {
-				newChildren.add(new And(clause));
-			}
-			return (Formula) Formulas.manipulate(new Or(newChildren), new TreeSimplifier());
-		}
-		return null;
-	}
-
-	protected void createNF(Formula parent, LinkedList<Collection<Formula>> newClauseList) {
-		final List<Formula> children = (parent instanceof Connective) ? ((Connective) parent).getChildren()
-			: Arrays.asList(parent);
-		final ArrayList<List<List<Formula>>> oldClauses = collectClauses(children);
-		buildClauses(oldClauses, newClauseList, new LinkedHashSet<>(), 0);
-	}
-
 	@SuppressWarnings("unchecked")
-	private ArrayList<List<List<Formula>>> collectClauses(List<Formula> children) {
-		final ArrayList<List<List<Formula>>> oldClauses = new ArrayList<>(children.size());
-		for (final Formula child : children) {
-			final ArrayList<List<Formula>> oldClause = new ArrayList<>();
-			if (child instanceof Literal) {
-				oldClause.add(Arrays.asList(child));
-			} else {
-				for (final Expression grandchild : child.getChildren()) {
-					if (grandchild instanceof Literal) {
-						oldClause.add(Arrays.asList((Literal) grandchild));
-					} else {
-						final List<Formula> children2 = (List<Formula>) grandchild.getChildren();
-						oldClause.add(new ArrayList<>(children2));
-					}
-				}
-			}
-			oldClauses.add(oldClause);
-		}
-		for (final List<List<Formula>> clause : oldClauses) {
-			Collections.sort(clause, (a, b) -> b.size() - a.size());
-		}
-		Collections.sort(oldClauses, (a, b) -> a.size() - b.size());
-		return oldClauses;
-	}
-
-	@SuppressWarnings("unchecked")
-	private void buildClauses(ArrayList<List<List<Formula>>> clauseList,
-		LinkedList<Collection<Formula>> newClauseList, LinkedHashSet<Formula> literals, int depth) {
-		if (subsume) {
-			for (final Collection<Formula> newClause : newClauseList) {
-				if (literals.containsAll(newClause)) {
-					// is subsumed
-					return;
-				}
-			}
-		}
-		if (depth == clauseList.size()) {
-			if (subsume) {
-				for (final Iterator<Collection<Formula>> iterator = newClauseList.iterator(); iterator.hasNext();) {
-					final Collection<Formula> otherLiterals = iterator.next();
-					if (otherLiterals.size() > literals.size()) {
-						if (otherLiterals.containsAll(literals)) {
-							// subsumes prior clause
-							iterator.remove();
-						}
-					}
-				}
-			}
-			newClauseList.add((LinkedHashSet<Formula>) literals.clone());
+	private List<Formula> convert(Expression child, Function<Collection<Formula>, Formula> clauseConstructor) {
+		if (child instanceof Literal) {
+			return null;
 		} else {
-			final List<List<Formula>> clause = clauseList.get(depth);
-			final LinkedHashSet<Formula> addedLiterals = new LinkedHashSet<>();
-			clauseLoop: for (int j = 0; j < clause.size(); j++) {
-				for (final Formula l : clause.get(j)) {
-					if (simplify && literals.contains(((Literal) l).flip())) {
-						literals.removeAll(addedLiterals);
-						addedLiterals.clear();
-						continue clauseLoop;
-					} else {
-						if (literals.add(l)) {
-							addedLiterals.add(l);
+			final ArrayList<List<Formula>> newClauseList = new ArrayList<>();
+			convertNF((Formula) child, newClauseList, new LinkedHashSet<>(child.getChildren()
+				.size() << 1), 0);
+
+			final ArrayList<Formula> filteredClauseList = new ArrayList<>(newClauseList.size());
+			if (simplify) {
+				Collections.sort(newClauseList, (c1, c2) -> {
+					return c1.size() - c2.size();
+				});
+				final int count = newClauseList.size();
+				for (int i = 0; i < count; i++) {
+					final List<? extends Expression> children1 = newClauseList.get(i);
+					if (children1 != null) {
+						innerLoop: for (int j = 1; j < count; j++) {
+							List<? extends Expression> children2 = newClauseList.get(j);
+							if (children2 != null) {
+								if (children1.size() == children2.size()) {
+									Iterator<? extends Expression> it1 = children1.iterator();
+									Iterator<? extends Expression> it2 = children2.iterator();
+									while (it1.hasNext()) {
+										Expression exp1 = it1.next();
+										Expression exp2 = it2.next();
+										if (!exp1.equalsNode(exp2)) {
+											continue innerLoop;
+										}
+									}
+									newClauseList.set(j, null);
+								} else {
+									Iterator<? extends Expression> it1 = children1.iterator();
+									Iterator<? extends Expression> it2 = children2.iterator();
+									l3: while (it1.hasNext()) {
+										Expression exp1 = it1.next();
+										while (it2.hasNext()) {
+											Expression exp2 = it2.next();
+											if (exp1.equalsNode(exp2)) {
+												continue l3;
+											}
+										}
+										continue innerLoop;
+									}
+									newClauseList.set(j, null);
+								}
+							}
 						}
+						filteredClauseList.add(clauseConstructor.apply((Collection<Formula>) children1));
 					}
 				}
-				buildClauses(clauseList, newClauseList, literals, depth + 1);
-				literals.removeAll(addedLiterals);
-				addedLiterals.clear();
+			} else {
+				for (List<Formula> children1 : newClauseList) {
+					filteredClauseList.add(clauseConstructor.apply(children1));
+				}
 			}
+			return filteredClauseList;
 		}
 	}
 
-	protected boolean unitPropagation(LinkedList<Collection<Formula>> newClauseList) {
-		boolean newUnitClauses = false;
-		final HashSet<Literal> unitClauses = new HashSet<>();
-		for (final Collection<Formula> clause : newClauseList) {
-			if (clause.isEmpty()) {
-				return true;
-			} else if (clause.size() == 1) {
-				final Literal literal = (Literal) clause.iterator().next();
-				unitClauses.add(literal.flip());
-				newUnitClauses = true;
-			}
-		}
-		while (newUnitClauses) {
-			newUnitClauses = false;
-			for (final Collection<Formula> clause : newClauseList) {
-				if (clause.removeAll(unitClauses)) {
-					if (clause.isEmpty()) {
-						return true;
-					} else if (clause.size() == 1) {
-						final Literal literal = (Literal) clause.iterator().next();
-						unitClauses.add(literal.flip());
-						newUnitClauses = true;
+	private static void convertNF(Formula root, List<List<Formula>> clauses,
+		LinkedHashSet<Literal> literals, int index) {
+		if (index == root.getChildren().size()) {
+			final ArrayList<Formula> newClauseLiterals = new ArrayList<>(literals.size());
+			literals.forEach(newClauseLiterals::add);
+			Collections.sort(newClauseLiterals, (c1, c2) -> {
+				return c1.toString().compareTo(c2.toString());
+			});
+			clauses.add(newClauseLiterals);
+		} else {
+			final Formula child = (Formula) root.getChildren().get(index);
+			if (child instanceof Literal) {
+				Literal clauseLiteral = (Literal) child;
+				if (literals.contains(clauseLiteral)) {
+					convertNF(root, clauses, literals, index + 1);
+				} else {
+					if (!literals.contains(clauseLiteral.flip())) {
+						literals.add(clauseLiteral);
+						convertNF(root, clauses, literals, index + 1);
+						literals.remove(clauseLiteral);
+					}
+				}
+			} else {
+				boolean redundant = false;
+				for (Expression grandChild : child.getChildren()) {
+					Literal clauseLiteral = (Literal) grandChild;
+					if (literals.contains(clauseLiteral)) {
+						redundant = true;
+						break;
+					}
+				}
+				if (redundant) {
+					convertNF(root, clauses, literals, index + 1);
+				} else {
+					for (Expression grandChild : child.getChildren()) {
+						Literal clauseLiteral = (Literal) grandChild;
+						if (!literals.contains(clauseLiteral.flip())) {
+							literals.add(clauseLiteral);
+							convertNF(root, clauses, literals, index + 1);
+							literals.remove(clauseLiteral);
+						}
 					}
 				}
 			}
 		}
-		return false;
 	}
 
 }

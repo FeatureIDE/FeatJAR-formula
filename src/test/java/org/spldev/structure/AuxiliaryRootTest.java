@@ -2,7 +2,10 @@ package org.spldev.structure;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.*;
+
 import org.junit.jupiter.api.*;
+import org.spldev.formula.*;
 import org.spldev.formula.expression.*;
 import org.spldev.formula.expression.atomic.literal.*;
 
@@ -12,8 +15,9 @@ public class AuxiliaryRootTest {
 
 	@BeforeEach
 	public void setUp() {
-		expression1 = new LiteralVariable("L1");
-		expression2 = new LiteralVariable("L2");
+		VariableMap map = new VariableMap(Arrays.asList("L1","L2"));
+		expression1 = new LiteralVariable("L1", map);
+		expression2 = new LiteralVariable("L2", map);
 	}
 
 	@Test

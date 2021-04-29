@@ -6,7 +6,7 @@ import org.spldev.formula.expression.*;
 import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.formula.expression.compound.*;
 import org.spldev.formula.expression.io.parse.Symbols.*;
-import org.spldev.tree.visitor.*;
+import org.spldev.util.tree.visitor.*;
 
 /**
  * Converts a propositional node to a String object.

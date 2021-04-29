@@ -16,7 +16,13 @@ public class VariableMap implements Cloneable, Serializable {
 
 	private final ArrayList<String> indexToVar;
 	private final LinkedHashMap<String, Integer> varToIndex;
-
+	
+	public VariableMap() {
+		indexToVar = new ArrayList<>();
+		varToIndex = new LinkedHashMap<>();
+		indexToVar.add(null);
+	}
+	
 	public VariableMap(Collection<String> names) {
 		Objects.requireNonNull(names);
 
@@ -134,6 +140,38 @@ public class VariableMap implements Cloneable, Serializable {
 			varToIndex.put(newName, index);
 		} else {
 			throw new NoSuchElementException(String.valueOf(oldName));
+		}
+	}
+
+	public boolean addVariable(String name) {
+		if (name != null && !varToIndex.containsKey(name)) {
+			indexToVar.add(name);
+			varToIndex.put(name, getMaxIndex());
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public boolean removeVariable(String name) {
+		final Integer index = varToIndex.get(name);
+		if (index != null) {
+			indexToVar.set(index, null);
+			varToIndex.remove(name);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public boolean removeIndex(int index) {
+		String name = isValidIndex(index) ? indexToVar.get(index) : null;
+		if (name != null) {
+			indexToVar.set(index, null);
+			varToIndex.remove(name);
+			return true;
+		} else {
+			return false;
 		}
 	}
 

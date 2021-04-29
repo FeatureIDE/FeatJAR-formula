@@ -1,7 +1,7 @@
 package org.spldev.formula.expression.transform;
 
 import org.spldev.formula.expression.*;
-import org.spldev.tree.visitor.*;
+import org.spldev.util.tree.visitor.*;
 
 public class NFVisitor implements TreeVisitor<Boolean, Expression> {
 

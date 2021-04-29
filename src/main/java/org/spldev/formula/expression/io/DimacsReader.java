@@ -5,6 +5,7 @@ import java.text.*;
 import java.util.*;
 import java.util.regex.*;
 
+import org.spldev.formula.*;
 import org.spldev.formula.expression.*;
 import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.formula.expression.compound.*;
@@ -17,6 +18,8 @@ public class DimacsReader {
 
 	/** Maps indexes to variables. */
 	private final Map<Integer, String> indexVariables = new LinkedHashMap<>();
+	private VariableMap map;
+	
 	/**
 	 * The amount of variables as declared in the problem definition. May differ
 	 * from the actual amount of variables found.
@@ -63,6 +66,9 @@ public class DimacsReader {
 		variableCount = -1;
 		clauseCount = -1;
 		readingVariables = readVariableDirectory;
+		if (!readVariableDirectory) {
+			map = new VariableMap();
+		}
 		try (final BufferedReader reader = new BufferedReader(in)) {
 			final LineIterator lineIterator = new LineIterator(reader);
 			lineIterator.get();
@@ -71,6 +77,10 @@ public class DimacsReader {
 			readProblem(lineIterator);
 			readComments(lineIterator);
 			readingVariables = false;
+
+			if (readVariableDirectory) {
+				map = new VariableMap(indexVariables);
+			}
 
 			final List<Or> clauses = readClauses(lineIterator);
 			final int actualVariableCount = indexVariables.size();
@@ -218,7 +228,10 @@ public class DimacsReader {
 				variableName = String.valueOf(key);
 				indexVariables.put(key, variableName);
 			}
-			literals[j] = new LiteralVariable(variableName);
+			if (map.getIndex(variableName).isEmpty()) {
+				map.addVariable(variableName);
+			}
+			literals[j] = new LiteralVariable(variableName, map);
 		}
 		return new Or(literals);
 	}

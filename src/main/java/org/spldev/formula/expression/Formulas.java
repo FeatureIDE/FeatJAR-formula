@@ -7,11 +7,14 @@ import org.spldev.formula.*;
 import org.spldev.formula.expression.ValueVisitor.*;
 import org.spldev.formula.expression.compound.*;
 import org.spldev.formula.expression.transform.*;
-import org.spldev.formula.expression.transform.DistributiveLawTransformer.*;
-import org.spldev.tree.*;
-import org.spldev.tree.visitor.*;
+import org.spldev.util.tree.*;
+import org.spldev.util.tree.visitor.*;
 
 public class Formulas {
+
+	public enum NormalForm {
+		CNF, DNF
+	}
 
 	public static Optional<Object> evaluate(Expression expression, Assignment assignment) {
 		final ValueVisitor visitor = new ValueVisitor(assignment);
@@ -28,30 +31,55 @@ public class Formulas {
 	}
 
 	private static Formula toNF(Formula formula, NormalForm normalForm) {
+		if (checkNormalForm(formula, normalForm)) {
+			return (Formula) Trees.cloneTree(formula);
+		}
+		return distributiveLawTransform(simplifyForNF(formula), normalForm);
+	}
+
+	public static boolean checkNormalForm(Formula formula, NormalForm normalForm) {
 		switch (normalForm) {
 		case CNF:
 			if (Trees.traverse(formula, new CNFVisitor()).get()) {
-				return (Formula) Trees.cloneTree(formula);
+				return true;
 			}
 			break;
 		case DNF:
 			if (Trees.traverse(formula, new DNFVisitor()).get()) {
-				return (Formula) Trees.cloneTree(formula);
+				return true;
 			}
 			break;
 		default:
 			throw new IllegalStateException(String.valueOf(normalForm));
 		}
-		final AuxiliaryRoot auxiliaryRoot = new AuxiliaryRoot(Trees.cloneTree(formula));
+		return false;
+	}
+
+	public static Formula simplifyForNF(Formula formula) {
+		final AuxiliaryRoot auxiliaryRoot = new AuxiliaryRoot(formula);
 		Trees.traverse(auxiliaryRoot, new EquivalenceTransformer());
 		Trees.traverse(auxiliaryRoot, new DeMorganTransformer());
 		Trees.traverse(auxiliaryRoot, new TreeSimplifier());
+		return (Formula) auxiliaryRoot.getChild();
+	}
 
+	public static Formula distributiveLawTransform(Formula root, NormalForm normalForm) {
 		final DistributiveLawTransformer visitor = new DistributiveLawTransformer();
-		if (!(auxiliaryRoot.getChild() instanceof And)) {
-			auxiliaryRoot.setChild(new And((Formula) auxiliaryRoot.getChild()));
+		final AuxiliaryRoot auxiliaryRoot = new AuxiliaryRoot(root);
+		switch (normalForm) {
+		case CNF:
+			if (!(root instanceof And)) {
+				auxiliaryRoot.setChild(new And(root));
+			}
+			break;
+		case DNF:
+			if (!(root instanceof Or)) {
+				auxiliaryRoot.setChild(new Or(root));
+			}
+			break;
+		default:
+			throw new IllegalStateException(String.valueOf(normalForm));
 		}
-		visitor.setNormalForm(normalForm);
 		Trees.traverse(auxiliaryRoot, visitor);
 
 		return (Formula) auxiliaryRoot.getChild();

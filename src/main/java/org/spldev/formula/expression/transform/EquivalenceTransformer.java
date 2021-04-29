@@ -7,7 +7,7 @@ import org.spldev.formula.expression.*;
 import org.spldev.formula.expression.atomic.*;
 import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.formula.expression.compound.*;
-import org.spldev.tree.visitor.*;
+import org.spldev.util.tree.visitor.*;
 
 public class EquivalenceTransformer implements TreeVisitor<Void, Expression> {
 
@@ -38,13 +38,13 @@ public class EquivalenceTransformer implements TreeVisitor<Void, Expression> {
 	@Override
 	public VistorResult lastVisit(List<Expression> path) {
 		final Expression node = TreeVisitor.getCurrentNode(path);
-		node.replaceChildren(this::replace);
+		node.mapChildren(this::replace);
 		if (fail) {
 			return VistorResult.Fail;
 		}
 		return VistorResult.Continue;
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	private Formula replace(Expression node) {
 		if (((node instanceof Atomic) || (node instanceof And) || (node instanceof Or)
@@ -56,7 +56,9 @@ public class EquivalenceTransformer implements TreeVisitor<Void, Expression> {
 		if (node instanceof Implies) {
 			newNode = new Or(new Not(children.get(0)), children.get(1));
 		} else if (node instanceof Biimplies) {
-			newNode = new And(new Or(new Not(children.get(0)), children.get(1)),
+			newNode = new And( //
+				new Or(new Not(children.get(0)), children.get(1)),
+//				new Or(new Not(Trees.cloneTree(children.get(1))), Trees.cloneTree(children.get(0))));
 				new Or(new Not(children.get(1)), children.get(0)));
 		} else if (node instanceof AtLeast) {
 			newNode = new And(atLeastK(children, ((AtLeast) node).getMin()));
@@ -131,7 +133,13 @@ public class EquivalenceTransformer implements TreeVisitor<Void, Expression> {
 			} else {
 				clause[level] = elements.get(index[level]);
 				if (level == k) {
-					groupedElements.add(new Or(Arrays.copyOf(clause, clause.length)));
+					final Formula[] clonedClause = new Formula[clause.length];
+					Arrays.copyOf(clause, clause.length);
+					for (int i = 0; i < clause.length; i++) {
+//						clonedClause[i] = Trees.cloneTree(clause[i]);
+						clonedClause[i] = clause[i];
+					}
+					groupedElements.add(new Or(clonedClause));
 				} else {
 					// go to next level
 					level++;

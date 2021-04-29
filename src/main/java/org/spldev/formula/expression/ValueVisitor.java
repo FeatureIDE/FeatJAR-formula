@@ -8,7 +8,7 @@ import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.formula.expression.atomic.predicate.*;
 import org.spldev.formula.expression.compound.*;
 import org.spldev.formula.expression.term.*;
-import org.spldev.tree.visitor.*;
+import org.spldev.util.tree.visitor.*;
 
 public class ValueVisitor implements TreeVisitor<Object, Expression> {
 
@@ -60,7 +60,7 @@ public class ValueVisitor implements TreeVisitor<Object, Expression> {
 				if (index == 0) {
 					switch (unkownVariableHandling) {
 					case ERROR:
-						throw new NullPointerException();
+						throw new NullPointerException(literal.getName());
 					case FALSE:
 						values.push(positive ? Boolean.FALSE : Boolean.TRUE);
 						break;
