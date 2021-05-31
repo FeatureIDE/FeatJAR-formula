@@ -1,21 +1,57 @@
+/* -----------------------------------------------------------------------------
+ * Formula-Lib - Library to represent and edit propositional formulas.
+ * Copyright (C) 2021  Sebastian Krieter
+ * 
+ * This file is part of Formula-Lib.
+ * 
+ * Formula-Lib is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
+ * 
+ * Formula-Lib is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Formula-Lib.  If not, see <https://www.gnu.org/licenses/>.
+ * 
+ * See <https://github.com/skrieter/formula> for further information.
+ * -----------------------------------------------------------------------------
+ */
 package org.spldev.formula.expression.io;
 
-import java.io.*;
-import java.util.*;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.xml.parsers.*;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.SAXParserFactory;
 
-import org.spldev.formula.*;
-import org.spldev.formula.expression.*;
-import org.spldev.formula.expression.atomic.literal.*;
-import org.spldev.formula.expression.compound.*;
-import org.spldev.util.*;
-import org.spldev.util.io.format.*;
-import org.spldev.util.logging.*;
-import org.w3c.dom.*;
-import org.xml.sax.*;
+import org.spldev.formula.VariableMap;
+import org.spldev.formula.expression.Formula;
+import org.spldev.formula.expression.atomic.literal.Literal;
+import org.spldev.formula.expression.atomic.literal.LiteralVariable;
+import org.spldev.formula.expression.compound.And;
+import org.spldev.formula.expression.compound.AtMost;
+import org.spldev.formula.expression.compound.Biimplies;
+import org.spldev.formula.expression.compound.Implies;
+import org.spldev.formula.expression.compound.Not;
+import org.spldev.formula.expression.compound.Or;
+import org.spldev.util.Problem;
+import org.spldev.util.Result;
+import org.spldev.util.io.format.Format;
+import org.spldev.util.logging.Logger;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 public class XmlFeatureModelFormat implements Format<Formula> {
+
+	public static final String ID = XmlFeatureModelFormat.class.getCanonicalName();
 
 	protected final static String FEATURE_MODEL = "featureModel";
 	protected final static String STRUCT = "struct";
@@ -78,7 +114,7 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 		try {
 			final Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
 			SAXParserFactory.newInstance().newSAXParser().parse(new InputSource(new StringReader(source.toString())),
-				new PositionalXMLHandler(doc));
+					new PositionalXMLHandler(doc));
 			doc.getDocumentElement().normalize();
 			return Result.of(readDocument(doc));
 		} catch (final Exception e) {
@@ -115,7 +151,8 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 					if (parseConstraintNode.size() == 1) {
 						constraints.add(parseConstraintNode.get(0));
 					} else {
-						Logger.logError((int) child.getUserData(PositionalXMLHandler.LINE_NUMBER_KEY_NAME) + ": " + nodeName);
+						Logger.logError(
+								(int) child.getUserData(PositionalXMLHandler.LINE_NUMBER_KEY_NAME) + ": " + nodeName);
 					}
 				}
 			}
@@ -232,9 +269,7 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 				constraints.add(implies(f, parseFeatures));
 				break;
 			case ALT:
-				constraints.add(new And(
-					implies(f, parseFeatures),
-					atMost(parseFeatures)));
+				constraints.add(new And(implies(f, parseFeatures), atMost(parseFeatures)));
 				break;
 			default:
 				break;
@@ -277,7 +312,7 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 
 	@Override
 	public String getId() {
-		return "FeatureIDEXMLFormat";
+		return ID;
 	}
 
 	@Override

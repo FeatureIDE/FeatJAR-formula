@@ -1,38 +1,51 @@
-package org.spldev.formula.expression.io;
-/* FeatureIDE - A Framework for Feature-Oriented Software Development
- * Copyright (C) 2005-2019  FeatureIDE team, University of Magdeburg, Germany
- *
- * This file is part of FeatureIDE.
- *
- * FeatureIDE is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * FeatureIDE is distributed in the hope that it will be useful,
+/* -----------------------------------------------------------------------------
+ * Formula-Lib - Library to represent and edit propositional formulas.
+ * Copyright (C) 2021  Sebastian Krieter
+ * 
+ * This file is part of Formula-Lib.
+ * 
+ * Formula-Lib is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
+ * 
+ * Formula-Lib is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ * 
  * You should have received a copy of the GNU Lesser General Public License
- * along with FeatureIDE.  If not, see <http://www.gnu.org/licenses/>.
- *
- * See http://featureide.cs.ovgu.de/ for further information.
+ * along with Formula-Lib.  If not, see <https://www.gnu.org/licenses/>.
+ * 
+ * See <https://github.com/skrieter/formula> for further information.
+ * -----------------------------------------------------------------------------
  */
+package org.spldev.formula.expression.io;
 
-import java.util.*;
-import java.util.stream.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import org.spldev.formula.*;
-import org.spldev.formula.expression.*;
-import org.spldev.formula.expression.atomic.literal.*;
-import org.spldev.formula.expression.compound.*;
-import org.spldev.formula.expression.transform.*;
-import org.spldev.util.logging.*;
-import org.spldev.util.tree.*;
-import org.w3c.dom.*;
+import org.spldev.formula.VariableMap;
+import org.spldev.formula.expression.AuxiliaryRoot;
+import org.spldev.formula.expression.Formula;
+import org.spldev.formula.expression.Formulas;
+import org.spldev.formula.expression.atomic.literal.Literal;
+import org.spldev.formula.expression.atomic.literal.LiteralVariable;
+import org.spldev.formula.expression.compound.And;
+import org.spldev.formula.expression.compound.Not;
+import org.spldev.formula.expression.compound.Or;
+import org.spldev.formula.expression.transform.DeMorganTransformer;
+import org.spldev.formula.expression.transform.TreeSimplifier;
+import org.spldev.util.logging.Logger;
+import org.spldev.util.tree.Trees;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 public class XmlFeatureModelCNFFormat extends XmlFeatureModelFormat {
+
+	public static final String ID = XmlFeatureModelCNFFormat.class.getCanonicalName();
 
 	public XmlFeatureModelCNFFormat() {
 	}
@@ -45,8 +58,10 @@ public class XmlFeatureModelCNFFormat extends XmlFeatureModelFormat {
 			parseStruct(getElement(e, STRUCT));
 			final int crossTreeConstaintsIndex = constraints.size();
 			parseConstraints(getElement(e, CONSTRAINTS));
-			final List<Formula> crossTreeConstraints = constraints.subList(crossTreeConstaintsIndex, constraints.size());
-			List<Formula> cnfConstraints = crossTreeConstraints.stream().map(XmlFeatureModelCNFFormat::toCNF).collect(Collectors.toList());
+			final List<Formula> crossTreeConstraints = constraints.subList(crossTreeConstaintsIndex,
+					constraints.size());
+			List<Formula> cnfConstraints = crossTreeConstraints.stream().map(Formulas::toCNF)
+					.collect(Collectors.toList());
 			crossTreeConstraints.clear();
 			constraints.addAll(cnfConstraints);
 		} else if (elementList.isEmpty()) {
@@ -54,20 +69,18 @@ public class XmlFeatureModelCNFFormat extends XmlFeatureModelFormat {
 		} else {
 			Logger.logError("More than one feature model xml elements!");
 		}
-		return Trees.cloneTree(new And(constraints));
+		return Trees.cloneTree(simplify(new And(constraints)));
 	}
 
 	@Override
 	protected Formula atMost(final List<Formula> parseFeatures) {
-		return new And(groupElements(
-			parseFeatures.stream().map(Not::new).collect(Collectors.toList()), 1, parseFeatures.size()));
+		return new And(groupElements(parseFeatures.stream().map(Not::new).collect(Collectors.toList()), 1,
+				parseFeatures.size()));
 	}
 
 	@Override
 	protected Formula biimplies(Formula a, final Formula b) {
-		return new And(
-			new Or(new Not(a), b),
-			new Or(new Not(b), a));
+		return new And(new Or(new Not(a), b), new Or(new Not(b), a));
 	}
 
 	@Override
@@ -123,23 +136,21 @@ public class XmlFeatureModelCNFFormat extends XmlFeatureModelFormat {
 		return groupedElements;
 	}
 
-	private static Formula toCNF(Formula formula) {
+	private static Formula simplify(Formula formula) {
 		final AuxiliaryRoot auxiliaryRoot = new AuxiliaryRoot(formula);
 		Trees.traverse(auxiliaryRoot, new DeMorganTransformer());
 		Trees.traverse(auxiliaryRoot, new TreeSimplifier());
-		final DistributiveLawTransformer visitor = new DistributiveLawTransformer();
-		final Formula root = (Formula) auxiliaryRoot.getChild();
-		if (!(root instanceof And)) {
-			auxiliaryRoot.setChild(new And(root));
-		}
-		Trees.traverse(auxiliaryRoot, visitor);
-
 		return (Formula) auxiliaryRoot.getChild();
 	}
 
 	@Override
 	public XmlFeatureModelCNFFormat getInstance() {
 		return new XmlFeatureModelCNFFormat();
+	}
+
+	@Override
+	public String getId() {
+		return ID;
 	}
 
 }

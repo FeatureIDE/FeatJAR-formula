@@ -1,9 +1,11 @@
 <?xml version="1.0"?>
 <extensions>
 	<point id="org.spldev.util.cli.CLIFunctionManager">
-	    <extension id="org.spldev.formula.clause.cli.ConfigurationGenerator" />
+	    <extension id="org.spldev.formula.cli.ConverterCLI" />
 	</point>
-	<point id="org.spldev.util.cli.CLIFunctionManager">
-	    <extension id="org.spldev.formula.clause.cli.ConfigurationGenerator" />
+	<point id="org.spldev.formula.expression.io.FormulaFormatManager">
+	    <extension id="org.spldev.formula.expression.io.DIMACSFormat" />
+	    <extension id="org.spldev.formula.expression.io.XmlFeatureModelCNFFormat" />
+	    <extension id="org.spldev.formula.expression.io.parse.FormulaFormat" />
 	</point>
 </extensions>
