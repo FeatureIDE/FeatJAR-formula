@@ -41,6 +41,7 @@ import org.spldev.formula.expression.compound.Not;
 import org.spldev.formula.expression.compound.Or;
 import org.spldev.util.Problem;
 import org.spldev.util.Result;
+import org.spldev.util.io.PositionalXMLHandler;
 import org.spldev.util.io.format.Format;
 import org.spldev.util.logging.Logger;
 import org.w3c.dom.Document;

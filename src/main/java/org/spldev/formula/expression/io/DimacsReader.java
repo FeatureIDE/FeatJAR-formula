@@ -31,6 +31,7 @@ import org.spldev.formula.*;
 import org.spldev.formula.expression.*;
 import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.formula.expression.compound.*;
+import org.spldev.util.io.LineIterator;
 
 public class DimacsReader {
 
