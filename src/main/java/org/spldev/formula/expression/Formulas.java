@@ -22,20 +22,14 @@
  */
 package org.spldev.formula.expression;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.*;
+import java.util.stream.*;
 
-import org.spldev.formula.Assignment;
-import org.spldev.formula.VariableMap;
-import org.spldev.formula.expression.ValueVisitor.UnkownVariableHandling;
-import org.spldev.formula.expression.transform.CNFVisitor;
-import org.spldev.formula.expression.transform.DNFVisitor;
-import org.spldev.formula.expression.transform.NFTransformer;
-import org.spldev.util.tree.Trees;
-import org.spldev.util.tree.visitor.TreeDepthCounter;
-import org.spldev.util.tree.visitor.TreeVisitor;
+import org.spldev.formula.*;
+import org.spldev.formula.expression.ValueVisitor.*;
+import org.spldev.formula.expression.transform.*;
+import org.spldev.util.tree.*;
+import org.spldev.util.tree.visitor.*;
 
 public class Formulas {
 

@@ -115,7 +115,7 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 		try {
 			final Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
 			SAXParserFactory.newInstance().newSAXParser().parse(new InputSource(new StringReader(source.toString())),
-					new PositionalXMLHandler(doc));
+				new PositionalXMLHandler(doc));
 			doc.getDocumentElement().normalize();
 			return Result.of(readDocument(doc));
 		} catch (final Exception e) {
@@ -153,7 +153,7 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 						constraints.add(parseConstraintNode.get(0));
 					} else {
 						Logger.logError(
-								(int) child.getUserData(PositionalXMLHandler.LINE_NUMBER_KEY_NAME) + ": " + nodeName);
+							(int) child.getUserData(PositionalXMLHandler.LINE_NUMBER_KEY_NAME) + ": " + nodeName);
 					}
 				}
 			}
@@ -270,7 +270,11 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 				constraints.add(implies(f, parseFeatures));
 				break;
 			case ALT:
-				constraints.add(new And(implies(f, parseFeatures), atMost(parseFeatures)));
+				if (parseFeatures.size() == 1) {
+					constraints.add(implies(f, parseFeatures.get(0)));
+				} else {
+					constraints.add(new And(implies(f, parseFeatures), atMost(parseFeatures)));
+				}
 				break;
 			default:
 				break;

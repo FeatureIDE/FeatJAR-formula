@@ -87,7 +87,19 @@ public abstract class NonTerminal extends AbstractNonTerminal<Expression> implem
 
 	@Override
 	public String toString() {
-		return getName();
+		if (hasChildren()) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(getName());
+			sb.append("[");
+			for (Expression child : children) {
+				sb.append(child.getName());
+				sb.append(", ");
+			}
+			sb.replace(sb.length() - 2, sb.length(), "]");
+			return sb.toString();
+		} else {
+			return getName();
+		}
 	}
 
 }
