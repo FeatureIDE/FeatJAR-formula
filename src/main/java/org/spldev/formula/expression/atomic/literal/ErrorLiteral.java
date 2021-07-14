@@ -32,7 +32,7 @@ public class ErrorLiteral extends Literal {
 
 	private String error;
 	private boolean positive;
-	
+
 	public ErrorLiteral(String error) {
 		this(error, true);
 	}
@@ -57,6 +57,7 @@ public class ErrorLiteral extends Literal {
 		return new ErrorLiteral(error, !positive);
 	}
 
+	@Override
 	public boolean isPositive() {
 		return positive;
 	}

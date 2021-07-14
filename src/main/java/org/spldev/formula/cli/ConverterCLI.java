@@ -64,16 +64,16 @@ public class ConverterCLI implements CLIFunction {
 		boolean overwrite = false;
 		boolean dryRun = false;
 		String fileNameFilter = null;
-		
+
 		final ListIterator<String> iterator = args.listIterator();
 		if (iterator.hasNext()) {
 			input = Paths.get(iterator.next());
 		}
 		if (iterator.hasNext()) {
-			String name = iterator.next();
+			final String name = iterator.next();
 			try {
 				outFormat = FormulaFormatManager.getInstance().getFormatById(name).orElse(Logger::logProblems);
-			} catch (NoSuchExtensionException e) {
+			} catch (final NoSuchExtensionException e) {
 				throw new RuntimeException(e);
 			}
 		}
@@ -98,7 +98,7 @@ public class ConverterCLI implements CLIFunction {
 				break;
 			}
 			case "-dry": {
-				dryRun= true;
+				dryRun = true;
 				break;
 			}
 			}
@@ -111,7 +111,7 @@ public class ConverterCLI implements CLIFunction {
 		} else if (!Files.exists(input)) {
 			throw new IllegalArgumentException("No input directory or file does not exist!");
 		}
-		boolean directory = Files.isDirectory(input);
+		final boolean directory = Files.isDirectory(input);
 
 		if (output == null) {
 			output = Paths.get(directory ? "out" : "out." + outFormat.getFileExtension());
@@ -121,7 +121,7 @@ public class ConverterCLI implements CLIFunction {
 				if (Files.isRegularFile(output)) {
 					try {
 						Files.delete(output);
-					} catch (IOException e) {
+					} catch (final IOException e) {
 						throw new IllegalArgumentException("Existing output file could not be deleted!");
 					}
 				}
@@ -129,7 +129,7 @@ public class ConverterCLI implements CLIFunction {
 				if (Files.isDirectory(output)) {
 					try {
 						Files.delete(output);
-					} catch (IOException e) {
+					} catch (final IOException e) {
 						throw new IllegalArgumentException("Existing output file could not be deleted!");
 					}
 				}
@@ -140,9 +140,9 @@ public class ConverterCLI implements CLIFunction {
 					try {
 						if (Files.list(output).findAny().isPresent()) {
 							throw new IllegalArgumentException(
-									"Output directory is not empty!\n\tUse -f to force overwrite existing files");
+								"Output directory is not empty!\n\tUse -f to force overwrite existing files");
 						}
-					} catch (IOException e) {
+					} catch (final IOException e) {
 						throw new IllegalArgumentException("Output directory is not accessible!");
 					}
 				} else {
@@ -154,7 +154,7 @@ public class ConverterCLI implements CLIFunction {
 		if (directory && !Files.exists(output)) {
 			try {
 				Files.createDirectory(output);
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				throw new IllegalArgumentException("Output directory could not be created!");
 			}
 		}
@@ -165,28 +165,28 @@ public class ConverterCLI implements CLIFunction {
 			final Path rootIn = input;
 			final Path rootOut = output;
 			final Predicate<String> fileNamePredicate = fileNameFilter == null ? (s -> true)
-					: Pattern.compile(fileNameFilter).asMatchPredicate();
+				: Pattern.compile(fileNameFilter).asMatchPredicate();
 			try {
-				Stream<Path> fileStream = recursive ? Files.walk(input) : Files.list(input);
+				final Stream<Path> fileStream = recursive ? Files.walk(input) : Files.list(input);
 				fileStream //
 					.filter(Files::isRegularFile) //
 					.filter(f -> fileNamePredicate.test(f.getFileName().toString())) //
 					.forEach(inputFile -> {
 						final Path outputDirectory = rootOut.resolve(rootIn.relativize(inputFile.getParent()));
 						final Path outputFile = outputDirectory
-								.resolve(FileHandler.getFileNameWithoutExtension(inputFile.getFileName()) + "."
-										+ format.getFileExtension());
+							.resolve(FileHandler.getFileNameWithoutExtension(inputFile.getFileName()) + "."
+								+ format.getFileExtension());
 						Logger.logInfo(inputFile + " -> " + outputFile);
 						if (convert) {
 							try {
 								Files.createDirectories(outputDirectory);
-							} catch (IOException e) {
+							} catch (final IOException e) {
 								throw new RuntimeException(e);
 							}
 							convert(inputFile, outputFile, format);
 						}
 					});
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				throw new RuntimeException(e);
 			}
 		} else {
@@ -199,16 +199,16 @@ public class ConverterCLI implements CLIFunction {
 
 	private void convert(Path inputFile, Path outputFile, Format<Formula> outFormat) {
 		try {
-			Result<Formula> parse = FileHandler.parse(inputFile, FormulaFormatManager.getInstance(),
-					StandardCharsets.UTF_8);
+			final Result<Formula> parse = FileHandler.parse(inputFile, FormulaFormatManager.getInstance(),
+				StandardCharsets.UTF_8);
 			if (parse.isPresent()) {
 				FileHandler.serialize(parse.get(), outputFile, outFormat, StandardCharsets.UTF_8);
 			} else {
 				Logger.logProblems(parse.getProblems());
 			}
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			throw new RuntimeException(e);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			Logger.logError(e);
 		}
 	}

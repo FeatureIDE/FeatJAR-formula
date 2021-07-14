@@ -25,7 +25,6 @@ package org.spldev.formula.expression.io.parse;
 import java.util.*;
 import java.util.regex.*;
 
-import org.spldev.formula.*;
 import org.spldev.formula.expression.*;
 import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.formula.expression.compound.*;
@@ -301,7 +300,7 @@ public class NodeReader {
 				map.addVariable(featureName);
 			}
 
-			return new LiteralVariable(featureName, map);
+			return map.getLiteral(featureName, true).get();
 		}
 	}
 

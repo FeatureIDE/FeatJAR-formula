@@ -24,7 +24,6 @@ package org.spldev.formula.expression;
 
 import java.util.*;
 
-import org.spldev.formula.*;
 import org.spldev.formula.expression.atomic.*;
 import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.formula.expression.atomic.predicate.*;

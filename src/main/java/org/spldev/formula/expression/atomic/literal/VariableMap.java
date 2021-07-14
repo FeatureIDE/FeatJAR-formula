@@ -20,7 +20,7 @@
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
  */
-package org.spldev.formula;
+package org.spldev.formula.expression.atomic.literal;
 
 import java.io.*;
 import java.util.*;
@@ -38,13 +38,13 @@ public class VariableMap implements Cloneable, Serializable {
 
 	private final ArrayList<String> indexToVar;
 	private final LinkedHashMap<String, Integer> varToIndex;
-	
+
 	public VariableMap() {
 		indexToVar = new ArrayList<>();
 		varToIndex = new LinkedHashMap<>();
 		indexToVar.add(null);
 	}
-	
+
 	public VariableMap(Collection<String> names) {
 		Objects.requireNonNull(names);
 
@@ -116,6 +116,22 @@ public class VariableMap implements Cloneable, Serializable {
 		return isValidIndex(index) ? Optional.ofNullable(indexToVar.get(index)) : Optional.empty();
 	}
 
+	public Optional<LiteralVariable> getLiteral(String name, boolean positive) {
+		return getIndex(name).map(index -> new LiteralVariable(positive ? index : -index, this));
+	}
+
+	public Optional<LiteralVariable> getLiteral(int index, boolean positive) {
+		return isValidIndex(index)
+			? Optional.of(new LiteralVariable(positive ? index : -index, this))
+			: Optional.empty();
+	}
+
+	public Optional<LiteralVariable> getLiteral(int value) {
+		return isValidIndex(Math.abs(value))
+			? Optional.of(new LiteralVariable(value, this))
+			: Optional.empty();
+	}
+
 	private boolean isValidIndex(final int index) {
 		return (index > 0) && (index < indexToVar.size());
 	}
@@ -166,7 +182,7 @@ public class VariableMap implements Cloneable, Serializable {
 	}
 
 	public boolean addVariable(String name) {
-		if (name != null && !varToIndex.containsKey(name)) {
+		if ((name != null) && !varToIndex.containsKey(name)) {
 			indexToVar.add(name);
 			varToIndex.put(name, getMaxIndex());
 			return true;
@@ -187,7 +203,7 @@ public class VariableMap implements Cloneable, Serializable {
 	}
 
 	public boolean removeIndex(int index) {
-		String name = isValidIndex(index) ? indexToVar.get(index) : null;
+		final String name = isValidIndex(index) ? indexToVar.get(index) : null;
 		if (name != null) {
 			indexToVar.set(index, null);
 			varToIndex.remove(name);

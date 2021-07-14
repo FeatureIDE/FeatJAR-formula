@@ -22,10 +22,10 @@
  */
 package org.spldev.formula.expression.io;
 
-import org.spldev.formula.VariableMap;
 import org.spldev.formula.expression.Expression;
 import org.spldev.formula.expression.Formula;
 import org.spldev.formula.expression.Formulas;
+import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.formula.expression.compound.Or;
 
 public class DimacsWriter {
@@ -158,7 +158,7 @@ public class DimacsWriter {
 	 */
 	private void writeClauses(StringBuilder sb) {
 		for (final Expression clause : formula.getChildren()) {
-			writeClause(sb, (Or)clause);
+			writeClause(sb, (Or) clause);
 		}
 	}
 

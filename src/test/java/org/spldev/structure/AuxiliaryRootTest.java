@@ -27,7 +27,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.*;
 
 import org.junit.jupiter.api.*;
-import org.spldev.formula.*;
 import org.spldev.formula.expression.*;
 import org.spldev.formula.expression.atomic.literal.*;
 
@@ -37,9 +36,9 @@ public class AuxiliaryRootTest {
 
 	@BeforeEach
 	public void setUp() {
-		VariableMap map = new VariableMap(Arrays.asList("L1","L2"));
-		expression1 = new LiteralVariable("L1", map);
-		expression2 = new LiteralVariable("L2", map);
+		final VariableMap map = new VariableMap(Arrays.asList("L1", "L2"));
+		expression1 = map.getLiteral("L1", true).get();
+		expression2 = map.getLiteral("L2", true).get();
 	}
 
 	@Test

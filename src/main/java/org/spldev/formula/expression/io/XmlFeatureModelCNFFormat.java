@@ -27,12 +27,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.spldev.formula.VariableMap;
 import org.spldev.formula.expression.AuxiliaryRoot;
 import org.spldev.formula.expression.Formula;
 import org.spldev.formula.expression.Formulas;
-import org.spldev.formula.expression.atomic.literal.Literal;
-import org.spldev.formula.expression.atomic.literal.LiteralVariable;
+import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.formula.expression.compound.And;
 import org.spldev.formula.expression.compound.Not;
 import org.spldev.formula.expression.compound.Or;
@@ -50,18 +48,19 @@ public class XmlFeatureModelCNFFormat extends XmlFeatureModelFormat {
 	public XmlFeatureModelCNFFormat() {
 	}
 
+	@Override
 	protected Formula readDocument(Document doc) {
 		map = new VariableMap();
 		final List<Element> elementList = getElement(doc, FEATURE_MODEL);
 		if (elementList.size() == 1) {
-			Element e = elementList.get(0);
+			final Element e = elementList.get(0);
 			parseStruct(getElement(e, STRUCT));
 			final int crossTreeConstaintsIndex = constraints.size();
 			parseConstraints(getElement(e, CONSTRAINTS));
 			final List<Formula> crossTreeConstraints = constraints.subList(crossTreeConstaintsIndex,
-					constraints.size());
-			List<Formula> cnfConstraints = crossTreeConstraints.stream().map(Formulas::toCNF)
-					.collect(Collectors.toList());
+				constraints.size());
+			final List<Formula> cnfConstraints = crossTreeConstraints.stream().map(Formulas::toCNF)
+				.collect(Collectors.toList());
 			crossTreeConstraints.clear();
 			constraints.addAll(cnfConstraints);
 		} else if (elementList.isEmpty()) {
@@ -75,7 +74,7 @@ public class XmlFeatureModelCNFFormat extends XmlFeatureModelFormat {
 	@Override
 	protected Formula atMost(final List<Formula> parseFeatures) {
 		return new And(groupElements(parseFeatures.stream().map(Not::new).collect(Collectors.toList()), 1,
-				parseFeatures.size()));
+			parseFeatures.size()));
 	}
 
 	@Override

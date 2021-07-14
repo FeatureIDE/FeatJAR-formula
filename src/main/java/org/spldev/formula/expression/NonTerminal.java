@@ -53,6 +53,7 @@ public abstract class NonTerminal extends AbstractNonTerminal<Expression> implem
 		setChildren(children);
 	}
 
+	@Override
 	public void setChildren(Collection<? extends Expression> children) {
 		super.setChildren(children);
 		hasHashCode = false;
@@ -88,10 +89,10 @@ public abstract class NonTerminal extends AbstractNonTerminal<Expression> implem
 	@Override
 	public String toString() {
 		if (hasChildren()) {
-			StringBuilder sb = new StringBuilder();
+			final StringBuilder sb = new StringBuilder();
 			sb.append(getName());
 			sb.append("[");
-			for (Expression child : children) {
+			for (final Expression child : children) {
 				sb.append(child.getName());
 				sb.append(", ");
 			}

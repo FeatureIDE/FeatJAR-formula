@@ -119,17 +119,17 @@ public final class NFTransformer {
 	}
 
 	private static void transfrom(Expression node, Class<? extends Compound> clauseClass,
-			Function<Collection<? extends Formula>, Formula> clauseConstructor) {
+		Function<Collection<? extends Formula>, Formula> clauseConstructor) {
 		if (node != null) {
 			final ArrayList<PathElement> path = new ArrayList<>();
 			final ArrayDeque<Expression> stack = new ArrayDeque<>();
 			stack.addLast(node);
 			while (!stack.isEmpty()) {
 				final Expression curNode = stack.getLast();
-				boolean firstEncounter = path.isEmpty() || (curNode != path.get(path.size() - 1).node);
+				final boolean firstEncounter = path.isEmpty() || (curNode != path.get(path.size() - 1).node);
 				if (firstEncounter) {
 					if (curNode instanceof Literal) {
-						PathElement parent = path.get(path.size() - 1);
+						final PathElement parent = path.get(path.size() - 1);
 						parent.newChildren.add(curNode);
 						stack.removeLast();
 					} else {
@@ -137,21 +137,21 @@ public final class NFTransformer {
 						curNode.getChildren().forEach(stack::addLast);
 					}
 				} else {
-					PathElement currentElement = path.remove(path.size() - 1);
+					final PathElement currentElement = path.remove(path.size() - 1);
 					curNode.setChildren(currentElement.newChildren);
 
 					if (!path.isEmpty()) {
-						PathElement parentElement = path.get(path.size() - 1);
+						final PathElement parentElement = path.get(path.size() - 1);
 						parentElement.maxDepth = Math.max(currentElement.maxDepth + 1, parentElement.maxDepth);
 					}
 
-					if (clauseClass == curNode.getClass() && currentElement.maxDepth > 0) {
-						PathElement parentElement = path.get(path.size() - 1);
+					if ((clauseClass == curNode.getClass()) && (currentElement.maxDepth > 0)) {
+						final PathElement parentElement = path.get(path.size() - 1);
 						parentElement.newChildren.addAll(convert(curNode, clauseConstructor));
 						parentElement.maxDepth = 1;
 					} else {
 						if (!path.isEmpty()) {
-							PathElement parentElement = path.get(path.size() - 1);
+							final PathElement parentElement = path.get(path.size() - 1);
 							parentElement.newChildren.add(curNode);
 						}
 					}
@@ -163,12 +163,12 @@ public final class NFTransformer {
 
 	@SuppressWarnings("unchecked")
 	private static List<Formula> convert(Expression child,
-			Function<Collection<? extends Formula>, Formula> clauseConstructor) {
+		Function<Collection<? extends Formula>, Formula> clauseConstructor) {
 		if (child instanceof Literal) {
 			return null;
 		} else {
 			final ArrayList<Set<Literal>> newClauseList = new ArrayList<>();
-			List<Formula> children = new ArrayList<>((List<Formula>) child.getChildren());
+			final List<Formula> children = new ArrayList<>((List<Formula>) child.getChildren());
 			Collections.sort(children, (c1, c2) -> {
 				return c1.getChildren().size() - c2.getChildren().size();
 			});
@@ -179,7 +179,7 @@ public final class NFTransformer {
 				return c1.size() - c2.size();
 			});
 			final ArrayList<Set<Literal>> sets = newClauseList;
-			int lastIndex = sets.size();
+			final int lastIndex = sets.size();
 			int removeCount = 0;
 			for (int i = 0; i < lastIndex; i++) {
 				final Set<Literal> set = sets.get(i);
@@ -196,7 +196,7 @@ public final class NFTransformer {
 				}
 			}
 			filteredClauseList = new ArrayList<>(newClauseList.size() - removeCount);
-			for (Set<Literal> children1 : sets) {
+			for (final Set<Literal> children1 : sets) {
 				if (children1 != null) {
 					filteredClauseList.add(clauseConstructor.apply(children1));
 				}
@@ -206,13 +206,13 @@ public final class NFTransformer {
 	}
 
 	private static void convertNF(List<Formula> children, List<Set<Literal>> clauses, LinkedHashSet<Literal> literals,
-			int index) {
+		int index) {
 		if (index == children.size()) {
 			clauses.add(new HashSet<>(literals));
 		} else {
 			final Formula child = children.get(index);
 			if (child instanceof Literal) {
-				Literal clauseLiteral = (Literal) child;
+				final Literal clauseLiteral = (Literal) child;
 				if (literals.contains(clauseLiteral)) {
 					convertNF(children, clauses, literals, index + 1);
 				} else if (!literals.contains(clauseLiteral.flip())) {
@@ -222,7 +222,7 @@ public final class NFTransformer {
 				}
 			} else {
 				boolean redundant = false;
-				for (Expression grandChild : child.getChildren()) {
+				for (final Expression grandChild : child.getChildren()) {
 					if (grandChild instanceof Literal) {
 						if (literals.contains(grandChild)) {
 							redundant = true;
@@ -230,7 +230,7 @@ public final class NFTransformer {
 						}
 					} else {
 						int redundantCount = 0;
-						for (Expression literal : grandChild.getChildren()) {
+						for (final Expression literal : grandChild.getChildren()) {
 							if (literals.contains(literal)) {
 								redundantCount++;
 							}
@@ -244,9 +244,9 @@ public final class NFTransformer {
 				if (redundant) {
 					convertNF(children, clauses, literals, index + 1);
 				} else {
-					for (Expression grandChild : child.getChildren()) {
+					for (final Expression grandChild : child.getChildren()) {
 						if (grandChild instanceof Literal) {
-							Literal clauseLiteral = (Literal) grandChild;
+							final Literal clauseLiteral = (Literal) grandChild;
 							if (!literals.contains(clauseLiteral.flip())) {
 								literals.add(clauseLiteral);
 								convertNF(children, clauses, literals, index + 1);
@@ -254,15 +254,16 @@ public final class NFTransformer {
 							}
 						} else {
 							boolean containsComplement = false;
-							for (Expression literal : grandChild.getChildren()) {
+							for (final Expression literal : grandChild.getChildren()) {
 								if (literals.contains(((Literal) literal).flip())) {
 									containsComplement = true;
 									break;
 								}
 							}
 							if (!containsComplement) {
-								ArrayList<Literal> clauseLiterals = new ArrayList<>(grandChild.getChildren().size());
-								for (Expression literal : grandChild.getChildren()) {
+								final ArrayList<Literal> clauseLiterals = new ArrayList<>(grandChild.getChildren()
+									.size());
+								for (final Expression literal : grandChild.getChildren()) {
 									literals.add((Literal) literal);
 									clauseLiterals.add((Literal) literal);
 								}

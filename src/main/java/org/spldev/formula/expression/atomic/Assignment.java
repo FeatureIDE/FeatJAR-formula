@@ -20,9 +20,11 @@
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
  */
-package org.spldev.formula;
+package org.spldev.formula.expression.atomic;
 
 import java.util.*;
+
+import org.spldev.formula.expression.atomic.literal.*;
 
 public class Assignment {
 

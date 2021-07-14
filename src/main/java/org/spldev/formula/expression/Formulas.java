@@ -25,8 +25,9 @@ package org.spldev.formula.expression;
 import java.util.*;
 import java.util.stream.*;
 
-import org.spldev.formula.*;
 import org.spldev.formula.expression.ValueVisitor.*;
+import org.spldev.formula.expression.atomic.*;
+import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.formula.expression.transform.*;
 import org.spldev.util.tree.*;
 import org.spldev.util.tree.visitor.*;
@@ -66,12 +67,12 @@ public class Formulas {
 		case DNF:
 			return Trees.traverse(formula, new DNFVisitor()).get();
 		case ClausalCNF: {
-			CNFVisitor visitor = new CNFVisitor();
+			final CNFVisitor visitor = new CNFVisitor();
 			Trees.traverse(formula, visitor);
 			return visitor.isClausalNf();
 		}
 		case ClausalDNF: {
-			DNFVisitor visitor = new DNFVisitor();
+			final DNFVisitor visitor = new DNFVisitor();
 			Trees.traverse(formula, visitor);
 			return visitor.isClausalNf();
 		}
@@ -98,7 +99,7 @@ public class Formulas {
 
 	private static Formula toNF(Formula formula, NormalForm normalForm) {
 		if (isNF(formula, normalForm)) {
-			return (Formula) Trees.cloneTree(formula);
+			return Trees.cloneTree(formula);
 		}
 		return distributiveLawTransform(simplifyForNF(formula), normalForm);
 	}
@@ -123,7 +124,7 @@ public class Formulas {
 
 	public static Stream<String> getVariableStream(Expression node) {
 		return Trees.preOrderStream(node).filter(n -> n instanceof Terminal).map(n -> ((Terminal) n).getName())
-				.distinct();
+			.distinct();
 	}
 
 	public static List<String> getVariables(Expression node) {

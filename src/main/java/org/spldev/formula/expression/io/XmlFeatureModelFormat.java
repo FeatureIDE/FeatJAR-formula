@@ -22,33 +22,21 @@
  */
 package org.spldev.formula.expression.io;
 
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.SAXParserFactory;
+import javax.xml.parsers.*;
 
-import org.spldev.formula.VariableMap;
-import org.spldev.formula.expression.Formula;
-import org.spldev.formula.expression.atomic.literal.Literal;
-import org.spldev.formula.expression.atomic.literal.LiteralVariable;
-import org.spldev.formula.expression.compound.And;
-import org.spldev.formula.expression.compound.AtMost;
-import org.spldev.formula.expression.compound.Biimplies;
-import org.spldev.formula.expression.compound.Implies;
-import org.spldev.formula.expression.compound.Not;
-import org.spldev.formula.expression.compound.Or;
-import org.spldev.util.Problem;
-import org.spldev.util.Result;
-import org.spldev.util.io.PositionalXMLHandler;
-import org.spldev.util.io.format.Format;
-import org.spldev.util.logging.Logger;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
+import org.spldev.formula.expression.*;
+import org.spldev.formula.expression.atomic.literal.*;
+import org.spldev.formula.expression.compound.*;
+import org.spldev.util.*;
+import org.spldev.util.Problem.*;
+import org.spldev.util.io.*;
+import org.spldev.util.io.format.*;
+import org.spldev.util.logging.*;
+import org.w3c.dom.*;
+import org.xml.sax.*;
 
 public class XmlFeatureModelFormat implements Format<Formula> {
 
@@ -74,6 +62,7 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 	protected final static String ATMOST1 = "atmost1";
 
 	protected ArrayList<Formula> constraints = new ArrayList<>();
+	protected List<Problem> parseProblems = new ArrayList<>();
 	protected VariableMap map;
 
 	public XmlFeatureModelFormat() {
@@ -113,11 +102,12 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 	@Override
 	public Result<Formula> parse(CharSequence source) {
 		try {
+			parseProblems.clear();
 			final Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
 			SAXParserFactory.newInstance().newSAXParser().parse(new InputSource(new StringReader(source.toString())),
 				new PositionalXMLHandler(doc));
 			doc.getDocumentElement().normalize();
-			return Result.of(readDocument(doc));
+			return Result.of(readDocument(doc), parseProblems);
 		} catch (final Exception e) {
 			return Result.empty(new Problem(e));
 		}
@@ -132,7 +122,7 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 		map = new VariableMap();
 		final List<Element> elementList = getElement(doc, FEATURE_MODEL);
 		if (elementList.size() == 1) {
-			Element e = elementList.get(0);
+			final Element e = elementList.get(0);
 			parseStruct(getElement(e, STRUCT));
 			parseConstraints(getElement(e, CONSTRAINTS));
 		} else if (elementList.isEmpty()) {
@@ -148,19 +138,24 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 			for (final Element child : getElements(e.getChildNodes())) {
 				final String nodeName = child.getNodeName();
 				if (nodeName.equals(RULE)) {
-					final List<Formula> parseConstraintNode = parseConstraintNode(child.getChildNodes());
-					if (parseConstraintNode.size() == 1) {
-						constraints.add(parseConstraintNode.get(0));
-					} else {
-						Logger.logError(
-							(int) child.getUserData(PositionalXMLHandler.LINE_NUMBER_KEY_NAME) + ": " + nodeName);
+					try {
+						final List<Formula> parseConstraintNode = parseConstraintNode(child.getChildNodes());
+						if (parseConstraintNode.size() == 1) {
+							constraints.add(parseConstraintNode.get(0));
+						} else {
+							parseProblems.add(new ParseProblem(nodeName,
+								(int) child.getUserData(PositionalXMLHandler.LINE_NUMBER_KEY_NAME), Severity.WARNING));
+						}
+					} catch (final Exception exception) {
+						parseProblems.add(new ParseProblem(exception.getMessage(),
+							(int) child.getUserData(PositionalXMLHandler.LINE_NUMBER_KEY_NAME), Severity.WARNING));
 					}
 				}
 			}
 		}
 	}
 
-	protected List<Formula> parseConstraintNode(NodeList nodeList) {
+	protected List<Formula> parseConstraintNode(NodeList nodeList) throws ParseException {
 		final List<Formula> nodes = new ArrayList<>();
 		List<Formula> children;
 		final List<Element> elements = getElements(nodeList);
@@ -202,10 +197,11 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 				}
 				break;
 			case VAR:
-				nodes.add(new LiteralVariable(e.getTextContent(), map));
+				nodes.add(map.getLiteral(e.getTextContent(), true).map(l -> (Literal) l).orElse(new ErrorLiteral(
+					nodeName)));
 				break;
 			default:
-				break;
+				throw new ParseException(nodeName);
 			}
 		}
 		return nodes;
@@ -243,14 +239,13 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 				} else if (attributeName.equals(NAME)) {
 					name = attributeValue;
 				}
-
 			}
 		}
 		if (map.getIndex(name).isEmpty()) {
 			map.addVariable(name);
 		}
 
-		final LiteralVariable f = new LiteralVariable(name, map);
+		final LiteralVariable f = map.getLiteral(name, true).get();
 
 		if (parent == null) {
 			constraints.add(f);

@@ -66,7 +66,7 @@ public class EquivalenceTransformer implements TreeVisitor<Void, Expression> {
 		}
 		return VistorResult.Continue;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private Formula replace(Expression node) {
 		if (((node instanceof Atomic) || (node instanceof And) || (node instanceof Or)

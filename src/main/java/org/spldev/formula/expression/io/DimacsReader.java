@@ -27,11 +27,10 @@ import java.text.*;
 import java.util.*;
 import java.util.regex.*;
 
-import org.spldev.formula.*;
 import org.spldev.formula.expression.*;
 import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.formula.expression.compound.*;
-import org.spldev.util.io.LineIterator;
+import org.spldev.util.io.*;
 
 public class DimacsReader {
 
@@ -42,7 +41,7 @@ public class DimacsReader {
 	/** Maps indexes to variables. */
 	private final Map<Integer, String> indexVariables = new LinkedHashMap<>();
 	private VariableMap map;
-	
+
 	/**
 	 * The amount of variables as declared in the problem definition. May differ
 	 * from the actual amount of variables found.
@@ -254,7 +253,7 @@ public class DimacsReader {
 			if (map.getIndex(variableName).isEmpty()) {
 				map.addVariable(variableName);
 			}
-			literals[j] = new LiteralVariable(variableName, map);
+			literals[j] = map.getLiteral(variableName, true).get();
 		}
 		return new Or(literals);
 	}
