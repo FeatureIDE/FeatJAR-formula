@@ -199,10 +199,10 @@ public class ConverterCLI implements CLIFunction {
 
 	private void convert(Path inputFile, Path outputFile, Format<Formula> outFormat) {
 		try {
-			final Result<Formula> parse = FileHandler.parse(inputFile, FormulaFormatManager.getInstance(),
+			final Result<Formula> parse = FileHandler.load(inputFile, FormulaFormatManager.getInstance(),
 				StandardCharsets.UTF_8);
 			if (parse.isPresent()) {
-				FileHandler.serialize(parse.get(), outputFile, outFormat, StandardCharsets.UTF_8);
+				FileHandler.save(parse.get(), outputFile, outFormat, StandardCharsets.UTF_8);
 			} else {
 				Logger.logProblems(parse.getProblems());
 			}

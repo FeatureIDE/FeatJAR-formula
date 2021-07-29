@@ -22,21 +22,37 @@
  */
 package org.spldev.formula.expression.io;
 
-import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.xml.parsers.*;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.SAXParserFactory;
 
-import org.spldev.formula.expression.*;
-import org.spldev.formula.expression.atomic.literal.*;
-import org.spldev.formula.expression.compound.*;
-import org.spldev.util.*;
-import org.spldev.util.Problem.*;
-import org.spldev.util.io.*;
-import org.spldev.util.io.format.*;
-import org.spldev.util.logging.*;
-import org.w3c.dom.*;
-import org.xml.sax.*;
+import org.spldev.formula.expression.Formula;
+import org.spldev.formula.expression.atomic.literal.ErrorLiteral;
+import org.spldev.formula.expression.atomic.literal.Literal;
+import org.spldev.formula.expression.atomic.literal.LiteralVariable;
+import org.spldev.formula.expression.atomic.literal.VariableMap;
+import org.spldev.formula.expression.compound.And;
+import org.spldev.formula.expression.compound.AtMost;
+import org.spldev.formula.expression.compound.Biimplies;
+import org.spldev.formula.expression.compound.Implies;
+import org.spldev.formula.expression.compound.Not;
+import org.spldev.formula.expression.compound.Or;
+import org.spldev.util.Problem;
+import org.spldev.util.Problem.Severity;
+import org.spldev.util.Result;
+import org.spldev.util.io.PositionalXMLHandler;
+import org.spldev.util.io.format.Format;
+import org.spldev.util.io.format.Input;
+import org.spldev.util.io.format.ParseException;
+import org.spldev.util.io.format.ParseProblem;
+import org.spldev.util.logging.Logger;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 public class XmlFeatureModelFormat implements Format<Formula> {
 
@@ -100,11 +116,11 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 	}
 
 	@Override
-	public Result<Formula> parse(CharSequence source) {
+	public Result<Formula> parse(Input source) {
 		try {
 			parseProblems.clear();
 			final Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-			SAXParserFactory.newInstance().newSAXParser().parse(new InputSource(new StringReader(source.toString())),
+			SAXParserFactory.newInstance().newSAXParser().parse(new InputSource(source.getReader()),
 				new PositionalXMLHandler(doc));
 			doc.getDocumentElement().normalize();
 			return Result.of(readDocument(doc), parseProblems);

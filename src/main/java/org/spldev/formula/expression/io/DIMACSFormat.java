@@ -28,6 +28,7 @@ import java.text.ParseException;
 import org.spldev.formula.expression.Formula;
 import org.spldev.util.Result;
 import org.spldev.util.io.format.Format;
+import org.spldev.util.io.format.Input;
 import org.spldev.util.io.format.ParseProblem;
 
 /**
@@ -48,11 +49,12 @@ public class DIMACSFormat implements Format<Formula> {
 	}
 
 	@Override
-	public Result<Formula> parse(CharSequence source) {
+	public Result<Formula> parse(Input source) {
 		final DimacsReader r = new DimacsReader();
 		r.setReadingVariableDirectory(true);
 		try {
-			return Result.of(r.read(source.toString()));
+			// TODO use getLines() instead
+			return Result.of(r.read(source.getCompleteText().get()));
 		} catch (final ParseException e) {
 			return Result.empty(new ParseProblem(e, e.getErrorOffset()));
 		} catch (final IOException e) {
