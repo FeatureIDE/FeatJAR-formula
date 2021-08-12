@@ -1,21 +1,21 @@
 /* -----------------------------------------------------------------------------
- * Formula-Lib - Library to represent and edit propositional formulas.
+ * Formula Lib - Library to represent and edit propositional formulas.
  * Copyright (C) 2021  Sebastian Krieter
  * 
- * This file is part of Formula-Lib.
+ * This file is part of Formula Lib.
  * 
- * Formula-Lib is free software: you can redistribute it and/or modify it
+ * Formula Lib is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License,
  * or (at your option) any later version.
  * 
- * Formula-Lib is distributed in the hope that it will be useful,
+ * Formula Lib is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  * 
  * You should have received a copy of the GNU Lesser General Public License
- * along with Formula-Lib.  If not, see <https://www.gnu.org/licenses/>.
+ * along with Formula Lib.  If not, see <https://www.gnu.org/licenses/>.
  * 
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
@@ -27,6 +27,11 @@ import java.util.*;
 import java.util.Map.*;
 import java.util.stream.*;
 
+import org.spldev.formula.expression.*;
+import org.spldev.formula.expression.term.*;
+import org.spldev.formula.expression.term.integer.*;
+import org.spldev.formula.expression.term.real.*;
+
 /**
  * Variables of a formula.
  *
@@ -36,112 +41,102 @@ public class VariableMap implements Cloneable, Serializable {
 
 	private static final long serialVersionUID = 4436189744440916565L;
 
-	private final ArrayList<String> indexToVar;
-	private final LinkedHashMap<String, Integer> varToIndex;
+	private final ArrayList<String> names;
+	private final ArrayList<Variable<?>> variables;
+	private final LinkedHashMap<String, Integer> nameToIndex;
 
-	public VariableMap() {
-		indexToVar = new ArrayList<>();
-		varToIndex = new LinkedHashMap<>();
-		indexToVar.add(null);
-	}
-
-	public VariableMap(Collection<String> names) {
+	public static VariableMap fromNames(Collection<String> names) {
 		Objects.requireNonNull(names);
-
-		indexToVar = new ArrayList<>(names.size() + 1);
-		varToIndex = new LinkedHashMap<>((int) (1.5 * names.size()));
-
-		indexToVar.add(null);
-		for (final String name : names) {
-			if (name != null) {
-				varToIndex.put(name, indexToVar.size());
-				indexToVar.add(name);
-			}
-		}
+		final VariableMap variableMap = new VariableMap();
+		names.forEach(variableMap::addBooleanVariable);
+		return variableMap;
 	}
 
-	public VariableMap(Map<Integer, String> nameMap) {
-		Objects.requireNonNull(nameMap);
+	public static VariableMap fromNameMap(Map<Integer, String> nameMap) {
+		return new VariableMap(nameMap);
+	}
+
+	public static VariableMap fromExpression(Expression expression) {
+		return Formulas.getVariableStream(expression)
+			.findAny().map(Variable::getVariableMap).orElseGet(VariableMap::new);
+	}
+
+	public static VariableMap emptyMap() {
+		return new VariableMap();
+	}
+
+	private VariableMap(Map<Integer, String> nameMap) {
 		final Integer maxIndex = nameMap.keySet().stream().max(Integer::compare).orElseThrow();
 
-		indexToVar = new ArrayList<>(maxIndex + 1);
-		varToIndex = new LinkedHashMap<>((int) (1.5 * maxIndex));
-
+		names = new ArrayList<>(maxIndex + 1);
+		variables = new ArrayList<>(maxIndex + 1);
+		nameToIndex = new LinkedHashMap<>();
 		for (int i = 0; i <= maxIndex; i++) {
-			indexToVar.add(null);
+			names.add(null);
+			variables.add(null);
 		}
-		nameMap.forEach((key, value) -> indexToVar.set(key, value));
-
-		for (int i = 1; i < indexToVar.size(); i++) {
-			String name = indexToVar.get(i);
-			if (name == null) {
-				name = String.valueOf(i);
-				indexToVar.set(i, name);
-			}
-			varToIndex.put(name, i);
+		for (final Entry<Integer, String> entry : nameMap.entrySet()) {
+			final String name = entry.getValue();
+			final int index = entry.getKey();
+			nameToIndex.put(name, index);
+			names.set(index, name);
+			variables.set(index, new BoolVariable(index, this));
 		}
 	}
 
-	private VariableMap(ArrayList<String> indexToVar, LinkedHashMap<String, Integer> varToIndex) {
-		this.indexToVar = indexToVar;
-		this.varToIndex = varToIndex;
-	}
-
-	private VariableMap(VariableMap otherVariables) {
-		indexToVar = new ArrayList<>(otherVariables.indexToVar);
-		varToIndex = new LinkedHashMap<>(otherVariables.varToIndex);
+	private VariableMap() {
+		names = new ArrayList<>();
+		variables = new ArrayList<>();
+		nameToIndex = new LinkedHashMap<>();
+		names.add(null);
+		variables.add(null);
 	}
 
 	public boolean hasVariable(int index) {
-		return isValidIndex(index) && (indexToVar.get(index) != null);
+		return isValidIndex(index) && (variables.get(index) != null);
 	}
 
 	public boolean hasVariable(String name) {
-		return varToIndex.containsKey(name);
-	}
-
-	public Optional<Integer> getVariable(String name) {
-		return Optional.ofNullable(varToIndex.get(name));
-	}
-
-	public List<Integer> getVariables(List<String> names) {
-		return names.stream().map(varToIndex::get).collect(Collectors.toList());
-	}
-
-	public Optional<Integer> getIndex(String name) {
-		return Optional.ofNullable(varToIndex.get(name));
+		return nameToIndex.containsKey(name);
 	}
 
 	public Optional<String> getName(final int index) {
-		return isValidIndex(index) ? Optional.ofNullable(indexToVar.get(index)) : Optional.empty();
-	}
-
-	public Optional<LiteralVariable> getLiteral(String name, boolean positive) {
-		return getIndex(name).map(index -> new LiteralVariable(positive ? index : -index, this));
-	}
-
-	public Optional<LiteralVariable> getLiteral(int index, boolean positive) {
 		return isValidIndex(index)
-			? Optional.of(new LiteralVariable(positive ? index : -index, this))
+			? Optional.ofNullable(names.get(index))
 			: Optional.empty();
 	}
 
-	public Optional<LiteralVariable> getLiteral(int value) {
-		return isValidIndex(Math.abs(value))
-			? Optional.of(new LiteralVariable(value, this))
+	public Optional<Integer> getIndex(String name) {
+		return Optional.ofNullable(nameToIndex.get(name));
+	}
+
+	public Optional<Variable<?>> getVariable(int index) {
+		return isValidIndex(index)
+			? Optional.ofNullable(variables.get(index))
 			: Optional.empty();
+	}
+
+	public Optional<Variable<?>> getVariable(String name) {
+		return Optional.ofNullable(variables.get(nameToIndex.get(name)));
+	}
+
+	public List<Variable<?>> getVariables(List<String> names) {
+		return names.stream()
+			.map(nameToIndex::get)
+			.map(variables::get)
+			.collect(Collectors.toList());
 	}
 
 	private boolean isValidIndex(final int index) {
-		return (index > 0) && (index < indexToVar.size());
+		return (index > 0) && (index < variables.size());
 	}
 
 	public List<String> getNames() {
-		return new ArrayList<>(varToIndex.keySet());
+		return new ArrayList<>(nameToIndex.keySet());
 	}
 
 	public int size() {
-		return indexToVar.size() - 1;
+		return variables.size() - 1;
 	}
 
 	public int getMinIndex() {
@@ -149,17 +144,17 @@ public class VariableMap implements Cloneable, Serializable {
 	}
 
 	public int getMaxIndex() {
-		return indexToVar.size() - 1;
+		return variables.size() - 1;
 	}
 
 	public void renameVariable(int index, String newName) {
 		Objects.requireNonNull(newName);
 		if (isValidIndex(index)) {
-			final String oldName = indexToVar.get(index);
+			final String oldName = names.get(index);
 			if (oldName != null) {
-				indexToVar.set(index, newName);
-				varToIndex.remove(oldName);
-				varToIndex.put(newName, index);
+				names.set(index, newName);
+				nameToIndex.remove(oldName);
+				nameToIndex.put(newName, index);
 			} else {
 				throw new NoSuchElementException(String.valueOf(index));
 			}
@@ -171,31 +166,92 @@ public class VariableMap implements Cloneable, Serializable {
 	public void renameVariable(String oldName, String newName) {
 		Objects.requireNonNull(oldName);
 		Objects.requireNonNull(newName);
-		final Integer index = varToIndex.get(oldName);
+		final Integer index = nameToIndex.get(oldName);
 		if (index != null) {
-			indexToVar.set(index, newName);
-			varToIndex.remove(oldName);
-			varToIndex.put(newName, index);
+			names.set(index, newName);
+			nameToIndex.remove(oldName);
+			nameToIndex.put(newName, index);
 		} else {
 			throw new NoSuchElementException(String.valueOf(oldName));
 		}
 	}
 
-	public boolean addVariable(String name) {
-		if ((name != null) && !varToIndex.containsKey(name)) {
-			indexToVar.add(name);
-			varToIndex.put(name, getMaxIndex());
-			return true;
+	/**
+	 * Creates a new {@link BoolVariable boolean variable} with the given name or
+	 * does nothing if a variable with the name already exists.
+	 * 
+	 * @param name the name of the variable.
+	 * @return An {@link Optional optional} with the new variable or an empty
+	 *         optional if a variable with the name already exists.
+	 */
+	public Optional<BoolVariable> addBooleanVariable(String name) {
+		if ((name != null) && !nameToIndex.containsKey(name)) {
+			final int newIndex = getMaxIndex() + 1;
+			final BoolVariable variable = new BoolVariable(newIndex, this);
+			names.add(name);
+			variables.add(variable);
+			nameToIndex.put(name, newIndex);
+			return Optional.of(variable);
 		} else {
-			return false;
+			return Optional.empty();
+		}
+	}
+
+	/**
+	 * Creates a new {@link IntVariable integer variable} with the given name or
+	 * does nothing if a variable with the name already exists.
+	 * 
+	 * @param name the name of the variable.
+	 * @return An {@link Optional optional} with the new variable or an empty
+	 *         optional if a variable with the name already exists.
+	 */
+	public Optional<IntVariable> addIntegerVariable(String name) {
+		if ((name != null) && !nameToIndex.containsKey(name)) {
+			final int newIndex = getMaxIndex() + 1;
+			final IntVariable variable = new IntVariable(newIndex, this);
+			names.add(name);
+			variables.add(variable);
+			nameToIndex.put(name, newIndex);
+			return Optional.of(variable);
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	/**
+	 * Creates a new {@link RealVariable real variable} with the given name or does
+	 * nothing if a variable with the name already exists or the given name is
+	 * {@code null}.
+	 * 
+	 * @param name the name of the variable.
+	 * @return An {@link Optional optional} with the new variable or an empty
+	 *         optional if a variable with the name already exists or the given name
+	 *         is {@code null}.
+	 */
+	public Optional<RealVariable> addRealVariable(String name) {
+		if ((name != null) && !nameToIndex.containsKey(name)) {
+			final int newIndex = getMaxIndex() + 1;
+			final RealVariable variable = new RealVariable(newIndex, this);
+			names.add(name);
+			variables.add(variable);
+			nameToIndex.put(name, newIndex);
+			return Optional.of(variable);
+		} else {
+			return Optional.empty();
 		}
 	}
 
 	public boolean removeVariable(String name) {
-		final Integer index = varToIndex.get(name);
+		final Integer index = nameToIndex.get(name);
 		if (index != null) {
-			indexToVar.set(index, null);
-			varToIndex.remove(name);
+			if (index == getMaxIndex()) {
+				names.remove((int) index);
+				variables.remove((int) index);
+			} else {
+				names.set(index, null);
+				variables.set(index, null);
+			}
+			nameToIndex.remove(name);
 			return true;
 		} else {
 			return false;
@@ -203,144 +259,29 @@ public class VariableMap implements Cloneable, Serializable {
 	}
 
 	public boolean removeIndex(int index) {
-		final String name = isValidIndex(index) ? indexToVar.get(index) : null;
-		if (name != null) {
-			indexToVar.set(index, null);
-			varToIndex.remove(name);
+		if (isValidIndex(index)) {
+			if (index == getMaxIndex()) {
+				names.remove(index);
+				variables.remove(index);
+			} else {
+				names.set(index, null);
+				variables.set(index, null);
+			}
+			getName(index).ifPresent(nameToIndex::remove);
 			return true;
 		} else {
 			return false;
 		}
 	}
 
-	public VariableMap addVariables(Collection<String> names) {
-		Objects.requireNonNull(names);
-		final ArrayList<String> indexToVar = new ArrayList<>(this.indexToVar);
-		final LinkedHashMap<String, Integer> varToIndex = new LinkedHashMap<>(this.varToIndex);
-		int newIndex = getMaxIndex() + 1;
-		for (final String name : names) {
-			if ((name != null) && !varToIndex.containsKey(name)) {
-				indexToVar.add(name);
-				varToIndex.put(name, newIndex++);
-			}
-		}
-		return new VariableMap(indexToVar, varToIndex);
-	}
+	public boolean hasGaps() {
+		return nameToIndex.size() != names.size();
 
-	public VariableMap removeIndices(int... indices) {
-		return removeIndeces(Arrays.stream(indices).boxed().collect(Collectors.toCollection(HashSet::new)));
-	}
-
-	public VariableMap removeIndices(Collection<Integer> indices) {
-		Objects.requireNonNull(indices);
-		return removeIndeces(indices instanceof Set ? (Set<Integer>) indices : new HashSet<>(indices));
-	}
-
-	private VariableMap removeIndeces(Set<Integer> indicesSet) {
-		final int newSize = indexToVar.size() - indicesSet.size();
-		final ArrayList<String> newIndexToVar = new ArrayList<>(newSize);
-		final LinkedHashMap<String, Integer> newVarToIndex = new LinkedHashMap<>((int) (1.5 * newSize));
-		newIndexToVar.add(null);
-
-		varToIndex.entrySet().stream()
-			.filter(e -> !indicesSet.contains(e.getValue()))
-			.map(Entry::getKey)
-			.forEach(name -> {
-				newVarToIndex.put(name, newIndexToVar.size());
-				newIndexToVar.add(name);
-			});
-		return new VariableMap(newIndexToVar, newVarToIndex);
-	}
-
-	public VariableMap retainIndices(Collection<Integer> indices) {
-		Objects.requireNonNull(indices);
-
-		final ArrayList<String> newIndexToVar = new ArrayList<>(indices.size());
-		final LinkedHashMap<String, Integer> newVarToIndex = new LinkedHashMap<>((int) (1.5 * indices.size()));
-
-		indices.stream()
-			.filter(Objects::nonNull)
-			.filter(this::isValidIndex)
-			.map(indexToVar::get)
-			.forEach(name -> {
-				newIndexToVar.add(name);
-				newVarToIndex.put(name, newIndexToVar.size());
-			});
-
-		return new VariableMap(newIndexToVar, newVarToIndex);
-	}
-
-	public VariableMap retainIndices(int... indices) {
-		final ArrayList<String> newIndexToVar = new ArrayList<>(indices.length);
-		final LinkedHashMap<String, Integer> newVarToIndex = new LinkedHashMap<>((int) (1.5 * indices.length));
-
-		Arrays.stream(indices)
-			.filter(this::isValidIndex)
-			.mapToObj(indexToVar::get)
-			.forEach(name -> {
-				newIndexToVar.add(name);
-				newVarToIndex.put(name, newIndexToVar.size());
-			});
-
-		return new VariableMap(newIndexToVar, newVarToIndex);
-	}
-
-	public VariableMap removeVariables(Collection<String> names) {
-		Objects.requireNonNull(names);
-
-		final Set<String> namesSet = names instanceof Set ? (Set<String>) names : new HashSet<>(names);
-		final int newSize = indexToVar.size() - namesSet.size();
-		final ArrayList<String> newIndexToVar = new ArrayList<>(newSize);
-		final LinkedHashMap<String, Integer> newVarToIndex = new LinkedHashMap<>((int) (1.5 * newSize));
-
-		indexToVar.stream()
-			.filter(name -> !namesSet.contains(name))
-			.forEach(name -> {
-				newIndexToVar.add(name);
-				newVarToIndex.put(name, newIndexToVar.size());
-			});
-		return new VariableMap(newIndexToVar, newVarToIndex);
-	}
-
-	public VariableMap retainVariables(Collection<String> names) {
-		Objects.requireNonNull(names);
-
-		final ArrayList<String> newIndexToVar = new ArrayList<>(names.size());
-		final LinkedHashMap<String, Integer> newVarToIndex = new LinkedHashMap<>((int) (1.5 * names.size()));
-
-		names.stream()
-			.filter(Objects::nonNull)
-			.filter(varToIndex::containsKey)
-			.forEach(name -> {
-				newIndexToVar.add(name);
-				newVarToIndex.put(name, newIndexToVar.size());
-			});
-
-		return new VariableMap(newIndexToVar, newVarToIndex);
-	}
-
-	public VariableMap normalize() {
-		if (varToIndex.size() != indexToVar.size()) {
-			final int size = varToIndex.size();
-			final List<String> indexToVar = new ArrayList<>(size);
-			final Map<String, Integer> varToIndex = new LinkedHashMap<>((int) 1.5 * size);
-			int index = 0;
-			for (final String name : this.varToIndex.keySet()) {
-				indexToVar.add(name);
-				varToIndex.put(name, index++);
-			}
-		}
-		return new VariableMap(indexToVar, varToIndex);
-	}
-
-	@Override
-	public VariableMap clone() {
-		return new VariableMap(this);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(indexToVar);
+		return Objects.hashCode(names);
 	}
 
 	@Override
@@ -351,16 +292,16 @@ public class VariableMap implements Cloneable, Serializable {
 		if ((obj == null) || (getClass() != obj.getClass())) {
 			return false;
 		}
-		return Objects.equals(indexToVar, ((VariableMap) obj).indexToVar);
+		return Objects.equals(names, ((VariableMap) obj).names);
 	}
 
 	@Override
 	public String toString() {
-		return "Variables " + indexToVar.subList(1, indexToVar.size());
+		return "Variables " + names.subList(1, names.size());
 	}
 
 	public boolean containsAll(VariableMap variables) {
-		return varToIndex.keySet().containsAll(variables.varToIndex.keySet());
+		return nameToIndex.keySet().containsAll(variables.nameToIndex.keySet());
 	}
 
 }

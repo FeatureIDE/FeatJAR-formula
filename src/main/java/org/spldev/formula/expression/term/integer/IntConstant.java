@@ -20,28 +20,28 @@
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
  */
-package org.spldev.formula.expression.io.parse;
+package org.spldev.formula.expression.term.integer;
 
-/**
- * Symbols for a logical representation. These are best used for displaying to
- * the user due to brevity and beauty. Since they consist of unwieldy Unicode
- * characters, do not use them for editing or serialization.
- * 
- * @author Timo Günther
- * @author Sebastian Krieter
- */
-public class LogicalSymbols extends Symbols {
+import org.spldev.formula.expression.term.*;
 
-	public static final Symbols INSTANCE = new LogicalSymbols();
+public class IntConstant extends Constant<Long> {
 
-	private LogicalSymbols() {
-		super();
-		setSymbol(Operator.NOT, "\u00AC");
-		setSymbol(Operator.AND, "\u2227");
-		setSymbol(Operator.OR, "\u2228");
-		setSymbol(Operator.IMPLIES, "\u21D2");
-		setSymbol(Operator.EQUALS, "\u21D4");
-		setTextual(false);
+	public IntConstant(Long value) {
+		super(value);
+	}
+
+	protected IntConstant(IntConstant oldConstant) {
+		super(oldConstant);
+	}
+
+	@Override
+	public Class<Long> getType() {
+		return Long.class;
+	}
+
+	@Override
+	public IntConstant cloneNode() {
+		return new IntConstant(this);
 	}
 
 }

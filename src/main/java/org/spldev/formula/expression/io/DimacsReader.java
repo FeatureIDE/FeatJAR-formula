@@ -1,21 +1,21 @@
 /* -----------------------------------------------------------------------------
- * Formula-Lib - Library to represent and edit propositional formulas.
+ * Formula Lib - Library to represent and edit propositional formulas.
  * Copyright (C) 2021  Sebastian Krieter
  * 
- * This file is part of Formula-Lib.
+ * This file is part of Formula Lib.
  * 
- * Formula-Lib is free software: you can redistribute it and/or modify it
+ * Formula Lib is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License,
  * or (at your option) any later version.
  * 
- * Formula-Lib is distributed in the hope that it will be useful,
+ * Formula Lib is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  * 
  * You should have received a copy of the GNU Lesser General Public License
- * along with Formula-Lib.  If not, see <https://www.gnu.org/licenses/>.
+ * along with Formula Lib.  If not, see <https://www.gnu.org/licenses/>.
  * 
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
@@ -30,6 +30,7 @@ import java.util.regex.*;
 import org.spldev.formula.expression.*;
 import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.formula.expression.compound.*;
+import org.spldev.formula.expression.term.integer.*;
 import org.spldev.util.io.*;
 
 public class DimacsReader {
@@ -89,7 +90,7 @@ public class DimacsReader {
 		clauseCount = -1;
 		readingVariables = readVariableDirectory;
 		if (!readVariableDirectory) {
-			map = new VariableMap();
+			map = VariableMap.emptyMap();
 		}
 		try (final BufferedReader reader = new BufferedReader(in)) {
 			final LineIterator lineIterator = new LineIterator(reader);
@@ -101,7 +102,7 @@ public class DimacsReader {
 			readingVariables = false;
 
 			if (readVariableDirectory) {
-				map = new VariableMap(indexVariables);
+				map = VariableMap.fromNameMap(indexVariables);
 			}
 
 			final List<Or> clauses = readClauses(lineIterator);
@@ -251,9 +252,9 @@ public class DimacsReader {
 				indexVariables.put(key, variableName);
 			}
 			if (map.getIndex(variableName).isEmpty()) {
-				map.addVariable(variableName);
+				map.addBooleanVariable(variableName);
 			}
-			literals[j] = map.getLiteral(variableName, true).get();
+			literals[j] = new LiteralVariable((BoolVariable) map.getVariable(variableName).get(), true);
 		}
 		return new Or(literals);
 	}

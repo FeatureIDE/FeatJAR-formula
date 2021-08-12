@@ -1,21 +1,21 @@
 /* -----------------------------------------------------------------------------
- * Formula-Lib - Library to represent and edit propositional formulas.
+ * Formula Lib - Library to represent and edit propositional formulas.
  * Copyright (C) 2021  Sebastian Krieter
  * 
- * This file is part of Formula-Lib.
+ * This file is part of Formula Lib.
  * 
- * Formula-Lib is free software: you can redistribute it and/or modify it
+ * Formula Lib is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License,
  * or (at your option) any later version.
  * 
- * Formula-Lib is distributed in the hope that it will be useful,
+ * Formula Lib is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  * 
  * You should have received a copy of the GNU Lesser General Public License
- * along with Formula-Lib.  If not, see <https://www.gnu.org/licenses/>.
+ * along with Formula Lib.  If not, see <https://www.gnu.org/licenses/>.
  * 
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
@@ -30,6 +30,7 @@ import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.formula.expression.compound.*;
 import org.spldev.formula.expression.io.parse.ErrorType.*;
 import org.spldev.formula.expression.io.parse.Symbols.*;
+import org.spldev.formula.expression.term.integer.*;
 import org.spldev.util.*;
 import org.spldev.util.Problem.*;
 import org.spldev.util.io.format.*;
@@ -128,10 +129,10 @@ public class NodeReader {
 
 	public void setVariableNames(Collection<String> variableNames) {
 		if (variableNames == null) {
-			map = new VariableMap();
+			map = VariableMap.emptyMap();
 			hasVariableNames = false;
 		} else {
-			map = new VariableMap(variableNames);
+			map = VariableMap.fromNames(variableNames);
 			hasVariableNames = true;
 		}
 	}
@@ -297,10 +298,10 @@ public class NodeReader {
 				return handleInvalidFeatureName(featureName);
 			}
 			if (map.getIndex(featureName).isEmpty()) {
-				map.addVariable(featureName);
+				map.addBooleanVariable(featureName);
 			}
 
-			return map.getLiteral(featureName, true).get();
+			return new LiteralVariable((BoolVariable) map.getVariable(featureName).get(), true);
 		}
 	}
 

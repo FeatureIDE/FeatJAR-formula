@@ -20,28 +20,32 @@
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
  */
-package org.spldev.formula.expression.io.parse;
+package org.spldev.formula.expression;
+
+import org.spldev.util.*;
+import org.spldev.util.data.*;
 
 /**
- * Symbols for a logical representation. These are best used for displaying to
- * the user due to brevity and beauty. Since they consist of unwieldy Unicode
- * characters, do not use them for editing or serialization.
- * 
- * @author Timo Günther
+ * Abstract creator to derive an element from a {@link CacheHolder}.
+ *
  * @author Sebastian Krieter
  */
-public class LogicalSymbols extends Symbols {
+@FunctionalInterface
+public interface FormulaProvider extends Provider<Formula> {
 
-	public static final Symbols INSTANCE = new LogicalSymbols();
+	Identifier<Formula> identifier = new Identifier<>();
 
-	private LogicalSymbols() {
-		super();
-		setSymbol(Operator.NOT, "\u00AC");
-		setSymbol(Operator.AND, "\u2227");
-		setSymbol(Operator.OR, "\u2228");
-		setSymbol(Operator.IMPLIES, "\u21D2");
-		setSymbol(Operator.EQUALS, "\u21D4");
-		setTextual(false);
+	@Override
+	default Identifier<Formula> getIdentifier() {
+		return identifier;
+	}
+
+	static FormulaProvider empty() {
+		return (f, m) -> Result.empty();
+	}
+
+	static FormulaProvider of(Formula formula) {
+		return (f, m) -> Result.of(formula);
 	}
 
 }

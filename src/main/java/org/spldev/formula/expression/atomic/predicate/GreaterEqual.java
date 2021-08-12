@@ -1,21 +1,21 @@
 /* -----------------------------------------------------------------------------
- * Formula-Lib - Library to represent and edit propositional formulas.
+ * Formula Lib - Library to represent and edit propositional formulas.
  * Copyright (C) 2021  Sebastian Krieter
  * 
- * This file is part of Formula-Lib.
+ * This file is part of Formula Lib.
  * 
- * Formula-Lib is free software: you can redistribute it and/or modify it
+ * Formula Lib is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License,
  * or (at your option) any later version.
  * 
- * Formula-Lib is distributed in the hope that it will be useful,
+ * Formula Lib is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  * 
  * You should have received a copy of the GNU Lesser General Public License
- * along with Formula-Lib.  If not, see <https://www.gnu.org/licenses/>.
+ * along with Formula Lib.  If not, see <https://www.gnu.org/licenses/>.
  * 
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
@@ -32,13 +32,13 @@ import org.spldev.util.tree.structure.*;
  *
  * @author Sebastian Krieter
  */
-public class LessThanEquals<D extends Comparable<D>> extends Predicate<D> {
+public class GreaterEqual<D extends Comparable<D>> extends Predicate<D> {
 
-	public LessThanEquals(Term<D> leftArgument, Term<D> rightArgument) {
+	public GreaterEqual(Term<D> leftArgument, Term<D> rightArgument) {
 		super(leftArgument, rightArgument);
 	}
 
-	protected LessThanEquals() {
+	protected GreaterEqual() {
 		super();
 	}
 
@@ -49,7 +49,7 @@ public class LessThanEquals<D extends Comparable<D>> extends Predicate<D> {
 
 	@Override
 	public String getName() {
-		return "<=";
+		return ">=";
 	}
 
 	@Override
@@ -57,18 +57,18 @@ public class LessThanEquals<D extends Comparable<D>> extends Predicate<D> {
 		if (values.stream().anyMatch(value -> value == null)) {
 			return Optional.empty();
 		}
-		return Optional.of((values.size() == 2) && (values.get(0).compareTo(values.get(1)) <= 0));
+		return Optional.of((values.size() == 2) && (values.get(0).compareTo(values.get(1)) >= 0));
 	}
 
 	@Override
 	public Tree<Expression> cloneNode() {
-		return new LessThanEquals<>();
+		return new GreaterEqual<>();
 	}
 
 	@Override
-	public GreaterThan<D> flip() {
+	public LessThan<D> flip() {
 		final List<? extends Term<D>> children = getChildren();
-		return new GreaterThan<>(children.get(0), children.get(1));
+		return new LessThan<>(children.get(0), children.get(1));
 	}
 
 }

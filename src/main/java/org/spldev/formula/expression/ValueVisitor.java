@@ -1,21 +1,21 @@
 /* -----------------------------------------------------------------------------
- * Formula-Lib - Library to represent and edit propositional formulas.
+ * Formula Lib - Library to represent and edit propositional formulas.
  * Copyright (C) 2021  Sebastian Krieter
  * 
- * This file is part of Formula-Lib.
+ * This file is part of Formula Lib.
  * 
- * Formula-Lib is free software: you can redistribute it and/or modify it
+ * Formula Lib is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License,
  * or (at your option) any later version.
  * 
- * Formula-Lib is distributed in the hope that it will be useful,
+ * Formula Lib is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  * 
  * You should have received a copy of the GNU Lesser General Public License
- * along with Formula-Lib.  If not, see <https://www.gnu.org/licenses/>.
+ * along with Formula Lib.  If not, see <https://www.gnu.org/licenses/>.
  * 
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
@@ -69,41 +69,7 @@ public class ValueVisitor implements TreeVisitor<Object, Expression> {
 	public VistorResult lastVisit(List<Expression> path) {
 		final Expression node = TreeVisitor.getCurrentNode(path);
 		if (node instanceof Atomic) {
-			if (node instanceof LiteralVariable) {
-				final Literal literal = (Literal) node;
-				final boolean positive = literal.isPositive();
-				final int index;
-				if (node instanceof ErrorLiteral) {
-					index = 0;
-				} else {
-					index = assignment.getVariables().getIndex(literal.getName()).orElse(0);
-				}
-				if (index == 0) {
-					switch (unkownVariableHandling) {
-					case ERROR:
-						throw new NullPointerException(literal.getName());
-					case FALSE:
-						values.push(positive ? Boolean.FALSE : Boolean.TRUE);
-						break;
-					case TRUE:
-						values.push(positive ? Boolean.TRUE : Boolean.FALSE);
-						break;
-					default:
-						throw new IllegalStateException(String.valueOf(unkownVariableHandling));
-					}
-				} else {
-					final Object value = assignment.get(index).orElse(null);
-					if (value == null) {
-						values.push(null);
-					} else if (value == Boolean.FALSE) {
-						values.push(positive ? Boolean.FALSE : Boolean.TRUE);
-					} else if (value == Boolean.TRUE) {
-						values.push(positive ? Boolean.TRUE : Boolean.FALSE);
-					} else {
-						throw new IllegalArgumentException(String.valueOf(value));
-					}
-				}
-			} else if (node == Literal.True) {
+			if (node == Literal.True) {
 				values.push(Boolean.TRUE);
 			} else if (node == Literal.False) {
 				values.push(Boolean.FALSE);
@@ -111,9 +77,24 @@ public class ValueVisitor implements TreeVisitor<Object, Expression> {
 				@SuppressWarnings("unchecked")
 				final Predicate<Object> predicate = (Predicate<Object>) node;
 				final List<Object> arguments = values.subList(0, predicate.getChildren().size());
-				final Boolean value = predicate.eval(arguments).get();
+				final Boolean value = predicate.eval(arguments).orElse(null);
 				arguments.clear();
 				values.push(value);
+			} else if (node instanceof ErrorLiteral) {
+				final Literal literal = (ErrorLiteral) node;
+				final boolean positive = literal.isPositive();
+				switch (unkownVariableHandling) {
+				case ERROR:
+					throw new NullPointerException(literal.getName());
+				case FALSE:
+					values.push(positive ? Boolean.FALSE : Boolean.TRUE);
+					break;
+				case TRUE:
+					values.push(positive ? Boolean.TRUE : Boolean.FALSE);
+					break;
+				default:
+					throw new IllegalStateException(String.valueOf(unkownVariableHandling));
+				}
 			} else {
 				throw new IllegalStateException(String.valueOf(node));
 			}
@@ -196,9 +177,6 @@ public class ValueVisitor implements TreeVisitor<Object, Expression> {
 			} else {
 				throw new IllegalStateException(String.valueOf(node));
 			}
-		} else if (node instanceof Constant) {
-			final Constant<?> constant = (Constant<?>) node;
-			values.push(constant.getValue());
 		} else if (node instanceof Variable) {
 			final Variable<?> variable = (Variable<?>) node;
 			final int index = assignment.getVariables().getIndex(variable.getName()).orElse(0);
@@ -213,6 +191,9 @@ public class ValueVisitor implements TreeVisitor<Object, Expression> {
 				default:
 					throw new IllegalStateException(String.valueOf(unkownVariableHandling));
 				}
+			} else if (node instanceof Constant) {
+				final Constant<?> constant = (Constant<?>) node;
+				values.push(constant.getValue());
 			} else {
 				final Object value = assignment.get(index).orElse(null);
 				if (value == null) {

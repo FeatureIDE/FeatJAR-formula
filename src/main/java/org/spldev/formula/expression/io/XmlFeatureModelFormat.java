@@ -1,58 +1,42 @@
 /* -----------------------------------------------------------------------------
- * Formula-Lib - Library to represent and edit propositional formulas.
+ * Formula Lib - Library to represent and edit propositional formulas.
  * Copyright (C) 2021  Sebastian Krieter
  * 
- * This file is part of Formula-Lib.
+ * This file is part of Formula Lib.
  * 
- * Formula-Lib is free software: you can redistribute it and/or modify it
+ * Formula Lib is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License,
  * or (at your option) any later version.
  * 
- * Formula-Lib is distributed in the hope that it will be useful,
+ * Formula Lib is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  * 
  * You should have received a copy of the GNU Lesser General Public License
- * along with Formula-Lib.  If not, see <https://www.gnu.org/licenses/>.
+ * along with Formula Lib.  If not, see <https://www.gnu.org/licenses/>.
  * 
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
  */
 package org.spldev.formula.expression.io;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.SAXParserFactory;
+import javax.xml.parsers.*;
 
-import org.spldev.formula.expression.Formula;
-import org.spldev.formula.expression.atomic.literal.ErrorLiteral;
-import org.spldev.formula.expression.atomic.literal.Literal;
-import org.spldev.formula.expression.atomic.literal.LiteralVariable;
-import org.spldev.formula.expression.atomic.literal.VariableMap;
-import org.spldev.formula.expression.compound.And;
-import org.spldev.formula.expression.compound.AtMost;
-import org.spldev.formula.expression.compound.Biimplies;
-import org.spldev.formula.expression.compound.Implies;
-import org.spldev.formula.expression.compound.Not;
-import org.spldev.formula.expression.compound.Or;
-import org.spldev.util.Problem;
-import org.spldev.util.Problem.Severity;
-import org.spldev.util.Result;
-import org.spldev.util.io.PositionalXMLHandler;
-import org.spldev.util.io.format.Format;
-import org.spldev.util.io.format.Input;
-import org.spldev.util.io.format.ParseException;
-import org.spldev.util.io.format.ParseProblem;
-import org.spldev.util.logging.Logger;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
+import org.spldev.formula.expression.*;
+import org.spldev.formula.expression.atomic.literal.*;
+import org.spldev.formula.expression.compound.*;
+import org.spldev.formula.expression.term.integer.*;
+import org.spldev.util.*;
+import org.spldev.util.Problem.*;
+import org.spldev.util.io.*;
+import org.spldev.util.io.format.*;
+import org.spldev.util.logging.*;
+import org.w3c.dom.*;
+import org.xml.sax.*;
 
 public class XmlFeatureModelFormat implements Format<Formula> {
 
@@ -135,7 +119,7 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 	}
 
 	protected Formula readDocument(Document doc) {
-		map = new VariableMap();
+		map = VariableMap.emptyMap();
 		final List<Element> elementList = getElement(doc, FEATURE_MODEL);
 		if (elementList.size() == 1) {
 			final Element e = elementList.get(0);
@@ -213,8 +197,9 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 				}
 				break;
 			case VAR:
-				nodes.add(map.getLiteral(e.getTextContent(), true).map(l -> (Literal) l).orElse(new ErrorLiteral(
-					nodeName)));
+				nodes.add(map.getVariable(e.getTextContent())
+					.map(v -> (Literal) new LiteralVariable((BoolVariable) v, true))
+					.orElse(new ErrorLiteral(nodeName)));
 				break;
 			default:
 				throw new ParseException(nodeName);
@@ -258,10 +243,10 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 			}
 		}
 		if (map.getIndex(name).isEmpty()) {
-			map.addVariable(name);
+			map.addBooleanVariable(name);
 		}
 
-		final LiteralVariable f = map.getLiteral(name, true).get();
+		final LiteralVariable f = new LiteralVariable((BoolVariable) map.getVariable(name).get(), true);
 
 		if (parent == null) {
 			constraints.add(f);

@@ -1,21 +1,21 @@
 /* -----------------------------------------------------------------------------
- * Formula-Lib - Library to represent and edit propositional formulas.
+ * Formula Lib - Library to represent and edit propositional formulas.
  * Copyright (C) 2021  Sebastian Krieter
  * 
- * This file is part of Formula-Lib.
+ * This file is part of Formula Lib.
  * 
- * Formula-Lib is free software: you can redistribute it and/or modify it
+ * Formula Lib is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License,
  * or (at your option) any later version.
  * 
- * Formula-Lib is distributed in the hope that it will be useful,
+ * Formula Lib is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  * 
  * You should have received a copy of the GNU Lesser General Public License
- * along with Formula-Lib.  If not, see <https://www.gnu.org/licenses/>.
+ * along with Formula Lib.  If not, see <https://www.gnu.org/licenses/>.
  * 
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
@@ -28,14 +28,18 @@ import java.util.stream.*;
 import org.spldev.formula.expression.ValueVisitor.*;
 import org.spldev.formula.expression.atomic.*;
 import org.spldev.formula.expression.atomic.literal.*;
+import org.spldev.formula.expression.term.*;
 import org.spldev.formula.expression.transform.*;
 import org.spldev.util.tree.*;
 import org.spldev.util.tree.visitor.*;
 
-public class Formulas {
+public final class Formulas {
 
 	public enum NormalForm {
 		CNF, DNF, ClausalCNF, ClausalDNF
+	}
+
+	private Formulas() {
 	}
 
 	public static Optional<Object> evaluate(Expression expression, Assignment assignment) {
@@ -122,17 +126,27 @@ public class Formulas {
 		return Trees.traverse(expression, new TreeDepthCounter()).get();
 	}
 
-	public static Stream<String> getVariableStream(Expression node) {
-		return Trees.preOrderStream(node).filter(n -> n instanceof Terminal).map(n -> ((Terminal) n).getName())
-			.distinct();
+	public static Stream<Variable<?>> getVariableStream(Expression node) {
+		final Stream<Variable<?>> stream = Trees.preOrderStream(node)
+			.filter(n -> n instanceof Variable)
+			.map(n -> (Variable<?>) n);
+		return stream.distinct();
 	}
 
-	public static List<String> getVariables(Expression node) {
+	public static List<Variable<?>> getVariables(Expression node) {
 		return getVariableStream(node).collect(Collectors.toList());
 	}
 
-	public static VariableMap createVariableMapping(Expression node) {
-		return new VariableMap(getVariables(node));
+	public static Expression mergeVariableMaps(Expression expression) {
+		final List<VariableMap> maps = Formulas.getVariableStream(expression).map(Variable::getVariableMap)
+			.distinct().collect(Collectors.toList());
+		if (maps.size() > 1) {
+			final VariableMap newMap = VariableMap.fromNames(maps.stream().flatMap(v -> v.getNames().stream()).distinct()
+				.collect(Collectors.toList()));
+			Trees.postOrderStream(expression) //
+				.forEach(e -> e.mapChildren(v -> (v instanceof Variable) ? ((Variable<?>) v).adapt(newMap) : v));
+		}
+		return expression;
 	}
 
 }

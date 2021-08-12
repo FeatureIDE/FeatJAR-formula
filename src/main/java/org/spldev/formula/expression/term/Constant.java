@@ -1,21 +1,21 @@
 /* -----------------------------------------------------------------------------
- * Formula-Lib - Library to represent and edit propositional formulas.
+ * Formula Lib - Library to represent and edit propositional formulas.
  * Copyright (C) 2021  Sebastian Krieter
  * 
- * This file is part of Formula-Lib.
+ * This file is part of Formula Lib.
  * 
- * Formula-Lib is free software: you can redistribute it and/or modify it
+ * Formula Lib is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License,
  * or (at your option) any later version.
  * 
- * Formula-Lib is distributed in the hope that it will be useful,
+ * Formula Lib is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  * 
  * You should have received a copy of the GNU Lesser General Public License
- * along with Formula-Lib.  If not, see <https://www.gnu.org/licenses/>.
+ * along with Formula Lib.  If not, see <https://www.gnu.org/licenses/>.
  * 
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
@@ -26,26 +26,26 @@ import java.util.*;
 
 import org.spldev.formula.expression.*;
 
-public class Constant<T> extends Terminal implements Term<T> {
+public abstract class Constant<T> extends Terminal implements Term<T> {
 
-	protected String name;
-	protected T value;
+	private T value;
 
 	private boolean hasHashCode;
 	private int hashCode;
 
-	public Constant(String name, T value) {
-		this.name = name;
+	public Constant(T value) {
 		this.value = value;
+	}
+
+	public Constant(Constant<T> oldConstant) {
+		this.value = oldConstant.value;
+		this.hasHashCode = oldConstant.hasHashCode;
+		this.hashCode = oldConstant.hashCode;
 	}
 
 	@Override
 	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
+		return String.valueOf(value);
 	}
 
 	public T getValue() {
@@ -62,17 +62,9 @@ public class Constant<T> extends Terminal implements Term<T> {
 	}
 
 	@Override
-	public Constant<T> cloneNode() {
-		final Constant<T> constant = new Constant<>(name, value);
-		constant.hasHashCode = hasHashCode;
-		constant.hashCode = hashCode;
-		return constant;
-	}
-
-	@Override
 	public int hashCode() {
 		if (!hasHashCode) {
-			hashCode = Objects.hash(name, value);
+			hashCode = Objects.hash(value);
 			hasHashCode = true;
 		}
 		return hashCode;
@@ -83,9 +75,7 @@ public class Constant<T> extends Terminal implements Term<T> {
 		if (getClass() != other.getClass()) {
 			return false;
 		}
-		final Constant<?> otherConstant = (Constant<?>) other;
-		return (Objects.equals(name, otherConstant.name) &&
-			Objects.equals(value, otherConstant.value));
+		return (Objects.equals(value, ((Constant<?>) other).value));
 	}
 
 }

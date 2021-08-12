@@ -1,21 +1,21 @@
 /* -----------------------------------------------------------------------------
- * Formula-Lib - Library to represent and edit propositional formulas.
+ * Formula Lib - Library to represent and edit propositional formulas.
  * Copyright (C) 2021  Sebastian Krieter
  * 
- * This file is part of Formula-Lib.
+ * This file is part of Formula Lib.
  * 
- * Formula-Lib is free software: you can redistribute it and/or modify it
+ * Formula Lib is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License,
  * or (at your option) any later version.
  * 
- * Formula-Lib is distributed in the hope that it will be useful,
+ * Formula Lib is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  * 
  * You should have received a copy of the GNU Lesser General Public License
- * along with Formula-Lib.  If not, see <https://www.gnu.org/licenses/>.
+ * along with Formula Lib.  If not, see <https://www.gnu.org/licenses/>.
  * 
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
@@ -24,47 +24,60 @@ package org.spldev.formula.expression.atomic.literal;
 
 import java.util.*;
 
+import org.spldev.formula.expression.atomic.predicate.*;
+import org.spldev.formula.expression.term.integer.*;
+
 /**
- * A variable or negated variable.
+ * A positive or negative literal. Is associated with a {@link BoolVariable
+ * boolean variable}. It can be seen as an expression in the form of
+ * {@code x == positive}, where x is the variable and positive is the either
+ * {@code true} or {@code false}.
  *
  * @author Sebastian Krieter
  */
-public final class LiteralVariable extends Literal {
+public final class LiteralVariable extends Predicate<Boolean> implements Literal {
 
-	private final int value;
-	private VariableMap map;
+	private final boolean positive;
 
-	LiteralVariable(int value, VariableMap map) {
-		this.map = Objects.requireNonNull(map);
-		if (value == 0) {
-			throw new IllegalArgumentException();
-		}
-		this.value = value;
+	public LiteralVariable(BoolVariable variable, boolean positive) {
+		super(Objects.requireNonNull(variable));
+		this.positive = positive;
 	}
 
 	@Override
 	public String getName() {
-		return map.getName(Math.abs(value)).orElse("??");
+		return children.get(0).getName();
+	}
+
+	public BoolVariable getVariable() {
+		return (BoolVariable) children.get(0);
 	}
 
 	@Override
 	public boolean isPositive() {
-		return value > 0;
+		return positive;
+	}
+
+	@Override
+	public Optional<Boolean> eval(List<Boolean> values) {
+		return (values.size() == 1) && (values.get(0) != null)
+			? Optional.of(values.get(0) == positive)
+			: Optional.empty();
 	}
 
 	@Override
 	public LiteralVariable flip() {
-		return map.getLiteral(-value).get();
+		return new LiteralVariable(getVariable(), !positive);
 	}
 
 	@Override
 	public LiteralVariable cloneNode() {
-		return map.getLiteral(value).get();
+		return new LiteralVariable(getVariable(), positive);
 	}
 
 	@Override
 	public int hashCode() {
-		return value;
+		return Objects.hash(children.get(0), positive);
 	}
 
 	@Override
@@ -72,13 +85,14 @@ public final class LiteralVariable extends Literal {
 		if (getClass() != other.getClass()) {
 			return false;
 		}
-		final LiteralVariable otherLiteralVariable = (LiteralVariable) other;
-		return (value == otherLiteralVariable.value);
+		final LiteralVariable otherLiteral = (LiteralVariable) other;
+		return ((positive == otherLiteral.positive)
+			&& Objects.equals(children.get(0), otherLiteral.children.get(0)));
 	}
 
 	@Override
 	public String toString() {
-		return (value > 0 ? "+" : "-") + getName();
+		return (positive ? "+" : "-") + getName();
 	}
 
 }

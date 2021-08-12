@@ -1,21 +1,21 @@
 /* -----------------------------------------------------------------------------
- * Formula-Lib - Library to represent and edit propositional formulas.
+ * Formula Lib - Library to represent and edit propositional formulas.
  * Copyright (C) 2021  Sebastian Krieter
  * 
- * This file is part of Formula-Lib.
+ * This file is part of Formula Lib.
  * 
- * Formula-Lib is free software: you can redistribute it and/or modify it
+ * Formula Lib is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License,
  * or (at your option) any later version.
  * 
- * Formula-Lib is distributed in the hope that it will be useful,
+ * Formula Lib is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  * 
  * You should have received a copy of the GNU Lesser General Public License
- * along with Formula-Lib.  If not, see <https://www.gnu.org/licenses/>.
+ * along with Formula Lib.  If not, see <https://www.gnu.org/licenses/>.
  * 
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
@@ -25,32 +25,33 @@ package org.spldev.formula.expression.term;
 import java.util.*;
 
 import org.spldev.formula.expression.*;
+import org.spldev.formula.expression.atomic.literal.*;
 
-public class Variable<T> extends Terminal implements Term<T> {
+public abstract class Variable<T> extends Terminal implements Term<T> {
 
-	protected String name;
-	protected final Class<T> type;
+	protected final int index;
+	protected final VariableMap map;
+
 	protected T defaultValue;
 
-	private boolean hasHashCode;
-	private int hashCode;
+	public Variable(int index, VariableMap map) {
+		this.map = Objects.requireNonNull(map);
+		this.index = index;
+	}
 
-	public Variable(String name, Class<T> type) {
-		this.name = name;
-		this.type = type;
+	protected Variable(Variable<T> oldVariable) {
+		this.index = oldVariable.index;
+		this.map = oldVariable.map;
+		this.defaultValue = oldVariable.defaultValue;
+	}
+
+	public int getIndex() {
+		return index;
 	}
 
 	@Override
 	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public Class<T> getType() {
-		return type;
+		return map.getName(index).orElse("??");
 	}
 
 	public T getDefaultValue() {
@@ -61,27 +62,24 @@ public class Variable<T> extends Terminal implements Term<T> {
 		this.defaultValue = defaultValue;
 	}
 
+	public VariableMap getVariableMap() {
+		return map;
+	}
+
 	@Override
 	public List<Term<T>> getChildren() {
 		return Collections.emptyList();
 	}
 
-	@Override
-	public Variable<T> cloneNode() {
-		final Variable<T> variable = new Variable<>(name, type);
-		variable.defaultValue = defaultValue;
-		variable.hasHashCode = hasHashCode;
-		variable.hashCode = hashCode;
-		return variable;
+	public abstract Variable<T> clone(int index, VariableMap map);
+
+	public Variable<T> adapt(VariableMap newMap) {
+		return clone(newMap.getIndex(getName()).orElse(0), newMap);
 	}
 
 	@Override
 	public int hashCode() {
-		if (!hasHashCode) {
-			hashCode = Objects.hash(name, type);
-			hasHashCode = true;
-		}
-		return hashCode;
+		return Objects.hash(index);
 	}
 
 	@Override
@@ -89,9 +87,12 @@ public class Variable<T> extends Terminal implements Term<T> {
 		if (getClass() != other.getClass()) {
 			return false;
 		}
-		final Variable<?> otherVariable = (Variable<?>) other;
-		return (Objects.equals(name, otherVariable.name) &&
-			Objects.equals(type, otherVariable.type));
+		return index == ((Variable<?>) other).index;
+	}
+
+	@Override
+	public String toString() {
+		return getName();
 	}
 
 }
