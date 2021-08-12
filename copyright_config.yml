@@ -2,7 +2,7 @@ license:
   name: lgpl
   version: 3
 program:
-  name: Formula-Lib
+  name: Formula Lib
   description: Library to represent and edit propositional formulas.
   authors: Sebastian Krieter
   url: https://github.com/skrieter/formula
