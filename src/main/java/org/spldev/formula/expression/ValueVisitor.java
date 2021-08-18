@@ -29,6 +29,7 @@ import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.formula.expression.atomic.predicate.*;
 import org.spldev.formula.expression.compound.*;
 import org.spldev.formula.expression.term.*;
+import org.spldev.formula.expression.term.bool.*;
 import org.spldev.util.tree.visitor.*;
 
 public class ValueVisitor implements TreeVisitor<Object, Expression> {
@@ -42,6 +43,7 @@ public class ValueVisitor implements TreeVisitor<Object, Expression> {
 	private UnkownVariableHandling unkownVariableHandling = UnkownVariableHandling.FALSE;
 
 	private final Assignment assignment;
+	private Boolean defaultBooleanValue;
 
 	public ValueVisitor(Assignment assignment) {
 		this.assignment = assignment;
@@ -53,6 +55,14 @@ public class ValueVisitor implements TreeVisitor<Object, Expression> {
 
 	public void setUnkown(UnkownVariableHandling unkown) {
 		unkownVariableHandling = unkown;
+	}
+
+	public Boolean getDefaultBooleanValue() {
+		return defaultBooleanValue;
+	}
+
+	public void setDefaultBooleanValue(Boolean defaultBooleanValue) {
+		this.defaultBooleanValue = defaultBooleanValue;
 	}
 
 	@Override
@@ -186,7 +196,7 @@ public class ValueVisitor implements TreeVisitor<Object, Expression> {
 					throw new NullPointerException();
 				case FALSE:
 				case TRUE:
-					values.push(variable.getDefaultValue());
+					values.push(defaultBooleanValue);
 					break;
 				default:
 					throw new IllegalStateException(String.valueOf(unkownVariableHandling));
@@ -197,7 +207,11 @@ public class ValueVisitor implements TreeVisitor<Object, Expression> {
 			} else {
 				final Object value = assignment.get(index).orElse(null);
 				if (value == null) {
-					values.push(variable.getDefaultValue());
+					if (variable instanceof BoolVariable) {
+						values.push(defaultBooleanValue);
+					} else {
+						values.push(null);
+					}
 				} else {
 					if (!variable.getType().isInstance(value)) {
 						throw new IllegalArgumentException(String.valueOf(value));

@@ -30,7 +30,7 @@ import java.util.regex.*;
 import org.spldev.formula.expression.*;
 import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.formula.expression.compound.*;
-import org.spldev.formula.expression.term.integer.*;
+import org.spldev.formula.expression.term.bool.*;
 import org.spldev.util.io.*;
 
 public class DimacsReader {
@@ -254,7 +254,7 @@ public class DimacsReader {
 			if (map.getIndex(variableName).isEmpty()) {
 				map.addBooleanVariable(variableName);
 			}
-			literals[j] = new LiteralVariable((BoolVariable) map.getVariable(variableName).get(), true);
+			literals[j] = new LiteralPredicate((BoolVariable) map.getVariable(variableName).get(), true);
 		}
 		return new Or(literals);
 	}

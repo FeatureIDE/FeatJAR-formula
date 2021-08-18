@@ -47,9 +47,7 @@ public class RealVariable extends Variable<Double> {
 
 	@Override
 	public RealVariable clone(int index, VariableMap map) {
-		final RealVariable variable = new RealVariable(index, map);
-		variable.setDefaultValue(defaultValue);
-		return variable;
+		return new RealVariable(index, map);
 	}
 
 }

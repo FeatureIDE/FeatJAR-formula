@@ -85,7 +85,7 @@ public class XmlFeatureModelCNFFormat extends XmlFeatureModelFormat {
 	}
 
 	@Override
-	protected Formula implies(final LiteralVariable f, final List<Formula> parseFeatures) {
+	protected Formula implies(final LiteralPredicate f, final List<Formula> parseFeatures) {
 		final ArrayList<Formula> list = new ArrayList<>(parseFeatures);
 		list.add(f.flip());
 		return new Or(list);

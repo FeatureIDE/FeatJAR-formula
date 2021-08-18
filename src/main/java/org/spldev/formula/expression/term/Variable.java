@@ -32,8 +32,6 @@ public abstract class Variable<T> extends Terminal implements Term<T> {
 	protected final int index;
 	protected final VariableMap map;
 
-	protected T defaultValue;
-
 	public Variable(int index, VariableMap map) {
 		this.map = Objects.requireNonNull(map);
 		this.index = index;
@@ -42,7 +40,6 @@ public abstract class Variable<T> extends Terminal implements Term<T> {
 	protected Variable(Variable<T> oldVariable) {
 		this.index = oldVariable.index;
 		this.map = oldVariable.map;
-		this.defaultValue = oldVariable.defaultValue;
 	}
 
 	public int getIndex() {
@@ -52,14 +49,6 @@ public abstract class Variable<T> extends Terminal implements Term<T> {
 	@Override
 	public String getName() {
 		return map.getName(index).orElse("??");
-	}
-
-	public T getDefaultValue() {
-		return defaultValue;
-	}
-
-	public void setDefaultValue(T defaultValue) {
-		this.defaultValue = defaultValue;
 	}
 
 	public VariableMap getVariableMap() {

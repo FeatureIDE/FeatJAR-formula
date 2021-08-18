@@ -47,9 +47,7 @@ public class IntVariable extends Variable<Long> {
 
 	@Override
 	public IntVariable clone(int index, VariableMap map) {
-		final IntVariable variable = new IntVariable(index, map);
-		variable.setDefaultValue(defaultValue);
-		return variable;
+		return new IntVariable(index, map);
 	}
 
 }

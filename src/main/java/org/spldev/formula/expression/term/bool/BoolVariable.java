@@ -20,7 +20,7 @@
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
  */
-package org.spldev.formula.expression.term.integer;
+package org.spldev.formula.expression.term.bool;
 
 import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.formula.expression.term.*;
@@ -47,9 +47,7 @@ public class BoolVariable extends Variable<Boolean> {
 
 	@Override
 	public BoolVariable clone(int index, VariableMap map) {
-		final BoolVariable variable = new BoolVariable(index, map);
-		variable.setDefaultValue(defaultValue);
-		return variable;
+		return new BoolVariable(index, map);
 	}
 
 }

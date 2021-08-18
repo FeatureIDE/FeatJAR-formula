@@ -29,7 +29,7 @@ import java.util.*;
 import org.junit.jupiter.api.*;
 import org.spldev.formula.expression.*;
 import org.spldev.formula.expression.atomic.literal.*;
-import org.spldev.formula.expression.term.integer.*;
+import org.spldev.formula.expression.term.bool.*;
 
 public class AuxiliaryRootTest {
 
@@ -38,8 +38,8 @@ public class AuxiliaryRootTest {
 	@BeforeEach
 	public void setUp() {
 		final VariableMap map = VariableMap.fromNames(Arrays.asList("L1", "L2"));
-		expression1 = new LiteralVariable((BoolVariable) map.getVariable("L1").get(), true);
-		expression2 = new LiteralVariable((BoolVariable) map.getVariable("L2").get(), true);
+		expression1 = new LiteralPredicate((BoolVariable) map.getVariable("L1").get(), true);
+		expression2 = new LiteralPredicate((BoolVariable) map.getVariable("L2").get(), true);
 	}
 
 	@Test

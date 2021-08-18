@@ -141,7 +141,8 @@ public final class Formulas {
 		final List<VariableMap> maps = Formulas.getVariableStream(expression).map(Variable::getVariableMap)
 			.distinct().collect(Collectors.toList());
 		if (maps.size() > 1) {
-			final VariableMap newMap = VariableMap.fromNames(maps.stream().flatMap(v -> v.getNames().stream()).distinct()
+			final VariableMap newMap = VariableMap.fromNames(maps.stream().flatMap(v -> v.getNames().stream())
+				.distinct()
 				.collect(Collectors.toList()));
 			Trees.postOrderStream(expression) //
 				.forEach(e -> e.mapChildren(v -> (v instanceof Variable) ? ((Variable<?>) v).adapt(newMap) : v));

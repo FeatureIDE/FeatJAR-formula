@@ -25,7 +25,7 @@ package org.spldev.formula.expression.atomic.literal;
 import java.util.*;
 
 import org.spldev.formula.expression.atomic.predicate.*;
-import org.spldev.formula.expression.term.integer.*;
+import org.spldev.formula.expression.term.bool.*;
 
 /**
  * A positive or negative literal. Is associated with a {@link BoolVariable
@@ -35,11 +35,11 @@ import org.spldev.formula.expression.term.integer.*;
  *
  * @author Sebastian Krieter
  */
-public final class LiteralVariable extends Predicate<Boolean> implements Literal {
+public final class LiteralPredicate extends Predicate<Boolean> implements Literal {
 
 	private final boolean positive;
 
-	public LiteralVariable(BoolVariable variable, boolean positive) {
+	public LiteralPredicate(BoolVariable variable, boolean positive) {
 		super(Objects.requireNonNull(variable));
 		this.positive = positive;
 	}
@@ -66,13 +66,13 @@ public final class LiteralVariable extends Predicate<Boolean> implements Literal
 	}
 
 	@Override
-	public LiteralVariable flip() {
-		return new LiteralVariable(getVariable(), !positive);
+	public LiteralPredicate flip() {
+		return new LiteralPredicate(getVariable(), !positive);
 	}
 
 	@Override
-	public LiteralVariable cloneNode() {
-		return new LiteralVariable(getVariable(), positive);
+	public LiteralPredicate cloneNode() {
+		return new LiteralPredicate(getVariable(), positive);
 	}
 
 	@Override
@@ -85,7 +85,7 @@ public final class LiteralVariable extends Predicate<Boolean> implements Literal
 		if (getClass() != other.getClass()) {
 			return false;
 		}
-		final LiteralVariable otherLiteral = (LiteralVariable) other;
+		final LiteralPredicate otherLiteral = (LiteralPredicate) other;
 		return ((positive == otherLiteral.positive)
 			&& Objects.equals(children.get(0), otherLiteral.children.get(0)));
 	}

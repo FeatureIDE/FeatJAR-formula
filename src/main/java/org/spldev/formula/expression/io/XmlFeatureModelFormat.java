@@ -29,7 +29,7 @@ import javax.xml.parsers.*;
 import org.spldev.formula.expression.*;
 import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.formula.expression.compound.*;
-import org.spldev.formula.expression.term.integer.*;
+import org.spldev.formula.expression.term.bool.*;
 import org.spldev.util.*;
 import org.spldev.util.Problem.*;
 import org.spldev.util.io.*;
@@ -198,7 +198,7 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 				break;
 			case VAR:
 				nodes.add(map.getVariable(e.getTextContent())
-					.map(v -> (Literal) new LiteralVariable((BoolVariable) v, true))
+					.map(v -> (Literal) new LiteralPredicate((BoolVariable) v, true))
 					.orElse(new ErrorLiteral(nodeName)));
 				break;
 			default:
@@ -226,7 +226,7 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 		return children;
 	}
 
-	protected LiteralVariable parseFeature(Literal parent, final Element e, final String nodeName, boolean and) {
+	protected LiteralPredicate parseFeature(Literal parent, final Element e, final String nodeName, boolean and) {
 		boolean mandatory = false;
 		String name = null;
 		if (e.hasAttributes()) {
@@ -246,7 +246,7 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 			map.addBooleanVariable(name);
 		}
 
-		final LiteralVariable f = new LiteralVariable((BoolVariable) map.getVariable(name).get(), true);
+		final LiteralPredicate f = new LiteralPredicate((BoolVariable) map.getVariable(name).get(), true);
 
 		if (parent == null) {
 			constraints.add(f);
@@ -296,7 +296,7 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 		return new Implies(a, b);
 	}
 
-	protected Formula implies(final LiteralVariable f, final List<Formula> parseFeatures) {
+	protected Formula implies(final LiteralPredicate f, final List<Formula> parseFeatures) {
 		return new Implies(f, new Or(parseFeatures));
 	}
 

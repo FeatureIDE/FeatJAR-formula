@@ -30,7 +30,7 @@ import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.formula.expression.compound.*;
 import org.spldev.formula.expression.io.parse.ErrorType.*;
 import org.spldev.formula.expression.io.parse.Symbols.*;
-import org.spldev.formula.expression.term.integer.*;
+import org.spldev.formula.expression.term.bool.*;
 import org.spldev.util.*;
 import org.spldev.util.Problem.*;
 import org.spldev.util.io.format.*;
@@ -301,7 +301,7 @@ public class NodeReader {
 				map.addBooleanVariable(featureName);
 			}
 
-			return new LiteralVariable((BoolVariable) map.getVariable(featureName).get(), true);
+			return new LiteralPredicate((BoolVariable) map.getVariable(featureName).get(), true);
 		}
 	}
 

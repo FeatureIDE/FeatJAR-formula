@@ -24,13 +24,13 @@ package org.spldev.formula.expression.atomic.literal;
 
 import java.io.*;
 import java.util.*;
-import java.util.Map.*;
-import java.util.stream.*;
 
 import org.spldev.formula.expression.*;
 import org.spldev.formula.expression.term.*;
+import org.spldev.formula.expression.term.bool.*;
 import org.spldev.formula.expression.term.integer.*;
 import org.spldev.formula.expression.term.real.*;
+import org.spldev.util.logging.*;
 
 /**
  * Variables of a formula.
@@ -39,11 +39,38 @@ import org.spldev.formula.expression.term.real.*;
  */
 public class VariableMap implements Cloneable, Serializable {
 
-	private static final long serialVersionUID = 4436189744440916565L;
+	private final class VariableSignature implements Serializable {
 
-	private final ArrayList<String> names;
-	private final ArrayList<Variable<?>> variables;
-	private final LinkedHashMap<String, Integer> nameToIndex;
+		private static final long serialVersionUID = 400642420402382937L;
+
+		private final String name;
+		private final int index;
+		private final Class<? extends Variable<?>> type;
+
+		public VariableSignature(String name, int id, Class<? extends Variable<?>> type) {
+			this.name = name;
+			index = id;
+			this.type = type;
+		}
+
+		public VariableSignature rename(String newName) {
+			return new VariableSignature(newName, index, type);
+		}
+
+		public Variable<?> newInstace() {
+			try {
+				return type.getConstructor(int.class, VariableMap.class).newInstance(index, VariableMap.this);
+			} catch (final Exception e) {
+				Logger.logError(e);
+				return null;
+			}
+		}
+	}
+
+	private static final long serialVersionUID = 4252808504545415221L;
+
+	private final ArrayList<VariableSignature> indexToName;
+	private final LinkedHashMap<String, VariableSignature> nameToIndex;
 
 	public static VariableMap fromNames(Collection<String> names) {
 		Objects.requireNonNull(names);
@@ -68,32 +95,19 @@ public class VariableMap implements Cloneable, Serializable {
 	private VariableMap(Map<Integer, String> nameMap) {
 		final Integer maxIndex = nameMap.keySet().stream().max(Integer::compare).orElseThrow();
 
-		names = new ArrayList<>(maxIndex + 1);
-		variables = new ArrayList<>(maxIndex + 1);
+		indexToName = new ArrayList<>(maxIndex + 1);
 		nameToIndex = new LinkedHashMap<>();
-		for (int i = 0; i <= maxIndex; i++) {
-			names.add(null);
-			variables.add(null);
-		}
-		for (final Entry<Integer, String> entry : nameMap.entrySet()) {
-			final String name = entry.getValue();
-			final int index = entry.getKey();
-			nameToIndex.put(name, index);
-			names.set(index, name);
-			variables.set(index, new BoolVariable(index, this));
-		}
+		nameMap.entrySet().forEach(e -> addVariable(e.getValue(), e.getKey(), BoolVariable.class));
 	}
 
 	private VariableMap() {
-		names = new ArrayList<>();
-		variables = new ArrayList<>();
+		indexToName = new ArrayList<>();
 		nameToIndex = new LinkedHashMap<>();
-		names.add(null);
-		variables.add(null);
+		indexToName.add(null);
 	}
 
 	public boolean hasVariable(int index) {
-		return isValidIndex(index) && (variables.get(index) != null);
+		return isValidIndex(index) && (indexToName.get(index) != null);
 	}
 
 	public boolean hasVariable(String name) {
@@ -102,33 +116,26 @@ public class VariableMap implements Cloneable, Serializable {
 
 	public Optional<String> getName(final int index) {
 		return isValidIndex(index)
-			? Optional.ofNullable(names.get(index))
+			? Optional.ofNullable(indexToName.get(index)).map(s -> s.name)
 			: Optional.empty();
 	}
 
 	public Optional<Integer> getIndex(String name) {
-		return Optional.ofNullable(nameToIndex.get(name));
+		return Optional.ofNullable(nameToIndex.get(name)).map(s -> s.index);
 	}
 
 	public Optional<Variable<?>> getVariable(int index) {
 		return isValidIndex(index)
-			? Optional.ofNullable(variables.get(index))
+			? Optional.ofNullable(indexToName.get(index)).map(VariableSignature::newInstace)
 			: Optional.empty();
 	}
 
 	public Optional<Variable<?>> getVariable(String name) {
-		return Optional.ofNullable(variables.get(nameToIndex.get(name)));
-	}
-
-	public List<Variable<?>> getVariables(List<String> names) {
-		return names.stream()
-			.map(nameToIndex::get)
-			.map(variables::get)
-			.collect(Collectors.toList());
+		return Optional.ofNullable(nameToIndex.get(name)).map(VariableSignature::newInstace);
 	}
 
 	private boolean isValidIndex(final int index) {
-		return (index > 0) && (index < variables.size());
+		return (index >= getMinIndex()) && (index <= getMaxIndex());
 	}
 
 	public List<String> getNames() {
@@ -136,7 +143,7 @@ public class VariableMap implements Cloneable, Serializable {
 	}
 
 	public int size() {
-		return variables.size() - 1;
+		return indexToName.size() - 1;
 	}
 
 	public int getMinIndex() {
@@ -144,17 +151,18 @@ public class VariableMap implements Cloneable, Serializable {
 	}
 
 	public int getMaxIndex() {
-		return variables.size() - 1;
+		return indexToName.size() - 1;
 	}
 
 	public void renameVariable(int index, String newName) {
 		Objects.requireNonNull(newName);
 		if (isValidIndex(index)) {
-			final String oldName = names.get(index);
-			if (oldName != null) {
-				names.set(index, newName);
-				nameToIndex.remove(oldName);
-				nameToIndex.put(newName, index);
+			final VariableSignature oldSig = indexToName.get(index);
+			if (oldSig != null) {
+				final VariableSignature newSig = oldSig.rename(newName);
+				indexToName.set(index, newSig);
+				nameToIndex.remove(oldSig.name);
+				nameToIndex.put(newName, newSig);
 			} else {
 				throw new NoSuchElementException(String.valueOf(index));
 			}
@@ -166,14 +174,25 @@ public class VariableMap implements Cloneable, Serializable {
 	public void renameVariable(String oldName, String newName) {
 		Objects.requireNonNull(oldName);
 		Objects.requireNonNull(newName);
-		final Integer index = nameToIndex.get(oldName);
-		if (index != null) {
-			names.set(index, newName);
-			nameToIndex.remove(oldName);
-			nameToIndex.put(newName, index);
+		final VariableSignature oldSig = nameToIndex.get(oldName);
+		if (oldSig != null) {
+			final VariableSignature newSig = oldSig.rename(newName);
+			indexToName.set(newSig.index, newSig);
+			nameToIndex.remove(oldSig.name);
+			nameToIndex.put(newName, newSig);
 		} else {
 			throw new NoSuchElementException(String.valueOf(oldName));
 		}
+	}
+
+	private VariableSignature addVariable(final String name, final int index, final Class<? extends Variable<?>> type) {
+		for (int i = getMaxIndex(); i < index; i++) {
+			indexToName.add(null);
+		}
+		final VariableSignature sig = new VariableSignature(name, index, type);
+		nameToIndex.put(name, sig);
+		indexToName.set(index, sig);
+		return sig;
 	}
 
 	/**
@@ -185,16 +204,9 @@ public class VariableMap implements Cloneable, Serializable {
 	 *         optional if a variable with the name already exists.
 	 */
 	public Optional<BoolVariable> addBooleanVariable(String name) {
-		if ((name != null) && !nameToIndex.containsKey(name)) {
-			final int newIndex = getMaxIndex() + 1;
-			final BoolVariable variable = new BoolVariable(newIndex, this);
-			names.add(name);
-			variables.add(variable);
-			nameToIndex.put(name, newIndex);
-			return Optional.of(variable);
-		} else {
-			return Optional.empty();
-		}
+		return (name != null) && !nameToIndex.containsKey(name)
+			? Optional.ofNullable((BoolVariable) addVariable(name, getMaxIndex() + 1, BoolVariable.class).newInstace())
+			: Optional.empty();
 	}
 
 	/**
@@ -206,16 +218,9 @@ public class VariableMap implements Cloneable, Serializable {
 	 *         optional if a variable with the name already exists.
 	 */
 	public Optional<IntVariable> addIntegerVariable(String name) {
-		if ((name != null) && !nameToIndex.containsKey(name)) {
-			final int newIndex = getMaxIndex() + 1;
-			final IntVariable variable = new IntVariable(newIndex, this);
-			names.add(name);
-			variables.add(variable);
-			nameToIndex.put(name, newIndex);
-			return Optional.of(variable);
-		} else {
-			return Optional.empty();
-		}
+		return (name != null) && !nameToIndex.containsKey(name)
+			? Optional.ofNullable((IntVariable) addVariable(name, getMaxIndex() + 1, IntVariable.class).newInstace())
+			: Optional.empty();
 	}
 
 	/**
@@ -229,27 +234,18 @@ public class VariableMap implements Cloneable, Serializable {
 	 *         is {@code null}.
 	 */
 	public Optional<RealVariable> addRealVariable(String name) {
-		if ((name != null) && !nameToIndex.containsKey(name)) {
-			final int newIndex = getMaxIndex() + 1;
-			final RealVariable variable = new RealVariable(newIndex, this);
-			names.add(name);
-			variables.add(variable);
-			nameToIndex.put(name, newIndex);
-			return Optional.of(variable);
-		} else {
-			return Optional.empty();
-		}
+		return (name != null) && !nameToIndex.containsKey(name)
+			? Optional.ofNullable((RealVariable) addVariable(name, getMaxIndex() + 1, RealVariable.class).newInstace())
+			: Optional.empty();
 	}
 
 	public boolean removeVariable(String name) {
-		final Integer index = nameToIndex.get(name);
-		if (index != null) {
-			if (index == getMaxIndex()) {
-				names.remove((int) index);
-				variables.remove((int) index);
+		final VariableSignature oldSig = nameToIndex.get(name);
+		if (oldSig != null) {
+			if (oldSig.index == getMaxIndex()) {
+				indexToName.remove(oldSig.index);
 			} else {
-				names.set(index, null);
-				variables.set(index, null);
+				indexToName.set(oldSig.index, null);
 			}
 			nameToIndex.remove(name);
 			return true;
@@ -261,11 +257,9 @@ public class VariableMap implements Cloneable, Serializable {
 	public boolean removeIndex(int index) {
 		if (isValidIndex(index)) {
 			if (index == getMaxIndex()) {
-				names.remove(index);
-				variables.remove(index);
+				indexToName.remove(index);
 			} else {
-				names.set(index, null);
-				variables.set(index, null);
+				indexToName.set(index, null);
 			}
 			getName(index).ifPresent(nameToIndex::remove);
 			return true;
@@ -275,13 +269,12 @@ public class VariableMap implements Cloneable, Serializable {
 	}
 
 	public boolean hasGaps() {
-		return nameToIndex.size() != names.size();
-
+		return nameToIndex.size() != indexToName.size();
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(names);
+		return Objects.hashCode(indexToName);
 	}
 
 	@Override
@@ -292,12 +285,12 @@ public class VariableMap implements Cloneable, Serializable {
 		if ((obj == null) || (getClass() != obj.getClass())) {
 			return false;
 		}
-		return Objects.equals(names, ((VariableMap) obj).names);
+		return Objects.equals(indexToName, ((VariableMap) obj).indexToName);
 	}
 
 	@Override
 	public String toString() {
-		return "Variables " + names.subList(1, names.size());
+		return "Variables " + indexToName.subList(1, indexToName.size());
 	}
 
 	public boolean containsAll(VariableMap variables) {
