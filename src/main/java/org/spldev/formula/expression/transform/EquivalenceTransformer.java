@@ -42,30 +42,30 @@ public class EquivalenceTransformer implements TreeVisitor<Void, Expression> {
 	}
 
 	@Override
-	public VistorResult firstVisit(List<Expression> path) {
+	public VisitorResult firstVisit(List<Expression> path) {
 		final Expression node = TreeVisitor.getCurrentNode(path);
 		if (node instanceof Atomic) {
-			return VistorResult.SkipChildren;
+			return VisitorResult.SkipChildren;
 		} else if (node instanceof Compound) {
 			if (node instanceof Quantifier) {
-				return VistorResult.Fail;
+				return VisitorResult.Fail;
 			}
-			return VistorResult.Continue;
+			return VisitorResult.Continue;
 		} else if (node instanceof AuxiliaryRoot) {
-			return VistorResult.Continue;
+			return VisitorResult.Continue;
 		} else {
-			return VistorResult.Fail;
+			return VisitorResult.Fail;
 		}
 	}
 
 	@Override
-	public VistorResult lastVisit(List<Expression> path) {
+	public VisitorResult lastVisit(List<Expression> path) {
 		final Expression node = TreeVisitor.getCurrentNode(path);
 		node.mapChildren(this::replace);
 		if (fail) {
-			return VistorResult.Fail;
+			return VisitorResult.Fail;
 		}
-		return VistorResult.Continue;
+		return VisitorResult.Continue;
 	}
 
 	@SuppressWarnings("unchecked")

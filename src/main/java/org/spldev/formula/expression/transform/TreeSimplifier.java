@@ -33,19 +33,19 @@ import org.spldev.util.tree.visitor.*;
 public class TreeSimplifier implements TreeVisitor<Void, Expression> {
 
 	@Override
-	public VistorResult firstVisit(List<Expression> path) {
+	public VisitorResult firstVisit(List<Expression> path) {
 		final Expression node = TreeVisitor.getCurrentNode(path);
 		if (node instanceof Atomic) {
-			return VistorResult.SkipChildren;
+			return VisitorResult.SkipChildren;
 		} else if ((node instanceof AuxiliaryRoot) || (node instanceof Compound)) {
-			return VistorResult.Continue;
+			return VisitorResult.Continue;
 		} else {
-			return VistorResult.Fail;
+			return VisitorResult.Fail;
 		}
 	}
 
 	@Override
-	public VistorResult lastVisit(List<Expression> path) {
+	public VisitorResult lastVisit(List<Expression> path) {
 		final Expression node = TreeVisitor.getCurrentNode(path);
 		if ((node instanceof AuxiliaryRoot) || (node instanceof Compound)) {
 			if (node instanceof And) {
@@ -62,7 +62,7 @@ public class TreeSimplifier implements TreeVisitor<Void, Expression> {
 				}
 			}
 		}
-		return VistorResult.Continue;
+		return VisitorResult.Continue;
 	}
 
 	private List<? extends Expression> mergeAnd(final Expression child) {

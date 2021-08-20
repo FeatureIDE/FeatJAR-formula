@@ -34,18 +34,18 @@ import org.spldev.util.tree.visitor.*;
 public class DeMorganTransformer implements TreeVisitor<Void, Expression> {
 
 	@Override
-	public VistorResult firstVisit(List<Expression> path) {
+	public VisitorResult firstVisit(List<Expression> path) {
 		final Expression node = TreeVisitor.getCurrentNode(path);
 		if (node instanceof Atomic) {
-			return VistorResult.SkipChildren;
+			return VisitorResult.SkipChildren;
 		} else if (node instanceof Compound) {
 			node.mapChildren(this::replace);
-			return VistorResult.Continue;
+			return VisitorResult.Continue;
 		} else if (node instanceof AuxiliaryRoot) {
 			node.mapChildren(this::replace);
-			return VistorResult.Continue;
+			return VisitorResult.Continue;
 		} else {
-			return VistorResult.Fail;
+			return VisitorResult.Fail;
 		}
 	}
 

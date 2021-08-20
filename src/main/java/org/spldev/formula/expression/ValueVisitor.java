@@ -76,7 +76,7 @@ public class ValueVisitor implements TreeVisitor<Object, Expression> {
 	}
 
 	@Override
-	public VistorResult lastVisit(List<Expression> path) {
+	public VisitorResult lastVisit(List<Expression> path) {
 		final Expression node = TreeVisitor.getCurrentNode(path);
 		if (node instanceof Atomic) {
 			if (node == Literal.True) {
@@ -87,6 +87,7 @@ public class ValueVisitor implements TreeVisitor<Object, Expression> {
 				@SuppressWarnings("unchecked")
 				final Predicate<Object> predicate = (Predicate<Object>) node;
 				final List<Object> arguments = values.subList(0, predicate.getChildren().size());
+				Collections.reverse(arguments);
 				final Boolean value = predicate.eval(arguments).orElse(null);
 				arguments.clear();
 				values.push(value);
@@ -144,8 +145,8 @@ public class ValueVisitor implements TreeVisitor<Object, Expression> {
 					}
 					values.push(Boolean.FALSE);
 				} else {
-					final Boolean leftChild = (Boolean) values.pop();
 					final Boolean rightChild = (Boolean) values.pop();
+					final Boolean leftChild = (Boolean) values.pop();
 					if ((rightChild == Boolean.TRUE) || (leftChild == Boolean.FALSE)) {
 						values.push(Boolean.TRUE);
 					} else {
@@ -163,8 +164,8 @@ public class ValueVisitor implements TreeVisitor<Object, Expression> {
 					}
 					values.push(Boolean.FALSE);
 				} else {
-					final Boolean leftChild = (Boolean) values.pop();
 					final Boolean rightChild = (Boolean) values.pop();
+					final Boolean leftChild = (Boolean) values.pop();
 					if ((leftChild == null) || (rightChild == null)) {
 						values.push(null);
 					} else {
@@ -193,7 +194,7 @@ public class ValueVisitor implements TreeVisitor<Object, Expression> {
 			if (index == 0) {
 				switch (unkownVariableHandling) {
 				case ERROR:
-					throw new NullPointerException();
+					throw new IllegalArgumentException(variable.getName());
 				case FALSE:
 				case TRUE:
 					values.push(defaultBooleanValue);
@@ -223,6 +224,7 @@ public class ValueVisitor implements TreeVisitor<Object, Expression> {
 			@SuppressWarnings("unchecked")
 			final Function<Object, Object> function = (Function<Object, Object>) node;
 			final List<Object> arguments = values.subList(0, function.getChildren().size());
+			Collections.reverse(arguments);
 			final Object value = function.eval(arguments).get();
 			arguments.clear();
 			values.push(value);
@@ -230,7 +232,7 @@ public class ValueVisitor implements TreeVisitor<Object, Expression> {
 			throw new IllegalStateException(String.valueOf(node));
 
 		}
-		return VistorResult.Continue;
+		return VisitorResult.Continue;
 	}
 
 }

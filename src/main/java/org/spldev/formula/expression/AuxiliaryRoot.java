@@ -24,8 +24,6 @@ package org.spldev.formula.expression;
 
 import java.util.*;
 
-import org.spldev.util.tree.structure.*;
-
 /**
  * A propositional node that can be transformed into conjunctive normal form
  * (cnf).
@@ -57,7 +55,7 @@ public class AuxiliaryRoot extends NonTerminal {
 	}
 
 	@Override
-	public Tree<Expression> cloneNode() {
+	public AuxiliaryRoot cloneNode() {
 		return new AuxiliaryRoot();
 	}
 

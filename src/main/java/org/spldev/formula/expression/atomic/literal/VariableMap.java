@@ -39,7 +39,7 @@ import org.spldev.util.logging.*;
  */
 public class VariableMap implements Cloneable, Serializable {
 
-	private final class VariableSignature implements Serializable {
+	private final class VariableSignature implements Cloneable, Serializable {
 
 		private static final long serialVersionUID = 400642420402382937L;
 
@@ -47,9 +47,9 @@ public class VariableMap implements Cloneable, Serializable {
 		private final int index;
 		private final Class<? extends Variable<?>> type;
 
-		public VariableSignature(String name, int id, Class<? extends Variable<?>> type) {
+		public VariableSignature(String name, int index, Class<? extends Variable<?>> type) {
 			this.name = name;
-			index = id;
+			this.index = index;
 			this.type = type;
 		}
 
@@ -64,6 +64,11 @@ public class VariableMap implements Cloneable, Serializable {
 				Logger.logError(e);
 				return null;
 			}
+		}
+		
+		@Override
+		public VariableSignature clone() {
+			return new VariableSignature(name, index, type);
 		}
 	}
 
@@ -98,6 +103,19 @@ public class VariableMap implements Cloneable, Serializable {
 		indexToName = new ArrayList<>(maxIndex + 1);
 		nameToIndex = new LinkedHashMap<>();
 		nameMap.entrySet().forEach(e -> addVariable(e.getValue(), e.getKey(), BoolVariable.class));
+	}
+
+	private VariableMap(VariableMap otherMap) {
+		indexToName = new ArrayList<>(otherMap.indexToName.size());
+		nameToIndex = new LinkedHashMap<>();
+		for (VariableSignature variableSignature : otherMap.indexToName) {
+			if (variableSignature == null) {
+				indexToName.add(null);
+			} else {
+				indexToName.add(variableSignature.clone());
+				nameToIndex.put(variableSignature.name, variableSignature);
+			}
+		}
 	}
 
 	private VariableMap() {
@@ -295,6 +313,11 @@ public class VariableMap implements Cloneable, Serializable {
 
 	public boolean containsAll(VariableMap variables) {
 		return nameToIndex.keySet().containsAll(variables.nameToIndex.keySet());
+	}
+	
+	@Override
+	public VariableMap clone() {
+		return new VariableMap(this);
 	}
 
 }

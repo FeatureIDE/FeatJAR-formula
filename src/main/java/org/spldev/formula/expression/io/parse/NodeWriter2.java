@@ -42,7 +42,7 @@ public class NodeWriter2 implements DfsVisitor<Void, Expression> {
 	private final StringBuilder sb = new StringBuilder();
 
 	@Override
-	public VistorResult firstVisit(List<Expression> path) {
+	public VisitorResult firstVisit(List<Expression> path) {
 		final Notation notation = getNotation();
 		switch (notation) {
 		case INFIX:
@@ -73,11 +73,11 @@ public class NodeWriter2 implements DfsVisitor<Void, Expression> {
 		default:
 			throw new IllegalStateException("Unknown notation: " + notation);
 		}
-		return VistorResult.Continue;
+		return VisitorResult.Continue;
 	}
 
 	@Override
-	public VistorResult visit(List<Expression> path) {
+	public VisitorResult visit(List<Expression> path) {
 		final Notation notation = getNotation();
 		switch (notation) {
 		case INFIX:
@@ -97,11 +97,11 @@ public class NodeWriter2 implements DfsVisitor<Void, Expression> {
 		default:
 			throw new IllegalStateException("Unknown notation: " + notation);
 		}
-		return VistorResult.Continue;
+		return VisitorResult.Continue;
 	}
 
 	@Override
-	public VistorResult lastVisit(List<Expression> path) {
+	public VisitorResult lastVisit(List<Expression> path) {
 		final Notation notation = getNotation();
 		switch (notation) {
 		case INFIX:
@@ -116,7 +116,7 @@ public class NodeWriter2 implements DfsVisitor<Void, Expression> {
 		default:
 			throw new IllegalStateException("Unknown notation: " + notation);
 		}
-		return VistorResult.Continue;
+		return VisitorResult.Continue;
 	}
 
 	/**

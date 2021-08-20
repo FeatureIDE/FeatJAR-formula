@@ -46,6 +46,8 @@ public final class LiteralPredicate extends Predicate<Boolean> implements Litera
 
 	@Override
 	public String getName() {
+		// TODO change to this and update all uses of Literal#getName
+//		return (positive ? "+" : "-") + children.get(0).getName();
 		return children.get(0).getName();
 	}
 

@@ -24,9 +24,7 @@ package org.spldev.formula.expression.atomic.predicate;
 
 import java.util.*;
 
-import org.spldev.formula.expression.*;
 import org.spldev.formula.expression.term.*;
-import org.spldev.util.tree.structure.*;
 
 /**
  *
@@ -61,7 +59,7 @@ public class LessEqual<D extends Comparable<D>> extends Predicate<D> {
 	}
 
 	@Override
-	public Tree<Expression> cloneNode() {
+	public LessEqual<D> cloneNode() {
 		return new LessEqual<>();
 	}
 
