@@ -158,15 +158,11 @@ public final class NFTransformer {
 		} else {
 			final ArrayList<Set<Literal>> newClauseList = new ArrayList<>();
 			final List<Formula> children = new ArrayList<>((List<Formula>) child.getChildren());
-			Collections.sort(children, (c1, c2) -> {
-				return c1.getChildren().size() - c2.getChildren().size();
-			});
+			Collections.sort(children, (c1, c2) -> (c1.getChildren().size() - c2.getChildren().size()));
 			convertNF(children, newClauseList, new LinkedHashSet<>(children.size() << 1), 0);
 
 			final ArrayList<Formula> filteredClauseList;
-			Collections.sort(newClauseList, (c1, c2) -> {
-				return c1.size() - c2.size();
-			});
+			Collections.sort(newClauseList, (c1, c2) -> (c1.size() - c2.size()));
 			final ArrayList<Set<Literal>> sets = newClauseList;
 			final int lastIndex = sets.size();
 			int removeCount = 0;

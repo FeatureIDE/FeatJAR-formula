@@ -69,7 +69,7 @@ public class NodeReader {
 
 		private String message;
 
-		private ErrorMessage(String message) {
+		ErrorMessage(String message) {
 			this.message = message;
 		}
 

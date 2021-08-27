@@ -44,10 +44,7 @@ public class DimacsWriter {
 	 * @throws IllegalArgumentException if the input is null or not in CNF
 	 */
 	public DimacsWriter(Formula formula) throws IllegalArgumentException {
-		if (formula == null) {
-			throw new IllegalArgumentException();
-		}
-		if (!Formulas.isCNF(formula)) {
+		if ((formula == null) || !Formulas.isCNF(formula)) {
 			throw new IllegalArgumentException();
 		}
 		this.formula = Formulas.toClausalCNF(formula);

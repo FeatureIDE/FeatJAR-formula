@@ -38,7 +38,8 @@ public interface Expression extends Tree<Expression> {
 
 	@Override
 	List<? extends Expression> getChildren();
-	
+
+	@Override
 	Expression cloneNode();
 
 }

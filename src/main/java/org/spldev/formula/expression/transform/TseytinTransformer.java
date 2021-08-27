@@ -49,7 +49,7 @@ public class TseytinTransformer implements TreeVisitor<Formula, Formula> {
 
 	@Override
 	public Formula getResult() {
-		substitutes.add((Formula) stack.pop());
+		substitutes.add(stack.pop());
 		return new And(substitutes);
 	}
 
@@ -61,10 +61,7 @@ public class TseytinTransformer implements TreeVisitor<Formula, Formula> {
 		}
 		if (node instanceof Atomic) {
 			return VisitorResult.SkipChildren;
-		} else if (node instanceof Compound) {
-			stack.push((Formula) node);
-			return VisitorResult.Continue;
-		} else if (node instanceof AuxiliaryRoot) {
+		} else if ((node instanceof Compound) || (node instanceof AuxiliaryRoot)) {
 			stack.push((Formula) node);
 			return VisitorResult.Continue;
 		} else {
@@ -79,26 +76,25 @@ public class TseytinTransformer implements TreeVisitor<Formula, Formula> {
 			stack.push(Trees.cloneTree(node));
 		} else {
 			final LiteralPredicate tempLiteral = newSubstitute();
-			ArrayList<Literal> newChildren = new ArrayList<>();
+			final ArrayList<Literal> newChildren = new ArrayList<>();
 			Formula pop = stack.pop();
 			while (pop != node) {
 				newChildren.add((Literal) pop);
 				pop = stack.pop();
 			}
-
 			stack.push(tempLiteral);
-			
+
 			if (pop instanceof And) {
-				ArrayList<Literal> flippedChildren = new ArrayList<>();
-				for (Literal l : newChildren) {
+				final ArrayList<Literal> flippedChildren = new ArrayList<>();
+				for (final Literal l : newChildren) {
 					substitutes.add(new Or(tempLiteral.flip(), l.cloneNode()));
 					flippedChildren.add(l.flip());
 				}
 				flippedChildren.add(tempLiteral.cloneNode());
 				substitutes.add(new Or(flippedChildren));
 			} else if (pop instanceof Or) {
-				ArrayList<Literal> flippedChildren = new ArrayList<>();
-				for (Literal l : newChildren) {
+				final ArrayList<Literal> flippedChildren = new ArrayList<>();
+				for (final Literal l : newChildren) {
 					substitutes.add(new Or(tempLiteral.cloneNode(), l.flip()));
 					flippedChildren.add(l.cloneNode());
 				}

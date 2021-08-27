@@ -65,7 +65,7 @@ public class VariableMap implements Cloneable, Serializable {
 				return null;
 			}
 		}
-		
+
 		@Override
 		public VariableSignature clone() {
 			return new VariableSignature(name, index, type);
@@ -108,7 +108,7 @@ public class VariableMap implements Cloneable, Serializable {
 	private VariableMap(VariableMap otherMap) {
 		indexToName = new ArrayList<>(otherMap.indexToName.size());
 		nameToIndex = new LinkedHashMap<>();
-		for (VariableSignature variableSignature : otherMap.indexToName) {
+		for (final VariableSignature variableSignature : otherMap.indexToName) {
 			if (variableSignature == null) {
 				indexToName.add(null);
 			} else {
@@ -314,7 +314,7 @@ public class VariableMap implements Cloneable, Serializable {
 	public boolean containsAll(VariableMap variables) {
 		return nameToIndex.keySet().containsAll(variables.nameToIndex.keySet());
 	}
-	
+
 	@Override
 	public VariableMap clone() {
 		return new VariableMap(this);
