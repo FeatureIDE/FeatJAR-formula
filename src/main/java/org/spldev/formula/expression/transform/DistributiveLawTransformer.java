@@ -22,24 +22,27 @@
  */
 package org.spldev.formula.expression.transform;
 
-import java.util.*;
-import java.util.function.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Function;
 
-import org.spldev.formula.expression.*;
-import org.spldev.formula.expression.Formulas.*;
-import org.spldev.formula.expression.atomic.literal.*;
-import org.spldev.formula.expression.compound.*;
-import org.spldev.util.tree.*;
+import org.spldev.formula.expression.Expression;
+import org.spldev.formula.expression.Formula;
+import org.spldev.formula.expression.atomic.literal.Literal;
+import org.spldev.formula.expression.compound.Compound;
 
 /**
  * Transforms propositional formulas into (clausal) CNF or DNF.
  *
  * @author Sebastian Krieter
  */
-public final class NFTransformer {
-
-	private NFTransformer() {
-	}
+public abstract class DistributiveLawTransformer implements Transformer {
 
 	private static class PathElement {
 		Expression node;
@@ -51,64 +54,8 @@ public final class NFTransformer {
 		}
 	}
 
-	private static Formula createClausalCNF(Formula formula) {
-		if (formula instanceof Literal) {
-			formula = new And(new Or(formula));
-		} else if (formula instanceof Or) {
-			formula = new And(new Or(formula));
-		} else {
-			formula.mapChildren(child -> (child instanceof Literal ? new Or((Literal) child) : child));
-		}
-		return formula;
-	}
-
-	private static Formula createClausalDNF(Formula formula) {
-		if (formula instanceof Literal) {
-			formula = new Or(new And(formula));
-		} else if (formula instanceof And) {
-			formula = new Or(new And(formula));
-		} else {
-			formula.mapChildren(child -> (child instanceof Literal ? new And((Literal) child) : child));
-		}
-		return formula;
-	}
-
-	public static Formula simplifyForNF(Formula formula) {
-		final AuxiliaryRoot auxiliaryRoot = new AuxiliaryRoot(formula);
-		Trees.traverse(auxiliaryRoot, new EquivalenceTransformer());
-		Trees.traverse(auxiliaryRoot, new DeMorganTransformer());
-		Trees.traverse(auxiliaryRoot, new TreeSimplifier());
-		return (Formula) auxiliaryRoot.getChild();
-	}
-
-	public static Formula distributiveLawTransform(Formula root, NormalForm normalForm) {
-		final Formula cnfFormula;
-		switch (normalForm) {
-		case ClausalCNF:
-		case CNF:
-			cnfFormula = (root instanceof And) ? root : new And(root);
-			transfrom(cnfFormula, Or.class, Or::new);
-			break;
-		case ClausalDNF:
-		case DNF:
-			cnfFormula = (root instanceof Or) ? root : new Or(root);
-			transfrom(cnfFormula, And.class, And::new);
-			break;
-		default:
-			throw new IllegalStateException(String.valueOf(normalForm));
-		}
-		switch (normalForm) {
-		case ClausalCNF:
-			return createClausalCNF(cnfFormula);
-		case ClausalDNF:
-			return createClausalDNF(cnfFormula);
-		default:
-			return cnfFormula;
-		}
-	}
-
-	private static void transfrom(Expression node, Class<? extends Compound> clauseClass,
-		Function<Collection<? extends Formula>, Formula> clauseConstructor) {
+	protected static void transfrom(Expression node, Class<? extends Compound> clauseClass,
+			Function<Collection<? extends Formula>, Formula> clauseConstructor) {
 		if (node != null) {
 			final ArrayList<PathElement> path = new ArrayList<>();
 			final ArrayDeque<Expression> stack = new ArrayDeque<>();
@@ -152,7 +99,7 @@ public final class NFTransformer {
 
 	@SuppressWarnings("unchecked")
 	private static List<Formula> convert(Expression child,
-		Function<Collection<? extends Formula>, Formula> clauseConstructor) {
+			Function<Collection<? extends Formula>, Formula> clauseConstructor) {
 		if (child instanceof Literal) {
 			return null;
 		} else {
@@ -191,7 +138,7 @@ public final class NFTransformer {
 	}
 
 	private static void convertNF(List<Formula> children, List<Set<Literal>> clauses, LinkedHashSet<Literal> literals,
-		int index) {
+			int index) {
 		if (index == children.size()) {
 			clauses.add(new HashSet<>(literals));
 		} else {
@@ -246,8 +193,8 @@ public final class NFTransformer {
 								}
 							}
 							if (!containsComplement) {
-								final ArrayList<Literal> clauseLiterals = new ArrayList<>(grandChild.getChildren()
-									.size());
+								final ArrayList<Literal> clauseLiterals = new ArrayList<>(
+										grandChild.getChildren().size());
 								for (final Expression literal : grandChild.getChildren()) {
 									literals.add((Literal) literal);
 									clauseLiterals.add((Literal) literal);

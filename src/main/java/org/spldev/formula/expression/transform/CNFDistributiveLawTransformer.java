@@ -22,31 +22,34 @@
  */
 package org.spldev.formula.expression.transform;
 
-import org.spldev.formula.expression.*;
-import org.spldev.util.tree.visitor.*;
+import org.spldev.formula.expression.Formula;
+import org.spldev.formula.expression.compound.And;
+import org.spldev.formula.expression.compound.Or;
+import org.spldev.formula.expression.transform.NormalForms.NormalForm;
+import org.spldev.util.job.InternalMonitor;
+import org.spldev.util.tree.Trees;
 
-public class NFVisitor implements TreeVisitor<Boolean, Expression> {
+/**
+ * Transforms propositional formulas into CNF.
+ *
+ * @author Sebastian Krieter
+ */
+public class CNFDistributiveLawTransformer extends DistributiveLawTransformer {
 
-	protected boolean isNf;
-	protected boolean isClausalNf;
-
-	@Override
-	public void reset() {
-		isNf = true;
-		isClausalNf = true;
-	}
-
-	@Override
-	public Boolean getResult() {
-		return isNf;
-	}
-
-	public boolean isNf() {
-		return isNf;
-	}
-
-	public boolean isClausalNf() {
-		return isClausalNf;
+	public Formula execute(Formula formula, InternalMonitor monitor) {
+		final NFTester nfTester = NormalForms.isNF(formula, NormalForm.CNF);
+		if (nfTester.isNf) {
+			formula = Trees.cloneTree(formula);
+			if (!nfTester.isClausalNf()) {
+				formula = NormalForms.toClausalNF(formula, NormalForm.CNF);
+			}
+		} else {
+			formula = NormalForms.simplifyForNF(formula);
+			formula = (formula instanceof And) ? formula : new And(formula);
+			transfrom(formula, Or.class, Or::new);
+			formula = NormalForms.toClausalNF(formula, NormalForm.CNF);
+		}
+		return formula;
 	}
 
 }

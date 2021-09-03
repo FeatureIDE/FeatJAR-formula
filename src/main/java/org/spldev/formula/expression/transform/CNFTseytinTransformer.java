@@ -29,10 +29,12 @@ import org.spldev.formula.expression.atomic.*;
 import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.formula.expression.compound.*;
 import org.spldev.formula.expression.term.bool.*;
+import org.spldev.formula.expression.transform.NormalForms.NormalForm;
+import org.spldev.util.job.InternalMonitor;
 import org.spldev.util.tree.*;
 import org.spldev.util.tree.visitor.*;
 
-public class TseytinTransformer implements TreeVisitor<Formula, Formula> {
+public class CNFTseytinTransformer implements Transformer, TreeVisitor<Formula, Formula> {
 
 	private ArrayDeque<Formula> stack = new ArrayDeque<>();
 	private List<Formula> substitutes = new ArrayList<>();
@@ -45,6 +47,22 @@ public class TseytinTransformer implements TreeVisitor<Formula, Formula> {
 		substitutes.clear();
 		variableMap = null;
 		count = 0;
+	}
+
+	@Override
+	public Formula execute(Formula formula, InternalMonitor monitor) {
+		final NFTester nfTester = NormalForms.isNF(formula, NormalForm.CNF);
+		if (nfTester.isNf) {
+			formula = Trees.cloneTree(formula);
+			if (!nfTester.isClausalNf()) {
+				formula = NormalForms.toClausalNF(formula, NormalForm.CNF);
+			}
+		} else {
+			formula = NormalForms.simplifyForNF(formula);
+			formula = Trees.traverse(formula, this).get();
+			formula = NormalForms.toClausalNF(formula, NormalForm.CNF);
+		}
+		return formula;
 	}
 
 	@Override

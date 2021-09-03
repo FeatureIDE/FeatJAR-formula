@@ -22,34 +22,37 @@
  */
 package org.spldev.formula.expression.atomic;
 
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.spldev.util.data.Pair;
 
-public interface Assignment {
+public class IndexAssignment implements Assignment {
 
-	default void setAll(Collection<Pair<Integer, Object>> assignments) {
-		for (Pair<Integer, Object> pair : assignments) {
-			set(pair.getKey(), pair.getValue());
+	protected final HashMap<Integer, Object> assignments = new HashMap<>();
+
+	@Override
+	public void set(int index, Object assignment) {
+		if (index > 0) {
+			if (assignment == null) {
+				assignments.remove(index);
+			} else {
+				assignments.put(index, assignment);
+			}
 		}
 	}
 
-	default void resetAll(Collection<Pair<Integer, Object>> assignments) {
-		for (Pair<Integer, Object> pair : assignments) {
-			set(pair.getKey(), null);
-		}
+	@Override
+	public Optional<Object> get(int index) {
+		return Optional.ofNullable(assignments.get(index));
 	}
 
-	default void reset(int index, Object assignment) {
-		set(index, null);
+	@Override
+	public List<Pair<Integer, Object>> getAll() {
+		return assignments.entrySet().stream().map(e -> new Pair<>(e.getKey(), e.getValue()))
+				.collect(Collectors.toList());
 	}
-
-	void set(int index, Object assignment);
-
-	Optional<Object> get(int index);
-
-	List<Pair<Integer, Object>> getAll();
 
 }

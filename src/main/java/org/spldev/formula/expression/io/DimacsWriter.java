@@ -47,7 +47,7 @@ public class DimacsWriter {
 		if ((formula == null) || !Formulas.isCNF(formula)) {
 			throw new IllegalArgumentException();
 		}
-		this.formula = Formulas.toClausalCNF(formula);
+		this.formula = Formulas.toCNF(formula).get();
 	}
 
 	/**

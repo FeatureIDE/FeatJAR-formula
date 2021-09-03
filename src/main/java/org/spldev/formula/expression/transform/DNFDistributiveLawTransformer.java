@@ -20,36 +20,36 @@
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
  */
-package org.spldev.formula.expression.atomic;
+package org.spldev.formula.expression.transform;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import org.spldev.formula.expression.Formula;
+import org.spldev.formula.expression.compound.And;
+import org.spldev.formula.expression.compound.Or;
+import org.spldev.formula.expression.transform.NormalForms.NormalForm;
+import org.spldev.util.job.InternalMonitor;
+import org.spldev.util.tree.Trees;
 
-import org.spldev.util.data.Pair;
+/**
+ * Transforms propositional formulas into DNF.
+ *
+ * @author Sebastian Krieter
+ */
+public class DNFDistributiveLawTransformer extends DistributiveLawTransformer {
 
-public interface Assignment {
-
-	default void setAll(Collection<Pair<Integer, Object>> assignments) {
-		for (Pair<Integer, Object> pair : assignments) {
-			set(pair.getKey(), pair.getValue());
+	public Formula execute(Formula formula, InternalMonitor monitor) {
+		final NFTester nfTester = NormalForms.isNF(formula, NormalForm.DNF);
+		if (nfTester.isNf) {
+			formula = Trees.cloneTree(formula);
+			if (!nfTester.isClausalNf()) {
+				formula = NormalForms.toClausalNF(formula, NormalForm.DNF);
+			}
+		} else {
+			formula = NormalForms.simplifyForNF(formula);
+			formula = (formula instanceof Or) ? formula : new Or(formula);
+			transfrom(formula, And.class, And::new);
+			formula = NormalForms.toClausalNF(formula, NormalForm.DNF);
 		}
+		return formula;
 	}
-
-	default void resetAll(Collection<Pair<Integer, Object>> assignments) {
-		for (Pair<Integer, Object> pair : assignments) {
-			set(pair.getKey(), null);
-		}
-	}
-
-	default void reset(int index, Object assignment) {
-		set(index, null);
-	}
-
-	void set(int index, Object assignment);
-
-	Optional<Object> get(int index);
-
-	List<Pair<Integer, Object>> getAll();
 
 }

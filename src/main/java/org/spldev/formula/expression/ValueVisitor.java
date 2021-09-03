@@ -190,7 +190,7 @@ public class ValueVisitor implements TreeVisitor<Object, Expression> {
 			}
 		} else if (node instanceof Variable) {
 			final Variable<?> variable = (Variable<?>) node;
-			final int index = assignment.getVariables().getIndex(variable.getName()).orElse(0);
+			final int index = variable.getIndex();
 			if (index == 0) {
 				switch (unkownVariableHandling) {
 				case ERROR:

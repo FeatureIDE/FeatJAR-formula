@@ -30,14 +30,12 @@ import org.spldev.formula.expression.atomic.*;
 import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.formula.expression.term.*;
 import org.spldev.formula.expression.transform.*;
+import org.spldev.formula.expression.transform.NormalForms.NormalForm;
+import org.spldev.util.Result;
 import org.spldev.util.tree.*;
 import org.spldev.util.tree.visitor.*;
 
 public final class Formulas {
-
-	public enum NormalForm {
-		CNF, DNF, ClausalCNF, ClausalDNF
-	}
 
 	private Formulas() {
 	}
@@ -49,71 +47,27 @@ public final class Formulas {
 	}
 
 	public static boolean isCNF(Formula formula) {
-		return isNF(formula, NormalForm.CNF);
+		return NormalForms.isNF(formula, NormalForm.CNF, false);
 	}
 
 	public static boolean isDNF(Formula formula) {
-		return isNF(formula, NormalForm.DNF);
+		return NormalForms.isNF(formula, NormalForm.DNF, false);
 	}
 
 	public static boolean isClausalCNF(Formula formula) {
-		return isNF(formula, NormalForm.ClausalCNF);
+		return NormalForms.isNF(formula, NormalForm.CNF, true);
 	}
 
-	public static boolean isClausalDNF(Formula formula) {
-		return isNF(formula, NormalForm.ClausalDNF);
+	public static Result<Formula> toCNF(Formula formula) {
+		return NormalForms.toNF(formula, NormalForm.CNF);
 	}
 
-	public static boolean isNF(Formula formula, NormalForm normalForm) {
-		switch (normalForm) {
-		case CNF:
-			return Trees.traverse(formula, new CNFVisitor()).get();
-		case DNF:
-			return Trees.traverse(formula, new DNFVisitor()).get();
-		case ClausalCNF: {
-			final CNFVisitor visitor = new CNFVisitor();
-			Trees.traverse(formula, visitor);
-			return visitor.isClausalNf();
-		}
-		case ClausalDNF: {
-			final DNFVisitor visitor = new DNFVisitor();
-			Trees.traverse(formula, visitor);
-			return visitor.isClausalNf();
-		}
-		default:
-			throw new IllegalStateException(String.valueOf(normalForm));
-		}
+	public static Result<Formula> toTsyetinCNF(Formula formula) {
+		return NormalForms.toNF(formula, NormalForm.TsyetinCNF);
 	}
 
-	public static Formula toCNF(Formula formula) {
-		return toNF(formula, NormalForm.CNF);
-	}
-
-	public static Formula toDNF(Formula formula) {
-		return toNF(formula, NormalForm.DNF);
-	}
-
-	public static Formula toClausalCNF(Formula formula) {
-		return toNF(formula, NormalForm.ClausalCNF);
-	}
-
-	public static Formula toClausalDNF(Formula formula) {
-		return toNF(formula, NormalForm.ClausalDNF);
-	}
-
-	private static Formula toNF(Formula formula, NormalForm normalForm) {
-		if (isNF(formula, normalForm)) {
-			return Trees.cloneTree(formula);
-		}
-		return distributiveLawTransform(simplifyForNF(formula), normalForm);
-	}
-
-	public static Formula simplifyForNF(Formula formula) {
-		return NFTransformer.simplifyForNF(formula);
-	}
-
-	public static Formula distributiveLawTransform(Formula root, NormalForm normalForm) {
-		return NFTransformer.distributiveLawTransform(root, normalForm);
+	public static Result<Formula> toDNF(Formula formula) {
+		return NormalForms.toNF(formula, NormalForm.DNF);
 	}
 
 	public static Expression manipulate(Expression node, TreeVisitor<Void, Expression> visitor) {
@@ -127,9 +81,8 @@ public final class Formulas {
 	}
 
 	public static Stream<Variable<?>> getVariableStream(Expression node) {
-		final Stream<Variable<?>> stream = Trees.preOrderStream(node)
-			.filter(n -> n instanceof Variable)
-			.map(n -> (Variable<?>) n);
+		final Stream<Variable<?>> stream = Trees.preOrderStream(node).filter(n -> n instanceof Variable)
+				.map(n -> (Variable<?>) n);
 		return stream.distinct();
 	}
 
@@ -138,14 +91,13 @@ public final class Formulas {
 	}
 
 	public static Expression mergeVariableMaps(Expression expression) {
-		final List<VariableMap> maps = Formulas.getVariableStream(expression).map(Variable::getVariableMap)
-			.distinct().collect(Collectors.toList());
+		final List<VariableMap> maps = Formulas.getVariableStream(expression).map(Variable::getVariableMap).distinct()
+				.collect(Collectors.toList());
 		if (maps.size() > 1) {
-			final VariableMap newMap = VariableMap.fromNames(maps.stream().flatMap(v -> v.getNames().stream())
-				.distinct()
-				.collect(Collectors.toList()));
+			final VariableMap newMap = VariableMap.fromNames(
+					maps.stream().flatMap(v -> v.getNames().stream()).distinct().collect(Collectors.toList()));
 			Trees.postOrderStream(expression) //
-				.forEach(e -> e.mapChildren(v -> (v instanceof Variable) ? ((Variable<?>) v).adapt(newMap) : v));
+					.forEach(e -> e.mapChildren(v -> (v instanceof Variable) ? ((Variable<?>) v).adapt(newMap) : v));
 		}
 		return expression;
 	}

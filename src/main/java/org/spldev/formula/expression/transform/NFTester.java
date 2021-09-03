@@ -20,36 +20,33 @@
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
  */
-package org.spldev.formula.expression.atomic;
+package org.spldev.formula.expression.transform;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import org.spldev.formula.expression.*;
+import org.spldev.util.tree.visitor.*;
 
-import org.spldev.util.data.Pair;
+public class NFTester implements TreeVisitor<Boolean, Expression> {
 
-public interface Assignment {
+	protected boolean isNf;
+	protected boolean isClausalNf;
 
-	default void setAll(Collection<Pair<Integer, Object>> assignments) {
-		for (Pair<Integer, Object> pair : assignments) {
-			set(pair.getKey(), pair.getValue());
-		}
+	@Override
+	public void reset() {
+		isNf = true;
+		isClausalNf = true;
 	}
 
-	default void resetAll(Collection<Pair<Integer, Object>> assignments) {
-		for (Pair<Integer, Object> pair : assignments) {
-			set(pair.getKey(), null);
-		}
+	@Override
+	public Boolean getResult() {
+		return isNf;
 	}
 
-	default void reset(int index, Object assignment) {
-		set(index, null);
+	public boolean isNf() {
+		return isNf;
 	}
 
-	void set(int index, Object assignment);
-
-	Optional<Object> get(int index);
-
-	List<Pair<Integer, Object>> getAll();
+	public boolean isClausalNf() {
+		return isClausalNf;
+	}
 
 }

@@ -23,66 +23,49 @@
 package org.spldev.formula.expression.transform;
 
 import java.util.*;
+import java.util.stream.*;
 
 import org.spldev.formula.expression.*;
 import org.spldev.formula.expression.atomic.*;
+import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.formula.expression.compound.*;
 import org.spldev.util.tree.visitor.*;
 
-public class DNFVisitor extends NFVisitor {
+public class DeMorganVisitor implements TreeVisitor<Void, Expression> {
 
 	@Override
 	public VisitorResult firstVisit(List<Expression> path) {
 		final Expression node = TreeVisitor.getCurrentNode(path);
-		if (node instanceof Or) {
-			if (path.size() > 1) {
-				isNf = false;
-				isClausalNf = false;
-				return VisitorResult.SkipAll;
-			}
-			for (final Expression child : node.getChildren()) {
-				if (!(child instanceof And)) {
-					if (!(child instanceof Atomic)) {
-						isNf = false;
-						isClausalNf = false;
-						return VisitorResult.SkipAll;
-					}
-					isClausalNf = false;
-				}
-			}
-			return VisitorResult.Continue;
-		} else if (node instanceof And) {
-			if (path.size() > 2) {
-				isNf = false;
-				isClausalNf = false;
-				return VisitorResult.SkipAll;
-			}
-			if (path.size() < 2) {
-				isClausalNf = false;
-			}
-			for (final Expression child : node.getChildren()) {
-				if (!(child instanceof Atomic)) {
-					isNf = false;
-					isClausalNf = false;
-					return VisitorResult.SkipAll;
-				}
-			}
-			return VisitorResult.Continue;
-		} else if (node instanceof Atomic) {
-			if (path.size() > 3) {
-				isNf = false;
-				isClausalNf = false;
-				return VisitorResult.SkipAll;
-			}
-			if (path.size() < 3) {
-				isClausalNf = false;
-			}
+		if (node instanceof Atomic) {
 			return VisitorResult.SkipChildren;
+		} else if (node instanceof Compound) {
+			node.mapChildren(this::replace);
+			return VisitorResult.Continue;
+		} else if (node instanceof AuxiliaryRoot) {
+			node.mapChildren(this::replace);
+			return VisitorResult.Continue;
 		} else {
-			isNf = false;
-			isClausalNf = false;
-			return VisitorResult.SkipAll;
+			return VisitorResult.Fail;
 		}
+	}
+
+	private Expression replace(Expression node) {
+		Expression newNode = node;
+		while (newNode instanceof Not) {
+			final Formula notChild = (Formula) newNode.getChildren().iterator().next();
+			if (notChild instanceof Literal) {
+				newNode = ((Literal) notChild).flip();
+			} else if (notChild instanceof Not) {
+				newNode = notChild.getChildren().get(0);
+			} else if (notChild instanceof Or) {
+				newNode = new And(((Compound) notChild).getChildren().stream().map(Not::new).collect(Collectors
+					.toList()));
+			} else if (notChild instanceof And) {
+				newNode = new Or(((Compound) notChild).getChildren().stream().map(Not::new).collect(Collectors
+					.toList()));
+			}
+		}
+		return newNode;
 	}
 
 }

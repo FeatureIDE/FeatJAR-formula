@@ -32,7 +32,7 @@ import org.spldev.formula.expression.compound.*;
 import org.spldev.formula.expression.term.*;
 import org.spldev.util.tree.visitor.*;
 
-public class EquivalenceTransformer implements TreeVisitor<Void, Expression> {
+public class EquivalenceVisitor implements TreeVisitor<Void, Expression> {
 
 	private boolean fail;
 
