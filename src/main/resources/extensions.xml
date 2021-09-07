@@ -7,5 +7,6 @@
 	    <extension id="org.spldev.formula.expression.io.DIMACSFormat" />
 	    <extension id="org.spldev.formula.expression.io.XmlFeatureModelCNFFormat" />
 	    <extension id="org.spldev.formula.expression.io.parse.FormulaFormat" />
+	    <extension id="org.spldev.formula.expression.io.parse.KMaxFormat" />
 	</point>
 </extensions>

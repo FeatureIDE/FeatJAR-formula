@@ -22,6 +22,10 @@
  */
 package org.spldev.formula.expression.io.parse;
 
+import java.util.*;
+
+import org.spldev.util.data.*;
+
 /**
  * Symbols for a representation like in Java. These are inherently incomplete
  * and should only be used if absolutely necessary.
@@ -34,12 +38,12 @@ public class JavaSymbols extends Symbols {
 	public static final Symbols INSTANCE = new JavaSymbols();
 
 	private JavaSymbols() {
-		super();
-		setSymbol(Operator.NOT, "!");
-		setSymbol(Operator.AND, "&&");
-		setSymbol(Operator.OR, "||");
-		setSymbol(Operator.EQUALS, "==");
-		setTextual(false);
+		super(Arrays.asList(
+			new Pair<>(Operator.NOT, "!"),
+			new Pair<>(Operator.AND, "&&"),
+			new Pair<>(Operator.OR, "||"),
+			new Pair<>(Operator.EQUALS, "==")),
+			false);
 	}
 
 }

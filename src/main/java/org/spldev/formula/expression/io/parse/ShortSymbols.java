@@ -22,6 +22,10 @@
  */
 package org.spldev.formula.expression.io.parse;
 
+import java.util.*;
+
+import org.spldev.util.data.*;
+
 /**
  * Symbols for a short textual representation. Best used for serialization since
  * they fall in the ASCII range but are still relatively short.
@@ -34,13 +38,13 @@ public class ShortSymbols extends Symbols {
 	public static final Symbols INSTANCE = new ShortSymbols();
 
 	private ShortSymbols() {
-		super();
-		setSymbol(Operator.NOT, "-");
-		setSymbol(Operator.AND, "&");
-		setSymbol(Operator.OR, "|");
-		setSymbol(Operator.IMPLIES, "=>");
-		setSymbol(Operator.EQUALS, "<=>");
-		setTextual(false);
+		super(Arrays.asList(
+			new Pair<>(Operator.NOT, "-"),
+			new Pair<>(Operator.AND, "&"),
+			new Pair<>(Operator.OR, "|"),
+			new Pair<>(Operator.IMPLIES, "=>"),
+			new Pair<>(Operator.EQUALS, "<=>")),
+			false);
 	}
 
 }

@@ -24,6 +24,7 @@ package org.spldev.formula.expression;
 
 import java.util.*;
 
+import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.util.tree.structure.*;
 
 /**
@@ -35,6 +36,12 @@ import org.spldev.util.tree.structure.*;
 public interface Expression extends Tree<Expression> {
 
 	String getName();
+
+	default void setVariableMap(VariableMap map) {
+		for (Expression child : getChildren()) {
+			child.setVariableMap(map);
+		}
+	}
 
 	@Override
 	List<? extends Expression> getChildren();

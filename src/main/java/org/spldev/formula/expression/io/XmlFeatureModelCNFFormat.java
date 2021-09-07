@@ -29,7 +29,7 @@ import org.spldev.formula.expression.*;
 import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.formula.expression.compound.*;
 import org.spldev.formula.expression.transform.*;
-import org.spldev.util.Result;
+import org.spldev.util.*;
 import org.spldev.util.logging.*;
 import org.spldev.util.tree.*;
 import org.w3c.dom.*;

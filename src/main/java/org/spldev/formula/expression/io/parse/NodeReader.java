@@ -28,7 +28,6 @@ import java.util.regex.*;
 import org.spldev.formula.expression.*;
 import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.formula.expression.compound.*;
-import org.spldev.formula.expression.io.parse.ErrorType.*;
 import org.spldev.formula.expression.io.parse.Symbols.*;
 import org.spldev.formula.expression.term.bool.*;
 import org.spldev.util.*;
@@ -104,12 +103,10 @@ public class NodeReader {
 		Collections.sort(Arrays.asList(operators), (o1, o2) -> o2.getPriority() - o1.getPriority());
 	}
 
-	private VariableMap map;
-	private boolean hasVariableNames;
+	private VariableMap map = VariableMap.emptyMap();;
+	private boolean hasVariableNames = false;
 
 	private Symbols symbols = ShortSymbols.INSTANCE;
-
-	public ErrorType errorType = new ErrorType(ErrorEnum.None);
 
 	private ErrorHandling ignoreMissingFeatures = ErrorHandling.THROW;
 	private ErrorHandling ignoreUnparsableSubExpressions = ErrorHandling.THROW;
@@ -142,7 +139,7 @@ public class NodeReader {
 	}
 
 	public void setIgnoreMissingFeatures(ErrorHandling ignoreMissingFeatures) {
-		this.ignoreMissingFeatures = ignoreMissingFeatures;
+		this.ignoreMissingFeatures = Objects.requireNonNull(ignoreMissingFeatures);
 	}
 
 	public ErrorHandling isIgnoreUnparsableSubExpressions() {
@@ -150,7 +147,7 @@ public class NodeReader {
 	}
 
 	public void setIgnoreUnparsableSubExpressions(ErrorHandling ignoreUnparsableSubExpressions) {
-		this.ignoreUnparsableSubExpressions = ignoreUnparsableSubExpressions;
+		this.ignoreUnparsableSubExpressions = Objects.requireNonNull(ignoreUnparsableSubExpressions);
 	}
 
 	/**
@@ -184,7 +181,6 @@ public class NodeReader {
 	private Formula checkExpression(String source, List<String> quotedVariables, List<String> subExpressions)
 		throws ParseException {
 		if (source.isEmpty()) {
-			errorType.setError(ErrorEnum.Default);
 			return handleInvalidExpression(ErrorMessage.EMPTY_EXPRESSION, source);
 		}
 		source = SPACE + source + SPACE;
@@ -204,7 +200,6 @@ public class NodeReader {
 					final String rightSide = source.substring(index + symbol.length(), source.length()).trim();
 					node1 = null;
 					if (rightSide.isEmpty()) {
-						errorType.setError(ErrorEnum.Default);
 						node2 = handleInvalidExpression(ErrorMessage.MISSING_NAME, source);
 					} else {
 						node2 = checkExpression(rightSide, quotedVariables, subExpressions);
@@ -215,7 +210,6 @@ public class NodeReader {
 				} else {
 					final String leftSide = source.substring(0, index).trim();
 					if (leftSide.isEmpty()) {
-						errorType = new ErrorType(ErrorEnum.InvalidExpressionLeft, matcher.start(), matcher.end());
 						node1 = handleInvalidExpression(ErrorMessage.MISSING_NAME_LEFT, source);
 					} else {
 						node1 = checkExpression(leftSide, quotedVariables, subExpressions);
@@ -225,7 +219,6 @@ public class NodeReader {
 					}
 					final String rightSide = source.substring(index + symbol.length(), source.length()).trim();
 					if (rightSide.isEmpty()) {
-						errorType = new ErrorType(ErrorEnum.InvalidExpressionRight, matcher.start(), matcher.end());
 						node2 = handleInvalidExpression(ErrorMessage.MISSING_NAME_RIGHT, source);
 					} else {
 						node2 = checkExpression(rightSide, quotedVariables, subExpressions);
@@ -271,7 +264,6 @@ public class NodeReader {
 				return checkExpression(subExpressions.get(Integer.parseInt(source.substring(1))).trim(),
 					quotedVariables, subExpressions);
 			} else {
-				errorType.setError(ErrorEnum.Default);
 				return handleInvalidExpression(ErrorMessage.MISSING_OPERATOR, source);
 			}
 		} else {
@@ -281,12 +273,10 @@ public class NodeReader {
 				if ((featureNameMatcher.start() == 0) && (featureNameMatcher.end() == source.length())) {
 					featureName = quotedVariables.get(Integer.parseInt(source.substring(1)));
 				} else {
-					errorType.setError(ErrorEnum.Default);
 					return handleInvalidExpression(ErrorMessage.MISSING_OPERATOR, source);
 				}
 			} else {
 				if (source.contains(String.valueOf(SPACE))) {
-					errorType = new ErrorType(ErrorEnum.InvalidFeatureName, source);
 					return handleInvalidFeatureName(source);
 				}
 				featureName = source;
@@ -294,7 +284,6 @@ public class NodeReader {
 			featureName = featureName.replace(replacedFeatureNameMarker, featureNameMarker)
 				.replace(replacedSubExpressionMarker, subExpressionMarker);
 			if (hasVariableNames && map.getIndex(featureName).isEmpty()) {
-				errorType = new ErrorType(ErrorEnum.InvalidFeatureName, featureName);
 				return handleInvalidFeatureName(featureName);
 			}
 			if (map.getIndex(featureName).isEmpty()) {
@@ -342,7 +331,6 @@ public class NodeReader {
 			switch (curChar) {
 			case PARENTHESIS_OPEN:
 				if (quoteSign) {
-					errorType.setError(ErrorEnum.Default);
 					throwParsingError(ErrorMessage.PARENTHESES_IN_FEATURE_NAMES, i);
 				}
 				parenthesisCounter++;
@@ -352,11 +340,9 @@ public class NodeReader {
 				break;
 			case PARENTHESIS_CLOSE:
 				if (quoteSign) {
-					errorType.setError(ErrorEnum.Default);
 					throwParsingError(ErrorMessage.PARENTHESES_IN_FEATURE_NAMES, i);
 				}
 				if (--parenthesisCounter < 0) {
-					errorType.setError(ErrorEnum.Default);
 					throwParsingError(ErrorMessage.INVALID_CLOSING_PARENTHESES, i);
 				}
 				break;
@@ -368,7 +354,6 @@ public class NodeReader {
 			throwParsingError(ErrorMessage.INVALID_NUMBER_OF_QUOTATION_MARKS, 0);
 		}
 		if (parenthesisCounter > 0) {
-			errorType.setError(ErrorEnum.Default);
 			throwParsingError(ErrorMessage.INVALID_OPENING_PARENTHESES, 0);
 		}
 

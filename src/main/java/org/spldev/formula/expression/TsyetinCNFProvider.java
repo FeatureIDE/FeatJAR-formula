@@ -22,14 +22,12 @@
  */
 package org.spldev.formula.expression;
 
-import java.nio.file.Path;
+import java.nio.file.*;
 
-import org.spldev.formula.expression.io.FormulaFormatManager;
-import org.spldev.formula.expression.transform.CNFTseytinTransformer;
-import org.spldev.util.Provider;
-import org.spldev.util.Result;
-import org.spldev.util.data.CacheHolder;
-import org.spldev.util.data.Identifier;
+import org.spldev.formula.expression.io.*;
+import org.spldev.formula.expression.transform.*;
+import org.spldev.util.*;
+import org.spldev.util.data.*;
 
 /**
  * Abstract creator to derive an element from a {@link CacheHolder}.

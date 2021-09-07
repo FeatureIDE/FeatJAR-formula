@@ -20,68 +20,60 @@
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
  */
-package org.spldev.formula.expression.term;
+package org.spldev.formula.expression.io.parse;
 
 import java.util.*;
+import java.util.stream.*;
 
 import org.spldev.formula.expression.*;
-import org.spldev.formula.expression.atomic.literal.*;
+import org.spldev.formula.expression.compound.*;
+import org.spldev.util.*;
+import org.spldev.util.io.format.*;
 
-public abstract class Variable<T> extends Terminal implements Term<T> {
+public class KMaxFormat implements Format<Formula> {
 
-	protected final int index;
-	protected VariableMap map;
+	public static final String ID = KMaxFormat.class.getCanonicalName();
 
-	public Variable(int index, VariableMap map) {
-		this.map = Objects.requireNonNull(map);
-		this.index = index;
+	@Override
+	public Result<Formula> parse(Input source) {
+		final ArrayList<Problem> problems = new ArrayList<>();
+		final NodeReader nodeReader = new NodeReader();
+		nodeReader.setSymbols(PropositionalModelSymbols.INSTANCE);
+		return Result.of(new And(source.getLines() //
+			.map(String::trim) //
+			.filter(l -> !l.isEmpty()) //
+			.filter(l -> !l.startsWith("#")) //
+			.map(l -> l.replaceAll("def\\((\\w+)\\)", "$1"))
+			.map(nodeReader::read) //
+			.peek(r -> problems.addAll(r.getProblems()))
+			.filter(Result::isPresent)
+			.map(Result::get) //
+			.collect(Collectors.toList())), problems);
 	}
 
-	protected Variable(Variable<T> oldVariable) {
-		this.index = oldVariable.index;
-		this.map = oldVariable.map;
+	@Override
+	public boolean supportsParse() {
+		return true;
 	}
 
-	public int getIndex() {
-		return index;
+	@Override
+	public boolean supportsSerialize() {
+		return false;
+	}
+
+	@Override
+	public String getId() {
+		return ID;
+	}
+
+	@Override
+	public String getFileExtension() {
+		return "model";
 	}
 
 	@Override
 	public String getName() {
-		return map.getName(index).orElse("??");
-	}
-
-	public VariableMap getVariableMap() {
-		return map;
-	}
-
-	@Override
-	public List<Term<T>> getChildren() {
-		return Collections.emptyList();
-	}
-
-	@Override
-	public void setVariableMap(VariableMap map) {
-		this.map = map;
-	}
-
-	public abstract Variable<T> clone(int index, VariableMap map);
-
-	public Variable<T> adapt(VariableMap newMap) {
-		return clone(newMap.getIndex(getName()).orElse(0), newMap);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(index);
-	}
-
-	@Override
-	public boolean equalsNode(Object other) {
-		if (getClass() != other.getClass()) {
-			return false;
-		}
-		return index == ((Variable<?>) other).index;
+		return "KMax";
 	}
 
 }

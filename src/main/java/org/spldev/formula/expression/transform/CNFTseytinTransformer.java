@@ -29,8 +29,9 @@ import org.spldev.formula.expression.atomic.*;
 import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.formula.expression.compound.*;
 import org.spldev.formula.expression.term.bool.*;
-import org.spldev.formula.expression.transform.NormalForms.NormalForm;
-import org.spldev.util.job.InternalMonitor;
+import org.spldev.formula.expression.transform.NormalForms.*;
+import org.spldev.util.job.*;
+import org.spldev.util.logging.*;
 import org.spldev.util.tree.*;
 import org.spldev.util.tree.visitor.*;
 
@@ -51,7 +52,7 @@ public class CNFTseytinTransformer implements Transformer, TreeVisitor<Formula, 
 
 	@Override
 	public Formula execute(Formula formula, InternalMonitor monitor) {
-		final NFTester nfTester = NormalForms.isNF(formula, NormalForm.CNF);
+		final NFTester nfTester = NormalForms.getNFTester(formula, NormalForm.CNF);
 		if (nfTester.isNf) {
 			formula = Trees.cloneTree(formula);
 			if (!nfTester.isClausalNf()) {
@@ -59,7 +60,18 @@ public class CNFTseytinTransformer implements Transformer, TreeVisitor<Formula, 
 			}
 		} else {
 			formula = NormalForms.simplifyForNF(formula);
-			formula = Trees.traverse(formula, this).get();
+			if (formula instanceof And) {
+				ArrayList<Formula> newChildren = new ArrayList<>();
+				final List<Formula> children = ((And) formula).getChildren();
+				int i = 0;
+				for (Formula child : children) {
+					Logger.logProgress(++i + "/" + children.size());
+					newChildren.addAll(((And) Trees.traverse(child, this).get()).getChildren());
+				}
+				formula = new And(newChildren);
+			} else {
+				formula = Trees.traverse(formula, this).get();
+			}
 			formula = NormalForms.toClausalNF(formula, NormalForm.CNF);
 		}
 		return formula;
@@ -75,7 +87,7 @@ public class CNFTseytinTransformer implements Transformer, TreeVisitor<Formula, 
 	public VisitorResult firstVisit(List<Formula> path) {
 		final Expression node = TreeVisitor.getCurrentNode(path);
 		if (variableMap == null) {
-			variableMap = VariableMap.fromExpression(node);
+			variableMap = VariableMap.fromExpression(node).clone();
 		}
 		if (node instanceof Atomic) {
 			return VisitorResult.SkipChildren;
@@ -91,7 +103,9 @@ public class CNFTseytinTransformer implements Transformer, TreeVisitor<Formula, 
 	public VisitorResult lastVisit(List<Formula> path) {
 		final Formula node = TreeVisitor.getCurrentNode(path);
 		if (node instanceof Atomic) {
-			stack.push(Trees.cloneTree(node));
+			final Formula clonedNode = Trees.cloneTree(node);
+			clonedNode.setVariableMap(variableMap);
+			stack.push(clonedNode);
 		} else {
 			final LiteralPredicate tempLiteral = newSubstitute();
 			final ArrayList<Literal> newChildren = new ArrayList<>();

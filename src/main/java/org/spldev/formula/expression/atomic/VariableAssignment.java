@@ -22,18 +22,13 @@
  */
 package org.spldev.formula.expression.atomic;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.*;
+import java.util.Map.*;
+import java.util.stream.*;
 
-import org.spldev.formula.expression.atomic.literal.VariableMap;
-import org.spldev.formula.expression.term.Variable;
-import org.spldev.util.data.Pair;
+import org.spldev.formula.expression.atomic.literal.*;
+import org.spldev.formula.expression.term.*;
+import org.spldev.util.data.*;
 
 public class VariableAssignment implements Assignment {
 
@@ -96,7 +91,8 @@ public class VariableAssignment implements Assignment {
 
 	@Override
 	public List<Pair<Integer, Object>> getAll() {
-		return assignments.entrySet().stream().map(e -> new Pair<>(e.getKey().getIndex(), e.getValue())).collect(Collectors.toList());
+		return assignments.entrySet().stream().map(e -> new Pair<>(e.getKey().getIndex(), e.getValue())).collect(
+			Collectors.toList());
 	}
 
 }

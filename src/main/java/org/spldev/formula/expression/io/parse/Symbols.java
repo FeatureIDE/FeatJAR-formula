@@ -26,6 +26,7 @@ import java.util.*;
 
 import org.spldev.formula.expression.*;
 import org.spldev.formula.expression.compound.*;
+import org.spldev.util.data.*;
 
 public class Symbols {
 
@@ -50,21 +51,25 @@ public class Symbols {
 	private final Map<String, Operator> symbolToOperator = new HashMap<>();
 	private final Map<Operator, String> operatorToSymbol = new HashMap<>();
 
-	private boolean textual = true;
+	private final boolean textual;
 
-	public Symbols() {
-		this(true);
+	public Symbols(Collection<Pair<Operator, String>> symbols, boolean textual) {
+		this(symbols, textual, true);
 	}
 
-	public Symbols(boolean addTextualSymbols) {
+	public Symbols(Collection<Pair<Operator, String>> symbols, boolean textual, boolean addTextualSymbols) {
+		this.textual = textual;
 		if (addTextualSymbols) {
 			for (final Operator operator : Operator.values()) {
 				setSymbol(operator, operator.defaultName);
 			}
 		}
+		for (Pair<Operator, String> pair : symbols) {
+			setSymbol(pair.getKey(), pair.getValue());
+		}
 	}
 
-	public final void setSymbol(Operator operator, String name) {
+	private final void setSymbol(Operator operator, String name) {
 		symbolToOperator.put(name, operator);
 		operatorToSymbol.put(operator, name);
 	}
@@ -79,7 +84,7 @@ public class Symbols {
 		return symbol != null ? symbol : operator.defaultName;
 	}
 
-	protected Operator getOperator(Formula node) throws IllegalArgumentException {
+	public static Operator getOperator(Formula node) throws IllegalArgumentException {
 		if (node instanceof Connective) {
 			if (node instanceof Not) {
 				return Operator.NOT;
@@ -121,10 +126,6 @@ public class Symbols {
 
 	public boolean isTextual() {
 		return textual;
-	}
-
-	public void setTextual(boolean textual) {
-		this.textual = textual;
 	}
 
 	/**

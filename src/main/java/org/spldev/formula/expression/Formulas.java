@@ -30,8 +30,8 @@ import org.spldev.formula.expression.atomic.*;
 import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.formula.expression.term.*;
 import org.spldev.formula.expression.transform.*;
-import org.spldev.formula.expression.transform.NormalForms.NormalForm;
-import org.spldev.util.Result;
+import org.spldev.formula.expression.transform.NormalForms.*;
+import org.spldev.util.*;
 import org.spldev.util.tree.*;
 import org.spldev.util.tree.visitor.*;
 
@@ -82,7 +82,7 @@ public final class Formulas {
 
 	public static Stream<Variable<?>> getVariableStream(Expression node) {
 		final Stream<Variable<?>> stream = Trees.preOrderStream(node).filter(n -> n instanceof Variable)
-				.map(n -> (Variable<?>) n);
+			.map(n -> (Variable<?>) n);
 		return stream.distinct();
 	}
 
@@ -92,12 +92,12 @@ public final class Formulas {
 
 	public static Expression mergeVariableMaps(Expression expression) {
 		final List<VariableMap> maps = Formulas.getVariableStream(expression).map(Variable::getVariableMap).distinct()
-				.collect(Collectors.toList());
+			.collect(Collectors.toList());
 		if (maps.size() > 1) {
 			final VariableMap newMap = VariableMap.fromNames(
-					maps.stream().flatMap(v -> v.getNames().stream()).distinct().collect(Collectors.toList()));
+				maps.stream().flatMap(v -> v.getNames().stream()).distinct().collect(Collectors.toList()));
 			Trees.postOrderStream(expression) //
-					.forEach(e -> e.mapChildren(v -> (v instanceof Variable) ? ((Variable<?>) v).adapt(newMap) : v));
+				.forEach(e -> e.mapChildren(v -> (v instanceof Variable) ? ((Variable<?>) v).adapt(newMap) : v));
 		}
 		return expression;
 	}

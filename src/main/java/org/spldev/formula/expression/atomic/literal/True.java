@@ -80,9 +80,4 @@ public final class True extends Terminal implements Literal {
 		return other == INSTANCE;
 	}
 
-	@Override
-	public String toString() {
-		return "true";
-	}
-
 }

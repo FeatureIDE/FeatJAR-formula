@@ -25,7 +25,7 @@ package org.spldev.formula.expression;
 import java.nio.file.*;
 
 import org.spldev.formula.expression.io.*;
-import org.spldev.formula.expression.transform.CNFDistributiveLawTransformer;
+import org.spldev.formula.expression.transform.*;
 import org.spldev.util.*;
 import org.spldev.util.data.*;
 

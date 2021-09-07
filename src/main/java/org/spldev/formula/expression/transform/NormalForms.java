@@ -22,14 +22,12 @@
  */
 package org.spldev.formula.expression.transform;
 
-import org.spldev.formula.expression.AuxiliaryRoot;
-import org.spldev.formula.expression.Formula;
-import org.spldev.formula.expression.atomic.literal.Literal;
-import org.spldev.formula.expression.compound.And;
-import org.spldev.formula.expression.compound.Or;
-import org.spldev.util.Result;
-import org.spldev.util.job.Executor;
-import org.spldev.util.tree.Trees;
+import org.spldev.formula.expression.*;
+import org.spldev.formula.expression.atomic.literal.*;
+import org.spldev.formula.expression.compound.*;
+import org.spldev.util.*;
+import org.spldev.util.job.*;
+import org.spldev.util.tree.*;
 
 /**
  * Transforms propositional formulas into (clausal) CNF or DNF.
@@ -72,11 +70,11 @@ public final class NormalForms {
 	}
 
 	public static boolean isNF(Formula formula, NormalForm normalForm, boolean clausal) {
-		final NFTester tester = isNF(formula, normalForm);
+		final NFTester tester = getNFTester(formula, normalForm);
 		return clausal ? tester.isClausalNf() : tester.isNf;
 	}
 
-	static NFTester isNF(Formula formula, NormalForm normalForm) {
+	static NFTester getNFTester(Formula formula, NormalForm normalForm) {
 		NFTester tester;
 		switch (normalForm) {
 		case TsyetinCNF:

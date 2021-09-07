@@ -22,20 +22,12 @@
  */
 package org.spldev.formula.expression.transform;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Function;
+import java.util.*;
+import java.util.function.*;
 
-import org.spldev.formula.expression.Expression;
-import org.spldev.formula.expression.Formula;
-import org.spldev.formula.expression.atomic.literal.Literal;
-import org.spldev.formula.expression.compound.Compound;
+import org.spldev.formula.expression.*;
+import org.spldev.formula.expression.atomic.literal.*;
+import org.spldev.formula.expression.compound.*;
 
 /**
  * Transforms propositional formulas into (clausal) CNF or DNF.
@@ -55,7 +47,7 @@ public abstract class DistributiveLawTransformer implements Transformer {
 	}
 
 	protected static void transfrom(Expression node, Class<? extends Compound> clauseClass,
-			Function<Collection<? extends Formula>, Formula> clauseConstructor) {
+		Function<Collection<? extends Formula>, Formula> clauseConstructor) {
 		if (node != null) {
 			final ArrayList<PathElement> path = new ArrayList<>();
 			final ArrayDeque<Expression> stack = new ArrayDeque<>();
@@ -99,7 +91,7 @@ public abstract class DistributiveLawTransformer implements Transformer {
 
 	@SuppressWarnings("unchecked")
 	private static List<Formula> convert(Expression child,
-			Function<Collection<? extends Formula>, Formula> clauseConstructor) {
+		Function<Collection<? extends Formula>, Formula> clauseConstructor) {
 		if (child instanceof Literal) {
 			return null;
 		} else {
@@ -138,7 +130,7 @@ public abstract class DistributiveLawTransformer implements Transformer {
 	}
 
 	private static void convertNF(List<Formula> children, List<Set<Literal>> clauses, LinkedHashSet<Literal> literals,
-			int index) {
+		int index) {
 		if (index == children.size()) {
 			clauses.add(new HashSet<>(literals));
 		} else {
@@ -194,7 +186,7 @@ public abstract class DistributiveLawTransformer implements Transformer {
 							}
 							if (!containsComplement) {
 								final ArrayList<Literal> clauseLiterals = new ArrayList<>(
-										grandChild.getChildren().size());
+									grandChild.getChildren().size());
 								for (final Expression literal : grandChild.getChildren()) {
 									literals.add((Literal) literal);
 									clauseLiterals.add((Literal) literal);

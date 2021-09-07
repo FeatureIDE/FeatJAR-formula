@@ -22,16 +22,16 @@
  */
 package org.spldev.formula.cli;
 
-import java.util.Arrays;
+import java.util.*;
 
-import org.spldev.util.extension.ExtensionLoader;
+import org.spldev.util.extension.*;
 
 public class ConverterCLITest {
 
 	public static void main(String[] args) {
 		ExtensionLoader.load();
 		new ConverterCLI().run(Arrays.asList("featureide_examples/FeatureModels/Linux_2.6.33.3",
-				"org.spldev.formula.expression.io.DIMACSFormat", "-out", "test", "-r", "-f", "-name", "model[.]xml"));
+			"org.spldev.formula.expression.io.DIMACSFormat", "-out", "test", "-r", "-f", "-name", "model[.]xml"));
 	}
 
 }

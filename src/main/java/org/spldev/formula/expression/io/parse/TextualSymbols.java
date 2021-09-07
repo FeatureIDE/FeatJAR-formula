@@ -22,6 +22,10 @@
  */
 package org.spldev.formula.expression.io.parse;
 
+import java.util.*;
+
+import org.spldev.util.data.*;
+
 /**
  * Symbols for a long textual representation. These are best used for editing by
  * the user due to simplicity and ease of handling.
@@ -34,12 +38,13 @@ public class TextualSymbols extends Symbols {
 	public static final Symbols INSTANCE = new TextualSymbols();
 
 	private TextualSymbols() {
-		super();
-		setSymbol(Operator.NOT, "not");
-		setSymbol(Operator.AND, "and");
-		setSymbol(Operator.OR, "or");
-		setSymbol(Operator.IMPLIES, "implies");
-		setSymbol(Operator.EQUALS, "iff");
+		super(Arrays.asList(
+			new Pair<>(Operator.NOT, "not"),
+			new Pair<>(Operator.AND, "and"),
+			new Pair<>(Operator.OR, "or"),
+			new Pair<>(Operator.IMPLIES, "implies"),
+			new Pair<>(Operator.EQUALS, "iff")),
+			true);
 	}
 
 }

@@ -22,12 +22,11 @@
  */
 package org.spldev.formula.expression.transform;
 
-import org.spldev.formula.expression.Formula;
-import org.spldev.formula.expression.compound.And;
-import org.spldev.formula.expression.compound.Or;
-import org.spldev.formula.expression.transform.NormalForms.NormalForm;
-import org.spldev.util.job.InternalMonitor;
-import org.spldev.util.tree.Trees;
+import org.spldev.formula.expression.*;
+import org.spldev.formula.expression.compound.*;
+import org.spldev.formula.expression.transform.NormalForms.*;
+import org.spldev.util.job.*;
+import org.spldev.util.tree.*;
 
 /**
  * Transforms propositional formulas into CNF.
@@ -37,7 +36,7 @@ import org.spldev.util.tree.Trees;
 public class CNFDistributiveLawTransformer extends DistributiveLawTransformer {
 
 	public Formula execute(Formula formula, InternalMonitor monitor) {
-		final NFTester nfTester = NormalForms.isNF(formula, NormalForm.CNF);
+		final NFTester nfTester = NormalForms.getNFTester(formula, NormalForm.CNF);
 		if (nfTester.isNf) {
 			formula = Trees.cloneTree(formula);
 			if (!nfTester.isClausalNf()) {

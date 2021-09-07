@@ -22,11 +22,9 @@
  */
 package org.spldev.formula.expression.atomic;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
-import org.spldev.util.data.Pair;
+import org.spldev.util.data.*;
 
 public interface Assignment {
 

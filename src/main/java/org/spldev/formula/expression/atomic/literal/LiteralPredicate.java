@@ -51,6 +51,10 @@ public final class LiteralPredicate extends Predicate<Boolean> implements Litera
 		return children.get(0).getName();
 	}
 
+	public int getIndex() {
+		return ((BoolVariable) children.get(0)).getIndex();
+	}
+
 	public BoolVariable getVariable() {
 		return (BoolVariable) children.get(0);
 	}

@@ -22,12 +22,10 @@
  */
 package org.spldev.formula.expression.atomic;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.*;
+import java.util.stream.*;
 
-import org.spldev.util.data.Pair;
+import org.spldev.util.data.*;
 
 public class IndexAssignment implements Assignment {
 
@@ -52,7 +50,7 @@ public class IndexAssignment implements Assignment {
 	@Override
 	public List<Pair<Integer, Object>> getAll() {
 		return assignments.entrySet().stream().map(e -> new Pair<>(e.getKey(), e.getValue()))
-				.collect(Collectors.toList());
+			.collect(Collectors.toList());
 	}
 
 }
