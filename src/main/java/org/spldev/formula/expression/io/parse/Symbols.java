@@ -64,7 +64,7 @@ public class Symbols {
 				setSymbol(operator, operator.defaultName);
 			}
 		}
-		for (Pair<Operator, String> pair : symbols) {
+		for (final Pair<Operator, String> pair : symbols) {
 			setSymbol(pair.getKey(), pair.getValue());
 		}
 	}

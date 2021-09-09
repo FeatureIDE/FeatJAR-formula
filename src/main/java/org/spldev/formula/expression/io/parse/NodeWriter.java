@@ -362,7 +362,7 @@ public class NodeWriter {
 			return;
 		}
 
-		final Operator operator = getSymbols().getOperator(node);
+		final Operator operator = Symbols.getOperator(node);
 		final Notation notation = getNotation();
 		switch (notation) {
 		case INFIX:

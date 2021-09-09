@@ -46,7 +46,7 @@ public abstract class DistributiveLawTransformer implements Transformer {
 		}
 	}
 
-	protected static void transfrom(Expression node, Class<? extends Compound> clauseClass,
+	public static void transform(Expression node, Class<? extends Compound> clauseClass,
 		Function<Collection<? extends Formula>, Formula> clauseConstructor) {
 		if (node != null) {
 			final ArrayList<PathElement> path = new ArrayList<>();

@@ -38,7 +38,7 @@ public interface Expression extends Tree<Expression> {
 	String getName();
 
 	default void setVariableMap(VariableMap map) {
-		for (Expression child : getChildren()) {
+		for (final Expression child : getChildren()) {
 			child.setVariableMap(map);
 		}
 	}

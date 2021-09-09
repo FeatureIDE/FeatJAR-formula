@@ -66,6 +66,10 @@ public final class NormalForms {
 		default:
 			throw new IllegalStateException(String.valueOf(normalForm));
 		}
+		return toNF(root, transformer);
+	}
+
+	public static Result<Formula> toNF(Formula root, Transformer transformer) {
 		return Executor.run(transformer, root);
 	}
 

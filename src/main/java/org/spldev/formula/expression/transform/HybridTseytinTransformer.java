@@ -35,7 +35,7 @@ import org.spldev.util.logging.*;
 import org.spldev.util.tree.*;
 import org.spldev.util.tree.visitor.*;
 
-public class CNFTseytinTransformer implements Transformer, TreeVisitor<Formula, Formula> {
+public class HybridTseytinTransformer implements Transformer, TreeVisitor<Formula, Formula> {
 
 	private ArrayDeque<Formula> stack = new ArrayDeque<>();
 	private List<Formula> substitutes = new ArrayList<>();
@@ -82,16 +82,22 @@ public class CNFTseytinTransformer implements Transformer, TreeVisitor<Formula, 
 							newChildren.add(child);
 						}
 					} else {
-						substitutes.clear();
-						stack.clear();
-						try {
-							Trees.dfsPrePost(child, this);
-						} catch (final Exception e) {
+						if (Formulas.getMaxDepth(child) > 3) {
+							substitutes.clear();
+							stack.clear();
+							try {
+								Trees.dfsPrePost(child, this);
+							} catch (final Exception e) {
+							}
+							if (!stack.isEmpty()) {
+								newChildren.add(stack.pop());
+							}
+							newChildren.addAll(substitutes);
+						} else {
+							child = new And(child);
+							DistributiveLawTransformer.transform(child, Or.class, Or::new);
+							newChildren.addAll(((And) child).getChildren());
 						}
-						if (!stack.isEmpty()) {
-							newChildren.add(stack.pop());
-						}
-						newChildren.addAll(substitutes);
 					}
 				}
 				formula = new And(newChildren);

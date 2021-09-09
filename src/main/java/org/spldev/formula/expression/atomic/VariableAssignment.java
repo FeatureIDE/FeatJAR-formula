@@ -41,6 +41,7 @@ public class VariableAssignment implements Assignment {
 		assignments = new LinkedHashMap<>(assignmentSize);
 	}
 
+	@Override
 	public void set(int index, Object assignment) {
 		final Variable<?> variable = variables.getVariable(index)
 			.orElseThrow(() -> new NoSuchElementException(String.valueOf(index)));
@@ -69,6 +70,7 @@ public class VariableAssignment implements Assignment {
 		}
 	}
 
+	@Override
 	public Optional<Object> get(int index) {
 		final Variable<?> variable = variables.getVariable(index)
 			.orElseThrow(() -> new NoSuchElementException(String.valueOf(index)));

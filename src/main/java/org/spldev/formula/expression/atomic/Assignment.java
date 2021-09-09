@@ -29,13 +29,13 @@ import org.spldev.util.data.*;
 public interface Assignment {
 
 	default void setAll(Collection<Pair<Integer, Object>> assignments) {
-		for (Pair<Integer, Object> pair : assignments) {
+		for (final Pair<Integer, Object> pair : assignments) {
 			set(pair.getKey(), pair.getValue());
 		}
 	}
 
 	default void resetAll(Collection<Pair<Integer, Object>> assignments) {
-		for (Pair<Integer, Object> pair : assignments) {
+		for (final Pair<Integer, Object> pair : assignments) {
 			set(pair.getKey(), null);
 		}
 	}

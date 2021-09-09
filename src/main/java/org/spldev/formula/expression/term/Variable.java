@@ -62,7 +62,7 @@ public abstract class Variable<T> extends Terminal implements Term<T> {
 
 	@Override
 	public void setVariableMap(VariableMap map) {
-		this.map = map;
+		this.map = Objects.requireNonNull(map);
 	}
 
 	public abstract Variable<T> clone(int index, VariableMap map);

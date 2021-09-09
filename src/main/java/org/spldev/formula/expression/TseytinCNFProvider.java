@@ -35,7 +35,7 @@ import org.spldev.util.data.*;
  * @author Sebastian Krieter
  */
 @FunctionalInterface
-public interface TsyetinCNFProvider extends Provider<Formula> {
+public interface TseytinCNFProvider extends Provider<Formula> {
 
 	Identifier<Formula> identifier = new Identifier<>();
 
@@ -44,23 +44,23 @@ public interface TsyetinCNFProvider extends Provider<Formula> {
 		return identifier;
 	}
 
-	static TsyetinCNFProvider empty() {
+	static TseytinCNFProvider empty() {
 		return (c, m) -> Result.empty();
 	}
 
-	static TsyetinCNFProvider of(Formula formula) {
+	static TseytinCNFProvider of(Formula formula) {
 		return (c, m) -> Result.of(formula);
 	}
 
-	static TsyetinCNFProvider in(CacheHolder cache) {
+	static TseytinCNFProvider in(CacheHolder cache) {
 		return (c, m) -> cache.get(identifier);
 	}
 
-	static TsyetinCNFProvider loader(Path path) {
+	static TseytinCNFProvider loader(Path path) {
 		return (c, m) -> Provider.load(path, FormulaFormatManager.getInstance());
 	}
 
-	static TsyetinCNFProvider fromFormula() {
+	static TseytinCNFProvider fromFormula() {
 		return (c, m) -> Provider.convert(c, FormulaProvider.identifier, new CNFTseytinTransformer(), m);
 	}
 

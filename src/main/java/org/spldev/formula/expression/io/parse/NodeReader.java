@@ -103,7 +103,7 @@ public class NodeReader {
 		Collections.sort(Arrays.asList(operators), (o1, o2) -> o2.getPriority() - o1.getPriority());
 	}
 
-	private VariableMap map = VariableMap.emptyMap();;
+	private VariableMap map = VariableMap.emptyMap();
 	private boolean hasVariableNames = false;
 
 	private Symbols symbols = ShortSymbols.INSTANCE;

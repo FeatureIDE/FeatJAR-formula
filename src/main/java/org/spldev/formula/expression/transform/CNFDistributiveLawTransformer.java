@@ -22,10 +22,13 @@
  */
 package org.spldev.formula.expression.transform;
 
+import java.util.*;
+
 import org.spldev.formula.expression.*;
 import org.spldev.formula.expression.compound.*;
 import org.spldev.formula.expression.transform.NormalForms.*;
 import org.spldev.util.job.*;
+import org.spldev.util.logging.*;
 import org.spldev.util.tree.*;
 
 /**
@@ -35,6 +38,7 @@ import org.spldev.util.tree.*;
  */
 public class CNFDistributiveLawTransformer extends DistributiveLawTransformer {
 
+	@Override
 	public Formula execute(Formula formula, InternalMonitor monitor) {
 		final NFTester nfTester = NormalForms.getNFTester(formula, NormalForm.CNF);
 		if (nfTester.isNf) {
@@ -44,8 +48,21 @@ public class CNFDistributiveLawTransformer extends DistributiveLawTransformer {
 			}
 		} else {
 			formula = NormalForms.simplifyForNF(formula);
-			formula = (formula instanceof And) ? formula : new And(formula);
-			transfrom(formula, Or.class, Or::new);
+			if (formula instanceof And) {
+				final ArrayList<Formula> newChildren = new ArrayList<>();
+				final List<Formula> children = ((And) formula).getChildren();
+				int i = 0;
+				for (Formula child : children) {
+					Logger.logProgress(++i + "/" + children.size());
+					child = new And(child);
+					transform(child, Or.class, Or::new);
+					newChildren.addAll(((And) child).getChildren());
+				}
+				formula = new And(newChildren);
+			} else {
+				formula = new And(formula);
+				transform(formula, Or.class, Or::new);
+			}
 			formula = NormalForms.toClausalNF(formula, NormalForm.CNF);
 		}
 		return formula;

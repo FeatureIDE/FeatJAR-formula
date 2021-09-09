@@ -61,7 +61,7 @@ public class NodeWriter2 implements DfsVisitor<Void, Expression> {
 			} else if (currentNode.getChildren().size() != 2) {
 
 			} else if (currentNode instanceof Formula) {
-				getSymbols().getOperator((Formula) currentNode);
+				Symbols.getOperator((Formula) currentNode);
 			}
 			break;
 		case PREFIX:
@@ -85,7 +85,7 @@ public class NodeWriter2 implements DfsVisitor<Void, Expression> {
 			final Expression currentNode = TreeVisitor.getCurrentNode(path);
 			if (currentNode.getChildren().size() == 2) {
 				alignLine(path.size());
-				getSymbols().getOperator((Formula) currentNode);
+				Symbols.getOperator((Formula) currentNode);
 			}
 			break;
 		case PREFIX:

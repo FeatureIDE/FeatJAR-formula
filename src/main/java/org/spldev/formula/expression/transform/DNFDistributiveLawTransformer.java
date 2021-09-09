@@ -35,6 +35,7 @@ import org.spldev.util.tree.*;
  */
 public class DNFDistributiveLawTransformer extends DistributiveLawTransformer {
 
+	@Override
 	public Formula execute(Formula formula, InternalMonitor monitor) {
 		final NFTester nfTester = NormalForms.getNFTester(formula, NormalForm.DNF);
 		if (nfTester.isNf) {
@@ -45,7 +46,7 @@ public class DNFDistributiveLawTransformer extends DistributiveLawTransformer {
 		} else {
 			formula = NormalForms.simplifyForNF(formula);
 			formula = (formula instanceof Or) ? formula : new Or(formula);
-			transfrom(formula, And.class, And::new);
+			transform(formula, And.class, And::new);
 			formula = NormalForms.toClausalNF(formula, NormalForm.DNF);
 		}
 		return formula;
