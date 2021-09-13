@@ -33,7 +33,7 @@ public class Symbols {
 	public enum Operator {
 		NOT("not", 0), AND("and", 6), OR("or", 5), IMPLIES("implies", 4), EQUALS("equals", 3), CHOOSE("choose", 2),
 		ATLEAST("atleast", 2), BETWEEN("between", 2), ATMOST("atmost", 2), EXISTS("exists", 1), FORALL("forall", 1),
-		UNKOWN("?", -1);
+		UNKNOWN("?", -1);
 
 		private String defaultName;
 		private int priority;
@@ -76,7 +76,7 @@ public class Symbols {
 
 	public Operator parseSymbol(String symbol) {
 		final Operator operator = symbolToOperator.get(symbol);
-		return operator != null ? operator : Operator.UNKOWN;
+		return operator != null ? operator : Operator.UNKNOWN;
 	}
 
 	public String getSymbol(Operator operator) {
@@ -119,7 +119,7 @@ public class Symbols {
 			if (node instanceof Exists) {
 				return Operator.EXISTS;
 			}
-			return Operator.UNKOWN;
+			return Operator.UNKNOWN;
 		}
 		throw new IllegalArgumentException("Unrecognized node type: " + node.getClass());
 	}
@@ -137,7 +137,7 @@ public class Symbols {
 	 * @return the order assigned to the type of node
 	 */
 	protected int getOrder(Operator operator) {
-		return operator != null ? operator.getPriority() : Operator.UNKOWN.getPriority();
+		return operator != null ? operator.getPriority() : Operator.UNKNOWN.getPriority();
 	}
 
 }

@@ -40,7 +40,7 @@ public final class NormalForms {
 	}
 
 	public enum NormalForm {
-		TsyetinCNF, CNF, DNF
+		TSEYTIN_CNF, CNF, DNF
 	}
 
 	public static Formula simplifyForNF(Formula formula) {
@@ -54,7 +54,7 @@ public final class NormalForms {
 	public static Result<Formula> toNF(Formula root, NormalForm normalForm) {
 		final Transformer transformer;
 		switch (normalForm) {
-		case TsyetinCNF:
+		case TSEYTIN_CNF:
 			transformer = new CNFTseytinTransformer();
 			break;
 		case CNF:
@@ -81,7 +81,7 @@ public final class NormalForms {
 	static NFTester getNFTester(Formula formula, NormalForm normalForm) {
 		NFTester tester;
 		switch (normalForm) {
-		case TsyetinCNF:
+		case TSEYTIN_CNF:
 		case CNF:
 			tester = new CNFTester();
 			break;
@@ -97,7 +97,7 @@ public final class NormalForms {
 
 	static Formula toClausalNF(Formula formula, NormalForm normalForm) {
 		switch (normalForm) {
-		case TsyetinCNF:
+		case TSEYTIN_CNF:
 		case CNF:
 			if (formula instanceof Literal) {
 				formula = new And(new Or(formula));

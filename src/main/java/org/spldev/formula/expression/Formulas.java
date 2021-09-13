@@ -42,7 +42,7 @@ public final class Formulas {
 
 	public static Optional<Object> evaluate(Expression expression, Assignment assignment) {
 		final ValueVisitor visitor = new ValueVisitor(assignment);
-		visitor.setUnkown(UnkownVariableHandling.ERROR);
+		visitor.setUnknown(UnknownVariableHandling.ERROR);
 		return Trees.traverse(expression, visitor);
 	}
 
@@ -62,8 +62,8 @@ public final class Formulas {
 		return NormalForms.toNF(formula, NormalForm.CNF);
 	}
 
-	public static Result<Formula> toTsyetinCNF(Formula formula) {
-		return NormalForms.toNF(formula, NormalForm.TsyetinCNF);
+	public static Result<Formula> toTseytinCNF(Formula formula) {
+		return NormalForms.toNF(formula, NormalForm.TSEYTIN_CNF);
 	}
 
 	public static Result<Formula> toDNF(Formula formula) {

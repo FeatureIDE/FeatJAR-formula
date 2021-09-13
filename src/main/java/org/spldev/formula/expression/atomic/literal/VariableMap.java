@@ -57,7 +57,7 @@ public class VariableMap implements Cloneable, Serializable {
 			return new VariableSignature(newName, index, type);
 		}
 
-		public Variable<?> newInstace() {
+		public Variable<?> newInstance() {
 			try {
 				return type.getConstructor(int.class, VariableMap.class).newInstance(index, VariableMap.this);
 			} catch (final Exception e) {
@@ -144,12 +144,12 @@ public class VariableMap implements Cloneable, Serializable {
 
 	public Optional<Variable<?>> getVariable(int index) {
 		return isValidIndex(index)
-			? Optional.ofNullable(indexToName.get(index)).map(VariableSignature::newInstace)
+			? Optional.ofNullable(indexToName.get(index)).map(VariableSignature::newInstance)
 			: Optional.empty();
 	}
 
 	public Optional<Variable<?>> getVariable(String name) {
-		return Optional.ofNullable(nameToIndex.get(name)).map(VariableSignature::newInstace);
+		return Optional.ofNullable(nameToIndex.get(name)).map(VariableSignature::newInstance);
 	}
 
 	private boolean isValidIndex(final int index) {
@@ -223,7 +223,7 @@ public class VariableMap implements Cloneable, Serializable {
 	 */
 	public Optional<BoolVariable> addBooleanVariable(String name) {
 		return (name != null) && !nameToIndex.containsKey(name)
-			? Optional.ofNullable((BoolVariable) addVariable(name, getMaxIndex() + 1, BoolVariable.class).newInstace())
+			? Optional.ofNullable((BoolVariable) addVariable(name, getMaxIndex() + 1, BoolVariable.class).newInstance())
 			: Optional.empty();
 	}
 
@@ -237,7 +237,7 @@ public class VariableMap implements Cloneable, Serializable {
 	 */
 	public Optional<IntVariable> addIntegerVariable(String name) {
 		return (name != null) && !nameToIndex.containsKey(name)
-			? Optional.ofNullable((IntVariable) addVariable(name, getMaxIndex() + 1, IntVariable.class).newInstace())
+			? Optional.ofNullable((IntVariable) addVariable(name, getMaxIndex() + 1, IntVariable.class).newInstance())
 			: Optional.empty();
 	}
 
@@ -253,7 +253,7 @@ public class VariableMap implements Cloneable, Serializable {
 	 */
 	public Optional<RealVariable> addRealVariable(String name) {
 		return (name != null) && !nameToIndex.containsKey(name)
-			? Optional.ofNullable((RealVariable) addVariable(name, getMaxIndex() + 1, RealVariable.class).newInstace())
+			? Optional.ofNullable((RealVariable) addVariable(name, getMaxIndex() + 1, RealVariable.class).newInstance())
 			: Optional.empty();
 	}
 
