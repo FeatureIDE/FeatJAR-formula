@@ -40,7 +40,7 @@ public final class NormalForms {
 	}
 
 	public enum NormalForm {
-		TsyetinCNF, CNF, DNF
+		CNF, DNF
 	}
 
 	public static Formula simplifyForNF(Formula formula) {
@@ -49,24 +49,6 @@ public final class NormalForms {
 		Trees.traverse(auxiliaryRoot, new DeMorganVisitor());
 		Trees.traverse(auxiliaryRoot, new TreeSimplifier());
 		return (Formula) auxiliaryRoot.getChild();
-	}
-
-	public static Result<Formula> toNF(Formula root, NormalForm normalForm) {
-		final Transformer transformer;
-		switch (normalForm) {
-		case TsyetinCNF:
-			transformer = new CNFTseytinTransformer();
-			break;
-		case CNF:
-			transformer = new CNFDistributiveLawTransformer();
-			break;
-		case DNF:
-			transformer = new DNFDistributiveLawTransformer();
-			break;
-		default:
-			throw new IllegalStateException(String.valueOf(normalForm));
-		}
-		return toNF(root, transformer);
 	}
 
 	public static Result<Formula> toNF(Formula root, Transformer transformer) {
@@ -81,7 +63,6 @@ public final class NormalForms {
 	static NFTester getNFTester(Formula formula, NormalForm normalForm) {
 		NFTester tester;
 		switch (normalForm) {
-		case TsyetinCNF:
 		case CNF:
 			tester = new CNFTester();
 			break;
@@ -97,12 +78,11 @@ public final class NormalForms {
 
 	static Formula toClausalNF(Formula formula, NormalForm normalForm) {
 		switch (normalForm) {
-		case TsyetinCNF:
 		case CNF:
 			if (formula instanceof Literal) {
 				formula = new And(new Or(formula));
 			} else if (formula instanceof Or) {
-				formula = new And(new Or(formula));
+				formula = new And(formula);
 			} else {
 				formula.mapChildren(child -> (child instanceof Literal ? new Or((Literal) child) : child));
 			}

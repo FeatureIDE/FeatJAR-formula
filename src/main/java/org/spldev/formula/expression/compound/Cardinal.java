@@ -33,7 +33,7 @@ import org.spldev.formula.expression.*;
  *
  * @author Sebastian Krieter
  */
-public abstract class Cardinal extends Compound implements Connective {
+public abstract class Cardinal extends Compound {
 
 	protected int min;
 	protected int max;

@@ -32,7 +32,7 @@ import org.spldev.formula.expression.*;
  *
  * @author Sebastian Krieter
  */
-public class And extends Compound implements Connective {
+public class And extends Compound {
 
 	public And(Collection<? extends Formula> nodes) {
 		super(nodes);

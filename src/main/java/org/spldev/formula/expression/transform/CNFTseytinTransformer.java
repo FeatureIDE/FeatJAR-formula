@@ -29,6 +29,7 @@ import org.spldev.formula.expression.atomic.*;
 import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.formula.expression.compound.*;
 import org.spldev.formula.expression.term.bool.*;
+import org.spldev.formula.expression.transform.DistributiveLawTransformer.*;
 import org.spldev.formula.expression.transform.NormalForms.*;
 import org.spldev.util.job.*;
 import org.spldev.util.logging.*;
@@ -43,6 +44,12 @@ public class CNFTseytinTransformer implements Transformer, TreeVisitor<Formula, 
 	private int count = 0;
 	private HashMap<Formula, BoolVariable> newVariables = new HashMap<>();
 
+	private final CNFDistributiveLawTransformer distributiveLawTransformer;
+
+	public CNFTseytinTransformer(int threshold) {
+		distributiveLawTransformer = threshold > 0 ? new CNFDistributiveLawTransformer(threshold) : null;
+	}
+
 	@Override
 	public void reset() {
 		stack.clear();
@@ -54,9 +61,9 @@ public class CNFTseytinTransformer implements Transformer, TreeVisitor<Formula, 
 
 	@Override
 	public Formula execute(Formula formula, InternalMonitor monitor) {
+		formula = Trees.cloneTree(formula);
 		final NFTester nfTester = NormalForms.getNFTester(formula, NormalForm.CNF);
 		if (nfTester.isNf) {
-			formula = Trees.cloneTree(formula);
 			if (!nfTester.isClausalNf()) {
 				formula = NormalForms.toClausalNF(formula, NormalForm.CNF);
 			}
@@ -82,16 +89,17 @@ public class CNFTseytinTransformer implements Transformer, TreeVisitor<Formula, 
 							newChildren.add(child);
 						}
 					} else {
-						substitutes.clear();
-						stack.clear();
-						try {
-							Trees.dfsPrePost(child, this);
-						} catch (final Exception e) {
+						if (distributiveLawTransformer != null) {
+							final And clonedChild = new And(Trees.cloneTree(child));
+							try {
+								distributiveLawTransformer.transform(clonedChild);
+								newChildren.addAll(clonedChild.getChildren());
+							} catch (final ClauseLimitedExceededException e) {
+								tseytin(newChildren, child);
+							}
+						} else {
+							tseytin(newChildren, child);
 						}
-						if (!stack.isEmpty()) {
-							newChildren.add(stack.pop());
-						}
-						newChildren.addAll(substitutes);
 					}
 				}
 				formula = new And(newChildren);
@@ -101,6 +109,19 @@ public class CNFTseytinTransformer implements Transformer, TreeVisitor<Formula, 
 			formula = NormalForms.toClausalNF(formula, NormalForm.CNF);
 		}
 		return formula;
+	}
+
+	public void tseytin(final ArrayList<Formula> newChildren, Formula child) {
+		substitutes.clear();
+		stack.clear();
+		try {
+			Trees.dfsPrePost(child, this);
+		} catch (final Exception e) {
+		}
+		if (!stack.isEmpty()) {
+			newChildren.add(stack.pop());
+		}
+		newChildren.addAll(substitutes);
 	}
 
 	@Override

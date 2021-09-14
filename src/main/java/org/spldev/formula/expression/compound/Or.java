@@ -32,7 +32,7 @@ import org.spldev.formula.expression.*;
  *
  * @author Sebastian Krieter
  */
-public class Or extends Compound implements Connective {
+public class Or extends Compound {
 
 	public Or(Collection<? extends Formula> nodes) {
 		super(nodes);

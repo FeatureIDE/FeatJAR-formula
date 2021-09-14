@@ -36,6 +36,10 @@ import org.spldev.formula.expression.compound.*;
  */
 public abstract class DistributiveLawTransformer implements Transformer {
 
+	public static class ClauseLimitedExceededException extends Exception {
+		private static final long serialVersionUID = -1474441249983680341L;
+	}
+
 	private static class PathElement {
 		Expression node;
 		List<Expression> newChildren = new ArrayList<>();
@@ -46,8 +50,20 @@ public abstract class DistributiveLawTransformer implements Transformer {
 		}
 	}
 
-	public static void transform(Expression node, Class<? extends Compound> clauseClass,
-		Function<Collection<? extends Formula>, Formula> clauseConstructor) {
+	private final int clauseLimit;
+	private final Class<? extends Compound> clauseClass;
+	private final Function<Collection<? extends Formula>, Formula> clauseConstructor;
+
+	private List<Formula> children;
+
+	public DistributiveLawTransformer(Class<? extends Compound> clauseClass,
+		Function<Collection<? extends Formula>, Formula> clauseConstructor, int clauseLimit) {
+		this.clauseLimit = clauseLimit;
+		this.clauseClass = clauseClass;
+		this.clauseConstructor = clauseConstructor;
+	}
+
+	public void transform(Expression node) throws ClauseLimitedExceededException {
 		if (node != null) {
 			final ArrayList<PathElement> path = new ArrayList<>();
 			final ArrayDeque<Expression> stack = new ArrayDeque<>();
@@ -75,7 +91,7 @@ public abstract class DistributiveLawTransformer implements Transformer {
 
 					if ((clauseClass == curNode.getClass()) && (currentElement.maxDepth > 0)) {
 						final PathElement parentElement = path.get(path.size() - 1);
-						parentElement.newChildren.addAll(convert(curNode, clauseConstructor));
+						parentElement.newChildren.addAll(convert(curNode));
 						parentElement.maxDepth = 1;
 					} else {
 						if (!path.isEmpty()) {
@@ -90,15 +106,14 @@ public abstract class DistributiveLawTransformer implements Transformer {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static List<Formula> convert(Expression child,
-		Function<Collection<? extends Formula>, Formula> clauseConstructor) {
+	private List<Formula> convert(Expression child) throws ClauseLimitedExceededException {
 		if (child instanceof Literal) {
 			return null;
 		} else {
 			final ArrayList<Set<Literal>> newClauseList = new ArrayList<>();
-			final List<Formula> children = new ArrayList<>((List<Formula>) child.getChildren());
+			children = new ArrayList<>((List<Formula>) child.getChildren());
 			Collections.sort(children, (c1, c2) -> (c1.getChildren().size() - c2.getChildren().size()));
-			convertNF(children, newClauseList, new LinkedHashSet<>(children.size() << 1), 0);
+			convertNF(newClauseList, new LinkedHashSet<>(children.size() << 1), 0);
 
 			final ArrayList<Formula> filteredClauseList;
 			Collections.sort(newClauseList, (c1, c2) -> (c1.size() - c2.size()));
@@ -129,19 +144,22 @@ public abstract class DistributiveLawTransformer implements Transformer {
 		}
 	}
 
-	private static void convertNF(List<Formula> children, List<Set<Literal>> clauses, LinkedHashSet<Literal> literals,
-		int index) {
+	private void convertNF(List<Set<Literal>> clauses, LinkedHashSet<Literal> literals, int index)
+		throws ClauseLimitedExceededException {
 		if (index == children.size()) {
+			if (clauses.size() > clauseLimit) {
+				throw new ClauseLimitedExceededException();
+			}
 			clauses.add(new HashSet<>(literals));
 		} else {
 			final Formula child = children.get(index);
 			if (child instanceof Literal) {
 				final Literal clauseLiteral = (Literal) child;
 				if (literals.contains(clauseLiteral)) {
-					convertNF(children, clauses, literals, index + 1);
+					convertNF(clauses, literals, index + 1);
 				} else if (!literals.contains(clauseLiteral.flip())) {
 					literals.add(clauseLiteral);
-					convertNF(children, clauses, literals, index + 1);
+					convertNF(clauses, literals, index + 1);
 					literals.remove(clauseLiteral);
 				}
 			} else {
@@ -166,14 +184,14 @@ public abstract class DistributiveLawTransformer implements Transformer {
 					}
 				}
 				if (redundant) {
-					convertNF(children, clauses, literals, index + 1);
+					convertNF(clauses, literals, index + 1);
 				} else {
 					for (final Expression grandChild : child.getChildren()) {
 						if (grandChild instanceof Literal) {
 							final Literal clauseLiteral = (Literal) grandChild;
 							if (!literals.contains(clauseLiteral.flip())) {
 								literals.add(clauseLiteral);
-								convertNF(children, clauses, literals, index + 1);
+								convertNF(clauses, literals, index + 1);
 								literals.remove(clauseLiteral);
 							}
 						} else {
@@ -191,7 +209,7 @@ public abstract class DistributiveLawTransformer implements Transformer {
 									literals.add((Literal) literal);
 									clauseLiterals.add((Literal) literal);
 								}
-								convertNF(children, clauses, literals, index + 1);
+								convertNF(clauses, literals, index + 1);
 								literals.removeAll(clauseLiterals);
 							}
 						}

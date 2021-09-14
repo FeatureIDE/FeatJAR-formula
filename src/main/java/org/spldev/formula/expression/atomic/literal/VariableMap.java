@@ -70,6 +70,29 @@ public class VariableMap implements Cloneable, Serializable {
 		public VariableSignature clone() {
 			return new VariableSignature(name, index, type);
 		}
+
+		@Override
+		public String toString() {
+			return index + " (" + name + "): " + type.getSimpleName();
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(index, name, type);
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj) {
+				return true;
+			}
+			if ((obj == null) || (getClass() != obj.getClass())) {
+				return false;
+			}
+			final VariableSignature other = (VariableSignature) obj;
+			return (index == other.index) && (type == other.type) && Objects.equals(name, other.name);
+		}
+
 	}
 
 	private static final long serialVersionUID = 4252808504545415221L;
@@ -308,7 +331,13 @@ public class VariableMap implements Cloneable, Serializable {
 
 	@Override
 	public String toString() {
-		return "Variables " + indexToName.subList(1, indexToName.size());
+		final StringBuilder sb = new StringBuilder("VariableMap\n");
+		for (int i = 1; i < indexToName.size(); i++) {
+			sb.append('\t');
+			sb.append(indexToName.get(i));
+			sb.append('\n');
+		}
+		return sb.toString();
 	}
 
 	public boolean containsAll(VariableMap variables) {

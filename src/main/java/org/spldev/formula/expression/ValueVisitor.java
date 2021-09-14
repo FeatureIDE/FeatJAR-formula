@@ -109,7 +109,7 @@ public class ValueVisitor implements TreeVisitor<Object, Expression> {
 			} else {
 				throw new IllegalStateException(String.valueOf(node));
 			}
-		} else if (node instanceof Connective) {
+		} else if (node instanceof Compound) {
 			final int size = node.getChildren().size();
 			if (node instanceof And) {
 				final List<Object> arguments = values.subList(0, size);

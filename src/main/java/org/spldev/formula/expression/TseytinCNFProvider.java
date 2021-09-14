@@ -61,7 +61,11 @@ public interface TseytinCNFProvider extends Provider<Formula> {
 	}
 
 	static TseytinCNFProvider fromFormula() {
-		return (c, m) -> Provider.convert(c, FormulaProvider.identifier, new CNFTseytinTransformer(), m);
+		return fromFormula(0);
+	}
+
+	static TseytinCNFProvider fromFormula(int tseytinlimit) {
+		return (c, m) -> Provider.convert(c, FormulaProvider.identifier, new CNFTseytinTransformer(tseytinlimit), m);
 	}
 
 }

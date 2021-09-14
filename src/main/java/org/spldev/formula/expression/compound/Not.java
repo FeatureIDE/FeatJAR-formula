@@ -29,7 +29,7 @@ import org.spldev.formula.expression.*;
  *
  * @author Sebastian Krieter
  */
-public class Not extends Compound implements Connective {
+public class Not extends Compound {
 
 	public Not(Formula node) {
 		super(node);

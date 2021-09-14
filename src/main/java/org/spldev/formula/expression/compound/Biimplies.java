@@ -30,7 +30,7 @@ import org.spldev.formula.expression.*;
  *
  * @author Sebastian Krieter
  */
-public class Biimplies extends Compound implements Connective {
+public class Biimplies extends Compound {
 
 	public Biimplies(Formula leftNode, Formula rightNode) {
 		super(leftNode, rightNode);

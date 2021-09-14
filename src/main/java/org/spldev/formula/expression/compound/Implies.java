@@ -30,7 +30,7 @@ import org.spldev.formula.expression.*;
  *
  * @author Sebastian Krieter
  */
-public class Implies extends Compound implements Connective {
+public class Implies extends Compound {
 
 	public Implies(Formula leftNode, Formula rightNode) {
 		super(leftNode, rightNode);

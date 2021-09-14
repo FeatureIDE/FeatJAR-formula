@@ -59,15 +59,15 @@ public final class Formulas {
 	}
 
 	public static Result<Formula> toCNF(Formula formula) {
-		return NormalForms.toNF(formula, NormalForm.CNF);
+		return NormalForms.toNF(formula, new CNFDistributiveLawTransformer());
 	}
 
-	public static Result<Formula> toTsyetinCNF(Formula formula) {
-		return NormalForms.toNF(formula, NormalForm.TsyetinCNF);
+	public static Result<Formula> toCNF(Formula formula, int tseytinLimit) {
+		return NormalForms.toNF(formula, new CNFTseytinTransformer(tseytinLimit));
 	}
 
 	public static Result<Formula> toDNF(Formula formula) {
-		return NormalForms.toNF(formula, NormalForm.DNF);
+		return NormalForms.toNF(formula, new DNFDistributiveLawTransformer());
 	}
 
 	public static Expression manipulate(Expression node, TreeVisitor<Void, Expression> visitor) {

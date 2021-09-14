@@ -85,7 +85,7 @@ public class Symbols {
 	}
 
 	public static Operator getOperator(Formula node) throws IllegalArgumentException {
-		if (node instanceof Connective) {
+		if (node instanceof Compound) {
 			if (node instanceof Not) {
 				return Operator.NOT;
 			}

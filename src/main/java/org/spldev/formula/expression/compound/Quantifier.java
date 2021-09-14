@@ -27,7 +27,7 @@ import java.util.*;
 import org.spldev.formula.expression.*;
 import org.spldev.formula.expression.term.*;
 
-public abstract class Quantifier extends Compound implements Connective {
+public abstract class Quantifier extends Compound {
 
 	protected Variable<?> boundVariable;
 

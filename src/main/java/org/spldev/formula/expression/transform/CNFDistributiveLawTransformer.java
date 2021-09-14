@@ -38,11 +38,19 @@ import org.spldev.util.tree.*;
  */
 public class CNFDistributiveLawTransformer extends DistributiveLawTransformer {
 
+	public CNFDistributiveLawTransformer() {
+		this(Integer.MAX_VALUE);
+	}
+
+	public CNFDistributiveLawTransformer(int clauseLimit) {
+		super(Or.class, Or::new, clauseLimit);
+	}
+
 	@Override
-	public Formula execute(Formula formula, InternalMonitor monitor) {
+	public Formula execute(Formula formula, InternalMonitor monitor) throws ClauseLimitedExceededException {
+		formula = Trees.cloneTree(formula);
 		final NFTester nfTester = NormalForms.getNFTester(formula, NormalForm.CNF);
 		if (nfTester.isNf) {
-			formula = Trees.cloneTree(formula);
 			if (!nfTester.isClausalNf()) {
 				formula = NormalForms.toClausalNF(formula, NormalForm.CNF);
 			}
@@ -55,13 +63,13 @@ public class CNFDistributiveLawTransformer extends DistributiveLawTransformer {
 				for (Formula child : children) {
 					Logger.logProgress(++i + "/" + children.size());
 					child = new And(child);
-					transform(child, Or.class, Or::new);
+					transform(child);
 					newChildren.addAll(((And) child).getChildren());
 				}
 				formula = new And(newChildren);
 			} else {
 				formula = new And(formula);
-				transform(formula, Or.class, Or::new);
+				transform(formula);
 			}
 			formula = NormalForms.toClausalNF(formula, NormalForm.CNF);
 		}
