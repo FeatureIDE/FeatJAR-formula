@@ -48,9 +48,9 @@ public class XmlFeatureModelCNFFormat extends XmlFeatureModelFormat {
 		if (elementList.size() == 1) {
 			final Element e = elementList.get(0);
 			parseStruct(getElement(e, STRUCT));
-			final int crossTreeConstaintsIndex = constraints.size();
+			final int crossTreeConstraintsIndex = constraints.size();
 			parseConstraints(getElement(e, CONSTRAINTS));
-			final List<Formula> crossTreeConstraints = constraints.subList(crossTreeConstaintsIndex,
+			final List<Formula> crossTreeConstraints = constraints.subList(crossTreeConstraintsIndex,
 				constraints.size());
 			final List<Formula> cnfConstraints = crossTreeConstraints.stream().map(Formulas::toCNF).map(Result::get)
 				.collect(Collectors.toList());

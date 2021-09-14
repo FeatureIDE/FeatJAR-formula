@@ -42,7 +42,7 @@ public final class Formulas {
 
 	public static Optional<Object> evaluate(Expression expression, Assignment assignment) {
 		final ValueVisitor visitor = new ValueVisitor(assignment);
-		visitor.setUnkown(UnkownVariableHandling.ERROR);
+		visitor.setUnknown(UnknownVariableHandling.ERROR);
 		return Trees.traverse(expression, visitor);
 	}
 

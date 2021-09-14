@@ -34,13 +34,13 @@ import org.spldev.util.tree.visitor.*;
 
 public class ValueVisitor implements TreeVisitor<Object, Expression> {
 
-	public enum UnkownVariableHandling {
+	public enum UnknownVariableHandling {
 		ERROR, FALSE, TRUE,
 	}
 
 	private final LinkedList<Object> values = new LinkedList<>();
 
-	private UnkownVariableHandling unkownVariableHandling = UnkownVariableHandling.FALSE;
+	private UnknownVariableHandling unknownVariableHandling = UnknownVariableHandling.FALSE;
 
 	private final Assignment assignment;
 	private Boolean defaultBooleanValue;
@@ -49,12 +49,12 @@ public class ValueVisitor implements TreeVisitor<Object, Expression> {
 		this.assignment = assignment;
 	}
 
-	public UnkownVariableHandling getUnkown() {
-		return unkownVariableHandling;
+	public UnknownVariableHandling getUnknown() {
+		return unknownVariableHandling;
 	}
 
-	public void setUnkown(UnkownVariableHandling unkown) {
-		unkownVariableHandling = unkown;
+	public void setUnknown(UnknownVariableHandling unknown) {
+		unknownVariableHandling = unknown;
 	}
 
 	public Boolean getDefaultBooleanValue() {
@@ -94,7 +94,7 @@ public class ValueVisitor implements TreeVisitor<Object, Expression> {
 			} else if (node instanceof ErrorLiteral) {
 				final Literal literal = (ErrorLiteral) node;
 				final boolean positive = literal.isPositive();
-				switch (unkownVariableHandling) {
+				switch (unknownVariableHandling) {
 				case ERROR:
 					throw new NullPointerException(literal.getName());
 				case FALSE:
@@ -104,7 +104,7 @@ public class ValueVisitor implements TreeVisitor<Object, Expression> {
 					values.push(positive ? Boolean.TRUE : Boolean.FALSE);
 					break;
 				default:
-					throw new IllegalStateException(String.valueOf(unkownVariableHandling));
+					throw new IllegalStateException(String.valueOf(unknownVariableHandling));
 				}
 			} else {
 				throw new IllegalStateException(String.valueOf(node));
@@ -192,7 +192,7 @@ public class ValueVisitor implements TreeVisitor<Object, Expression> {
 			final Variable<?> variable = (Variable<?>) node;
 			final int index = variable.getIndex();
 			if (index == 0) {
-				switch (unkownVariableHandling) {
+				switch (unknownVariableHandling) {
 				case ERROR:
 					throw new IllegalArgumentException(variable.getName());
 				case FALSE:
@@ -200,7 +200,7 @@ public class ValueVisitor implements TreeVisitor<Object, Expression> {
 					values.push(defaultBooleanValue);
 					break;
 				default:
-					throw new IllegalStateException(String.valueOf(unkownVariableHandling));
+					throw new IllegalStateException(String.valueOf(unknownVariableHandling));
 				}
 			} else if (node instanceof Constant) {
 				final Constant<?> constant = (Constant<?>) node;

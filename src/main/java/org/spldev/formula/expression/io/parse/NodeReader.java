@@ -55,7 +55,7 @@ public class NodeReader {
 	public enum ErrorMessage {
 		INVALID_FEATURE_NAME("'%s' is no valid feature name."), //
 		NULL_CONSTRAINT("Constraint is null."), //
-		EMPTY_CONSTRAINT("Contraint is empty."),
+		EMPTY_CONSTRAINT("Constraint is empty."),
 		PARENTHESES_IN_FEATURE_NAMES("Parenthesis are not allowed in feature names."),
 		INVALID_CLOSING_PARENTHESES("To many closing parentheses."),
 		INVALID_NUMBER_OF_QUOTATION_MARKS("Invalid number of quotation marks."),
@@ -250,7 +250,7 @@ public class NodeReader {
 				case CHOOSE:
 				case EXISTS:
 				case FORALL:
-				case UNKOWN:
+				case UNKNOWN:
 					return null;
 				default:
 					throw new IllegalStateException(String.valueOf(operator));

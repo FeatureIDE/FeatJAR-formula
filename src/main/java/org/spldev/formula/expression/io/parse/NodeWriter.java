@@ -467,7 +467,7 @@ public class NodeWriter {
 	 * @return whether the string equals one of the symbols
 	 */
 	private boolean equalsSymbol(String s) {
-		return getSymbols().parseSymbol(s) != Operator.UNKOWN;
+		return getSymbols().parseSymbol(s) != Operator.UNKNOWN;
 	}
 
 	/**
