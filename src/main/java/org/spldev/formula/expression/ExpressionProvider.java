@@ -26,7 +26,7 @@ import org.spldev.util.*;
 import org.spldev.util.data.*;
 
 /**
- * Abstract creator to derive an element from a {@link CacheHolder}.
+ * Abstract creator to derive an element from a {@link Cache}.
  *
  * @author Sebastian Krieter
  */
