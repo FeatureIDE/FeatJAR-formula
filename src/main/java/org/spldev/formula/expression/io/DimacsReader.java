@@ -272,7 +272,7 @@ public class DimacsReader {
 	/**
 	 * Reads an entry of the variable directory.
 	 *
-	 * @param line variable directory entry
+	 * @param comment variable directory entry
 	 * @return true if an entry was found
 	 */
 	private boolean readVariableDirectoryEntry(String comment) {
