@@ -30,9 +30,9 @@ import org.spldev.formula.expression.compound.*;
 import org.spldev.util.*;
 import org.spldev.util.io.format.*;
 
-public class KMaxFormat implements Format<Formula> {
+public class KConfigReaderFormat implements Format<Formula> {
 
-	public static final String ID = KMaxFormat.class.getCanonicalName();
+	public static final String ID = KConfigReaderFormat.class.getCanonicalName();
 
 	@Override
 	public Result<Formula> parse(Input source) {
