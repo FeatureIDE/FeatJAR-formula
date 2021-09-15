@@ -41,11 +41,11 @@ public interface FormulaProvider extends Provider<Formula> {
 	}
 
 	static FormulaProvider empty() {
-		return (f, m) -> Result.empty();
+		return (c, m) -> Result.empty();
 	}
 
 	static FormulaProvider of(Formula formula) {
-		return (f, m) -> Result.of(formula);
+		return (c, m) -> Result.of(formula);
 	}
 
 }

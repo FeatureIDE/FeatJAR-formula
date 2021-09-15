@@ -41,11 +41,11 @@ public interface ExpressionProvider extends Provider<Formula> {
 	}
 
 	static ExpressionProvider empty() {
-		return (f, m) -> Result.empty();
+		return (c, m) -> Result.empty();
 	}
 
 	static ExpressionProvider of(Formula formula) {
-		return (f, m) -> Result.of(formula);
+		return (c, m) -> Result.of(formula);
 	}
 
 }
