@@ -40,7 +40,7 @@ import org.spldev.util.io.format.*;
  * @author Dariusz Krolikowski
  * @author David Broneske
  * @author Fabian Benduhn
- * @author Thomas Thuem
+ * @author Thomas Thüm
  * @author Florian Proksch
  * @author Stefan Krueger
  * @author Sebastian Krieter

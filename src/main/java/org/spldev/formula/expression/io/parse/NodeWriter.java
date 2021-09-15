@@ -32,7 +32,7 @@ import org.spldev.formula.expression.io.parse.Symbols.*;
 /**
  * Converts a propositional node to a String object.
  *
- * @author Thomas Thuem
+ * @author Thomas Thüm
  * @author Timo Günther
  * @author Sebastian Krieter
  */
