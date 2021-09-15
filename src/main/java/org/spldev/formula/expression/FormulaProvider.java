@@ -22,11 +22,17 @@
  */
 package org.spldev.formula.expression;
 
+import org.spldev.formula.expression.io.FormulaFormatManager;
+import org.spldev.formula.expression.transform.CNFDistributiveLawTransformer;
+import org.spldev.formula.expression.transform.CNFTseytinTransformer;
+import org.spldev.formula.expression.transform.DNFDistributiveLawTransformer;
 import org.spldev.util.*;
 import org.spldev.util.data.*;
 
+import java.nio.file.Path;
+
 /**
- * Abstract creator to derive an element from a {@link Cache}.
+ * Provides formulas in different forms (as loaded from a file or transformed into CNF/DNF).
  *
  * @author Sebastian Krieter
  */
@@ -48,4 +54,57 @@ public interface FormulaProvider extends Provider<Formula> {
 		return (c, m) -> Result.of(formula);
 	}
 
+	static FormulaProvider in(Cache cache) {
+		return (c, m) -> cache.get(identifier);
+	}
+
+	static FormulaProvider loader(Path path) {
+		return (c, m) -> Provider.load(path, FormulaFormatManager.getInstance());
+	}
+
+	@FunctionalInterface
+	interface CNF extends FormulaProvider {
+		Identifier<Formula> identifier = new Identifier<>();
+
+		@Override
+		default Identifier<Formula> getIdentifier() {
+			return identifier;
+		}
+
+		static CNF fromFormula() {
+			return (c, m) -> Provider.convert(c, FormulaProvider.identifier, new CNFDistributiveLawTransformer(), m);
+		}
+	}
+
+	@FunctionalInterface
+	interface DNF extends FormulaProvider {
+		Identifier<Formula> identifier = new Identifier<>();
+
+		@Override
+		default Identifier<Formula> getIdentifier() {
+			return identifier;
+		}
+
+		static DNF fromFormula() {
+			return (c, m) -> Provider.convert(c, FormulaProvider.identifier, new DNFDistributiveLawTransformer(), m);
+		}
+	}
+
+	@FunctionalInterface
+	interface TseytinCNF extends FormulaProvider {
+		Identifier<Formula> identifier = new Identifier<>();
+
+		@Override
+		default Identifier<Formula> getIdentifier() {
+			return identifier;
+		}
+
+		static TseytinCNF fromFormula(int threshold) {
+			return (c, m) -> Provider.convert(c, FormulaProvider.identifier, new CNFTseytinTransformer(threshold), m);
+		}
+
+		static TseytinCNF fromFormula() {
+			return fromFormula(0);
+		}
+	}
 }
