@@ -28,7 +28,6 @@ import org.spldev.formula.expression.*;
 import org.spldev.formula.expression.compound.*;
 import org.spldev.formula.expression.transform.NormalForms.*;
 import org.spldev.util.job.*;
-import org.spldev.util.logging.*;
 import org.spldev.util.tree.*;
 
 /**
@@ -59,9 +58,7 @@ public class CNFDistributiveLawTransformer extends DistributiveLawTransformer {
 			if (formula instanceof And) {
 				final ArrayList<Formula> newChildren = new ArrayList<>();
 				final List<Formula> children = ((And) formula).getChildren();
-				int i = 0;
 				for (Formula child : children) {
-					Logger.logProgress(++i + "/" + children.size());
 					child = new And(child);
 					transform(child);
 					newChildren.addAll(((And) child).getChildren());

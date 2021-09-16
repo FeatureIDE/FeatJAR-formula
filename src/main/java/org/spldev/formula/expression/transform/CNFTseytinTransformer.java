@@ -32,7 +32,6 @@ import org.spldev.formula.expression.term.bool.*;
 import org.spldev.formula.expression.transform.DistributiveLawTransformer.*;
 import org.spldev.formula.expression.transform.NormalForms.*;
 import org.spldev.util.job.*;
-import org.spldev.util.logging.*;
 import org.spldev.util.tree.*;
 import org.spldev.util.tree.visitor.*;
 
@@ -73,9 +72,7 @@ public class CNFTseytinTransformer implements Transformer, TreeVisitor<Formula, 
 			if (formula instanceof And) {
 				final ArrayList<Formula> newChildren = new ArrayList<>();
 				final List<Formula> children = ((And) formula).getChildren();
-				int i = 0;
 				for (Formula child : children) {
-					Logger.logProgress(++i + "/" + children.size());
 					if (Formulas.isCNF(child)) {
 						if (child instanceof And) {
 							for (Formula grandChild : ((And) child).getChildren()) {
