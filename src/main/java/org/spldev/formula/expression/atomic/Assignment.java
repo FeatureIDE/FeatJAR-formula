@@ -40,7 +40,7 @@ public interface Assignment {
 		}
 	}
 
-	default void reset(int index, Object assignment) {
+	default void unset(int index) {
 		set(index, null);
 	}
 
