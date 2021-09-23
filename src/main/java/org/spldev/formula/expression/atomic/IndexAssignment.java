@@ -53,4 +53,9 @@ public class IndexAssignment implements Assignment {
 			.collect(Collectors.toList());
 	}
 
+	@Override
+	public void unsetAll() {
+		assignments.clear();
+	}
+
 }

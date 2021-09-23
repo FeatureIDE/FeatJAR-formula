@@ -34,11 +34,13 @@ public interface Assignment {
 		}
 	}
 
-	default void resetAll(Collection<Pair<Integer, Object>> assignments) {
+	default void unsetAll(Collection<Pair<Integer, Object>> assignments) {
 		for (final Pair<Integer, Object> pair : assignments) {
 			set(pair.getKey(), null);
 		}
 	}
+
+	void unsetAll();
 
 	default void unset(int index) {
 		set(index, null);

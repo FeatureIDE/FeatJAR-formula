@@ -128,15 +128,29 @@ public class VariableMap implements Cloneable, Serializable {
 		nameMap.entrySet().forEach(e -> addVariable(e.getValue(), e.getKey(), BoolVariable.class));
 	}
 
-	private VariableMap(VariableMap otherMap) {
+	private VariableMap(VariableMap otherMap, boolean normalize) {
 		indexToName = new ArrayList<>(otherMap.indexToName.size());
 		nameToIndex = new LinkedHashMap<>();
-		for (final VariableSignature variableSignature : otherMap.indexToName) {
-			if (variableSignature == null) {
-				indexToName.add(null);
-			} else {
-				indexToName.add(variableSignature.clone());
-				nameToIndex.put(variableSignature.name, variableSignature);
+		if (normalize) {
+			indexToName.add(null);
+			for (VariableSignature sig : otherMap.indexToName) {
+				if (sig != null) {
+					final int newIndex = indexToName.size();
+					sig = new VariableSignature(sig.name, newIndex, sig.type);
+					indexToName.add(sig);
+					nameToIndex.put(sig.name, sig);
+				}
+			}
+			indexToName.trimToSize();
+		} else {
+			for (VariableSignature sig : otherMap.indexToName) {
+				if (sig == null) {
+					indexToName.add(null);
+				} else {
+					sig = sig.clone();
+					indexToName.add(sig);
+					nameToIndex.put(sig.name, sig);
+				}
 			}
 		}
 	}
@@ -313,6 +327,10 @@ public class VariableMap implements Cloneable, Serializable {
 		return nameToIndex.size() != indexToName.size();
 	}
 
+	public VariableMap normalize() {
+		return new VariableMap(this, true);
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hashCode(indexToName);
@@ -346,7 +364,7 @@ public class VariableMap implements Cloneable, Serializable {
 
 	@Override
 	public VariableMap clone() {
-		return new VariableMap(this);
+		return new VariableMap(this, false);
 	}
 
 }
