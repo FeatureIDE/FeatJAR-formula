@@ -52,6 +52,11 @@ public class ConverterCLI implements CLIFunction {
 	}
 
 	@Override
+	public String getDescription() {
+		return "Converts feature models between various formats";
+	}
+
+	@Override
 	public void run(List<String> args) {
 		Path input = null;
 		Path output = null;
@@ -208,13 +213,4 @@ public class ConverterCLI implements CLIFunction {
 			Logger.logError(e);
 		}
 	}
-
-	@Override
-	public String getHelp() {
-		final StringBuilder helpBuilder = new StringBuilder();
-		helpBuilder.append("Help for command convert:\n");
-		helpBuilder.append("TBD");
-		return helpBuilder.toString();
-	}
-
 }
