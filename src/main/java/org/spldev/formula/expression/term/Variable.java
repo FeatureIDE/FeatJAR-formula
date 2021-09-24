@@ -51,6 +51,7 @@ public abstract class Variable<T> extends Terminal implements Term<T> {
 		return map.getName(index).orElse("??");
 	}
 
+	@Override
 	public VariableMap getVariableMap() {
 		return map;
 	}

@@ -25,6 +25,7 @@ package org.spldev.formula.expression;
 import java.util.*;
 
 import org.spldev.formula.expression.atomic.literal.*;
+import org.spldev.formula.expression.term.*;
 import org.spldev.util.tree.structure.*;
 
 /**
@@ -41,6 +42,13 @@ public interface Expression extends Tree<Expression> {
 		for (final Expression child : getChildren()) {
 			child.setVariableMap(map);
 		}
+	}
+
+	default VariableMap getVariableMap() {
+		return Formulas.getVariableStream(this)
+			.findAny()
+			.map(Variable::getVariableMap)
+			.orElseGet(VariableMap::emptyMap);
 	}
 
 	@Override

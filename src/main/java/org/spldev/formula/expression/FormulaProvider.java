@@ -22,17 +22,16 @@
  */
 package org.spldev.formula.expression;
 
-import org.spldev.formula.expression.io.FormulaFormatManager;
-import org.spldev.formula.expression.transform.CNFDistributiveLawTransformer;
-import org.spldev.formula.expression.transform.CNFTseytinTransformer;
-import org.spldev.formula.expression.transform.DNFDistributiveLawTransformer;
+import java.nio.file.*;
+
+import org.spldev.formula.expression.io.*;
+import org.spldev.formula.expression.transform.*;
 import org.spldev.util.*;
 import org.spldev.util.data.*;
 
-import java.nio.file.Path;
-
 /**
- * Provides formulas in different forms (as loaded from a file or transformed into CNF/DNF).
+ * Provides formulas in different forms (as loaded from a file or transformed
+ * into CNF/DNF).
  *
  * @author Sebastian Krieter
  */
