@@ -73,7 +73,7 @@ public class KConfigReaderFormat implements Format<Formula> {
 
 	@Override
 	public String getName() {
-		return "KMax";
+		return "kconfigreader";
 	}
 
 }

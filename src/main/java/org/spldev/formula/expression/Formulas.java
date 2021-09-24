@@ -62,8 +62,8 @@ public final class Formulas {
 		return NormalForms.toNF(formula, new CNFDistributiveLawTransformer());
 	}
 
-	public static Result<Formula> toCNF(Formula formula, int tseytinLimit) {
-		return NormalForms.toNF(formula, new CNFTseytinTransformer(tseytinLimit));
+	public static Result<Formula> toCNF(Formula formula, int maximumNumberOfClauses, int maximumLengthOfClauses) {
+		return NormalForms.toNF(formula, new CNFTseytinTransformer(maximumNumberOfClauses, maximumLengthOfClauses));
 	}
 
 	public static Result<Formula> toDNF(Formula formula) {

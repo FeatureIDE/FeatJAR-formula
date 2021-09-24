@@ -38,15 +38,16 @@ import org.spldev.util.tree.*;
 public class CNFDistributiveLawTransformer extends DistributiveLawTransformer {
 
 	public CNFDistributiveLawTransformer() {
-		this(Integer.MAX_VALUE);
+		this(Integer.MAX_VALUE, Integer.MAX_VALUE);
 	}
 
-	public CNFDistributiveLawTransformer(int clauseLimit) {
-		super(Or.class, Or::new, clauseLimit);
+	public CNFDistributiveLawTransformer(int maximumNumberOfClauses, int maximumLengthOfClauses) {
+		super(Or.class, Or::new, maximumNumberOfClauses, maximumLengthOfClauses);
 	}
 
 	@Override
-	public Formula execute(Formula formula, InternalMonitor monitor) throws ClauseLimitedExceededException {
+	public Formula execute(Formula formula, InternalMonitor monitor)
+			throws MaximumNumberOfClausesExceededException, MaximumLengthOfClausesExceededException {
 		formula = Trees.cloneTree(formula);
 		final NFTester nfTester = NormalForms.getNFTester(formula, NormalForm.CNF);
 		if (nfTester.isNf) {
@@ -58,7 +59,7 @@ public class CNFDistributiveLawTransformer extends DistributiveLawTransformer {
 			if (formula instanceof And) {
 				final ArrayList<Formula> newChildren = new ArrayList<>();
 				final List<Formula> children = ((And) formula).getChildren();
-				for (Formula child : children) {
+				for (Formula child : children) { // todo: can be parallelized
 					child = new And(child);
 					transform(child);
 					newChildren.addAll(((And) child).getChildren());

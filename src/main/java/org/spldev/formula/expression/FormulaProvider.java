@@ -99,12 +99,13 @@ public interface FormulaProvider extends Provider<Formula> {
 			return identifier;
 		}
 
-		static TseytinCNF fromFormula(int threshold) {
-			return (c, m) -> Provider.convert(c, FormulaProvider.identifier, new CNFTseytinTransformer(threshold), m);
+		static TseytinCNF fromFormula(int maximumNumberOfClauses, int maximumLengthOfClauses) {
+			return (c, m) -> Provider.convert(c, FormulaProvider.identifier,
+					new CNFTseytinTransformer(maximumNumberOfClauses, maximumLengthOfClauses), m);
 		}
 
 		static TseytinCNF fromFormula() {
-			return fromFormula(0);
+			return fromFormula(0, 0);
 		}
 	}
 }

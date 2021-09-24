@@ -36,15 +36,16 @@ import org.spldev.util.tree.*;
 public class DNFDistributiveLawTransformer extends DistributiveLawTransformer {
 
 	public DNFDistributiveLawTransformer() {
-		this(Integer.MAX_VALUE);
+		this(Integer.MAX_VALUE, Integer.MAX_VALUE);
 	}
 
-	public DNFDistributiveLawTransformer(int clauseLimit) {
-		super(And.class, And::new, clauseLimit);
+	public DNFDistributiveLawTransformer(int maximumNumberOfClauses, int maximumLengthOfClauses) {
+		super(And.class, And::new, maximumNumberOfClauses, maximumLengthOfClauses);
 	}
 
 	@Override
-	public Formula execute(Formula formula, InternalMonitor monitor) throws ClauseLimitedExceededException {
+	public Formula execute(Formula formula, InternalMonitor monitor)
+			throws MaximumNumberOfClausesExceededException, MaximumLengthOfClausesExceededException {
 		formula = Trees.cloneTree(formula);
 		final NFTester nfTester = NormalForms.getNFTester(formula, NormalForm.DNF);
 		if (nfTester.isNf) {
