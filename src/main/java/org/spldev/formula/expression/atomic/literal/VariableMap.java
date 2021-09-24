@@ -39,27 +39,29 @@ import org.spldev.util.logging.*;
  */
 public class VariableMap implements Cloneable, Serializable {
 
-	private final class VariableSignature implements Cloneable, Serializable {
+	private final static class VariableSignature implements Cloneable, Serializable {
 
 		private static final long serialVersionUID = 400642420402382937L;
 
+		private final VariableMap map;
 		private final String name;
 		private final int index;
 		private final Class<? extends Variable<?>> type;
 
-		public VariableSignature(String name, int index, Class<? extends Variable<?>> type) {
+		public VariableSignature(VariableMap map, String name, int index, Class<? extends Variable<?>> type) {
+			this.map = map;
 			this.name = name;
 			this.index = index;
 			this.type = type;
 		}
 
-		public VariableSignature rename(String newName) {
-			return new VariableSignature(newName, index, type);
+		private VariableSignature rename(String newName) {
+			return new VariableSignature(map, newName, index, type);
 		}
 
-		public Variable<?> newInstance() {
+		private Variable<?> newInstance() {
 			try {
-				return type.getConstructor(int.class, VariableMap.class).newInstance(index, VariableMap.this);
+				return type.getConstructor(int.class, VariableMap.class).newInstance(index, map);
 			} catch (final Exception e) {
 				Logger.logError(e);
 				return null;
@@ -68,7 +70,7 @@ public class VariableMap implements Cloneable, Serializable {
 
 		@Override
 		public VariableSignature clone() {
-			return new VariableSignature(name, index, type);
+			return new VariableSignature(map, name, index, type);
 		}
 
 		@Override
@@ -120,6 +122,40 @@ public class VariableMap implements Cloneable, Serializable {
 		return new VariableMap();
 	}
 
+	public static VariableMap withoutIndexes(VariableMap map, Collection<Integer> indexesToRemove) {
+		final VariableMap newMap = new VariableMap();
+		final Set<Integer> indexSet = (indexesToRemove instanceof Set)
+			? (Set<Integer>) indexesToRemove
+			: new HashSet<>(indexesToRemove);
+		for (VariableSignature sig : map.indexToName) {
+			if ((sig != null) && !indexSet.contains(sig.index)) {
+				final int newIndex = newMap.indexToName.size();
+				sig = new VariableSignature(newMap, sig.name, newIndex, sig.type);
+				newMap.indexToName.add(sig);
+				newMap.nameToIndex.put(sig.name, sig);
+			}
+		}
+		newMap.indexToName.trimToSize();
+		return newMap;
+	}
+
+	public static VariableMap withoutNames(VariableMap map, Collection<String> namesToRemove) {
+		final VariableMap newMap = new VariableMap();
+		final Set<String> nameSet = (namesToRemove instanceof Set)
+			? (Set<String>) namesToRemove
+			: new HashSet<>(namesToRemove);
+		for (VariableSignature sig : map.indexToName) {
+			if ((sig != null) && !nameSet.contains(sig.name)) {
+				final int newIndex = newMap.indexToName.size();
+				sig = new VariableSignature(newMap, sig.name, newIndex, sig.type);
+				newMap.indexToName.add(sig);
+				newMap.nameToIndex.put(sig.name, sig);
+			}
+		}
+		newMap.indexToName.trimToSize();
+		return newMap;
+	}
+
 	private VariableMap(Map<Integer, String> nameMap) {
 		final Integer maxIndex = nameMap.keySet().stream().max(Integer::compare).orElseThrow();
 
@@ -136,7 +172,7 @@ public class VariableMap implements Cloneable, Serializable {
 			for (VariableSignature sig : otherMap.indexToName) {
 				if (sig != null) {
 					final int newIndex = indexToName.size();
-					sig = new VariableSignature(sig.name, newIndex, sig.type);
+					sig = new VariableSignature(this, sig.name, newIndex, sig.type);
 					indexToName.add(sig);
 					nameToIndex.put(sig.name, sig);
 				}
@@ -244,7 +280,7 @@ public class VariableMap implements Cloneable, Serializable {
 		for (int i = getMaxIndex(); i < index; i++) {
 			indexToName.add(null);
 		}
-		final VariableSignature sig = new VariableSignature(name, index, type);
+		final VariableSignature sig = new VariableSignature(this, name, index, type);
 		nameToIndex.put(name, sig);
 		indexToName.set(index, sig);
 		return sig;
