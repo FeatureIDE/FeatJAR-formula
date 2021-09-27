@@ -107,9 +107,21 @@ public class DimacsReader {
 
 			final List<Or> clauses = readClauses(lineIterator);
 			final int actualVariableCount = indexVariables.size();
+			final int actualClauseCount = clauses.size();
 			if (variableCount != actualVariableCount) {
 				throw new ParseException(String.format("Found %d instead of %d variables", actualVariableCount,
 					variableCount), 1);
+			}
+			if (clauseCount != actualClauseCount) {
+				throw new ParseException(String.format("Found %d instead of %d clauses", actualClauseCount,
+					clauseCount), 1);
+			}
+			if (clauses.isEmpty()) {
+				return And.empty(map);
+			} else {
+				if (clauses.get(0).getChildren().isEmpty()) {
+					clauses.set(0, Or.empty(map));
+				}
 			}
 			return new And(clauses);
 		}

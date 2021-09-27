@@ -130,6 +130,13 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 		} else {
 			Logger.logError("More than one feature model xml elements!");
 		}
+		if (constraints.isEmpty()) {
+			return And.empty(map);
+		} else {
+			if (constraints.get(0).getChildren().isEmpty()) {
+				constraints.set(0, Or.empty(map));
+			}
+		}
 		return new And(constraints);
 	}
 

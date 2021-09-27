@@ -114,8 +114,7 @@ public class VariableMap implements Cloneable, Serializable {
 	}
 
 	public static VariableMap fromExpression(Expression expression) {
-		return Formulas.getVariableStream(expression)
-			.findAny().map(Variable::getVariableMap).orElseGet(VariableMap::new);
+		return expression.getVariableMap();
 	}
 
 	public static VariableMap emptyMap() {

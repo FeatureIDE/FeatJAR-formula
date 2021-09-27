@@ -25,6 +25,7 @@ package org.spldev.formula.expression.compound;
 import java.util.*;
 
 import org.spldev.formula.expression.*;
+import org.spldev.formula.expression.atomic.literal.*;
 
 /**
  * A logical connector that is {@code true} iff at least one of its children is
@@ -33,6 +34,32 @@ import org.spldev.formula.expression.*;
  * @author Sebastian Krieter
  */
 public class Or extends Compound {
+	public static class EmptyOr extends Or {
+		private VariableMap variableMap;
+
+		public EmptyOr(VariableMap variableMap) {
+			this.variableMap = variableMap;
+		}
+
+		@Override
+		public void setVariableMap(VariableMap variableMap) {
+			this.variableMap = variableMap;
+		}
+
+		@Override
+		public VariableMap getVariableMap() {
+			return variableMap;
+		}
+
+		@Override
+		public Or cloneNode() {
+			return new EmptyOr(variableMap);
+		}
+	}
+
+	public static Or empty(VariableMap variableMap) {
+		return new EmptyOr(variableMap);
+	}
 
 	public Or(Collection<? extends Formula> nodes) {
 		super(nodes);
