@@ -100,7 +100,7 @@ public interface FormulaProvider extends Provider<Formula> {
 
 		static TseytinCNF fromFormula(int maximumNumberOfClauses, int maximumLengthOfClauses) {
 			return (c, m) -> Provider.convert(c, FormulaProvider.identifier,
-					new CNFTseytinTransformer(maximumNumberOfClauses, maximumLengthOfClauses), m);
+				new CNFTseytinTransformer(maximumNumberOfClauses, maximumLengthOfClauses), m);
 		}
 
 		static TseytinCNF fromFormula() {

@@ -60,8 +60,8 @@ public abstract class DistributiveLawTransformer implements Transformer {
 	private List<Formula> children;
 
 	public DistributiveLawTransformer(Class<? extends Compound> clauseClass,
-									  Function<Collection<? extends Formula>, Formula> clauseConstructor,
-									  int maximumNumberOfClauses, int maximumLengthOfClauses) {
+		Function<Collection<? extends Formula>, Formula> clauseConstructor,
+		int maximumNumberOfClauses, int maximumLengthOfClauses) {
 		this.clauseClass = clauseClass;
 		this.clauseConstructor = clauseConstructor;
 		this.maximumNumberOfClauses = maximumNumberOfClauses;
@@ -69,7 +69,7 @@ public abstract class DistributiveLawTransformer implements Transformer {
 	}
 
 	public void transform(Expression node)
-			throws MaximumNumberOfClausesExceededException, MaximumLengthOfClausesExceededException {
+		throws MaximumNumberOfClausesExceededException, MaximumLengthOfClausesExceededException {
 		if (node != null) {
 			final ArrayList<PathElement> path = new ArrayList<>();
 			final ArrayDeque<Expression> stack = new ArrayDeque<>();
@@ -113,7 +113,7 @@ public abstract class DistributiveLawTransformer implements Transformer {
 
 	@SuppressWarnings("unchecked")
 	private List<Formula> convert(Expression child)
-			throws MaximumNumberOfClausesExceededException, MaximumLengthOfClausesExceededException {
+		throws MaximumNumberOfClausesExceededException, MaximumLengthOfClausesExceededException {
 		if (child instanceof Literal) {
 			return null;
 		} else {

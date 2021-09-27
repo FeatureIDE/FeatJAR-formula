@@ -47,7 +47,7 @@ public class CNFDistributiveLawTransformer extends DistributiveLawTransformer {
 
 	@Override
 	public Formula execute(Formula formula, InternalMonitor monitor)
-			throws MaximumNumberOfClausesExceededException, MaximumLengthOfClausesExceededException {
+		throws MaximumNumberOfClausesExceededException, MaximumLengthOfClausesExceededException {
 		formula = Trees.cloneTree(formula);
 		final NFTester nfTester = NormalForms.getNFTester(formula, NormalForm.CNF);
 		if (nfTester.isNf) {
