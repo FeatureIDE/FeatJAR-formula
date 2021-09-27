@@ -42,6 +42,8 @@ public class CNFTseytinTransformer implements Transformer, TreeVisitor<Formula, 
 	private VariableMap variableMap = null;
 	private int count = 0;
 	private HashMap<Formula, BoolVariable> newVariables = new HashMap<>();
+	static private int numberOfTseytinTransformedClauses = 0; // TODO: making this static is an ugly hack, not
+																// parallelizable
 
 	private final CNFDistributiveLawTransformer distributiveLawTransformer;
 
@@ -62,6 +64,7 @@ public class CNFTseytinTransformer implements Transformer, TreeVisitor<Formula, 
 
 	@Override
 	public Formula execute(Formula formula, InternalMonitor monitor) {
+		numberOfTseytinTransformedClauses = 0;
 		formula = Trees.cloneTree(formula);
 		final NFTester nfTester = NormalForms.getNFTester(formula, NormalForm.CNF);
 		if (nfTester.isNf) {
@@ -120,8 +123,10 @@ public class CNFTseytinTransformer implements Transformer, TreeVisitor<Formula, 
 		}
 		if (!stack.isEmpty()) {
 			newChildren.add(stack.pop());
+			numberOfTseytinTransformedClauses++;
 		}
 		newChildren.addAll(substitutes);
+		numberOfTseytinTransformedClauses += substitutes.size();
 	}
 
 	@Override
@@ -218,4 +223,7 @@ public class CNFTseytinTransformer implements Transformer, TreeVisitor<Formula, 
 		return TreeVisitor.super.lastVisit(path);
 	}
 
+	static public int getNumberOfTseytinTransformedClauses() {
+		return numberOfTseytinTransformedClauses;
+	}
 }
