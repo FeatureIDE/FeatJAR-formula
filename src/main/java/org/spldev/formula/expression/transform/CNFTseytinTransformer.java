@@ -37,14 +37,11 @@ import org.spldev.util.tree.visitor.*;
 
 public class CNFTseytinTransformer implements Transformer, TreeVisitor<Formula, Formula> {
 
-	private ArrayDeque<Formula> stack = new ArrayDeque<>();
-	private List<Formula> substitutes = new ArrayList<>();
+	protected ArrayDeque<Formula> stack = new ArrayDeque<>();
+	protected List<Formula> substitutes = new ArrayList<>();
 	private VariableMap variableMap = null;
 	private int count = 0;
-	private HashMap<Formula, BoolVariable> newVariables = new HashMap<>();
-	static private int numberOfTseytinTransformedClauses = 0; // TODO: making this static is an ugly hack, not
-																// parallelizable
-
+	private final HashMap<Formula, BoolVariable> newVariables = new HashMap<>();
 	private final CNFDistributiveLawTransformer distributiveLawTransformer;
 
 	public CNFTseytinTransformer(int maximumNumberOfClauses, int maximumLengthOfClauses) {
@@ -64,7 +61,6 @@ public class CNFTseytinTransformer implements Transformer, TreeVisitor<Formula, 
 
 	@Override
 	public Formula execute(Formula formula, InternalMonitor monitor) {
-		numberOfTseytinTransformedClauses = 0;
 		formula = Trees.cloneTree(formula);
 		final NFTester nfTester = NormalForms.getNFTester(formula, NormalForm.CNF);
 		if (nfTester.isNf) {
@@ -119,14 +115,12 @@ public class CNFTseytinTransformer implements Transformer, TreeVisitor<Formula, 
 		stack.clear();
 		try {
 			Trees.dfsPrePost(child, this);
-		} catch (final Exception e) {
+		} catch (final Exception ignored) {
 		}
 		if (!stack.isEmpty()) {
 			newChildren.add(stack.pop());
-			numberOfTseytinTransformedClauses++;
 		}
 		newChildren.addAll(substitutes);
-		numberOfTseytinTransformedClauses += substitutes.size();
 	}
 
 	@Override
@@ -169,18 +163,16 @@ public class CNFTseytinTransformer implements Transformer, TreeVisitor<Formula, 
 			}
 
 			if (stack.isEmpty()) {
-				Collections.sort(newChildren, Comparator.comparing(Expression::toString));
+				newChildren.sort(Comparator.comparing(Expression::toString));
 				if (lastNode instanceof And) {
-					for (final Formula child : newChildren) {
-						substitutes.add(child);
-					}
+					substitutes.addAll(newChildren);
 				} else {
 					substitutes.add(new Or(newChildren));
 				}
 			} else {
 				final Formula clonedLastNode = Trees.cloneTree(lastNode);
 				final ArrayList<? extends Expression> clonedChildren = new ArrayList<>(clonedLastNode.getChildren());
-				Collections.sort(clonedChildren, Comparator.comparing(Expression::toString));
+				clonedChildren.sort(Comparator.comparing(Expression::toString));
 				clonedLastNode.setChildren(clonedChildren);
 
 				LiteralPredicate tempLiteral;
@@ -221,9 +213,5 @@ public class CNFTseytinTransformer implements Transformer, TreeVisitor<Formula, 
 
 		}
 		return TreeVisitor.super.lastVisit(path);
-	}
-
-	static public int getNumberOfTseytinTransformedClauses() {
-		return numberOfTseytinTransformedClauses;
 	}
 }
