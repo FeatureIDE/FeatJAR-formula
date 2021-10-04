@@ -78,12 +78,10 @@ public class CNFTseytinTransformer implements Transformer, TreeVisitor<Formula, 
 						if (child instanceof And) {
 							for (Formula grandChild : ((And) child).getChildren()) {
 								grandChild = Trees.cloneTree(grandChild);
-								grandChild.setVariableMap(variableMap);
 								newChildren.add(grandChild);
 							}
 						} else {
 							child = Trees.cloneTree(child);
-							child.setVariableMap(variableMap);
 							newChildren.add(child);
 						}
 					} else {
@@ -102,6 +100,7 @@ public class CNFTseytinTransformer implements Transformer, TreeVisitor<Formula, 
 					}
 				}
 				formula = new And(newChildren);
+				formula.setVariableMap(variableMap);
 			} else {
 				formula = Trees.traverse(formula, this).get();
 			}
