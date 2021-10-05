@@ -37,9 +37,9 @@ import org.spldev.util.logging.*;
  *
  * @author Sebastian Krieter
  */
-public class VariableMap implements Cloneable, Serializable {
+public class VariableMap implements Cloneable, Serializable, Iterable<VariableMap.VariableSignature> {
 
-	private final static class VariableSignature implements Cloneable, Serializable {
+	public final static class VariableSignature implements Cloneable, Serializable {
 
 		private static final long serialVersionUID = 400642420402382937L;
 
@@ -53,6 +53,18 @@ public class VariableMap implements Cloneable, Serializable {
 			this.name = name;
 			this.index = index;
 			this.type = type;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public int getIndex() {
+			return index;
+		}
+
+		public Class<? extends Variable<?>> getType() {
+			return type;
 		}
 
 		private VariableSignature rename(String newName) {
@@ -400,6 +412,15 @@ public class VariableMap implements Cloneable, Serializable {
 	@Override
 	public VariableMap clone() {
 		return new VariableMap(this, false);
+	}
+
+	public List<VariableSignature> getSignatures() {
+		return indexToName;
+	}
+
+	@Override
+	public Iterator<VariableSignature> iterator() {
+		return indexToName.iterator();
 	}
 
 }

@@ -27,7 +27,6 @@ import java.util.stream.*;
 
 import org.spldev.formula.expression.ValueVisitor.*;
 import org.spldev.formula.expression.atomic.*;
-import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.formula.expression.term.*;
 import org.spldev.formula.expression.transform.*;
 import org.spldev.formula.expression.transform.NormalForms.*;
@@ -59,15 +58,15 @@ public final class Formulas {
 	}
 
 	public static Result<Formula> toCNF(Formula formula) {
-		return NormalForms.toNF(formula, new CNFDistributiveLawTransformer());
+		return NormalForms.toNF(formula, new CNFTransformer());
 	}
 
 	public static Result<Formula> toCNF(Formula formula, int maximumNumberOfClauses, int maximumLengthOfClauses) {
-		return NormalForms.toNF(formula, new CNFTseytinTransformer(maximumNumberOfClauses, maximumLengthOfClauses));
+		return NormalForms.toNF(formula, new CNFTransformer(maximumNumberOfClauses, maximumLengthOfClauses));
 	}
 
 	public static Result<Formula> toDNF(Formula formula) {
-		return NormalForms.toNF(formula, new DNFDistributiveLawTransformer());
+		return NormalForms.toNF(formula, new DNFTransformer());
 	}
 
 	public static Expression manipulate(Expression node, TreeVisitor<Void, Expression> visitor) {
@@ -88,18 +87,6 @@ public final class Formulas {
 
 	public static List<Variable<?>> getVariables(Expression node) {
 		return getVariableStream(node).collect(Collectors.toList());
-	}
-
-	public static Expression mergeVariableMaps(Expression expression) {
-		final List<VariableMap> maps = Formulas.getVariableStream(expression).map(Variable::getVariableMap).distinct()
-			.collect(Collectors.toList());
-		if (maps.size() > 1) {
-			final VariableMap newMap = VariableMap.fromNames(
-				maps.stream().flatMap(v -> v.getNames().stream()).distinct().collect(Collectors.toList()));
-			Trees.postOrderStream(expression) //
-				.forEach(e -> e.mapChildren(v -> (v instanceof Variable) ? ((Variable<?>) v).adapt(newMap) : v));
-		}
-		return expression;
 	}
 
 }

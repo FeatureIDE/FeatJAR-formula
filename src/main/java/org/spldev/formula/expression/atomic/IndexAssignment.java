@@ -23,6 +23,7 @@
 package org.spldev.formula.expression.atomic;
 
 import java.util.*;
+import java.util.Map.*;
 import java.util.stream.*;
 
 import org.spldev.util.data.*;
@@ -56,6 +57,18 @@ public class IndexAssignment implements Assignment {
 	@Override
 	public void unsetAll() {
 		assignments.clear();
+	}
+
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder();
+		for (final Entry<Integer, Object> entry : assignments.entrySet()) {
+			sb.append(entry.getKey());
+			sb.append(": ");
+			sb.append(entry.getValue());
+			sb.append("\n");
+		}
+		return sb.toString();
 	}
 
 }

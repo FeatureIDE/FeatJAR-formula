@@ -45,9 +45,4 @@ public class BoolVariable extends Variable<Boolean> {
 		return new BoolVariable(this);
 	}
 
-	@Override
-	public BoolVariable clone(int index, VariableMap map) {
-		return new BoolVariable(index, map);
-	}
-
 }

@@ -24,30 +24,46 @@ package org.spldev.formula.expression.transform;
 
 import org.spldev.formula.expression.*;
 import org.spldev.formula.expression.compound.*;
+import org.spldev.formula.expression.transform.DistributiveLawTransformer.*;
+import org.spldev.formula.expression.transform.NormalForms.*;
 import org.spldev.util.job.*;
+import org.spldev.util.tree.*;
 
 /**
- * Transforms propositional formulas into CNF.
+ * Transforms propositional formulas into DNF.
  *
  * @author Sebastian Krieter
  */
-public class DNFDistributiveLawTransformer extends DistributiveLawTransformer {
+public class DNFTransformer implements Transformer {
 
-	public DNFDistributiveLawTransformer() {
+	private final DistributiveLawTransformer distributiveLawTransformer;
+
+	public DNFTransformer() {
 		this(Integer.MAX_VALUE, Integer.MAX_VALUE);
 	}
 
-	public DNFDistributiveLawTransformer(int maximumNumberOfClauses, int maximumLengthOfClauses) {
-		super(And.class, And::new, maximumNumberOfClauses, maximumLengthOfClauses);
+	public DNFTransformer(int maximumNumberOfClauses, int maximumLengthOfClauses) {
+		distributiveLawTransformer = new DistributiveLawTransformer(And.class, And::new, maximumNumberOfClauses,
+			maximumLengthOfClauses);
 	}
 
 	@Override
-	public Compound execute(Formula formula, InternalMonitor monitor)
+	public Formula execute(Formula formula, InternalMonitor monitor)
 		throws MaximumNumberOfClausesExceededException, MaximumLengthOfClausesExceededException {
-		final Compound compound = (formula instanceof Or)
-			? (Or) formula
-			: new Or(formula);
-		return super.execute(compound, monitor);
+		final NFTester nfTester = NormalForms.getNFTester(formula, NormalForm.DNF);
+		if (nfTester.isNf) {
+			if (!nfTester.isClausalNf()) {
+				return NormalForms.toClausalNF(Trees.cloneTree(formula), NormalForm.DNF);
+			} else {
+				return Trees.cloneTree(formula);
+			}
+		} else {
+			formula = NormalForms.simplifyForNF(Trees.cloneTree(formula));
+			formula = distributiveLawTransformer.execute((formula instanceof Or) ? (Or) formula : new Or(formula),
+				monitor);
+			formula = NormalForms.toClausalNF(formula, NormalForm.DNF);
+			return formula;
+		}
 	}
 
 }

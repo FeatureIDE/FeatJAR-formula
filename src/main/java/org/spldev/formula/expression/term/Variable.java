@@ -29,7 +29,7 @@ import org.spldev.formula.expression.atomic.literal.*;
 
 public abstract class Variable<T> extends Terminal implements Term<T> {
 
-	protected final int index;
+	protected int index;
 	protected VariableMap map;
 
 	public Variable(int index, VariableMap map) {
@@ -66,10 +66,10 @@ public abstract class Variable<T> extends Terminal implements Term<T> {
 		this.map = Objects.requireNonNull(map);
 	}
 
-	public abstract Variable<T> clone(int index, VariableMap map);
-
-	public Variable<T> adapt(VariableMap newMap) {
-		return clone(newMap.getIndex(getName()).orElse(0), newMap);
+	@Override
+	public void adaptVariableMap(VariableMap newMap) {
+		index = newMap.getIndex(getName()).orElse(0);
+		this.map = newMap;
 	}
 
 	@Override

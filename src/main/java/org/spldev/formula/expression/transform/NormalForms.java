@@ -57,7 +57,7 @@ public final class NormalForms {
 
 	public static boolean isNF(Formula formula, NormalForm normalForm, boolean clausal) {
 		final NFTester tester = getNFTester(formula, normalForm);
-		return clausal ? tester.isClausalNf() : tester.isNf;
+		return clausal ? tester.isClausalNf() : tester.isNf();
 	}
 
 	static NFTester getNFTester(Formula formula, NormalForm normalForm) {
