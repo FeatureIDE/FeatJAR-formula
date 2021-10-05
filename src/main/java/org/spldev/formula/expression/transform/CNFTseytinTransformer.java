@@ -45,7 +45,7 @@ public class CNFTseytinTransformer implements Transformer, TreeVisitor<Formula, 
 	private final CNFDistributiveLawTransformer distributiveLawTransformer;
 
 	public CNFTseytinTransformer(int maximumNumberOfClauses, int maximumLengthOfClauses) {
-		distributiveLawTransformer = maximumNumberOfClauses > 0 || maximumLengthOfClauses > 0
+		distributiveLawTransformer = maximumNumberOfClauses > 0 && maximumLengthOfClauses > 0
 			? new CNFDistributiveLawTransformer(maximumNumberOfClauses, maximumLengthOfClauses)
 			: null;
 	}
