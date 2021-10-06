@@ -49,7 +49,7 @@ public class DistributiveLawCounter implements TreeVisitor<Integer, Formula> {
 	}
 
 	@Override
-	public Integer getResult() {
+	public Integer getResult() { // TODO BigInteger?
 		return stack.pop().clauseNumber;
 	}
 
