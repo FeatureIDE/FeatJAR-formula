@@ -134,22 +134,22 @@ public class CNFTransformer implements Transformer {
 	}
 
 	private void transform(Formula child) {
-		if (isCNF(child)) {
-			if (child instanceof And) {
-				distributiveClauses.addAll(Trees.cloneTree((And) child).getChildren());
+		final Formula clonedChild = Trees.cloneTree(child);
+		if (isCNF(clonedChild)) {
+			if (clonedChild instanceof And) {
+				distributiveClauses.addAll(((And) clonedChild).getChildren());
 			} else {
-				distributiveClauses.add(Trees.cloneTree(child));
+				distributiveClauses.add(clonedChild);
 			}
 		} else {
 			if (useDistributive) {
 				try {
-					distributiveClauses.addAll(distributive(Trees.cloneTree(child), new NullMonitor()).getChildren());
+					distributiveClauses.addAll(distributive(clonedChild, new NullMonitor()).getChildren());
+					return;
 				} catch (final TransformException e) {
-					tseytinClauses.addAll(tseytin(Trees.cloneTree(child), new NullMonitor()));
 				}
-			} else {
-				tseytinClauses.addAll(tseytin(Trees.cloneTree(child), new NullMonitor()));
 			}
+			tseytinClauses.addAll(tseytin(clonedChild, new NullMonitor()));
 		}
 	}
 
