@@ -29,7 +29,6 @@ import org.spldev.formula.expression.*;
 import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.formula.expression.compound.*;
 import org.spldev.formula.expression.transform.*;
-import org.spldev.util.*;
 import org.spldev.util.logging.*;
 import org.spldev.util.tree.*;
 import org.w3c.dom.*;
@@ -52,8 +51,7 @@ public class XmlFeatureModelCNFFormat extends XmlFeatureModelFormat {
 			parseConstraints(getElement(e, CONSTRAINTS));
 			final List<Formula> crossTreeConstraints = constraints.subList(crossTreeConstraintsIndex,
 				constraints.size());
-			final List<Formula> cnfConstraints = crossTreeConstraints.stream().map(Formulas::toCNF).map(Result::get)
-				.collect(Collectors.toList());
+			final List<Formula> cnfConstraints = new ArrayList<>(crossTreeConstraints);
 			crossTreeConstraints.clear();
 			constraints.addAll(cnfConstraints);
 		} else if (elementList.isEmpty()) {
