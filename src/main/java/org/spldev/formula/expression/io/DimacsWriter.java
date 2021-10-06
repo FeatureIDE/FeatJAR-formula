@@ -138,8 +138,10 @@ public class DimacsWriter {
 	 * @param clause clause to transform; not null
 	 */
 	private void writeClause(StringBuilder sb, Or clause) {
-		for (final Formula l : clause.getChildren()) {
-			sb.append(variables.getIndex(l.getName()).get());
+		for (final Formula child : clause.getChildren()) {
+			final Literal l = (Literal) child;
+			final Integer index = variables.getIndex(l.getName()).get();
+			sb.append(l.isPositive() ? index : -index);
 			sb.append(' ');
 		}
 		sb.append(DIMACSConstants.CLAUSE_END);
