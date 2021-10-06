@@ -77,15 +77,11 @@ public class VariableAssignment implements Assignment {
 
 	@Override
 	public Optional<Object> get(int index) {
-		final Variable<?> variable = variables.getVariable(index)
-			.orElseThrow(() -> new NoSuchElementException(String.valueOf(index)));
-		return Optional.ofNullable(assignments.get(variable));
+		return variables.getVariable(index).map(v -> assignments.get(v));
 	}
 
 	public Optional<Object> get(String name) {
-		final Variable<?> variable = variables.getVariable(name)
-			.orElseThrow(() -> new NoSuchElementException(name));
-		return Optional.ofNullable(assignments.get(variable));
+		return variables.getVariable(name).map(v -> assignments.get(v));
 	}
 
 	public Set<Entry<Variable<?>, Object>> getAllEntries() {
@@ -100,6 +96,18 @@ public class VariableAssignment implements Assignment {
 	public List<Pair<Integer, Object>> getAll() {
 		return assignments.entrySet().stream().map(e -> new Pair<>(e.getKey().getIndex(), e.getValue())).collect(
 			Collectors.toList());
+	}
+
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder();
+		for (final Entry<Variable<?>, Object> entry : assignments.entrySet()) {
+			sb.append(entry.getKey());
+			sb.append(": ");
+			sb.append(entry.getValue());
+			sb.append("\n");
+		}
+		return sb.toString();
 	}
 
 }

@@ -28,18 +28,25 @@ import java.util.function.*;
 import org.spldev.formula.expression.*;
 import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.formula.expression.compound.*;
+import org.spldev.util.job.*;
 
 /**
  * Transforms propositional formulas into (clausal) CNF or DNF.
  *
  * @author Sebastian Krieter
  */
-public abstract class DistributiveLawTransformer implements Transformer {
+public class DistributiveLawTransformer implements MonitorableFunction<Formula, Compound> {
 
-	public static class MaximumNumberOfClausesExceededException extends Exception {
+	public static class TransformException extends Exception {
+		private static final long serialVersionUID = -988432481171140093L;
 	}
 
-	public static class MaximumLengthOfClausesExceededException extends Exception {
+	public static class MaximumNumberOfClausesExceededException extends TransformException {
+		private static final long serialVersionUID = -4715579178854785874L;
+	}
+
+	public static class MaximumLengthOfClausesExceededException extends TransformException {
+		private static final long serialVersionUID = 7582471416721588997L;
 	}
 
 	private static class PathElement {
@@ -68,47 +75,47 @@ public abstract class DistributiveLawTransformer implements Transformer {
 		this.maximumLengthOfClauses = maximumLengthOfClauses;
 	}
 
-	public void transform(Expression node)
-		throws MaximumNumberOfClausesExceededException, MaximumLengthOfClausesExceededException {
-		if (node != null) {
-			final ArrayList<PathElement> path = new ArrayList<>();
-			final ArrayDeque<Expression> stack = new ArrayDeque<>();
-			stack.addLast(node);
-			while (!stack.isEmpty()) {
-				final Expression curNode = stack.getLast();
-				final boolean firstEncounter = path.isEmpty() || (curNode != path.get(path.size() - 1).node);
-				if (firstEncounter) {
-					if (curNode instanceof Literal) {
-						final PathElement parent = path.get(path.size() - 1);
-						parent.newChildren.add(curNode);
-						stack.removeLast();
-					} else {
-						path.add(new PathElement(curNode));
-						curNode.getChildren().forEach(stack::addLast);
-					}
+	@Override
+	public Compound execute(Formula node, InternalMonitor monitor) throws MaximumNumberOfClausesExceededException,
+		MaximumLengthOfClausesExceededException {
+		final ArrayList<PathElement> path = new ArrayList<>();
+		final ArrayDeque<Expression> stack = new ArrayDeque<>();
+		stack.addLast(node);
+		while (!stack.isEmpty()) {
+			final Expression curNode = stack.getLast();
+			final boolean firstEncounter = path.isEmpty() || (curNode != path.get(path.size() - 1).node);
+			if (firstEncounter) {
+				if (curNode instanceof Literal) {
+					final PathElement parent = path.get(path.size() - 1);
+					parent.newChildren.add(curNode);
+					stack.removeLast();
 				} else {
-					final PathElement currentElement = path.remove(path.size() - 1);
-					curNode.setChildren(currentElement.newChildren);
+					path.add(new PathElement(curNode));
+					curNode.getChildren().forEach(stack::addLast);
+				}
+			} else {
+				final PathElement currentElement = path.remove(path.size() - 1);
+				curNode.setChildren(currentElement.newChildren);
 
+				if (!path.isEmpty()) {
+					final PathElement parentElement = path.get(path.size() - 1);
+					parentElement.maxDepth = Math.max(currentElement.maxDepth + 1, parentElement.maxDepth);
+				}
+
+				if ((clauseClass == curNode.getClass()) && (currentElement.maxDepth > 0)) {
+					final PathElement parentElement = path.get(path.size() - 1);
+					parentElement.newChildren.addAll(convert(curNode));
+					parentElement.maxDepth = 1;
+				} else {
 					if (!path.isEmpty()) {
 						final PathElement parentElement = path.get(path.size() - 1);
-						parentElement.maxDepth = Math.max(currentElement.maxDepth + 1, parentElement.maxDepth);
+						parentElement.newChildren.add(curNode);
 					}
-
-					if ((clauseClass == curNode.getClass()) && (currentElement.maxDepth > 0)) {
-						final PathElement parentElement = path.get(path.size() - 1);
-						parentElement.newChildren.addAll(convert(curNode));
-						parentElement.maxDepth = 1;
-					} else {
-						if (!path.isEmpty()) {
-							final PathElement parentElement = path.get(path.size() - 1);
-							parentElement.newChildren.add(curNode);
-						}
-					}
-					stack.removeLast();
 				}
+				stack.removeLast();
 			}
 		}
+		return (Compound) node;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -156,7 +163,7 @@ public abstract class DistributiveLawTransformer implements Transformer {
 			if (clauses.size() > maximumNumberOfClauses) {
 				throw new MaximumNumberOfClausesExceededException();
 			}
-			HashSet<Literal> newClause = new HashSet<>(literals);
+			final HashSet<Literal> newClause = new HashSet<>(literals);
 			if (newClause.size() > maximumLengthOfClauses) {
 				throw new MaximumLengthOfClausesExceededException();
 			}

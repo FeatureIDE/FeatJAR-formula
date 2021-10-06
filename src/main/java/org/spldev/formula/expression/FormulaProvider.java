@@ -28,6 +28,7 @@ import org.spldev.formula.expression.io.*;
 import org.spldev.formula.expression.transform.*;
 import org.spldev.util.*;
 import org.spldev.util.data.*;
+import org.spldev.util.job.*;
 
 /**
  * Provides formulas in different forms (as loaded from a file or transformed
@@ -61,18 +62,42 @@ public interface FormulaProvider extends Provider<Formula> {
 		return (c, m) -> Provider.load(path, FormulaFormatManager.getInstance());
 	}
 
-	@FunctionalInterface
-	interface CNF extends FormulaProvider {
-		Identifier<Formula> identifier = new Identifier<>();
+	public static class CNF implements FormulaProvider {
+		public static final Identifier<Formula> identifier = new Identifier<>();
+		private final int[] tseytinParameters;
+
+		private CNF() {
+			this(Integer.MAX_VALUE, Integer.MAX_VALUE);
+		}
+
+		private CNF(int maximumNumberOfClauses, int maximumLengthOfClauses) {
+			tseytinParameters = new int[] { maximumNumberOfClauses, maximumLengthOfClauses };
+		}
 
 		@Override
-		default Identifier<Formula> getIdentifier() {
+		public Object getParameters() {
+			return tseytinParameters;
+		}
+
+		@Override
+		public Identifier<Formula> getIdentifier() {
 			return identifier;
 		}
 
-		static CNF fromFormula() {
-			return (c, m) -> Provider.convert(c, FormulaProvider.identifier, new CNFDistributiveLawTransformer(), m);
+		@Override
+		public Result<Formula> apply(Cache c, InternalMonitor m) {
+			return Provider.convert(c, FormulaProvider.identifier, new CNFTransformer(tseytinParameters[0],
+				tseytinParameters[1]), m);
 		}
+
+		public static CNF fromFormula() {
+			return new CNF();
+		}
+
+		public static CNF fromFormula(int maximumNumberOfClauses, int maximumLengthOfClauses) {
+			return new CNF(maximumNumberOfClauses, maximumLengthOfClauses);
+		}
+
 	}
 
 	@FunctionalInterface
@@ -85,7 +110,7 @@ public interface FormulaProvider extends Provider<Formula> {
 		}
 
 		static DNF fromFormula() {
-			return (c, m) -> Provider.convert(c, FormulaProvider.identifier, new DNFDistributiveLawTransformer(), m);
+			return (c, m) -> Provider.convert(c, FormulaProvider.identifier, new DNFTransformer(), m);
 		}
 	}
 
@@ -100,7 +125,7 @@ public interface FormulaProvider extends Provider<Formula> {
 
 		static TseytinCNF fromFormula(int maximumNumberOfClauses, int maximumLengthOfClauses) {
 			return (c, m) -> Provider.convert(c, FormulaProvider.identifier,
-				new CNFTseytinTransformer(maximumNumberOfClauses, maximumLengthOfClauses), m);
+				new CNFTransformer(maximumNumberOfClauses, maximumLengthOfClauses), m);
 		}
 
 		static TseytinCNF fromFormula() {

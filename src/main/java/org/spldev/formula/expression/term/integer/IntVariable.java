@@ -45,9 +45,4 @@ public class IntVariable extends Variable<Long> {
 		return new IntVariable(this);
 	}
 
-	@Override
-	public IntVariable clone(int index, VariableMap map) {
-		return new IntVariable(index, map);
-	}
-
 }

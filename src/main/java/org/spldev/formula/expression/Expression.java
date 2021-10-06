@@ -44,6 +44,12 @@ public interface Expression extends Tree<Expression> {
 		}
 	}
 
+	default void adaptVariableMap(VariableMap map) {
+		for (final Expression child : getChildren()) {
+			child.adaptVariableMap(map);
+		}
+	}
+
 	default VariableMap getVariableMap() {
 		return Formulas.getVariableStream(this)
 			.findAny()

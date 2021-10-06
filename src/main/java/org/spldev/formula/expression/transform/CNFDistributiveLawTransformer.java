@@ -22,13 +22,9 @@
  */
 package org.spldev.formula.expression.transform;
 
-import java.util.*;
-
 import org.spldev.formula.expression.*;
 import org.spldev.formula.expression.compound.*;
-import org.spldev.formula.expression.transform.NormalForms.*;
 import org.spldev.util.job.*;
-import org.spldev.util.tree.*;
 
 /**
  * Transforms propositional formulas into CNF.
@@ -46,32 +42,12 @@ public class CNFDistributiveLawTransformer extends DistributiveLawTransformer {
 	}
 
 	@Override
-	public Formula execute(Formula formula, InternalMonitor monitor)
+	public Compound execute(Formula formula, InternalMonitor monitor)
 		throws MaximumNumberOfClausesExceededException, MaximumLengthOfClausesExceededException {
-		formula = Trees.cloneTree(formula);
-		final NFTester nfTester = NormalForms.getNFTester(formula, NormalForm.CNF);
-		if (nfTester.isNf) {
-			if (!nfTester.isClausalNf()) {
-				formula = NormalForms.toClausalNF(formula, NormalForm.CNF);
-			}
-		} else {
-			formula = NormalForms.simplifyForNF(formula);
-			if (formula instanceof And) {
-				final ArrayList<Formula> newChildren = new ArrayList<>();
-				final List<Formula> children = ((And) formula).getChildren();
-				for (Formula child : children) { // todo: can be parallelized
-					child = new And(child);
-					transform(child);
-					newChildren.addAll(((And) child).getChildren());
-				}
-				formula = new And(newChildren);
-			} else {
-				formula = new And(formula);
-				transform(formula);
-			}
-			formula = NormalForms.toClausalNF(formula, NormalForm.CNF);
-		}
-		return formula;
+		final Compound compound = (formula instanceof And)
+			? (And) formula
+			: new And(formula);
+		return super.execute(compound, monitor);
 	}
 
 }
