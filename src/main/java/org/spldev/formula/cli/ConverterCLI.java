@@ -47,7 +47,7 @@ import org.spldev.util.logging.*;
 public class ConverterCLI implements CLIFunction {
 
 	@Override
-	public String getId() {
+	public String getName() {
 		return "convert";
 	}
 
