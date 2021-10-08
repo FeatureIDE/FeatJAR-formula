@@ -42,7 +42,9 @@ public class CNFTransformer implements Transformer {
 	protected final List<Formula> distributiveClauses;
 	protected final List<Substitute> tseytinClauses;
 	protected boolean useDistributive;
-	protected int maximumNumberOfClauses, maximumLengthOfClauses, maximumNumberOfLiterals;
+	protected int maximumNumberOfClauses = Integer.MAX_VALUE;
+	protected int maximumLengthOfClauses = Integer.MAX_VALUE;
+	protected int maximumNumberOfLiterals = Integer.MAX_VALUE;
 
 	protected VariableMap variableMap = null;
 
