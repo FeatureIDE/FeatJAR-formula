@@ -76,7 +76,7 @@ public final class NormalForms {
 		return tester;
 	}
 
-	static Formula toClausalNF(Formula formula, NormalForm normalForm) {
+	public static Formula toClausalNF(Formula formula, NormalForm normalForm) {
 		switch (normalForm) {
 		case CNF:
 			if (formula instanceof Literal) {
