@@ -67,11 +67,11 @@ public interface FormulaProvider extends Provider<Formula> {
 		private final int[] tseytinParameters;
 
 		private CNF() {
-			this(Integer.MAX_VALUE, Integer.MAX_VALUE);
+			this(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
 		}
 
-		private CNF(int maximumNumberOfClauses, int maximumLengthOfClauses) {
-			tseytinParameters = new int[] { maximumNumberOfClauses, maximumLengthOfClauses };
+		private CNF(int maximumNumberOfClauses, int maximumLengthOfClauses, int maximumNumberOfLiterals) {
+			tseytinParameters = new int[] { maximumNumberOfClauses, maximumLengthOfClauses, maximumNumberOfLiterals };
 		}
 
 		@Override
@@ -86,16 +86,20 @@ public interface FormulaProvider extends Provider<Formula> {
 
 		@Override
 		public Result<Formula> apply(Cache c, InternalMonitor m) {
-			return Provider.convert(c, FormulaProvider.identifier, new CNFTransformer(tseytinParameters[0],
-				tseytinParameters[1]), m);
+			final CNFTransformer cnfTransformer = new CNFTransformer();
+			cnfTransformer.setMaximumNumberOfClauses(tseytinParameters[0]);
+			cnfTransformer.setMaximumLengthOfClauses(tseytinParameters[1]);
+			cnfTransformer.setMaximumNumberOfLiterals(tseytinParameters[2]);
+			return Provider.convert(c, FormulaProvider.identifier, cnfTransformer, m);
 		}
 
 		public static CNF fromFormula() {
 			return new CNF();
 		}
 
-		public static CNF fromFormula(int maximumNumberOfClauses, int maximumLengthOfClauses) {
-			return new CNF(maximumNumberOfClauses, maximumLengthOfClauses);
+		public static CNF fromFormula(int maximumNumberOfClauses, int maximumLengthOfClauses,
+			int maximumNumberOfLiterals) {
+			return new CNF(maximumNumberOfClauses, maximumLengthOfClauses, maximumNumberOfLiterals);
 		}
 
 	}
@@ -114,22 +118,4 @@ public interface FormulaProvider extends Provider<Formula> {
 		}
 	}
 
-	@FunctionalInterface
-	interface TseytinCNF extends FormulaProvider {
-		Identifier<Formula> identifier = new Identifier<>();
-
-		@Override
-		default Identifier<Formula> getIdentifier() {
-			return identifier;
-		}
-
-		static TseytinCNF fromFormula(int maximumNumberOfClauses, int maximumLengthOfClauses) {
-			return (c, m) -> Provider.convert(c, FormulaProvider.identifier,
-				new CNFTransformer(maximumNumberOfClauses, maximumLengthOfClauses), m);
-		}
-
-		static TseytinCNF fromFormula() {
-			return fromFormula(0, 0);
-		}
-	}
 }

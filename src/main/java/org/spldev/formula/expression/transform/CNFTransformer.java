@@ -37,23 +37,16 @@ import org.spldev.util.tree.Trees.*;
 
 public class CNFTransformer implements Transformer {
 
-	public static final boolean useMultipleThreads = false;
+	public final boolean useMultipleThreads = false;
 
 	protected final List<Formula> distributiveClauses;
 	protected final List<Substitute> tseytinClauses;
-	protected final boolean useDistributive;
-	protected final int maximumNumberOfClauses, maximumLengthOfClauses;
+	protected boolean useDistributive;
+	protected int maximumNumberOfClauses, maximumLengthOfClauses, maximumNumberOfLiterals;
 
 	protected VariableMap variableMap = null;
 
 	public CNFTransformer() {
-		this(Integer.MAX_VALUE, Integer.MAX_VALUE);
-	}
-
-	public CNFTransformer(int maximumNumberOfClauses, int maximumLengthOfClauses) {
-		this.maximumNumberOfClauses = maximumNumberOfClauses;
-		this.maximumLengthOfClauses = maximumLengthOfClauses;
-		useDistributive = (maximumNumberOfClauses > 0) || (maximumLengthOfClauses > 0);
 		if (useMultipleThreads) {
 			distributiveClauses = Collections.synchronizedList(new ArrayList<>());
 			tseytinClauses = Collections.synchronizedList(new ArrayList<>());
@@ -63,8 +56,21 @@ public class CNFTransformer implements Transformer {
 		}
 	}
 
+	public void setMaximumNumberOfClauses(int maximumNumberOfClauses) {
+		this.maximumNumberOfClauses = maximumNumberOfClauses;
+	}
+
+	public void setMaximumLengthOfClauses(int maximumLengthOfClauses) {
+		this.maximumLengthOfClauses = maximumLengthOfClauses;
+	}
+
+	public void setMaximumNumberOfLiterals(int maximumNumberOfLiterals) {
+		this.maximumNumberOfLiterals = maximumNumberOfLiterals;
+	}
+
 	@Override
 	public Formula execute(Formula orgFormula, InternalMonitor monitor) {
+		useDistributive = (maximumNumberOfClauses > 0) || (maximumLengthOfClauses > 0) || (maximumNumberOfLiterals > 0);
 		final NFTester nfTester = NormalForms.getNFTester(orgFormula, NormalForm.CNF);
 		if (nfTester.isNf) {
 			if (!nfTester.isClausalNf()) {
@@ -153,10 +159,13 @@ public class CNFTransformer implements Transformer {
 		}
 	}
 
-	protected Compound distributive(Formula child, InternalMonitor monitor)
-		throws MaximumNumberOfClausesExceededException, MaximumLengthOfClausesExceededException {
-		return new CNFDistributiveLawTransformer(maximumNumberOfClauses, maximumLengthOfClauses)
-			.execute(child, monitor);
+	protected Compound distributive(Formula child, InternalMonitor monitor) throws TransformException {
+		final CNFDistributiveLawTransformer cnfDistributiveLawTransformer = new CNFDistributiveLawTransformer();
+		cnfDistributiveLawTransformer.setMaximumLengthOfClauses(maximumLengthOfClauses);
+		cnfDistributiveLawTransformer.setMaximumNumberOfClauses(maximumNumberOfClauses);
+		cnfDistributiveLawTransformer.setMaximumNumberOfLiterals(maximumNumberOfLiterals);
+		return cnfDistributiveLawTransformer.execute(child, monitor);
+
 	}
 
 	protected List<Substitute> tseytin(Formula child, InternalMonitor monitor) {

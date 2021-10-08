@@ -61,8 +61,13 @@ public final class Formulas {
 		return NormalForms.toNF(formula, new CNFTransformer());
 	}
 
-	public static Result<Formula> toCNF(Formula formula, int maximumNumberOfClauses, int maximumLengthOfClauses) {
-		return NormalForms.toNF(formula, new CNFTransformer(maximumNumberOfClauses, maximumLengthOfClauses));
+	public static Result<Formula> toCNF(Formula formula, int maximumNumberOfClauses, int maximumLengthOfClauses,
+		int maximumNumberOfLiterals) {
+		final CNFTransformer transformer = new CNFTransformer();
+		transformer.setMaximumNumberOfClauses(maximumNumberOfClauses);
+		transformer.setMaximumLengthOfClauses(maximumLengthOfClauses);
+		transformer.setMaximumNumberOfLiterals(maximumNumberOfLiterals);
+		return NormalForms.toNF(formula, transformer);
 	}
 
 	public static Result<Formula> toDNF(Formula formula) {

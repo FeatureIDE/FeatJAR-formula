@@ -39,17 +39,23 @@ public class DNFTransformer implements Transformer {
 	private final DistributiveLawTransformer distributiveLawTransformer;
 
 	public DNFTransformer() {
-		this(Integer.MAX_VALUE, Integer.MAX_VALUE);
+		distributiveLawTransformer = new DistributiveLawTransformer(And.class, And::new);
 	}
 
-	public DNFTransformer(int maximumNumberOfClauses, int maximumLengthOfClauses) {
-		distributiveLawTransformer = new DistributiveLawTransformer(And.class, And::new, maximumNumberOfClauses,
-			maximumLengthOfClauses);
+	public void setMaximumNumberOfClauses(int maximumNumberOfClauses) {
+		distributiveLawTransformer.setMaximumNumberOfClauses(maximumNumberOfClauses);
+	}
+
+	public void setMaximumLengthOfClauses(int maximumLengthOfClauses) {
+		distributiveLawTransformer.setMaximumLengthOfClauses(maximumLengthOfClauses);
+	}
+
+	public void setMaximumNumberOfLiterals(int maximumNumberOfLiterals) {
+		distributiveLawTransformer.setMaximumNumberOfLiterals(maximumNumberOfLiterals);
 	}
 
 	@Override
-	public Formula execute(Formula formula, InternalMonitor monitor)
-		throws MaximumNumberOfClausesExceededException, MaximumLengthOfClausesExceededException {
+	public Formula execute(Formula formula, InternalMonitor monitor) throws TransformException {
 		final NFTester nfTester = NormalForms.getNFTester(formula, NormalForm.DNF);
 		if (nfTester.isNf) {
 			if (!nfTester.isClausalNf()) {

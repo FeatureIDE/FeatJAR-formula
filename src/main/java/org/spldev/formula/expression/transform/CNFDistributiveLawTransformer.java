@@ -34,16 +34,11 @@ import org.spldev.util.job.*;
 public class CNFDistributiveLawTransformer extends DistributiveLawTransformer {
 
 	public CNFDistributiveLawTransformer() {
-		this(Integer.MAX_VALUE, Integer.MAX_VALUE);
-	}
-
-	public CNFDistributiveLawTransformer(int maximumNumberOfClauses, int maximumLengthOfClauses) {
-		super(Or.class, Or::new, maximumNumberOfClauses, maximumLengthOfClauses);
+		super(Or.class, Or::new);
 	}
 
 	@Override
-	public Compound execute(Formula formula, InternalMonitor monitor)
-		throws MaximumNumberOfClausesExceededException, MaximumLengthOfClausesExceededException {
+	public Compound execute(Formula formula, InternalMonitor monitor) throws TransformException {
 		final Compound compound = (formula instanceof And)
 			? (And) formula
 			: new And(formula);
