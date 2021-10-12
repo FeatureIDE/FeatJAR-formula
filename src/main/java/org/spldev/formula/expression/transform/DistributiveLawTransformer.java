@@ -94,7 +94,6 @@ public class DistributiveLawTransformer implements MonitorableFunction<Formula, 
 
 	@Override
 	public Compound execute(Formula node, InternalMonitor monitor) throws TransformException {
-		numberOfLiterals = 0;
 		final ArrayList<PathElement> path = new ArrayList<>();
 		final ArrayDeque<Expression> stack = new ArrayDeque<>();
 		stack.addLast(node);
@@ -140,6 +139,7 @@ public class DistributiveLawTransformer implements MonitorableFunction<Formula, 
 		if (child instanceof Literal) {
 			return null;
 		} else {
+			numberOfLiterals = 0;
 			final ArrayList<Set<Literal>> newClauseList = new ArrayList<>();
 			children = new ArrayList<>((List<Formula>) child.getChildren());
 			children.sort(Comparator.comparingInt(c -> c.getChildren().size()));
