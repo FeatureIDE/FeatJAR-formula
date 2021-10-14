@@ -266,7 +266,7 @@ public class DimacsReader {
 			if (map.getIndex(variableName).isEmpty()) {
 				map.addBooleanVariable(variableName);
 			}
-			literals[j] = new LiteralPredicate((BoolVariable) map.getVariable(variableName).get(), true);
+			literals[j] = new LiteralPredicate((BoolVariable) map.getVariable(variableName).get(), index > 0);
 		}
 		return new Or(literals);
 	}
