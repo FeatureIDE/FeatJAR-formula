@@ -133,7 +133,7 @@ public class CNFTransformer implements Transformer {
 
 	private void transform(Formula child) {
 		final Formula clonedChild = Trees.cloneTree(child);
-		if (isCNF(clonedChild)) {
+		if (Formulas.isCNF(clonedChild)) {
 			if (clonedChild instanceof And) {
 				distributiveClauses.addAll(((And) clonedChild).getChildren());
 			} else {
@@ -163,15 +163,6 @@ public class CNFTransformer implements Transformer {
 		final TseytinTransformer tseytinTransformer = new TseytinTransformer();
 		tseytinTransformer.setVariableMap(VariableMap.emptyMap());
 		return tseytinTransformer.execute(child, monitor);
-	}
-
-	private boolean isCNF(Formula child) {
-		final CNFTester visitor = new CNFTester();
-		try {
-			Trees.dfsPrePost(child, visitor);
-		} catch (final VisitorFailException e1) {
-		}
-		return visitor.isNf;
 	}
 
 }
