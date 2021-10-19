@@ -38,7 +38,7 @@ public class CNFDistributiveLawTransformer extends DistributiveLawTransformer {
 	}
 
 	@Override
-	public Compound execute(Formula formula, InternalMonitor monitor) throws TransformException {
+	public Compound execute(Formula formula, InternalMonitor monitor) throws MaximumNumberOfLiteralsExceededException {
 		final Compound compound = (formula instanceof And)
 			? (And) formula
 			: new And(formula);

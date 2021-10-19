@@ -38,7 +38,7 @@ public class DNFDistributiveLawTransformer extends DistributiveLawTransformer {
 	}
 
 	@Override
-	public Compound execute(Formula formula, InternalMonitor monitor) throws TransformException {
+	public Compound execute(Formula formula, InternalMonitor monitor) throws MaximumNumberOfLiteralsExceededException {
 		final Compound compound = (formula instanceof Or)
 			? (Or) formula
 			: new Or(formula);

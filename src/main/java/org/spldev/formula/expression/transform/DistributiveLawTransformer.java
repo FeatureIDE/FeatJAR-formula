@@ -37,19 +37,7 @@ import org.spldev.util.job.*;
  */
 public class DistributiveLawTransformer implements MonitorableFunction<Formula, Compound> {
 
-	public static class TransformException extends Exception {
-		private static final long serialVersionUID = -988432481171140093L;
-	}
-
-	public static class MaximumNumberOfClausesExceededException extends TransformException {
-		private static final long serialVersionUID = -4715579178854785874L;
-	}
-
-	public static class MaximumNumberOfLiteralsExceededException extends TransformException {
-		private static final long serialVersionUID = -6094457508253000012L;
-	}
-
-	public static class MaximumLengthOfClausesExceededException extends TransformException {
+	public static class MaximumNumberOfLiteralsExceededException extends Exception {
 		private static final long serialVersionUID = 7582471416721588997L;
 	}
 
@@ -66,8 +54,6 @@ public class DistributiveLawTransformer implements MonitorableFunction<Formula, 
 	private final Function<Collection<? extends Formula>, Formula> clauseConstructor;
 	private final Class<? extends Compound> clauseClass;
 
-	private int maximumNumberOfClauses = Integer.MAX_VALUE;
-	private int maximumLengthOfClauses = Integer.MAX_VALUE;
 	private int maximumNumberOfLiterals = Integer.MAX_VALUE;
 
 	private int numberOfLiterals;
@@ -80,20 +66,12 @@ public class DistributiveLawTransformer implements MonitorableFunction<Formula, 
 		this.clauseConstructor = clauseConstructor;
 	}
 
-	public void setMaximumNumberOfClauses(int maximumNumberOfClauses) {
-		this.maximumNumberOfClauses = maximumNumberOfClauses;
-	}
-
-	public void setMaximumLengthOfClauses(int maximumLengthOfClauses) {
-		this.maximumLengthOfClauses = maximumLengthOfClauses;
-	}
-
 	public void setMaximumNumberOfLiterals(int maximumNumberOfLiterals) {
 		this.maximumNumberOfLiterals = maximumNumberOfLiterals;
 	}
 
 	@Override
-	public Compound execute(Formula node, InternalMonitor monitor) throws TransformException {
+	public Compound execute(Formula node, InternalMonitor monitor) throws MaximumNumberOfLiteralsExceededException {
 		final ArrayList<PathElement> path = new ArrayList<>();
 		final ArrayDeque<Expression> stack = new ArrayDeque<>();
 		stack.addLast(node);
@@ -135,7 +113,7 @@ public class DistributiveLawTransformer implements MonitorableFunction<Formula, 
 	}
 
 	@SuppressWarnings("unchecked")
-	private List<Formula> convert(Expression child) throws TransformException {
+	private List<Formula> convert(Expression child) throws MaximumNumberOfLiteralsExceededException {
 		if (child instanceof Literal) {
 			return null;
 		} else {
@@ -174,15 +152,9 @@ public class DistributiveLawTransformer implements MonitorableFunction<Formula, 
 	}
 
 	private void convertNF(List<Set<Literal>> clauses, LinkedHashSet<Literal> literals, int index)
-		throws TransformException {
+		throws MaximumNumberOfLiteralsExceededException {
 		if (index == children.size()) {
-			if (clauses.size() > maximumNumberOfClauses) {
-				throw new MaximumNumberOfClausesExceededException();
-			}
 			final HashSet<Literal> newClause = new HashSet<>(literals);
-			if (newClause.size() > maximumLengthOfClauses) {
-				throw new MaximumLengthOfClausesExceededException();
-			}
 			numberOfLiterals += newClause.size();
 			if (numberOfLiterals > maximumNumberOfLiterals) {
 				throw new MaximumNumberOfLiteralsExceededException();
@@ -254,14 +226,6 @@ public class DistributiveLawTransformer implements MonitorableFunction<Formula, 
 				}
 			}
 		}
-	}
-
-	public int getMaximumNumberOfClauses() {
-		return maximumNumberOfClauses;
-	}
-
-	public int getMaximumLengthOfClauses() {
-		return maximumLengthOfClauses;
 	}
 
 	public int getMaximumNumberOfLiterals() {

@@ -42,8 +42,6 @@ public class CNFTransformer implements Transformer {
 	protected final List<Formula> distributiveClauses;
 	protected final List<Substitute> tseytinClauses;
 	protected boolean useDistributive;
-	protected int maximumNumberOfClauses = Integer.MAX_VALUE;
-	protected int maximumLengthOfClauses = Integer.MAX_VALUE;
 	protected int maximumNumberOfLiterals = Integer.MAX_VALUE;
 
 	protected VariableMap variableMap = null;
@@ -58,21 +56,13 @@ public class CNFTransformer implements Transformer {
 		}
 	}
 
-	public void setMaximumNumberOfClauses(int maximumNumberOfClauses) {
-		this.maximumNumberOfClauses = maximumNumberOfClauses;
-	}
-
-	public void setMaximumLengthOfClauses(int maximumLengthOfClauses) {
-		this.maximumLengthOfClauses = maximumLengthOfClauses;
-	}
-
 	public void setMaximumNumberOfLiterals(int maximumNumberOfLiterals) {
 		this.maximumNumberOfLiterals = maximumNumberOfLiterals;
 	}
 
 	@Override
 	public Formula execute(Formula orgFormula, InternalMonitor monitor) {
-		useDistributive = (maximumNumberOfClauses > 0) || (maximumLengthOfClauses > 0) || (maximumNumberOfLiterals > 0);
+		useDistributive = (maximumNumberOfLiterals > 0);
 		final NFTester nfTester = NormalForms.getNFTester(orgFormula, NormalForm.CNF);
 		if (nfTester.isNf) {
 			if (!nfTester.isClausalNf()) {
@@ -154,17 +144,16 @@ public class CNFTransformer implements Transformer {
 				try {
 					distributiveClauses.addAll(distributive(clonedChild, new NullMonitor()).getChildren());
 					return;
-				} catch (final TransformException e) {
+				} catch (final MaximumNumberOfLiteralsExceededException e) {
 				}
 			}
 			tseytinClauses.addAll(tseytin(clonedChild, new NullMonitor()));
 		}
 	}
 
-	protected Compound distributive(Formula child, InternalMonitor monitor) throws TransformException {
+	protected Compound distributive(Formula child, InternalMonitor monitor)
+		throws MaximumNumberOfLiteralsExceededException {
 		final CNFDistributiveLawTransformer cnfDistributiveLawTransformer = new CNFDistributiveLawTransformer();
-		cnfDistributiveLawTransformer.setMaximumLengthOfClauses(maximumLengthOfClauses);
-		cnfDistributiveLawTransformer.setMaximumNumberOfClauses(maximumNumberOfClauses);
 		cnfDistributiveLawTransformer.setMaximumNumberOfLiterals(maximumNumberOfLiterals);
 		return cnfDistributiveLawTransformer.execute(child, monitor);
 

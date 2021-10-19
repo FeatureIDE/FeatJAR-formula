@@ -64,19 +64,19 @@ public interface FormulaProvider extends Provider<Formula> {
 
 	public static class CNF implements FormulaProvider {
 		public static final Identifier<Formula> identifier = new Identifier<>();
-		private final int[] tseytinParameters;
+		private final int maximumNumberOfLiterals;
 
 		private CNF() {
-			this(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
+			this(Integer.MAX_VALUE);
 		}
 
-		private CNF(int maximumNumberOfClauses, int maximumLengthOfClauses, int maximumNumberOfLiterals) {
-			tseytinParameters = new int[] { maximumNumberOfClauses, maximumLengthOfClauses, maximumNumberOfLiterals };
+		private CNF(int maximumNumberOfLiterals) {
+			this.maximumNumberOfLiterals = maximumNumberOfLiterals;
 		}
 
 		@Override
 		public Object getParameters() {
-			return tseytinParameters;
+			return maximumNumberOfLiterals;
 		}
 
 		@Override
@@ -87,9 +87,7 @@ public interface FormulaProvider extends Provider<Formula> {
 		@Override
 		public Result<Formula> apply(Cache c, InternalMonitor m) {
 			final CNFTransformer cnfTransformer = new CNFTransformer();
-			cnfTransformer.setMaximumNumberOfClauses(tseytinParameters[0]);
-			cnfTransformer.setMaximumLengthOfClauses(tseytinParameters[1]);
-			cnfTransformer.setMaximumNumberOfLiterals(tseytinParameters[2]);
+			cnfTransformer.setMaximumNumberOfLiterals(maximumNumberOfLiterals);
 			return Provider.convert(c, FormulaProvider.identifier, cnfTransformer, m);
 		}
 
@@ -97,9 +95,8 @@ public interface FormulaProvider extends Provider<Formula> {
 			return new CNF();
 		}
 
-		public static CNF fromFormula(int maximumNumberOfClauses, int maximumLengthOfClauses,
-			int maximumNumberOfLiterals) {
-			return new CNF(maximumNumberOfClauses, maximumLengthOfClauses, maximumNumberOfLiterals);
+		public static CNF fromFormula(int maximumNumberOfLiterals) {
+			return new CNF(maximumNumberOfLiterals);
 		}
 
 	}
