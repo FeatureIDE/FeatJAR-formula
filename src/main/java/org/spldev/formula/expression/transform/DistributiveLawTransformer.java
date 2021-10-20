@@ -24,6 +24,7 @@ package org.spldev.formula.expression.transform;
 
 import java.util.*;
 import java.util.function.*;
+import java.util.stream.*;
 
 import org.spldev.formula.expression.*;
 import org.spldev.formula.expression.atomic.literal.*;
@@ -123,10 +124,9 @@ public class DistributiveLawTransformer implements MonitorableFunction<Formula, 
 			children.sort(Comparator.comparingInt(c -> c.getChildren().size()));
 			convertNF(newClauseList, new LinkedHashSet<>(children.size() << 1), 0);
 
-			final ArrayList<Formula> filteredClauseList;
+			final List<Formula> filteredClauseList = new ArrayList<>(newClauseList.size());
 			newClauseList.sort(Comparator.comparingInt(Set::size));
 			final int lastIndex = newClauseList.size();
-			int removeCount = 0;
 			for (int i = 0; i < lastIndex; i++) {
 				final Set<Literal> set = newClauseList.get(i);
 				if (set != null) {
@@ -135,16 +135,10 @@ public class DistributiveLawTransformer implements MonitorableFunction<Formula, 
 						if (set2 != null) {
 							if (set2.containsAll(set)) {
 								newClauseList.set(j, null);
-								removeCount++;
 							}
 						}
 					}
-				}
-			}
-			filteredClauseList = new ArrayList<>(newClauseList.size() - removeCount);
-			for (final Set<Literal> children1 : newClauseList) {
-				if (children1 != null) {
-					filteredClauseList.add(clauseConstructor.apply(children1));
+					filteredClauseList.add(clauseConstructor.apply(set));
 				}
 			}
 			return filteredClauseList;
@@ -172,61 +166,48 @@ public class DistributiveLawTransformer implements MonitorableFunction<Formula, 
 					literals.remove(clauseLiteral);
 				}
 			} else {
-				boolean redundant = false;
-				for (final Expression grandChild : child.getChildren()) {
-					if (grandChild instanceof Literal) {
-						if (literals.contains(grandChild)) {
-							redundant = true;
-							break;
-						}
-					} else {
-						int redundantCount = 0;
-						for (final Expression literal : grandChild.getChildren()) {
-							if (literals.contains(literal)) {
-								redundantCount++;
-							}
-						}
-						if (redundantCount == grandChild.getChildren().size()) {
-							redundant = true;
-							break;
-						}
-					}
-				}
-				if (redundant) {
+				if (isRedundant(literals, child)) {
 					convertNF(clauses, literals, index + 1);
 				} else {
 					for (final Expression grandChild : child.getChildren()) {
 						if (grandChild instanceof Literal) {
-							final Literal clauseLiteral = (Literal) grandChild;
-							if (!literals.contains(clauseLiteral.flip())) {
-								literals.add(clauseLiteral);
+							final Literal newlyAddedLiteral = (Literal) grandChild;
+							if (!literals.contains(newlyAddedLiteral.flip())) {
+								literals.add(newlyAddedLiteral);
 								convertNF(clauses, literals, index + 1);
-								literals.remove(clauseLiteral);
+								literals.remove(newlyAddedLiteral);
 							}
 						} else {
-							boolean containsComplement = false;
-							for (final Expression literal : grandChild.getChildren()) {
-								if (literals.contains(((Literal) literal).flip())) {
-									containsComplement = true;
-									break;
-								}
-							}
-							if (!containsComplement) {
-								final ArrayList<Literal> clauseLiterals = new ArrayList<>(
-									grandChild.getChildren().size());
-								for (final Expression literal : grandChild.getChildren()) {
-									if (literals.add((Literal) literal)) {
-										clauseLiterals.add((Literal) literal);
-									}
-								}
+							@SuppressWarnings("unchecked")
+							final List<Literal> greatGrandChildren = (List<Literal>) grandChild.getChildren();
+							if (containsNoComplements(literals, greatGrandChildren)) {
+								final List<Literal> newlyAddedLiterals = greatGrandChildren.stream()
+									.filter(literals::add)
+									.collect(Collectors.toList());
 								convertNF(clauses, literals, index + 1);
-								literals.removeAll(clauseLiterals);
+								literals.removeAll(newlyAddedLiterals);
 							}
 						}
 					}
 				}
 			}
 		}
+	}
+
+	private boolean containsNoComplements(LinkedHashSet<Literal> literals, final List<Literal> greatGrandChildren) {
+		return greatGrandChildren.stream()
+			.map(Literal::flip)
+			.noneMatch(literals::contains);
+	}
+
+	private boolean isRedundant(LinkedHashSet<Literal> literals, final Formula child) {
+		return child.getChildren().stream().anyMatch(e -> isRedundant(e, literals));
+	}
+
+	private static boolean isRedundant(Expression expression, LinkedHashSet<Literal> literals) {
+		return (expression instanceof Literal)
+			? literals.contains(expression)
+			: expression.getChildren().stream().allMatch(literals::contains);
 	}
 
 	public int getMaximumNumberOfLiterals() {
