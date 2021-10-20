@@ -33,7 +33,6 @@ import org.spldev.formula.expression.transform.NormalForms.*;
 import org.spldev.formula.expression.transform.TseytinTransformer.*;
 import org.spldev.util.job.*;
 import org.spldev.util.tree.*;
-import org.spldev.util.tree.Trees.*;
 
 public class CNFTransformer implements Transformer {
 

@@ -215,8 +215,9 @@ public class DistributiveLawTransformer implements MonitorableFunction<Formula, 
 								final ArrayList<Literal> clauseLiterals = new ArrayList<>(
 									grandChild.getChildren().size());
 								for (final Expression literal : grandChild.getChildren()) {
-									literals.add((Literal) literal);
-									clauseLiterals.add((Literal) literal);
+									if (literals.add((Literal) literal)) {
+										clauseLiterals.add((Literal) literal);
+									}
 								}
 								convertNF(clauses, literals, index + 1);
 								literals.removeAll(clauseLiterals);
