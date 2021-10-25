@@ -24,6 +24,7 @@ package org.spldev.formula.expression.atomic.literal;
 
 import java.io.*;
 import java.util.*;
+import java.util.stream.*;
 
 import org.spldev.formula.expression.*;
 import org.spldev.formula.expression.term.*;
@@ -168,11 +169,15 @@ public class VariableMap implements Cloneable, Serializable, Iterable<VariableMa
 	}
 
 	private VariableMap(Map<Integer, String> nameMap) {
-		final Integer maxIndex = nameMap.keySet().stream().max(Integer::compare).orElseThrow();
-
-		indexToName = new ArrayList<>(maxIndex + 1);
 		nameToIndex = new LinkedHashMap<>();
-		nameMap.entrySet().forEach(e -> addVariable(e.getValue(), e.getKey(), BoolVariable.class));
+		if (nameMap.isEmpty()) {
+			indexToName = new ArrayList<>();
+			indexToName.add(null);
+		} else {
+			final Integer maxIndex = nameMap.keySet().stream().max(Integer::compare).orElseThrow();
+			indexToName = new ArrayList<>(maxIndex + 1);
+			nameMap.entrySet().forEach(e -> addVariable(e.getValue(), e.getKey(), BoolVariable.class));
+		}
 	}
 
 	private VariableMap(VariableMap otherMap, boolean normalize) {
@@ -241,7 +246,7 @@ public class VariableMap implements Cloneable, Serializable, Iterable<VariableMa
 	}
 
 	public List<String> getNames() {
-		return new ArrayList<>(nameToIndex.keySet());
+		return indexToName.stream().skip(1).map(VariableSignature::getName).collect(Collectors.toList());
 	}
 
 	public int size() {
