@@ -102,6 +102,9 @@ public class DimacsReader {
 			readingVariables = false;
 
 			if (readVariableDirectory) {
+				for (int i = 1; i <= variableCount; i++) {
+					indexVariables.putIfAbsent(i, Integer.toString(i));
+				}
 				map = VariableMap.fromNameMap(indexVariables);
 			}
 

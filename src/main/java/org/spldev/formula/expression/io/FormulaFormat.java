@@ -20,37 +20,25 @@
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
  */
-package org.spldev.formula.expression.io.parse;
-
-import java.util.*;
-import java.util.stream.*;
+package org.spldev.formula.expression.io;
 
 import org.spldev.formula.expression.*;
-import org.spldev.formula.expression.compound.*;
+import org.spldev.formula.expression.io.parse.*;
 import org.spldev.util.*;
 import org.spldev.util.io.format.*;
 
-public class KConfigReaderFormat implements Format<Formula> {
+public class FormulaFormat implements Format<Formula> {
 
-	public static final String ID = KConfigReaderFormat.class.getCanonicalName();
+	public static final String ID = FormulaFormat.class.getCanonicalName();
 
 	@Override
 	public Result<Formula> parse(Input source) {
-		final ArrayList<Problem> problems = new ArrayList<>();
-		final NodeReader nodeReader = new NodeReader();
-		nodeReader.setSymbols(PropositionalModelSymbols.INSTANCE);
-		return Result.of(new And(source.getLines() //
-			.map(String::trim) //
-			.filter(l -> !l.isEmpty()) //
-			.filter(l -> !l.startsWith("#")) //
-			.filter(l -> !l.contains("=")) // ignores all non-Boolean constraints
-			.map(l -> l.replace("-", "_")) // avoids parser errors
-			.map(l -> l.replaceAll("def\\((\\w+)\\)", "$1"))
-			.map(nodeReader::read) //
-			.peek(r -> problems.addAll(r.getProblems()))
-			.filter(Result::isPresent)
-			.map(Result::get) //
-			.collect(Collectors.toList())), problems);
+		return new NodeReader().read(source.getCompleteText().get());
+	}
+
+	@Override
+	public String serialize(Formula object) {
+		return new NodeWriter().write(object);
 	}
 
 	@Override
@@ -60,7 +48,7 @@ public class KConfigReaderFormat implements Format<Formula> {
 
 	@Override
 	public boolean supportsSerialize() {
-		return false;
+		return true;
 	}
 
 	@Override
@@ -70,12 +58,12 @@ public class KConfigReaderFormat implements Format<Formula> {
 
 	@Override
 	public String getFileExtension() {
-		return "model";
+		return "formula";
 	}
 
 	@Override
 	public String getName() {
-		return "kconfigreader";
+		return "Formula";
 	}
 
 }

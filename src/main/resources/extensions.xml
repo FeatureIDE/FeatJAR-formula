@@ -6,7 +6,7 @@
 	<point id="org.spldev.formula.expression.io.FormulaFormatManager">
 	    <extension id="org.spldev.formula.expression.io.DIMACSFormat" />
 	    <extension id="org.spldev.formula.expression.io.XmlFeatureModelCNFFormat" />
-	    <extension id="org.spldev.formula.expression.io.parse.FormulaFormat" />
-	    <extension id="org.spldev.formula.expression.io.parse.KConfigReaderFormat" />
+	    <extension id="org.spldev.formula.expression.io.FormulaFormat" />
+	    <extension id="org.spldev.formula.expression.io.KConfigReaderFormat" />
 	</point>
 </extensions>

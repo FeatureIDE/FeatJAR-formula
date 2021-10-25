@@ -22,7 +22,6 @@
  */
 package org.spldev.formula.expression.io;
 
-import java.io.*;
 import java.text.ParseException;
 
 import org.spldev.formula.expression.*;
@@ -56,7 +55,7 @@ public class DIMACSFormat implements Format<Formula> {
 			return Result.of(r.read(source.getCompleteText().get()));
 		} catch (final ParseException e) {
 			return Result.empty(new ParseProblem(e, e.getErrorOffset()));
-		} catch (final IOException e) {
+		} catch (final Exception e) {
 			return Result.empty(e);
 		}
 	}
