@@ -119,14 +119,7 @@ public class DimacsReader {
 				throw new ParseException(String.format("Found %d instead of %d clauses", actualClauseCount,
 					clauseCount), 1);
 			}
-			if (clauses.isEmpty()) {
-				return And.empty(map);
-			} else {
-				if (clauses.get(0).getChildren().isEmpty()) {
-					clauses.set(0, Or.empty(map));
-				}
-			}
-			return new And(clauses);
+			return clauses.isEmpty() ? And.empty(map) : new And(clauses);
 		}
 	}
 
@@ -220,11 +213,13 @@ public class DimacsReader {
 					break;
 				}
 				final int clauseSize = literalQueue.size() - (literalList.size() - clauseEndIndex);
-				if (clauseSize <= 0) {
-					throw new ParseException("Empty clause", lineIterator.getLineCount());
+				if (clauseSize < 0) {
+					throw new ParseException("Invalid clause", lineIterator.getLineCount());
+				} else if (clauseSize == 0) {
+					clauses.add(Or.empty(map));
+				} else {
+					clauses.add(parseClause(readClausesCount, clauseSize, literalQueue, lineIterator));
 				}
-
-				clauses.add(parseClause(readClausesCount, clauseSize, literalQueue, lineIterator));
 				readClausesCount++;
 
 				if (!DIMACSConstants.CLAUSE_END.equals(literalQueue.removeFirst())) {
@@ -309,10 +304,6 @@ public class DimacsReader {
 			indexVariables.put(index, variable);
 		}
 		return true;
-	}
-
-	public Collection<String> getVariables() {
-		return indexVariables.values();
 	}
 
 }

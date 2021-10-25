@@ -34,7 +34,6 @@ import org.spldev.util.*;
 import org.spldev.util.Problem.*;
 import org.spldev.util.io.*;
 import org.spldev.util.io.format.*;
-import org.spldev.util.logging.*;
 import org.w3c.dom.*;
 import org.xml.sax.*;
 
@@ -118,7 +117,7 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 		return true;
 	}
 
-	protected Formula readDocument(Document doc) {
+	protected Formula readDocument(Document doc) throws ParseException {
 		map = VariableMap.emptyMap();
 		final List<Element> elementList = getElement(doc, FEATURE_MODEL);
 		if (elementList.size() == 1) {
@@ -126,9 +125,9 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 			parseStruct(getElement(e, STRUCT));
 			parseConstraints(getElement(e, CONSTRAINTS));
 		} else if (elementList.isEmpty()) {
-			Logger.logError("Not feature model xml element!");
+			throw new ParseException("Not a feature model xml element!");
 		} else {
-			Logger.logError("More than one feature model xml elements!");
+			throw new ParseException("More than one feature model xml elements!");
 		}
 		if (constraints.isEmpty()) {
 			return And.empty(map);
@@ -140,7 +139,10 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 		return new And(constraints);
 	}
 
-	protected void parseConstraints(List<Element> elements) {
+	protected void parseConstraints(List<Element> elements) throws ParseException {
+		if (elements.size() > 1) {
+			throw new ParseException("Multiple <constraints> elements!");
+		}
 		for (final Element e : elements) {
 			for (final Element child : getElements(e.getChildNodes())) {
 				final String nodeName = child.getNodeName();
@@ -215,9 +217,22 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 		return nodes;
 	}
 
-	protected ArrayList<Formula> parseFeatures(NodeList nodeList, Literal parent, boolean and) {
+	protected ArrayList<Formula> parseFeatures(NodeList nodeList, Literal parent, boolean and) throws ParseException {
 		final ArrayList<Formula> children = new ArrayList<>();
-		for (final Element e : getElements(nodeList)) {
+		final List<Element> elements = getElements(nodeList);
+		if (parent == null) {
+			if (elements.isEmpty()) {
+				throw new ParseException("No root feature!");
+			}
+			if (elements.size() > 1) {
+				throw new ParseException("Multiple root features!");
+			}
+		} else {
+			if (elements.isEmpty()) {
+				throw new ParseException("No feature in group!");
+			}
+		}
+		for (final Element e : elements) {
 			final String nodeName = e.getNodeName();
 			switch (nodeName) {
 			case AND:
@@ -233,7 +248,8 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 		return children;
 	}
 
-	protected LiteralPredicate parseFeature(Literal parent, final Element e, final String nodeName, boolean and) {
+	protected LiteralPredicate parseFeature(Literal parent, final Element e, final String nodeName, boolean and)
+		throws ParseException {
 		boolean mandatory = false;
 		String name = null;
 		if (e.hasAttributes()) {
@@ -251,6 +267,8 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 		}
 		if (map.getIndex(name).isEmpty()) {
 			map.addBooleanVariable(name);
+		} else {
+			throw new ParseException("Duplicate feature name!");
 		}
 
 		final LiteralPredicate f = new LiteralPredicate((BoolVariable) map.getVariable(name).get(), true);
@@ -282,6 +300,8 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 			default:
 				break;
 			}
+		} else if (!"feature".equals(nodeName)) {
+			throw new ParseException("Empty group!");
 		}
 
 		return f;
@@ -304,13 +324,19 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 	}
 
 	protected Formula implies(final LiteralPredicate f, final List<Formula> parseFeatures) {
-		return new Implies(f, new Or(parseFeatures));
+		return parseFeatures.size() == 1
+			? new Implies(f, parseFeatures.get(0))
+			: new Implies(f, new Or(parseFeatures));
 	}
 
-	protected void parseStruct(List<Element> elements) {
-		for (final Element e : elements) {
-			parseFeatures(e.getChildNodes(), null, false);
+	protected void parseStruct(List<Element> elements) throws ParseException {
+		if (elements.isEmpty()) {
+			throw new ParseException("No <struct> element!");
 		}
+		if (elements.size() > 1) {
+			throw new ParseException("Multiple <struct> elements!");
+		}
+		parseFeatures(elements.get(0).getChildNodes(), null, false);
 	}
 
 	@Override

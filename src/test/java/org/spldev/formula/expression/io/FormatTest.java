@@ -46,6 +46,9 @@ public class FormatTest {
 	private final static Path formatsDirectory = rootDirectory.resolve("formats");
 
 	public static void testLoad(Formula formula1, String name, Format<Formula> format) {
+		assertEquals(format.getClass().getCanonicalName(), format.getId());
+		assertTrue(format.supportsParse());
+		assertFalse(format.supportsSerialize());
 		for (final Path file : getFileList(name, format)) {
 			System.out.println(file);
 			final Formula formula2 = load(format, file);
@@ -54,6 +57,9 @@ public class FormatTest {
 	}
 
 	public static void testLoadAndSave(Formula formula1, String name, Format<Formula> format) {
+		assertEquals(format.getClass().getCanonicalName(), format.getId());
+		assertTrue(format.supportsParse());
+		assertTrue(format.supportsSerialize());
 		final Formula formula3 = saveAndLoad(formula1, format);
 		for (final Path file : getFileList(name, format)) {
 			System.out.println(file);
@@ -78,6 +84,7 @@ public class FormatTest {
 			final List<Path> fileList = Files.walk(formatsDirectory.resolve(format.getName()))
 				.filter(Files::isRegularFile)
 				.filter(f -> f.getFileName().toString().matches(namePattern))
+				.sorted()
 				.collect(Collectors.toList());
 			assertNotNull(fileList);
 			assertFalse(fileList.isEmpty());

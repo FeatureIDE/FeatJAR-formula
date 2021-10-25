@@ -29,7 +29,7 @@ import org.spldev.formula.expression.*;
 import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.formula.expression.compound.*;
 import org.spldev.formula.expression.transform.*;
-import org.spldev.util.logging.*;
+import org.spldev.util.io.format.*;
 import org.spldev.util.tree.*;
 import org.w3c.dom.*;
 
@@ -41,7 +41,7 @@ public class XmlFeatureModelCNFFormat extends XmlFeatureModelFormat {
 	}
 
 	@Override
-	protected Formula readDocument(Document doc) {
+	protected Formula readDocument(Document doc) throws ParseException {
 		map = VariableMap.emptyMap();
 		final List<Element> elementList = getElement(doc, FEATURE_MODEL);
 		if (elementList.size() == 1) {
@@ -55,9 +55,9 @@ public class XmlFeatureModelCNFFormat extends XmlFeatureModelFormat {
 			crossTreeConstraints.clear();
 			constraints.addAll(cnfConstraints);
 		} else if (elementList.isEmpty()) {
-			Logger.logError("Not feature model xml element!");
+			throw new ParseException("Not a feature model xml element!");
 		} else {
-			Logger.logError("More than one feature model xml elements!");
+			throw new ParseException("More than one feature model xml elements!");
 		}
 		return Trees.cloneTree(simplify(new And(constraints)));
 	}
@@ -85,8 +85,9 @@ public class XmlFeatureModelCNFFormat extends XmlFeatureModelFormat {
 
 	@Override
 	protected Formula implies(final LiteralPredicate f, final List<Formula> parseFeatures) {
-		final ArrayList<Formula> list = new ArrayList<>(parseFeatures);
+		final ArrayList<Formula> list = new ArrayList<>(parseFeatures.size() + 1);
 		list.add(f.flip());
+		list.addAll(parseFeatures);
 		return new Or(list);
 	}
 
@@ -141,6 +142,11 @@ public class XmlFeatureModelCNFFormat extends XmlFeatureModelFormat {
 	@Override
 	public String getId() {
 		return ID;
+	}
+
+	@Override
+	public String getName() {
+		return "FeatureIDECNF";
 	}
 
 }

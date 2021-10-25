@@ -35,12 +35,8 @@ import org.spldev.formula.expression.atomic.literal.*;
  */
 public class And extends Compound {
 
-	public static class EmptyAnd extends And {
+	private static class EmptyAnd extends And {
 		private VariableMap variableMap;
-
-		public EmptyAnd() {
-			variableMap = VariableMap.emptyMap();
-		}
 
 		public EmptyAnd(VariableMap variableMap) {
 			this.variableMap = variableMap;
@@ -60,6 +56,15 @@ public class And extends Compound {
 		public And cloneNode() {
 			return new EmptyAnd(variableMap);
 		}
+
+		@Override
+		protected int computeHashCode() {
+			return Objects.hash(And.class, 0);
+		}
+	}
+
+	public static And empty() {
+		return new EmptyAnd(VariableMap.emptyMap());
 	}
 
 	public static And empty(VariableMap variableMap) {

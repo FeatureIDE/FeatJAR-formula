@@ -31,34 +31,34 @@ import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.formula.expression.compound.*;
 
 /**
- * Tests {@link FormulaFormat Formula} format.
+ * Tests {@link XmlFeatureModelFormat FeatureIDE} format.
  *
  * @author Sebastian Krieter
  */
-public class FormulaFormatTest {
+public class XmlFeatureModelFormatTest {
 
 	@Test
-	public void Formula_ABC_nAnBnC() {
+	public void FeatureIDE_ABC_nAnBnC() {
 		test("ABC-nAnBnC");
 	}
 
 	@Test
-	public void Formula_empty() {
+	public void FeatureIDE_A() {
+		test("A");
+	}
+
+	@Test
+	public void FeatureIDE_CNF_SingleGroups() {
+		test("SingleGroups");
+	}
+
+	@Test
+	public void FeatureIDE_faulty() {
 		test("faulty");
 	}
 
-	@Test
-	public void Formula_nA() {
-		test("nA");
-	}
-
-	@Test
-	public void Formula_nAB() {
-		test("nAB");
-	}
-
 	private static void test(String name) {
-		testLoadAndSave(getFormula(name), name, new FormulaFormat());
+		testLoad(getFormula(name), name, new XmlFeatureModelFormat());
 	}
 
 	private static Formula getFormula(String name) {
@@ -68,23 +68,40 @@ public class FormulaFormatTest {
 		}
 		case "ABC-nAnBnC": {
 			final VariableMap map = VariableMap.emptyMap();
+			final Literal root = new LiteralPredicate(map.addBooleanVariable("Root").get());
 			final Literal a = new LiteralPredicate(map.addBooleanVariable("A").get());
 			final Literal b = new LiteralPredicate(map.addBooleanVariable("B").get());
 			final Literal c = new LiteralPredicate(map.addBooleanVariable("C").get());
 			return new And(
-				new Or(a.cloneNode(), new Or(b.cloneNode(), c.cloneNode())),
-				new Or(new Not(a.cloneNode()), new Or(new Not(b.cloneNode()), new Not(c.cloneNode()))));
+				root.cloneNode(),
+				new Implies(a.cloneNode(), root.cloneNode()),
+				new Implies(b.cloneNode(), root.cloneNode()),
+				new Implies(c.cloneNode(), root.cloneNode()),
+				new Implies(root.cloneNode(), new Or(a.cloneNode(), b.cloneNode(), c.cloneNode())),
+				new Or(new Not(a.cloneNode()), new Not(b.cloneNode()), new Not(c.cloneNode())));
 		}
-		case "nA": {
+		case "SingleGroups": {
 			final VariableMap map = VariableMap.emptyMap();
+			final Literal root = new LiteralPredicate(map.addBooleanVariable("Root").get());
 			final Literal a = new LiteralPredicate(map.addBooleanVariable("A").get());
-			return new Not(a.cloneNode());
-		}
-		case "nAB": {
-			final VariableMap map = VariableMap.emptyMap();
-			final Literal a = new LiteralPredicate(map.addBooleanVariable("A").get());
+			final Literal a1 = new LiteralPredicate(map.addBooleanVariable("A1").get());
 			final Literal b = new LiteralPredicate(map.addBooleanVariable("B").get());
-			return new Or(new Not(a.cloneNode()), b.cloneNode());
+			final Literal b1 = new LiteralPredicate(map.addBooleanVariable("B1").get());
+			return new And(
+				root.cloneNode(),
+				new Implies(a.cloneNode(), root.cloneNode()),
+				new Implies(root.cloneNode(), a.cloneNode()),
+				new Implies(a1.cloneNode(), a.cloneNode()),
+				new Implies(a.cloneNode(), a1.cloneNode()),
+				new Implies(b.cloneNode(), root.cloneNode()),
+				new Implies(root.cloneNode(), b.cloneNode()),
+				new Implies(b1.cloneNode(), b.cloneNode()),
+				new Implies(b.cloneNode(), b1.cloneNode()));
+		}
+		case "A": {
+			final VariableMap map = VariableMap.emptyMap();
+			final Literal a = new LiteralPredicate(map.addBooleanVariable("A").get());
+			return new And(a.cloneNode());
 		}
 		default:
 			fail(name);

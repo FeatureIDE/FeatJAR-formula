@@ -31,69 +31,34 @@ import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.formula.expression.compound.*;
 
 /**
- * Tests {@link DIMACSFormat DIMACS} format.
+ * Tests {@link XmlFeatureModelCNFFormat FeatureIDE} format.
  *
  * @author Sebastian Krieter
  */
-public class DIMCASFormatTest {
+public class XmlFeatureModelCNFFormatTest {
 
 	@Test
-	public void DIMACS_123_n1n2n3() {
-		test("123-n1n2n3");
-	}
-
-	@Test
-	public void DIMACS_ABC_nAnBnC() {
+	public void FeatureIDE_CNF_ABC_nAnBnC() {
 		test("ABC-nAnBnC");
 	}
 
 	@Test
-	public void DIMACS_empty() {
-		test("empty");
+	public void FeatureIDE_CNF_A() {
+		test("A");
 	}
 
 	@Test
-	public void DIMACS_empty_1() {
-		test("empty-1");
+	public void FeatureIDE_CNF_SingleGroups() {
+		test("SingleGroups");
 	}
 
 	@Test
-	public void DIMACS_empty_A() {
-		test("empty-A");
-	}
-
-	@Test
-	public void DIMACS_empty_ABC() {
-		test("empty-ABC");
-	}
-
-	@Test
-	public void DIMACS_empty_A2C() {
-		test("empty-A2C");
-	}
-
-	@Test
-	public void DIMACS_nA() {
-		test("nA");
-	}
-
-	@Test
-	public void DIMACS_nAB() {
-		test("nAB");
-	}
-
-	@Test
-	public void DIMACS_faulty() {
+	public void FeatureIDE_CNF_faulty() {
 		test("faulty");
 	}
 
-	@Test
-	public void DIMACS_void() {
-		test("void");
-	}
-
 	private static void test(String name) {
-		testLoadAndSave(getFormula(name), name, new DIMACSFormat());
+		testLoad(getFormula(name), name, new XmlFeatureModelCNFFormat());
 	}
 
 	private static Formula getFormula(String name) {
@@ -101,64 +66,42 @@ public class DIMCASFormatTest {
 		case "faulty": {
 			return null;
 		}
-		case "void": {
-			return new And(Or.empty());
-		}
-		case "123-n1n2n3": {
-			final VariableMap map = VariableMap.emptyMap();
-			final Literal a = new LiteralPredicate(map.addBooleanVariable("1").get());
-			final Literal b = new LiteralPredicate(map.addBooleanVariable("2").get());
-			final Literal c = new LiteralPredicate(map.addBooleanVariable("3").get());
-			return new And(
-				new Or(a.cloneNode(), b.cloneNode(), c.cloneNode()),
-				new Or(a.flip(), b.flip(), c.flip()));
-		}
 		case "ABC-nAnBnC": {
 			final VariableMap map = VariableMap.emptyMap();
+			final Literal root = new LiteralPredicate(map.addBooleanVariable("Root").get());
 			final Literal a = new LiteralPredicate(map.addBooleanVariable("A").get());
 			final Literal b = new LiteralPredicate(map.addBooleanVariable("B").get());
 			final Literal c = new LiteralPredicate(map.addBooleanVariable("C").get());
 			return new And(
-				new Or(a.cloneNode(), b.cloneNode(), c.cloneNode()),
+				root.cloneNode(),
+				new Or(a.flip(), root.cloneNode()),
+				new Or(b.flip(), root.cloneNode()),
+				new Or(c.flip(), root.cloneNode()),
+				new Or(root.flip(), a.cloneNode(), b.cloneNode(), c.cloneNode()),
 				new Or(a.flip(), b.flip(), c.flip()));
 		}
-		case "empty-ABC": {
+		case "SingleGroups": {
 			final VariableMap map = VariableMap.emptyMap();
-			map.addBooleanVariable("A").get();
-			map.addBooleanVariable("B").get();
-			map.addBooleanVariable("C").get();
-			return And.empty(map);
-		}
-		case "empty-A2C": {
-			final VariableMap map = VariableMap.emptyMap();
-			map.addBooleanVariable("A").get();
-			map.addBooleanVariable("2").get();
-			map.addBooleanVariable("C").get();
-			return And.empty(map);
-		}
-		case "empty-A": {
-			final VariableMap map = VariableMap.emptyMap();
-			map.addBooleanVariable("A").get();
-			return And.empty(map);
-		}
-		case "empty-1": {
-			final VariableMap map = VariableMap.emptyMap();
-			map.addBooleanVariable("1").get();
-			return And.empty(map);
-		}
-		case "empty": {
-			return And.empty();
-		}
-		case "nA": {
-			final VariableMap map = VariableMap.emptyMap();
+			final Literal root = new LiteralPredicate(map.addBooleanVariable("Root").get());
 			final Literal a = new LiteralPredicate(map.addBooleanVariable("A").get());
-			return new And(new Or(a.flip()));
-		}
-		case "nAB": {
-			final VariableMap map = VariableMap.emptyMap();
-			final Literal a = new LiteralPredicate(map.addBooleanVariable("A").get());
+			final Literal a1 = new LiteralPredicate(map.addBooleanVariable("A1").get());
 			final Literal b = new LiteralPredicate(map.addBooleanVariable("B").get());
-			return new And(new Or(a.flip(), b.cloneNode()));
+			final Literal b1 = new LiteralPredicate(map.addBooleanVariable("B1").get());
+			return new And(
+				root.cloneNode(),
+				new Or(a.flip(), root.cloneNode()),
+				new Or(root.flip(), a.cloneNode()),
+				new Or(a1.flip(), a.cloneNode()),
+				new Or(a.flip(), a1.cloneNode()),
+				new Or(b.flip(), root.cloneNode()),
+				new Or(root.flip(), b.cloneNode()),
+				new Or(b1.flip(), b.cloneNode()),
+				new Or(b.flip(), b1.cloneNode()));
+		}
+		case "A": {
+			final VariableMap map = VariableMap.emptyMap();
+			final Literal a = new LiteralPredicate(map.addBooleanVariable("A").get());
+			return new And(a.cloneNode());
 		}
 		default:
 			fail(name);

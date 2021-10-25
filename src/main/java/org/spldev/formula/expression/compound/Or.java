@@ -34,12 +34,9 @@ import org.spldev.formula.expression.atomic.literal.*;
  * @author Sebastian Krieter
  */
 public class Or extends Compound {
-	public static class EmptyOr extends Or {
-		private VariableMap variableMap;
 
-		public EmptyOr() {
-			variableMap = VariableMap.emptyMap();
-		}
+	private static class EmptyOr extends Or {
+		private VariableMap variableMap;
 
 		public EmptyOr(VariableMap variableMap) {
 			this.variableMap = variableMap;
@@ -59,6 +56,15 @@ public class Or extends Compound {
 		public Or cloneNode() {
 			return new EmptyOr(variableMap);
 		}
+
+		@Override
+		protected int computeHashCode() {
+			return Objects.hash(Or.class, 0);
+		}
+	}
+
+	public static Or empty() {
+		return new EmptyOr(VariableMap.emptyMap());
 	}
 
 	public static Or empty(VariableMap variableMap) {
