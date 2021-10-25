@@ -37,6 +37,10 @@ public class Or extends Compound {
 	public static class EmptyOr extends Or {
 		private VariableMap variableMap;
 
+		public EmptyOr() {
+			variableMap = VariableMap.emptyMap();
+		}
+
 		public EmptyOr(VariableMap variableMap) {
 			this.variableMap = variableMap;
 		}

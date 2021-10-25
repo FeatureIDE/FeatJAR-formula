@@ -38,6 +38,10 @@ public class And extends Compound {
 	public static class EmptyAnd extends And {
 		private VariableMap variableMap;
 
+		public EmptyAnd() {
+			variableMap = VariableMap.emptyMap();
+		}
+
 		public EmptyAnd(VariableMap variableMap) {
 			this.variableMap = variableMap;
 		}

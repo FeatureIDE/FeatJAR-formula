@@ -39,6 +39,10 @@ public final class LiteralPredicate extends Predicate<Boolean> implements Litera
 
 	private final boolean positive;
 
+	public LiteralPredicate(BoolVariable variable) {
+		this(variable, true);
+	}
+
 	public LiteralPredicate(BoolVariable variable, boolean positive) {
 		super(Objects.requireNonNull(variable));
 		this.positive = positive;
