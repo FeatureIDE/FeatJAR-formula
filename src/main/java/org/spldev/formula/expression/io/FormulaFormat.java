@@ -24,7 +24,7 @@ package org.spldev.formula.expression.io;
 
 import org.spldev.formula.expression.*;
 import org.spldev.formula.expression.io.parse.*;
-import org.spldev.util.*;
+import org.spldev.util.data.Result;
 import org.spldev.util.io.format.*;
 
 public class FormulaFormat implements Format<Formula> {
@@ -52,7 +52,7 @@ public class FormulaFormat implements Format<Formula> {
 	}
 
 	@Override
-	public String getId() {
+	public String getIdentifier() {
 		return ID;
 	}
 

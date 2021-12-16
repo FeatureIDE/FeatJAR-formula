@@ -140,7 +140,7 @@ public class XmlFeatureModelCNFFormat extends XmlFeatureModelFormat {
 	}
 
 	@Override
-	public String getId() {
+	public String getIdentifier() {
 		return ID;
 	}
 

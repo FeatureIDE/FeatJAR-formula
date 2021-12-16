@@ -28,7 +28,8 @@ import java.util.stream.*;
 import org.spldev.formula.expression.*;
 import org.spldev.formula.expression.compound.*;
 import org.spldev.formula.expression.io.parse.*;
-import org.spldev.util.*;
+import org.spldev.util.data.Problem;
+import org.spldev.util.data.Result;
 import org.spldev.util.io.format.*;
 
 public class KConfigReaderFormat implements Format<Formula> {
@@ -65,7 +66,7 @@ public class KConfigReaderFormat implements Format<Formula> {
 	}
 
 	@Override
-	public String getId() {
+	public String getIdentifier() {
 		return ID;
 	}
 

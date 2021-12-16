@@ -30,8 +30,9 @@ import org.spldev.formula.expression.*;
 import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.formula.expression.compound.*;
 import org.spldev.formula.expression.term.bool.*;
-import org.spldev.util.*;
-import org.spldev.util.Problem.*;
+import org.spldev.util.data.Problem;
+import org.spldev.util.data.Problem.*;
+import org.spldev.util.data.Result;
 import org.spldev.util.io.*;
 import org.spldev.util.io.format.*;
 import org.w3c.dom.*;
@@ -345,7 +346,7 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 	}
 
 	@Override
-	public String getId() {
+	public String getIdentifier() {
 		return ID;
 	}
 

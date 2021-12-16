@@ -30,8 +30,9 @@ import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.formula.expression.compound.*;
 import org.spldev.formula.expression.io.parse.Symbols.*;
 import org.spldev.formula.expression.term.bool.*;
-import org.spldev.util.*;
-import org.spldev.util.Problem.*;
+import org.spldev.util.data.Problem;
+import org.spldev.util.data.Problem.*;
+import org.spldev.util.data.Result;
 import org.spldev.util.io.format.*;
 
 /**

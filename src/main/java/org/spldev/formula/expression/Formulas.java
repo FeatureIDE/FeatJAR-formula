@@ -30,7 +30,7 @@ import org.spldev.formula.expression.atomic.*;
 import org.spldev.formula.expression.term.*;
 import org.spldev.formula.expression.transform.*;
 import org.spldev.formula.expression.transform.NormalForms.*;
-import org.spldev.util.*;
+import org.spldev.util.data.Result;
 import org.spldev.util.tree.*;
 import org.spldev.util.tree.visitor.*;
 

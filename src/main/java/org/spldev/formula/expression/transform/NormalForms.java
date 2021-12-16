@@ -25,7 +25,7 @@ package org.spldev.formula.expression.transform;
 import org.spldev.formula.expression.*;
 import org.spldev.formula.expression.atomic.literal.*;
 import org.spldev.formula.expression.compound.*;
-import org.spldev.util.*;
+import org.spldev.util.data.Result;
 import org.spldev.util.job.*;
 import org.spldev.util.tree.*;
 

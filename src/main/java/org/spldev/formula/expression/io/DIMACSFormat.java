@@ -25,7 +25,7 @@ package org.spldev.formula.expression.io;
 import java.text.ParseException;
 
 import org.spldev.formula.expression.*;
-import org.spldev.util.*;
+import org.spldev.util.data.Result;
 import org.spldev.util.io.format.*;
 import org.spldev.util.io.format.Format;
 
@@ -66,7 +66,7 @@ public class DIMACSFormat implements Format<Formula> {
 	}
 
 	@Override
-	public String getId() {
+	public String getIdentifier() {
 		return ID;
 	}
 

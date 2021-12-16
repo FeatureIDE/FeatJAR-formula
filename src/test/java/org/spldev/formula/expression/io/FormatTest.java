@@ -31,7 +31,7 @@ import java.util.regex.*;
 import java.util.stream.*;
 
 import org.spldev.formula.expression.*;
-import org.spldev.util.*;
+import org.spldev.util.data.Result;
 import org.spldev.util.io.*;
 import org.spldev.util.io.format.*;
 
@@ -46,7 +46,7 @@ public class FormatTest {
 	private final static Path formatsDirectory = rootDirectory.resolve("formats");
 
 	public static void testLoad(Formula formula1, String name, Format<Formula> format) {
-		assertEquals(format.getClass().getCanonicalName(), format.getId());
+		assertEquals(format.getClass().getCanonicalName(), format.getIdentifier());
 		assertTrue(format.supportsParse());
 		assertFalse(format.supportsSerialize());
 		for (final Path file : getFileList(name, format)) {
@@ -57,7 +57,7 @@ public class FormatTest {
 	}
 
 	public static void testLoadAndSave(Formula formula1, String name, Format<Formula> format) {
-		assertEquals(format.getClass().getCanonicalName(), format.getId());
+		assertEquals(format.getClass().getCanonicalName(), format.getIdentifier());
 		assertTrue(format.supportsParse());
 		assertTrue(format.supportsSerialize());
 		final Formula formula3 = saveAndLoad(formula1, format);
