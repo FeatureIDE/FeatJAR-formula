@@ -35,7 +35,7 @@ import org.spldev.formula.expression.compound.*;
  *
  * @author Sebastian Krieter
  */
-public class DIMCASFormatTest {
+public class DIMACSFormatTest {
 
 	@Test
 	public void DIMACS_123_n1n2n3() {
