@@ -1,8 +1,5 @@
 <?xml version="1.0"?>
 <extensions>
-	<point id="org.spldev.util.cli.CLIFunctionManager">
-	    <extension id="org.spldev.formula.cli.ConverterCLI" />
-	</point>
 	<point id="org.spldev.formula.expression.io.FormulaFormatManager">
 	    <extension id="org.spldev.formula.expression.io.DIMACSFormat" />
 	    <extension id="org.spldev.formula.expression.io.XmlFeatureModelCNFFormat" />
