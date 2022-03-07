@@ -37,7 +37,7 @@ import org.spldev.formula.expression.compound.*;
  */
 public class KConfigReaderFormatTest {
 
-	@Test
+	/*@Test
 	public void KConfigReader_ABC_nAnBnC() {
 		test("ABC-nAnBnC");
 	}
@@ -90,6 +90,6 @@ public class KConfigReaderFormatTest {
 			fail(name);
 			return null;
 		}
-	}
+	}*/
 
 }
