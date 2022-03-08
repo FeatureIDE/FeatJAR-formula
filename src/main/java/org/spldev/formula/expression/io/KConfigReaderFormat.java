@@ -45,8 +45,15 @@ public class KConfigReaderFormat implements Format<Formula> {
 			.map(String::trim) //
 			.filter(l -> !l.isEmpty()) //
 			.filter(l -> !l.startsWith("#")) //
-			.map(l -> l.replace("=", "_")) //
-			.map(l -> l.replace("-", "_")) //
+			// fix non-boolean constraints
+			.map(l -> l.replace("=", "_"))
+			.map(l -> l.replace(":", "_"))
+			.map(l -> l.replace(".", "_"))
+			.map(l -> l.replace(",", "_"))
+			.map(l -> l.replace("/", "_"))
+			.map(l -> l.replace("\\", "_"))
+			.map(l -> l.replace(" ", "_"))
+			.map(l -> l.replace("-", "_"))
 			.map(l -> l.replaceAll("def\\((\\w+)\\)", "$1"))
 			.map(nodeReader::read) //
 			.peek(r -> problems.addAll(r.getProblems()))
