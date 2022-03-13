@@ -230,7 +230,7 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 			}
 		} else {
 			if (elements.isEmpty()) {
-				throw new ParseException("No feature in group!");
+				parseProblems.add(new ParseProblem("No feature in group!", 0, Severity.WARNING));
 			}
 		}
 		for (final Element e : elements) {
