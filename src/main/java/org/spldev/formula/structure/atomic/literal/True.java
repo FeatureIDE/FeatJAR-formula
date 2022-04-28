@@ -20,40 +20,64 @@
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
  */
-package org.spldev.structure;
-
-import static org.junit.jupiter.api.Assertions.*;
+package org.spldev.formula.structure.atomic.literal;
 
 import java.util.*;
 
-import org.junit.jupiter.api.*;
 import org.spldev.formula.structure.*;
-import org.spldev.formula.structure.atomic.literal.*;
-import org.spldev.formula.structure.term.bool.*;
+import org.spldev.formula.structure.atomic.*;
+import org.spldev.formula.structure.term.*;
 
-public class AuxiliaryRootTest {
+/**
+ * A special {@link Atomic} that is always {@code true}.
+ *
+ * @author Sebastian Krieter
+ */
+public final class True extends Terminal implements Literal {
 
-	private Expression expression1, expression2;
+	private static final True INSTANCE = new True();
 
-	@BeforeEach
-	public void setUp() {
-		final VariableMap map = VariableMap.fromNames(Arrays.asList("L1", "L2"));
-		expression1 = new LiteralPredicate((BoolVariable) map.getVariable("L1").get(), true);
-		expression2 = new LiteralPredicate((BoolVariable) map.getVariable("L2").get(), true);
+	private True() {
+		super();
 	}
 
-	@Test
-	public void createAuxiliaryRoot() {
-		final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
-		assertEquals(expression1, newRoot.getChild());
-		assertEquals("", newRoot.getName());
+	public static True getInstance() {
+		return INSTANCE;
 	}
 
-	@Test
-	public void replaceChild() {
-		final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
-		newRoot.setChild(expression2);
-		assertEquals(expression2, newRoot.getChild());
+	@Override
+	public List<? extends Term<?>> getChildren() {
+		return Collections.emptyList();
+	}
+
+	@Override
+	public False flip() {
+		return Literal.False;
+	}
+
+	@Override
+	public True cloneNode() {
+		return this;
+	}
+
+	@Override
+	public String getName() {
+		return "true";
+	}
+
+	@Override
+	public int hashCode() {
+		return 91;
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		return other == INSTANCE;
+	}
+
+	@Override
+	public boolean equalsNode(Object other) {
+		return other == INSTANCE;
 	}
 
 }

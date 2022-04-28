@@ -20,40 +20,55 @@
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
  */
-package org.spldev.structure;
-
-import static org.junit.jupiter.api.Assertions.*;
+package org.spldev.formula.structure.atomic;
 
 import java.util.*;
+import java.util.Map.*;
+import java.util.stream.*;
 
-import org.junit.jupiter.api.*;
-import org.spldev.formula.structure.*;
-import org.spldev.formula.structure.atomic.literal.*;
-import org.spldev.formula.structure.term.bool.*;
+import org.spldev.util.data.*;
 
-public class AuxiliaryRootTest {
+public class IndexAssignment implements Assignment {
 
-	private Expression expression1, expression2;
+	protected final HashMap<Integer, Object> assignments = new HashMap<>();
 
-	@BeforeEach
-	public void setUp() {
-		final VariableMap map = VariableMap.fromNames(Arrays.asList("L1", "L2"));
-		expression1 = new LiteralPredicate((BoolVariable) map.getVariable("L1").get(), true);
-		expression2 = new LiteralPredicate((BoolVariable) map.getVariable("L2").get(), true);
+	@Override
+	public void set(int index, Object assignment) {
+		if (index > 0) {
+			if (assignment == null) {
+				assignments.remove(index);
+			} else {
+				assignments.put(index, assignment);
+			}
+		}
 	}
 
-	@Test
-	public void createAuxiliaryRoot() {
-		final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
-		assertEquals(expression1, newRoot.getChild());
-		assertEquals("", newRoot.getName());
+	@Override
+	public Optional<Object> get(int index) {
+		return Optional.ofNullable(assignments.get(index));
 	}
 
-	@Test
-	public void replaceChild() {
-		final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
-		newRoot.setChild(expression2);
-		assertEquals(expression2, newRoot.getChild());
+	@Override
+	public List<Pair<Integer, Object>> getAll() {
+		return assignments.entrySet().stream().map(e -> new Pair<>(e.getKey(), e.getValue()))
+			.collect(Collectors.toList());
+	}
+
+	@Override
+	public void unsetAll() {
+		assignments.clear();
+	}
+
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder();
+		for (final Entry<Integer, Object> entry : assignments.entrySet()) {
+			sb.append(entry.getKey());
+			sb.append(": ");
+			sb.append(entry.getValue());
+			sb.append("\n");
+		}
+		return sb.toString();
 	}
 
 }

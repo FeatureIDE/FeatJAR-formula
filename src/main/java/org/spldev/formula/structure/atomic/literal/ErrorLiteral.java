@@ -20,40 +20,56 @@
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
  */
-package org.spldev.structure;
-
-import static org.junit.jupiter.api.Assertions.*;
+package org.spldev.formula.structure.atomic.literal;
 
 import java.util.*;
 
-import org.junit.jupiter.api.*;
 import org.spldev.formula.structure.*;
-import org.spldev.formula.structure.atomic.literal.*;
-import org.spldev.formula.structure.term.bool.*;
+import org.spldev.formula.structure.term.*;
 
-public class AuxiliaryRootTest {
+/**
+ * A special {@link Literal} that holds an unparsable sub expression from a
+ * formula.
+ *
+ * @author Sebastian Krieter
+ */
+public class ErrorLiteral extends Terminal implements Literal {
 
-	private Expression expression1, expression2;
+	private String error;
+	private boolean positive;
 
-	@BeforeEach
-	public void setUp() {
-		final VariableMap map = VariableMap.fromNames(Arrays.asList("L1", "L2"));
-		expression1 = new LiteralPredicate((BoolVariable) map.getVariable("L1").get(), true);
-		expression2 = new LiteralPredicate((BoolVariable) map.getVariable("L2").get(), true);
+	public ErrorLiteral(String error) {
+		this(error, true);
 	}
 
-	@Test
-	public void createAuxiliaryRoot() {
-		final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
-		assertEquals(expression1, newRoot.getChild());
-		assertEquals("", newRoot.getName());
+	public ErrorLiteral(String error, boolean positive) {
+		this.error = error;
+		this.positive = positive;
 	}
 
-	@Test
-	public void replaceChild() {
-		final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
-		newRoot.setChild(expression2);
-		assertEquals(expression2, newRoot.getChild());
+	@Override
+	public List<? extends Term<?>> getChildren() {
+		return Collections.emptyList();
+	}
+
+	@Override
+	public ErrorLiteral cloneNode() {
+		return new ErrorLiteral(error, positive);
+	}
+
+	@Override
+	public String getName() {
+		return "Error: " + error;
+	}
+
+	@Override
+	public Literal flip() {
+		return new ErrorLiteral(error, !positive);
+	}
+
+	@Override
+	public boolean isPositive() {
+		return positive;
 	}
 
 }

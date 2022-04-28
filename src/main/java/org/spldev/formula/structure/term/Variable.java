@@ -20,40 +20,69 @@
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
  */
-package org.spldev.structure;
-
-import static org.junit.jupiter.api.Assertions.*;
+package org.spldev.formula.structure.term;
 
 import java.util.*;
 
-import org.junit.jupiter.api.*;
 import org.spldev.formula.structure.*;
 import org.spldev.formula.structure.atomic.literal.*;
-import org.spldev.formula.structure.term.bool.*;
 
-public class AuxiliaryRootTest {
+public abstract class Variable<T> extends Terminal implements Term<T> {
 
-	private Expression expression1, expression2;
+	protected int index;
+	protected VariableMap map;
 
-	@BeforeEach
-	public void setUp() {
-		final VariableMap map = VariableMap.fromNames(Arrays.asList("L1", "L2"));
-		expression1 = new LiteralPredicate((BoolVariable) map.getVariable("L1").get(), true);
-		expression2 = new LiteralPredicate((BoolVariable) map.getVariable("L2").get(), true);
+	public Variable(int index, VariableMap map) {
+		this.map = Objects.requireNonNull(map);
+		this.index = index;
 	}
 
-	@Test
-	public void createAuxiliaryRoot() {
-		final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
-		assertEquals(expression1, newRoot.getChild());
-		assertEquals("", newRoot.getName());
+	protected Variable(Variable<T> oldVariable) {
+		this.index = oldVariable.index;
+		this.map = oldVariable.map;
 	}
 
-	@Test
-	public void replaceChild() {
-		final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
-		newRoot.setChild(expression2);
-		assertEquals(expression2, newRoot.getChild());
+	public int getIndex() {
+		return index;
+	}
+
+	@Override
+	public String getName() {
+		return map.getName(index).orElse("??");
+	}
+
+	@Override
+	public VariableMap getVariableMap() {
+		return map;
+	}
+
+	@Override
+	public List<Term<T>> getChildren() {
+		return Collections.emptyList();
+	}
+
+	@Override
+	public void setVariableMap(VariableMap map) {
+		this.map = Objects.requireNonNull(map);
+	}
+
+	@Override
+	public void adaptVariableMap(VariableMap newMap) {
+		index = newMap.getIndex(getName()).orElse(0);
+		this.map = newMap;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(index);
+	}
+
+	@Override
+	public boolean equalsNode(Object other) {
+		if (getClass() != other.getClass()) {
+			return false;
+		}
+		return index == ((Variable<?>) other).index;
 	}
 
 }

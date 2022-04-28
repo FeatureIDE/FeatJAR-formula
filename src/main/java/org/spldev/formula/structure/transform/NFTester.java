@@ -20,40 +20,33 @@
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
  */
-package org.spldev.structure;
+package org.spldev.formula.structure.transform;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.util.*;
-
-import org.junit.jupiter.api.*;
 import org.spldev.formula.structure.*;
-import org.spldev.formula.structure.atomic.literal.*;
-import org.spldev.formula.structure.term.bool.*;
+import org.spldev.util.tree.visitor.*;
 
-public class AuxiliaryRootTest {
+public class NFTester implements TreeVisitor<Boolean, Expression> {
 
-	private Expression expression1, expression2;
+	protected boolean isNf;
+	protected boolean isClausalNf;
 
-	@BeforeEach
-	public void setUp() {
-		final VariableMap map = VariableMap.fromNames(Arrays.asList("L1", "L2"));
-		expression1 = new LiteralPredicate((BoolVariable) map.getVariable("L1").get(), true);
-		expression2 = new LiteralPredicate((BoolVariable) map.getVariable("L2").get(), true);
+	@Override
+	public void reset() {
+		isNf = true;
+		isClausalNf = true;
 	}
 
-	@Test
-	public void createAuxiliaryRoot() {
-		final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
-		assertEquals(expression1, newRoot.getChild());
-		assertEquals("", newRoot.getName());
+	@Override
+	public Boolean getResult() {
+		return isNf;
 	}
 
-	@Test
-	public void replaceChild() {
-		final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
-		newRoot.setChild(expression2);
-		assertEquals(expression2, newRoot.getChild());
+	public boolean isNf() {
+		return isNf;
+	}
+
+	public boolean isClausalNf() {
+		return isClausalNf;
 	}
 
 }

@@ -20,40 +20,24 @@
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
  */
-package org.spldev.structure;
+package org.spldev.formula.structure.term;
 
-import static org.junit.jupiter.api.Assertions.*;
+public abstract class Multiply<T> extends Function<T, T> {
 
-import java.util.*;
-
-import org.junit.jupiter.api.*;
-import org.spldev.formula.structure.*;
-import org.spldev.formula.structure.atomic.literal.*;
-import org.spldev.formula.structure.term.bool.*;
-
-public class AuxiliaryRootTest {
-
-	private Expression expression1, expression2;
-
-	@BeforeEach
-	public void setUp() {
-		final VariableMap map = VariableMap.fromNames(Arrays.asList("L1", "L2"));
-		expression1 = new LiteralPredicate((BoolVariable) map.getVariable("L1").get(), true);
-		expression2 = new LiteralPredicate((BoolVariable) map.getVariable("L2").get(), true);
+	public Multiply(Term<T> leftArgument, Term<T> rightArgument) {
+		super(leftArgument, rightArgument);
 	}
 
-	@Test
-	public void createAuxiliaryRoot() {
-		final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
-		assertEquals(expression1, newRoot.getChild());
-		assertEquals("", newRoot.getName());
+	protected Multiply() {
+		super();
 	}
 
-	@Test
-	public void replaceChild() {
-		final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
-		newRoot.setChild(expression2);
-		assertEquals(expression2, newRoot.getChild());
+	@Override
+	public String getName() {
+		return "*";
 	}
+
+	@Override
+	public abstract Multiply<T> cloneNode();
 
 }

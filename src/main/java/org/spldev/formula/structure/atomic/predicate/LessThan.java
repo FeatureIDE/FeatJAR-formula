@@ -20,40 +20,53 @@
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
  */
-package org.spldev.structure;
-
-import static org.junit.jupiter.api.Assertions.*;
+package org.spldev.formula.structure.atomic.predicate;
 
 import java.util.*;
 
-import org.junit.jupiter.api.*;
-import org.spldev.formula.structure.*;
-import org.spldev.formula.structure.atomic.literal.*;
-import org.spldev.formula.structure.term.bool.*;
+import org.spldev.formula.structure.term.*;
 
-public class AuxiliaryRootTest {
+/**
+ *
+ * @author Sebastian Krieter
+ */
+public class LessThan<D extends Comparable<D>> extends Predicate<D> {
 
-	private Expression expression1, expression2;
-
-	@BeforeEach
-	public void setUp() {
-		final VariableMap map = VariableMap.fromNames(Arrays.asList("L1", "L2"));
-		expression1 = new LiteralPredicate((BoolVariable) map.getVariable("L1").get(), true);
-		expression2 = new LiteralPredicate((BoolVariable) map.getVariable("L2").get(), true);
+	public LessThan(Term<D> leftArgument, Term<D> rightArgument) {
+		super(leftArgument, rightArgument);
 	}
 
-	@Test
-	public void createAuxiliaryRoot() {
-		final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
-		assertEquals(expression1, newRoot.getChild());
-		assertEquals("", newRoot.getName());
+	protected LessThan() {
+		super();
 	}
 
-	@Test
-	public void replaceChild() {
-		final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
-		newRoot.setChild(expression2);
-		assertEquals(expression2, newRoot.getChild());
+	@Override
+	public void setArguments(Term<D> leftArgument, Term<D> rightArgument) {
+		setChildren(Arrays.asList(leftArgument, rightArgument));
+	}
+
+	@Override
+	public String getName() {
+		return "<";
+	}
+
+	@Override
+	public Optional<Boolean> eval(List<D> values) {
+		if (values.stream().anyMatch(value -> value == null)) {
+			return Optional.empty();
+		}
+		return Optional.of((values.size() == 2) && (values.get(0).compareTo(values.get(1)) < 0));
+	}
+
+	@Override
+	public LessThan<D> cloneNode() {
+		return new LessThan<>();
+	}
+
+	@Override
+	public GreaterEqual<D> flip() {
+		final List<? extends Term<D>> children = getChildren();
+		return new GreaterEqual<>(children.get(0), children.get(1));
 	}
 
 }

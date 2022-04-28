@@ -20,40 +20,30 @@
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
  */
-package org.spldev.structure;
-
-import static org.junit.jupiter.api.Assertions.*;
+package org.spldev.formula.io.textual;
 
 import java.util.*;
 
-import org.junit.jupiter.api.*;
-import org.spldev.formula.structure.*;
-import org.spldev.formula.structure.atomic.literal.*;
-import org.spldev.formula.structure.term.bool.*;
+import org.spldev.util.data.*;
 
-public class AuxiliaryRootTest {
+/**
+ * Symbols for a representation like in Java. These are inherently incomplete
+ * and should only be used if absolutely necessary.
+ * 
+ * @author Sebastian Krieter
+ */
+public class PropositionalModelSymbols extends Symbols {
 
-	private Expression expression1, expression2;
+	public static final Symbols INSTANCE = new PropositionalModelSymbols();
 
-	@BeforeEach
-	public void setUp() {
-		final VariableMap map = VariableMap.fromNames(Arrays.asList("L1", "L2"));
-		expression1 = new LiteralPredicate((BoolVariable) map.getVariable("L1").get(), true);
-		expression2 = new LiteralPredicate((BoolVariable) map.getVariable("L2").get(), true);
-	}
-
-	@Test
-	public void createAuxiliaryRoot() {
-		final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
-		assertEquals(expression1, newRoot.getChild());
-		assertEquals("", newRoot.getName());
-	}
-
-	@Test
-	public void replaceChild() {
-		final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
-		newRoot.setChild(expression2);
-		assertEquals(expression2, newRoot.getChild());
+	private PropositionalModelSymbols() {
+		super(Arrays.asList(
+			new Pair<>(Operator.NOT, "!"),
+			new Pair<>(Operator.AND, "&"),
+			new Pair<>(Operator.OR, "|"),
+			new Pair<>(Operator.EQUALS, "=="),
+			new Pair<>(Operator.IMPLIES, "=>")),
+			false);
 	}
 
 }

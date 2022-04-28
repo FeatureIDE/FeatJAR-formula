@@ -20,40 +20,36 @@
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
  */
-package org.spldev.structure;
-
-import static org.junit.jupiter.api.Assertions.*;
+package org.spldev.formula.structure.atomic;
 
 import java.util.*;
 
-import org.junit.jupiter.api.*;
-import org.spldev.formula.structure.*;
-import org.spldev.formula.structure.atomic.literal.*;
-import org.spldev.formula.structure.term.bool.*;
+import org.spldev.util.data.*;
 
-public class AuxiliaryRootTest {
+public interface Assignment {
 
-	private Expression expression1, expression2;
-
-	@BeforeEach
-	public void setUp() {
-		final VariableMap map = VariableMap.fromNames(Arrays.asList("L1", "L2"));
-		expression1 = new LiteralPredicate((BoolVariable) map.getVariable("L1").get(), true);
-		expression2 = new LiteralPredicate((BoolVariable) map.getVariable("L2").get(), true);
+	default void setAll(Collection<Pair<Integer, Object>> assignments) {
+		for (final Pair<Integer, Object> pair : assignments) {
+			set(pair.getKey(), pair.getValue());
+		}
 	}
 
-	@Test
-	public void createAuxiliaryRoot() {
-		final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
-		assertEquals(expression1, newRoot.getChild());
-		assertEquals("", newRoot.getName());
+	default void unsetAll(Collection<Pair<Integer, Object>> assignments) {
+		for (final Pair<Integer, Object> pair : assignments) {
+			set(pair.getKey(), null);
+		}
 	}
 
-	@Test
-	public void replaceChild() {
-		final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
-		newRoot.setChild(expression2);
-		assertEquals(expression2, newRoot.getChild());
+	void unsetAll();
+
+	default void unset(int index) {
+		set(index, null);
 	}
+
+	void set(int index, Object assignment);
+
+	Optional<Object> get(int index);
+
+	List<Pair<Integer, Object>> getAll();
 
 }

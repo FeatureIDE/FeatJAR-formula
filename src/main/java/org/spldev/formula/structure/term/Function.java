@@ -20,40 +20,33 @@
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
  */
-package org.spldev.structure;
-
-import static org.junit.jupiter.api.Assertions.*;
+package org.spldev.formula.structure.term;
 
 import java.util.*;
 
-import org.junit.jupiter.api.*;
 import org.spldev.formula.structure.*;
-import org.spldev.formula.structure.atomic.literal.*;
-import org.spldev.formula.structure.term.bool.*;
 
-public class AuxiliaryRootTest {
+public abstract class Function<R, T> extends NonTerminal implements Term<R> {
 
-	private Expression expression1, expression2;
-
-	@BeforeEach
-	public void setUp() {
-		final VariableMap map = VariableMap.fromNames(Arrays.asList("L1", "L2"));
-		expression1 = new LiteralPredicate((BoolVariable) map.getVariable("L1").get(), true);
-		expression2 = new LiteralPredicate((BoolVariable) map.getVariable("L2").get(), true);
+	public Function(Collection<Term<T>> nodes) {
+		super(nodes);
 	}
 
-	@Test
-	public void createAuxiliaryRoot() {
-		final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
-		assertEquals(expression1, newRoot.getChild());
-		assertEquals("", newRoot.getName());
+	@SafeVarargs
+	public Function(Term<T>... nodes) {
+		super(nodes);
 	}
 
-	@Test
-	public void replaceChild() {
-		final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
-		newRoot.setChild(expression2);
-		assertEquals(expression2, newRoot.getChild());
+	public Function() {
+		super();
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Term<T>> getChildren() {
+		return (List<Term<T>>) super.getChildren();
+	}
+
+	public abstract Optional<T> eval(List<T> values);
 
 }

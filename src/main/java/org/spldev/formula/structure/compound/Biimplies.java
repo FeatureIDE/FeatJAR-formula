@@ -20,40 +20,34 @@
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
  */
-package org.spldev.structure;
+package org.spldev.formula.structure.compound;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.util.*;
-
-import org.junit.jupiter.api.*;
 import org.spldev.formula.structure.*;
-import org.spldev.formula.structure.atomic.literal.*;
-import org.spldev.formula.structure.term.bool.*;
 
-public class AuxiliaryRootTest {
+/**
+ * A logical connector that is {@code true} iff the left child has the same
+ * value as the right child.
+ *
+ * @author Sebastian Krieter
+ */
+public class Biimplies extends Compound {
 
-	private Expression expression1, expression2;
-
-	@BeforeEach
-	public void setUp() {
-		final VariableMap map = VariableMap.fromNames(Arrays.asList("L1", "L2"));
-		expression1 = new LiteralPredicate((BoolVariable) map.getVariable("L1").get(), true);
-		expression2 = new LiteralPredicate((BoolVariable) map.getVariable("L2").get(), true);
+	public Biimplies(Formula leftNode, Formula rightNode) {
+		super(leftNode, rightNode);
 	}
 
-	@Test
-	public void createAuxiliaryRoot() {
-		final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
-		assertEquals(expression1, newRoot.getChild());
-		assertEquals("", newRoot.getName());
+	private Biimplies() {
+		super();
 	}
 
-	@Test
-	public void replaceChild() {
-		final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
-		newRoot.setChild(expression2);
-		assertEquals(expression2, newRoot.getChild());
+	@Override
+	public Biimplies cloneNode() {
+		return new Biimplies();
+	}
+
+	@Override
+	public String getName() {
+		return "biimplies";
 	}
 
 }

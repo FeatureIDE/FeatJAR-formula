@@ -20,40 +20,38 @@
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
  */
-package org.spldev.structure;
-
-import static org.junit.jupiter.api.Assertions.*;
+package org.spldev.formula.structure.term.integer;
 
 import java.util.*;
 
-import org.junit.jupiter.api.*;
-import org.spldev.formula.structure.*;
-import org.spldev.formula.structure.atomic.literal.*;
-import org.spldev.formula.structure.term.bool.*;
+import org.spldev.formula.structure.term.*;
 
-public class AuxiliaryRootTest {
+public class IntAdd extends Add<Long> {
 
-	private Expression expression1, expression2;
-
-	@BeforeEach
-	public void setUp() {
-		final VariableMap map = VariableMap.fromNames(Arrays.asList("L1", "L2"));
-		expression1 = new LiteralPredicate((BoolVariable) map.getVariable("L1").get(), true);
-		expression2 = new LiteralPredicate((BoolVariable) map.getVariable("L2").get(), true);
+	public IntAdd(Term<Long> leftArgument, Term<Long> rightArgument) {
+		super(leftArgument, rightArgument);
 	}
 
-	@Test
-	public void createAuxiliaryRoot() {
-		final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
-		assertEquals(expression1, newRoot.getChild());
-		assertEquals("", newRoot.getName());
+	private IntAdd() {
+		super();
 	}
 
-	@Test
-	public void replaceChild() {
-		final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
-		newRoot.setChild(expression2);
-		assertEquals(expression2, newRoot.getChild());
+	@Override
+	public Class<Long> getType() {
+		return Long.class;
+	}
+
+	@Override
+	public IntAdd cloneNode() {
+		return new IntAdd();
+	}
+
+	@Override
+	public Optional<Long> eval(List<Long> values) {
+		if (values.stream().anyMatch(value -> value == null)) {
+			return Optional.empty();
+		}
+		return values.stream().reduce(Long::sum);
 	}
 
 }

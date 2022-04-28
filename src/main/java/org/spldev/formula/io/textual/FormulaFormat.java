@@ -20,40 +20,49 @@
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
  */
-package org.spldev.structure;
+package org.spldev.formula.io.textual;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.util.*;
-
-import org.junit.jupiter.api.*;
 import org.spldev.formula.structure.*;
-import org.spldev.formula.structure.atomic.literal.*;
-import org.spldev.formula.structure.term.bool.*;
+import org.spldev.util.data.*;
+import org.spldev.util.io.format.*;
 
-public class AuxiliaryRootTest {
+public class FormulaFormat implements Format<Formula> {
 
-	private Expression expression1, expression2;
+	public static final String ID = FormulaFormat.class.getCanonicalName();
 
-	@BeforeEach
-	public void setUp() {
-		final VariableMap map = VariableMap.fromNames(Arrays.asList("L1", "L2"));
-		expression1 = new LiteralPredicate((BoolVariable) map.getVariable("L1").get(), true);
-		expression2 = new LiteralPredicate((BoolVariable) map.getVariable("L2").get(), true);
+	@Override
+	public Result<Formula> parse(Input source) {
+		return new NodeReader().read(source.getCompleteText().get());
 	}
 
-	@Test
-	public void createAuxiliaryRoot() {
-		final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
-		assertEquals(expression1, newRoot.getChild());
-		assertEquals("", newRoot.getName());
+	@Override
+	public String serialize(Formula object) {
+		return new NodeWriter().write(object);
 	}
 
-	@Test
-	public void replaceChild() {
-		final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
-		newRoot.setChild(expression2);
-		assertEquals(expression2, newRoot.getChild());
+	@Override
+	public boolean supportsParse() {
+		return true;
+	}
+
+	@Override
+	public boolean supportsSerialize() {
+		return true;
+	}
+
+	@Override
+	public String getIdentifier() {
+		return ID;
+	}
+
+	@Override
+	public String getFileExtension() {
+		return "formula";
+	}
+
+	@Override
+	public String getName() {
+		return "Formula";
 	}
 
 }

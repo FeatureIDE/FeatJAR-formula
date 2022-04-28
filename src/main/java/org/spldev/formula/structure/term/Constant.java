@@ -20,40 +20,62 @@
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
  */
-package org.spldev.structure;
-
-import static org.junit.jupiter.api.Assertions.*;
+package org.spldev.formula.structure.term;
 
 import java.util.*;
 
-import org.junit.jupiter.api.*;
 import org.spldev.formula.structure.*;
-import org.spldev.formula.structure.atomic.literal.*;
-import org.spldev.formula.structure.term.bool.*;
 
-public class AuxiliaryRootTest {
+public abstract class Constant<T> extends Terminal implements Term<T> {
 
-	private Expression expression1, expression2;
+	private T value;
 
-	@BeforeEach
-	public void setUp() {
-		final VariableMap map = VariableMap.fromNames(Arrays.asList("L1", "L2"));
-		expression1 = new LiteralPredicate((BoolVariable) map.getVariable("L1").get(), true);
-		expression2 = new LiteralPredicate((BoolVariable) map.getVariable("L2").get(), true);
+	private boolean hasHashCode;
+	private int hashCode;
+
+	public Constant(T value) {
+		this.value = value;
 	}
 
-	@Test
-	public void createAuxiliaryRoot() {
-		final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
-		assertEquals(expression1, newRoot.getChild());
-		assertEquals("", newRoot.getName());
+	public Constant(Constant<T> oldConstant) {
+		this.value = oldConstant.value;
+		this.hasHashCode = oldConstant.hasHashCode;
+		this.hashCode = oldConstant.hashCode;
 	}
 
-	@Test
-	public void replaceChild() {
-		final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
-		newRoot.setChild(expression2);
-		assertEquals(expression2, newRoot.getChild());
+	@Override
+	public String getName() {
+		return String.valueOf(value);
+	}
+
+	public T getValue() {
+		return value;
+	}
+
+	public void setValue(T value) {
+		this.value = value;
+	}
+
+	@Override
+	public List<Term<T>> getChildren() {
+		return Collections.emptyList();
+	}
+
+	@Override
+	public int hashCode() {
+		if (!hasHashCode) {
+			hashCode = Objects.hash(value);
+			hasHashCode = true;
+		}
+		return hashCode;
+	}
+
+	@Override
+	public boolean equalsNode(Object other) {
+		if (getClass() != other.getClass()) {
+			return false;
+		}
+		return (Objects.equals(value, ((Constant<?>) other).value));
 	}
 
 }

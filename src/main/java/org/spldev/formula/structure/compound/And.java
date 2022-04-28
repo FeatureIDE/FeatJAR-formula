@@ -20,40 +20,77 @@
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
  */
-package org.spldev.structure;
-
-import static org.junit.jupiter.api.Assertions.*;
+package org.spldev.formula.structure.compound;
 
 import java.util.*;
 
-import org.junit.jupiter.api.*;
 import org.spldev.formula.structure.*;
 import org.spldev.formula.structure.atomic.literal.*;
-import org.spldev.formula.structure.term.bool.*;
 
-public class AuxiliaryRootTest {
+/**
+ * A logical connector that is {@code true} iff all of its children are
+ * {@code true}.
+ *
+ * @author Sebastian Krieter
+ */
+public class And extends Compound {
 
-	private Expression expression1, expression2;
+	private static class EmptyAnd extends And {
+		private VariableMap variableMap;
 
-	@BeforeEach
-	public void setUp() {
-		final VariableMap map = VariableMap.fromNames(Arrays.asList("L1", "L2"));
-		expression1 = new LiteralPredicate((BoolVariable) map.getVariable("L1").get(), true);
-		expression2 = new LiteralPredicate((BoolVariable) map.getVariable("L2").get(), true);
+		public EmptyAnd(VariableMap variableMap) {
+			this.variableMap = variableMap;
+		}
+
+		@Override
+		public void setVariableMap(VariableMap variableMap) {
+			this.variableMap = variableMap;
+		}
+
+		@Override
+		public VariableMap getVariableMap() {
+			return variableMap;
+		}
+
+		@Override
+		public And cloneNode() {
+			return new EmptyAnd(variableMap);
+		}
+
+		@Override
+		protected int computeHashCode() {
+			return Objects.hash(And.class, 0);
+		}
 	}
 
-	@Test
-	public void createAuxiliaryRoot() {
-		final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
-		assertEquals(expression1, newRoot.getChild());
-		assertEquals("", newRoot.getName());
+	public static And empty() {
+		return new EmptyAnd(VariableMap.emptyMap());
 	}
 
-	@Test
-	public void replaceChild() {
-		final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
-		newRoot.setChild(expression2);
-		assertEquals(expression2, newRoot.getChild());
+	public static And empty(VariableMap variableMap) {
+		return new EmptyAnd(variableMap);
+	}
+
+	public And(Collection<? extends Formula> nodes) {
+		super(nodes);
+	}
+
+	public And(Formula... nodes) {
+		super(nodes);
+	}
+
+	private And() {
+		super();
+	}
+
+	@Override
+	public And cloneNode() {
+		return new And();
+	}
+
+	@Override
+	public String getName() {
+		return "and";
 	}
 
 }

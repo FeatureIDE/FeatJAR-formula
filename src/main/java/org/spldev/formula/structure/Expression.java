@@ -20,40 +20,47 @@
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
  */
-package org.spldev.structure;
-
-import static org.junit.jupiter.api.Assertions.*;
+package org.spldev.formula.structure;
 
 import java.util.*;
 
-import org.junit.jupiter.api.*;
-import org.spldev.formula.structure.*;
 import org.spldev.formula.structure.atomic.literal.*;
-import org.spldev.formula.structure.term.bool.*;
+import org.spldev.formula.structure.term.*;
+import org.spldev.util.tree.structure.*;
 
-public class AuxiliaryRootTest {
+/**
+ * A propositional node that can be transformed into conjunctive normal form
+ * (cnf).
+ *
+ * @author Sebastian Krieter
+ */
+public interface Expression extends Tree<Expression> {
 
-	private Expression expression1, expression2;
+	String getName();
 
-	@BeforeEach
-	public void setUp() {
-		final VariableMap map = VariableMap.fromNames(Arrays.asList("L1", "L2"));
-		expression1 = new LiteralPredicate((BoolVariable) map.getVariable("L1").get(), true);
-		expression2 = new LiteralPredicate((BoolVariable) map.getVariable("L2").get(), true);
+	default void setVariableMap(VariableMap map) {
+		for (final Expression child : getChildren()) {
+			child.setVariableMap(map);
+		}
 	}
 
-	@Test
-	public void createAuxiliaryRoot() {
-		final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
-		assertEquals(expression1, newRoot.getChild());
-		assertEquals("", newRoot.getName());
+	default void adaptVariableMap(VariableMap map) {
+		for (final Expression child : getChildren()) {
+			child.adaptVariableMap(map);
+		}
 	}
 
-	@Test
-	public void replaceChild() {
-		final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
-		newRoot.setChild(expression2);
-		assertEquals(expression2, newRoot.getChild());
+	default VariableMap getVariableMap() {
+		return Formulas.getVariableStream(this)
+			.findAny()
+			.map(Variable::getVariableMap)
+			.orElseGet(VariableMap::emptyMap);
 	}
+
+	@Override
+	List<? extends Expression> getChildren();
+
+	@Override
+	Expression cloneNode();
 
 }

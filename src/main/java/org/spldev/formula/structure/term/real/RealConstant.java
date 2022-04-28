@@ -20,40 +20,28 @@
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
  */
-package org.spldev.structure;
+package org.spldev.formula.structure.term.real;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.spldev.formula.structure.term.*;
 
-import java.util.*;
+public class RealConstant extends Constant<Double> {
 
-import org.junit.jupiter.api.*;
-import org.spldev.formula.structure.*;
-import org.spldev.formula.structure.atomic.literal.*;
-import org.spldev.formula.structure.term.bool.*;
-
-public class AuxiliaryRootTest {
-
-	private Expression expression1, expression2;
-
-	@BeforeEach
-	public void setUp() {
-		final VariableMap map = VariableMap.fromNames(Arrays.asList("L1", "L2"));
-		expression1 = new LiteralPredicate((BoolVariable) map.getVariable("L1").get(), true);
-		expression2 = new LiteralPredicate((BoolVariable) map.getVariable("L2").get(), true);
+	public RealConstant(Double value) {
+		super(value);
 	}
 
-	@Test
-	public void createAuxiliaryRoot() {
-		final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
-		assertEquals(expression1, newRoot.getChild());
-		assertEquals("", newRoot.getName());
+	protected RealConstant(RealConstant oldConstant) {
+		super(oldConstant);
 	}
 
-	@Test
-	public void replaceChild() {
-		final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
-		newRoot.setChild(expression2);
-		assertEquals(expression2, newRoot.getChild());
+	@Override
+	public Class<Double> getType() {
+		return Double.class;
+	}
+
+	@Override
+	public RealConstant cloneNode() {
+		return new RealConstant(this);
 	}
 
 }

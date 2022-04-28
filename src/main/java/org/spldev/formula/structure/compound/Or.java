@@ -20,40 +20,77 @@
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
  */
-package org.spldev.structure;
-
-import static org.junit.jupiter.api.Assertions.*;
+package org.spldev.formula.structure.compound;
 
 import java.util.*;
 
-import org.junit.jupiter.api.*;
 import org.spldev.formula.structure.*;
 import org.spldev.formula.structure.atomic.literal.*;
-import org.spldev.formula.structure.term.bool.*;
 
-public class AuxiliaryRootTest {
+/**
+ * A logical connector that is {@code true} iff at least one of its children is
+ * {@code true}.
+ *
+ * @author Sebastian Krieter
+ */
+public class Or extends Compound {
 
-	private Expression expression1, expression2;
+	private static class EmptyOr extends Or {
+		private VariableMap variableMap;
 
-	@BeforeEach
-	public void setUp() {
-		final VariableMap map = VariableMap.fromNames(Arrays.asList("L1", "L2"));
-		expression1 = new LiteralPredicate((BoolVariable) map.getVariable("L1").get(), true);
-		expression2 = new LiteralPredicate((BoolVariable) map.getVariable("L2").get(), true);
+		public EmptyOr(VariableMap variableMap) {
+			this.variableMap = variableMap;
+		}
+
+		@Override
+		public void setVariableMap(VariableMap variableMap) {
+			this.variableMap = variableMap;
+		}
+
+		@Override
+		public VariableMap getVariableMap() {
+			return variableMap;
+		}
+
+		@Override
+		public Or cloneNode() {
+			return new EmptyOr(variableMap);
+		}
+
+		@Override
+		protected int computeHashCode() {
+			return Objects.hash(Or.class, 0);
+		}
 	}
 
-	@Test
-	public void createAuxiliaryRoot() {
-		final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
-		assertEquals(expression1, newRoot.getChild());
-		assertEquals("", newRoot.getName());
+	public static Or empty() {
+		return new EmptyOr(VariableMap.emptyMap());
 	}
 
-	@Test
-	public void replaceChild() {
-		final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
-		newRoot.setChild(expression2);
-		assertEquals(expression2, newRoot.getChild());
+	public static Or empty(VariableMap variableMap) {
+		return new EmptyOr(variableMap);
+	}
+
+	public Or(Collection<? extends Formula> nodes) {
+		super(nodes);
+	}
+
+	public Or(Formula... nodes) {
+		super(nodes);
+	}
+
+	private Or() {
+		super();
+	}
+
+	@Override
+	public Or cloneNode() {
+		return new Or();
+	}
+
+	@Override
+	public String getName() {
+		return "or";
 	}
 
 }
