@@ -1,6 +1,6 @@
 /* -----------------------------------------------------------------------------
  * Formula Lib - Library to represent and edit propositional formulas.
- * Copyright (C) 2021  Sebastian Krieter
+ * Copyright (C) 2021-2022  Sebastian Krieter
  * 
  * This file is part of Formula Lib.
  * 
@@ -114,6 +114,12 @@ public class VariableMap implements Cloneable, Serializable, Iterable<VariableMa
 
 	private final ArrayList<VariableSignature> indexToName;
 	private final LinkedHashMap<String, VariableSignature> nameToIndex;
+
+	public static VariableMap fixedSize(int size) {
+		final VariableMap variableMap = new VariableMap();
+		IntStream.range(1, size + 1).forEach(v -> variableMap.addBooleanVariable(Integer.toString(v)));
+		return variableMap;
+	}
 
 	public static VariableMap fromNames(Collection<String> names) {
 		Objects.requireNonNull(names);

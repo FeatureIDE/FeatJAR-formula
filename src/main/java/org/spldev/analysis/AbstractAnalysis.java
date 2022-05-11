@@ -1,6 +1,6 @@
 /* -----------------------------------------------------------------------------
  * Formula Lib - Library to represent and edit propositional formulas.
- * Copyright (C) 2021  Sebastian Krieter
+ * Copyright (C) 2021-2022  Sebastian Krieter
  * 
  * This file is part of Formula Lib.
  * 
@@ -23,10 +23,8 @@
 package org.spldev.analysis;
 
 import java.util.*;
-import java.util.function.*;
 
 import org.spldev.analysis.solver.*;
-import org.spldev.formula.*;
 import org.spldev.formula.structure.*;
 import org.spldev.formula.structure.atomic.*;
 import org.spldev.util.data.*;
@@ -41,31 +39,19 @@ import org.spldev.util.job.*;
  *
  * @author Sebastian Krieter
  */
-public abstract class AbstractAnalysis<T, S extends Solver, I> implements Analysis<T> {
+public abstract class AbstractAnalysis<T, S extends Solver, I> implements Analysis<T>, Provider<T> {
 
 	protected static Object defaultParameters = new Object();
 
-	public class AnalysisResultProvider implements Provider<T> {
-		private final Function<InternalMonitor, Result<T>> function;
+	// TODO fix caching / improve handling of many results with different parameters
+	@Override
+	public boolean storeInCache() {
+		return false;
+	}
 
-		public AnalysisResultProvider(Function<InternalMonitor, Result<T>> function) {
-			this.function = function;
-		}
-
-		@Override
-		public Identifier<T> getIdentifier() {
-			return AbstractAnalysis.this.getIdentifier();
-		}
-
-		@Override
-		public Object getParameters() {
-			return AbstractAnalysis.this.getParameters();
-		}
-
-		@Override
-		public Result<T> apply(Cache c, InternalMonitor m) {
-			return function.apply(m);
-		}
+	@Override
+	public Result<T> apply(Cache c, InternalMonitor m) {
+		return Executor.run(this::execute, c, m);
 	}
 
 	protected final Assignment assumptions = new IndexAssignment();
@@ -89,21 +75,18 @@ public abstract class AbstractAnalysis<T, S extends Solver, I> implements Analys
 		return assumedConstraints;
 	}
 
-	protected Object getParameters() {
+	public void updateAssumptions() {
+		updateAssumptions(this.solver);
+	}
+
+	public Object getParameters() {
 		return Arrays.asList(assumptions, assumedConstraints);
 	}
 
 	@Override
-	public Result<T> getResult(ModelRepresentation rep) {
-		// TODO improve handling of many results with different parameters
-		return Executor.run(this::execute, rep, new NullMonitor());
-//		return rep.getCache().get(new AnalysisResultProvider(m -> Executor.run(this::execute, rep, m)));
-	}
-
-	@Override
-	public final T execute(ModelRepresentation c, InternalMonitor monitor) {
+	public final T execute(Cache c, InternalMonitor monitor) {
 		if (solver == null) {
-			solver = createSolver(c.get(solverInputProvider));
+			solver = createSolver(c.get(solverInputProvider).get());
 		}
 		return execute(solver, monitor);
 	}
@@ -131,11 +114,13 @@ public abstract class AbstractAnalysis<T, S extends Solver, I> implements Analys
 	 * 
 	 */
 
-	protected abstract Identifier<T> getIdentifier();
-
 	protected abstract S createSolver(I input) throws RuntimeContradictionException;
 
 	protected void prepareSolver(S solver) {
+		updateAssumptions();
+	}
+
+	private void updateAssumptions(S solver) {
 		solver.getAssumptions().setAll(assumptions.getAll());
 		solver.getDynamicFormula().push(assumedConstraints);
 	}

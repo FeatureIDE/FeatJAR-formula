@@ -1,6 +1,6 @@
 /* -----------------------------------------------------------------------------
- * Formula Lib - Library to represent and edit propositioOptionalnal formulas.
- * Copyright (C) 2021  Sebastian Krieter
+ * Formula Lib - Library to represent and edit propositional formulas.
+ * Copyright (C) 2021-2022  Sebastian Krieter
  * 
  * This file is part of Formula Lib.
  * 

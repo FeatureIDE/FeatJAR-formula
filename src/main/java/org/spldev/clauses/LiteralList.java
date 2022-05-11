@@ -1,6 +1,6 @@
 /* -----------------------------------------------------------------------------
  * Formula Lib - Library to represent and edit propositional formulas.
- * Copyright (C) 2021  Sebastian Krieter
+ * Copyright (C) 2021-2022  Sebastian Krieter
  * 
  * This file is part of Formula Lib.
  * 
@@ -107,6 +107,11 @@ public class LiteralList implements Cloneable, Comparable<LiteralList>, Serializ
 			.distinct();
 	}
 
+	public static LiteralList merge(Collection<LiteralList> collection) {
+		return new LiteralList(collection.stream().flatMapToInt(l -> Arrays.stream(l.getLiterals())).distinct()
+			.toArray());
+	}
+
 	/**
 	 * Constructs a deep copy of the given clause.
 	 *
@@ -148,6 +153,18 @@ public class LiteralList implements Cloneable, Comparable<LiteralList>, Serializ
 		}
 	}
 
+	public LiteralList(Collection<Integer> literals) {
+		this(literals.stream().mapToInt(Integer::intValue).toArray());
+	}
+
+	public LiteralList(Collection<Integer> literals, Order literalOrder) {
+		this(literals.stream().mapToInt(Integer::intValue).toArray(), literalOrder);
+	}
+
+	public LiteralList(Collection<Integer> literals, Order literalOrder, boolean sort) {
+		this(literals.stream().mapToInt(Integer::intValue).toArray(), literalOrder, sort);
+	}
+
 	public Order getOrder() {
 		return order;
 	}
@@ -184,6 +201,14 @@ public class LiteralList implements Cloneable, Comparable<LiteralList>, Serializ
 
 	public int[] getLiterals() {
 		return literals;
+	}
+
+	public int get(int index) {
+		return literals[index];
+	}
+
+	public int[] get(int start, int end) {
+		return Arrays.copyOfRange(literals, start, end);
 	}
 
 	public boolean containsAnyLiteral(int... literals) {
@@ -336,6 +361,21 @@ public class LiteralList implements Cloneable, Comparable<LiteralList>, Serializ
 		return new LiteralList(absoluteLiterals);
 	}
 
+	public LiteralList addAll(LiteralList otherLiterals) {
+		final boolean[] marker = new boolean[literals.length];
+		final int count = countDuplicates(otherLiterals.literals, marker);
+
+		final int[] newLiterals = new int[literals.length + otherLiterals.literals.length - count];
+		int j = 0;
+		for (int i = 0; i < literals.length; i++) {
+			if (!marker[i]) {
+				newLiterals[j++] = literals[i];
+			}
+		}
+		System.arraycopy(otherLiterals.literals, 0, newLiterals, j, otherLiterals.literals.length);
+		return new LiteralList(newLiterals, Order.UNORDERED, false);
+	}
+
 	public LiteralList removeAll(LiteralList otherLiterals) {
 		final boolean[] removeMarker = new boolean[literals.length];
 		final int count = countDuplicates(otherLiterals.literals, removeMarker);
@@ -369,17 +409,17 @@ public class LiteralList implements Cloneable, Comparable<LiteralList>, Serializ
 	}
 
 	public LiteralList retainAll(LiteralList otherLiterals) {
-		final boolean[] removeMarker = new boolean[literals.length];
-		final int count = countDuplicates(otherLiterals.literals, removeMarker);
+		final boolean[] marker = new boolean[literals.length];
+		final int count = countDuplicates(otherLiterals.literals, marker);
 
 		final int[] newLiterals = new int[count];
 		int j = 0;
 		for (int i = 0; i < literals.length; i++) {
-			if (removeMarker[i]) {
+			if (marker[i]) {
 				newLiterals[j++] = literals[i];
 			}
 		}
-		return new LiteralList(newLiterals, order, false);
+		return new LiteralList(newLiterals, Order.UNORDERED, false);
 	}
 
 	public LiteralList retainVariables(LiteralList variables) {

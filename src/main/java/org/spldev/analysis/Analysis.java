@@ -1,6 +1,6 @@
 /* -----------------------------------------------------------------------------
  * Formula Lib - Library to represent and edit propositional formulas.
- * Copyright (C) 2021  Sebastian Krieter
+ * Copyright (C) 2021-2022  Sebastian Krieter
  * 
  * This file is part of Formula Lib.
  * 
@@ -22,7 +22,10 @@
  */
 package org.spldev.analysis;
 
-import org.spldev.formula.*;
+import java.util.*;
+
+import org.spldev.formula.structure.*;
+import org.spldev.formula.structure.atomic.*;
 import org.spldev.util.data.*;
 import org.spldev.util.job.*;
 
@@ -33,8 +36,12 @@ import org.spldev.util.job.*;
  *
  * @author Sebastian Krieter
  */
-public interface Analysis<T> extends MonitorableFunction<ModelRepresentation, T> {
+public interface Analysis<T> extends MonitorableFunction<Cache, T>, Provider<T> {
 
-	Result<T> getResult(ModelRepresentation model);
+	Assignment getAssumptions();
+
+	List<Formula> getAssumedConstraints();
+	
+	void updateAssumptions();
 
 }
