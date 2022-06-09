@@ -112,13 +112,14 @@ public final class Formulas {
 	}
 
 	/**
-	 * Composes formulas by conjunction (e.g., for feature model fragments and interfaces).
-	 * Assumes that the supplied formulas are partly independent, partly dependent (on common variables).
-	 * Leaves the input formulas and their variable maps untouched.
+	 * Composes formulas by conjunction (e.g., for feature model fragments and
+	 * interfaces). Assumes that the supplied formulas are partly independent,
+	 * partly dependent (on common variables). Leaves the input formulas and their
+	 * variable maps untouched.
 	 */
 	public static Formula compose(Collection<Formula> formulas) {
 		VariableMap composedMap = VariableMap.merge(
-				formulas.stream().map(Formula::getVariableMap).collect(Collectors.toList()));
+			formulas.stream().map(Formula::getVariableMap).collect(Collectors.toList()));
 		Formula composedFormula = new And(formulas.stream().map(Trees::cloneTree).collect(Collectors.toList()));
 		composedFormula.adaptVariableMap(composedMap);
 		return composedFormula;

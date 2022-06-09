@@ -160,8 +160,8 @@ public class VariableMap implements Cloneable, Serializable, Iterable<VariableMa
 	public static VariableMap withoutNames(VariableMap map, Collection<String> namesToRemove) {
 		final VariableMap newMap = new VariableMap();
 		final Set<String> nameSet = (namesToRemove instanceof Set)
-				? (Set<String>) namesToRemove
-				: new HashSet<>(namesToRemove);
+			? (Set<String>) namesToRemove
+			: new HashSet<>(namesToRemove);
 		for (VariableSignature sig : map.indexToName) {
 			if ((sig != null) && !nameSet.contains(sig.name)) {
 				final int newIndex = newMap.indexToName.size();
@@ -222,31 +222,32 @@ public class VariableMap implements Cloneable, Serializable, Iterable<VariableMa
 	}
 
 	/**
-	 * Merges two variable maps in one new map, useful for composing formulas.
-	 * Joins common variables and does not necessarily preserve variable numbering.
-	 * If one map is empty, reates a clone of the other.
+	 * Merges two variable maps in one new map, useful for composing formulas. Joins
+	 * common variables and does not necessarily preserve variable numbering. If one
+	 * map is empty, reates a clone of the other.
 	 */
 	private VariableMap(VariableMap map1, VariableMap map2) {
-		Set<String> joinVariables = map1.getNames().stream().filter(map2.getNames()::contains).collect(Collectors.toSet());
+		Set<String> joinVariables = map1.getNames().stream().filter(map2.getNames()::contains).collect(Collectors
+			.toSet());
 		joinVariables.forEach(joinVariable -> {
 			if (!map1.nameToIndex.get(joinVariable).type.equals(map2.nameToIndex.get(joinVariable).type))
 				throw new IllegalArgumentException("merged variable maps have incompatible variable " + joinVariable);
 		});
 
 		indexToName = new ArrayList<>(
-				map1.indexToName.size() + map2.indexToName.size() - joinVariables.size() - 1);
+			map1.indexToName.size() + map2.indexToName.size() - joinVariables.size() - 1);
 		nameToIndex = new LinkedHashMap<>();
 
 		indexToName.add(null);
 		Stream.concat(
-				map1.getNames().stream().map(map1.nameToIndex::get),
-				map2.getNames().stream().filter(name -> !joinVariables.contains(name)).map(map2.nameToIndex::get)
-				).forEach(sig -> {
-			final int newIndex = indexToName.size();
-			sig = new VariableSignature(this, sig.name, newIndex, sig.type);
-			indexToName.add(sig);
-			nameToIndex.put(sig.name, sig);
-		});
+			map1.getNames().stream().map(map1.nameToIndex::get),
+			map2.getNames().stream().filter(name -> !joinVariables.contains(name)).map(map2.nameToIndex::get)).forEach(
+				sig -> {
+					final int newIndex = indexToName.size();
+					sig = new VariableSignature(this, sig.name, newIndex, sig.type);
+					indexToName.add(sig);
+					nameToIndex.put(sig.name, sig);
+				});
 		indexToName.trimToSize();
 	}
 
