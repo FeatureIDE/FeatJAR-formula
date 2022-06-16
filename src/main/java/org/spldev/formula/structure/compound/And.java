@@ -71,7 +71,7 @@ public class And extends Compound {
 		return new EmptyAnd(variableMap);
 	}
 
-	public And(Collection<? extends Formula> nodes) {
+	public And(List<? extends Formula> nodes) {
 		super(nodes);
 	}
 

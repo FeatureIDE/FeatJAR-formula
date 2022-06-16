@@ -34,7 +34,7 @@ import org.spldev.formula.structure.*;
  */
 public abstract class Compound extends NonTerminal implements Formula {
 
-	public Compound(Collection<? extends Formula> nodes) {
+	public Compound(List<? extends Formula> nodes) {
 		super(nodes);
 	}
 

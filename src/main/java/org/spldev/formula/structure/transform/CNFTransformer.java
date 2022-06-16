@@ -89,7 +89,7 @@ public class CNFTransformer implements Transformer {
 		return formula;
 	}
 
-	protected Collection<? extends Formula> getTransformedClauses() {
+	protected List<? extends Formula> getTransformedClauses() {
 		final List<Formula> transformedClauses = new ArrayList<>();
 
 		transformedClauses.addAll(distributiveClauses);

@@ -28,7 +28,7 @@ import org.spldev.formula.structure.*;
 
 public abstract class Function<R, T> extends NonTerminal implements Term<R> {
 
-	public Function(Collection<Term<T>> nodes) {
+	public Function(List<Term<T>> nodes) {
 		super(nodes);
 	}
 

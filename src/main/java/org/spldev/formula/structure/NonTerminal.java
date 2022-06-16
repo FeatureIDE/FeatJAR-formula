@@ -48,13 +48,13 @@ public abstract class NonTerminal extends AbstractNonTerminal<Expression> implem
 		setChildren(Arrays.asList(children));
 	}
 
-	protected NonTerminal(Collection<? extends Expression> children) {
+	protected NonTerminal(List<? extends Expression> children) {
 		super();
 		setChildren(children);
 	}
 
 	@Override
-	public void setChildren(Collection<? extends Expression> children) {
+	public void setChildren(List<? extends Expression> children) {
 		super.setChildren(children);
 		hasHashCode = false;
 	}

@@ -71,7 +71,7 @@ public class Or extends Compound {
 		return new EmptyOr(variableMap);
 	}
 
-	public Or(Collection<? extends Formula> nodes) {
+	public Or(List<? extends Formula> nodes) {
 		super(nodes);
 	}
 

@@ -111,6 +111,10 @@ public final class Formulas {
 		return getVariableStream(node).collect(Collectors.toList());
 	}
 
+	public static List<String> getVariableNames(Expression node) {
+		return getVariableStream(node).map(Variable::getName).collect(Collectors.toList());
+	}
+
 	/**
 	 * Composes formulas by conjunction (e.g., for feature model fragments and
 	 * interfaces). Assumes that the supplied formulas are partly independent,
