@@ -61,6 +61,7 @@ public class ModelRepresentation {
 		return cache.get(provider, null);
 	}
 
+	// todo: also allow to use extensions
 	public <T> T get(Provider<T> provider) {
 		return cache.get(provider).orElse(Logger::logProblems);
 	}

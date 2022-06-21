@@ -23,12 +23,16 @@
 package org.spldev.formula.io.xml;
 
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import javax.xml.parsers.*;
 
 import org.spldev.formula.structure.*;
 import org.spldev.formula.structure.atomic.literal.*;
 import org.spldev.formula.structure.compound.*;
+import org.spldev.formula.structure.term.Constant;
+import org.spldev.formula.structure.term.Variable;
 import org.spldev.formula.structure.term.bool.*;
 import org.spldev.util.data.*;
 import org.spldev.util.data.Problem.*;
@@ -41,24 +45,24 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 
 	public static final String ID = XmlFeatureModelFormat.class.getCanonicalName();
 
-	protected final static String FEATURE_MODEL = "featureModel";
-	protected final static String STRUCT = "struct";
-	protected final static String CONSTRAINTS = "constraints";
-	protected final static String TRUE = "true";
-	protected final static String MANDATORY = "mandatory";
-	protected final static String FEATURE = "feature";
-	protected final static String OR = "or";
-	protected final static String ALT = "alt";
-	protected final static String AND = "and";
-	protected final static String VAR = "var";
-	protected final static String IMP = "imp";
-	protected final static String EQ = "eq";
-	protected final static String NOT = "not";
-	protected final static String CONJ = "conj";
-	protected final static String DISJ = "disj";
-	protected final static String NAME = "name";
-	protected final static String RULE = "rule";
-	protected final static String ATMOST1 = "atmost1";
+	public final static String FEATURE_MODEL = "featureModel";
+	public final static String STRUCT = "struct";
+	public final static String CONSTRAINTS = "constraints";
+	public final static String TRUE = "true";
+	public final static String MANDATORY = "mandatory";
+	public final static String FEATURE = "feature";
+	public final static String OR = "or";
+	public final static String ALT = "alt";
+	public final static String AND = "and";
+	public final static String VAR = "var";
+	public final static String IMP = "imp";
+	public final static String EQ = "eq";
+	public final static String NOT = "not";
+	public final static String CONJ = "conj";
+	public final static String DISJ = "disj";
+	public final static String NAME = "name";
+	public final static String RULE = "rule";
+	public final static String ATMOST1 = "atmost1";
 
 	protected ArrayList<Formula> constraints = new ArrayList<>();
 	protected List<Problem> parseProblems = new ArrayList<>();
@@ -73,7 +77,7 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 	 * @param nodeList the node list.
 	 * @return The child nodes from type Element of the given NodeList.
 	 */
-	protected static final List<Element> getElements(NodeList nodeList) {
+	public static List<Element> getElements(NodeList nodeList) {
 		final ArrayList<Element> elements = new ArrayList<>(nodeList.getLength());
 		for (int temp = 0; temp < nodeList.getLength(); temp++) {
 			final org.w3c.dom.Node nNode = nodeList.item(temp);
@@ -85,11 +89,11 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 		return elements;
 	}
 
-	protected List<Element> getElement(final Element element, final String nodeName) {
+	public static List<Element> getElement(final Element element, final String nodeName) {
 		return getElements(element.getElementsByTagName(nodeName));
 	}
 
-	protected List<Element> getElement(final Document document, final String nodeName) {
+	public static List<Element> getElement(final Document document, final String nodeName) {
 		return getElements(document.getElementsByTagName(nodeName));
 	}
 
@@ -139,7 +143,7 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 		return new And(constraints);
 	}
 
-	protected void parseConstraints(List<Element> elements) throws ParseException {
+	public void parseConstraints(List<Element> elements, Function<String, Optional<Variable<?>>> variableFunction, List<Problem> parseProblems, Consumer<Formula> formulaConsumer) throws ParseException {
 		if (elements.size() > 1) {
 			throw new ParseException("Multiple <constraints> elements!");
 		}
@@ -148,23 +152,27 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 				final String nodeName = child.getNodeName();
 				if (nodeName.equals(RULE)) {
 					try {
-						final List<Formula> parseConstraintNode = parseConstraintNode(child.getChildNodes());
+						final List<Formula> parseConstraintNode = parseConstraintNode(child.getChildNodes(), variableFunction);
 						if (parseConstraintNode.size() == 1) {
-							constraints.add(parseConstraintNode.get(0));
+							formulaConsumer.accept(parseConstraintNode.get(0));
 						} else {
 							parseProblems.add(new ParseProblem(nodeName,
-								(int) child.getUserData(PositionalXMLHandler.LINE_NUMBER_KEY_NAME), Severity.WARNING));
+									(int) child.getUserData(PositionalXMLHandler.LINE_NUMBER_KEY_NAME), Severity.WARNING));
 						}
 					} catch (final Exception exception) {
 						parseProblems.add(new ParseProblem(exception.getMessage(),
-							(int) child.getUserData(PositionalXMLHandler.LINE_NUMBER_KEY_NAME), Severity.WARNING));
+								(int) child.getUserData(PositionalXMLHandler.LINE_NUMBER_KEY_NAME), Severity.WARNING));
 					}
 				}
 			}
 		}
 	}
 
-	protected List<Formula> parseConstraintNode(NodeList nodeList) throws ParseException {
+	protected void parseConstraints(List<Element> elements) throws ParseException {
+		parseConstraints(elements, map::getVariable, parseProblems, constraints::add);
+	}
+
+	protected List<Formula> parseConstraintNode(NodeList nodeList, Function<String, Optional<Variable<?>>> variableFunction) throws ParseException {
 		final List<Formula> nodes = new ArrayList<>();
 		List<Formula> children;
 		final List<Element> elements = getElements(nodeList);
@@ -172,41 +180,41 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 			final String nodeName = e.getNodeName();
 			switch (nodeName) {
 			case DISJ:
-				children = parseConstraintNode(e.getChildNodes());
+				children = parseConstraintNode(e.getChildNodes(), variableFunction);
 				if (!children.isEmpty()) {
 					nodes.add(new Or(children));
 				}
 				break;
 			case CONJ:
-				children = parseConstraintNode(e.getChildNodes());
+				children = parseConstraintNode(e.getChildNodes(), variableFunction);
 				if (!children.isEmpty()) {
 					nodes.add(new And(children));
 				}
 				break;
 			case EQ:
-				children = parseConstraintNode(e.getChildNodes());
+				children = parseConstraintNode(e.getChildNodes(), variableFunction);
 				if (children.size() == 2) {
 					nodes.add(biimplies(children.get(0), children.get(1)));
 				}
 				break;
 			case IMP:
-				children = parseConstraintNode(e.getChildNodes());
+				children = parseConstraintNode(e.getChildNodes(), variableFunction);
 				nodes.add(implies(children.get(0), children.get(1)));
 				break;
 			case NOT:
-				children = parseConstraintNode(e.getChildNodes());
+				children = parseConstraintNode( e.getChildNodes(), variableFunction);
 				if (children.size() == 1) {
 					nodes.add(new Not(children.get(0)));
 				}
 				break;
 			case ATMOST1:
-				children = parseConstraintNode(e.getChildNodes());
+				children = parseConstraintNode(e.getChildNodes(), variableFunction);
 				if (!children.isEmpty()) {
 					nodes.add(atMost(children));
 				}
 				break;
 			case VAR:
-				nodes.add(map.getVariable(e.getTextContent())
+				nodes.add(variableFunction.apply(e.getTextContent())
 					.map(v -> (Literal) new LiteralPredicate((BoolVariable) v, true))
 					.orElse(new ErrorLiteral(nodeName)));
 				break;
