@@ -41,6 +41,7 @@ import org.spldev.util.logging.*;
 public class VariableMap implements Cloneable, Serializable, Iterable<VariableMap.VariableSignature> {
 
 	public final static class VariableSignature implements Cloneable, Serializable {
+		// todo inv: all subtrees have the same variablemap
 
 		private static final long serialVersionUID = 400642420402382937L;
 
@@ -224,7 +225,7 @@ public class VariableMap implements Cloneable, Serializable, Iterable<VariableMa
 	/**
 	 * Merges two variable maps in one new map, useful for composing formulas. Joins
 	 * common variables and does not necessarily preserve variable numbering. If one
-	 * map is empty, reates a clone of the other.
+	 * map is empty, creates a clone of the other.
 	 */
 	private VariableMap(VariableMap map1, VariableMap map2) {
 		Set<String> joinVariables = map1.getNames().stream().filter(map2.getNames()::contains).collect(Collectors
