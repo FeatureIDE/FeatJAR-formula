@@ -71,11 +71,19 @@ public class And extends Compound {
 		return new EmptyAnd(variableMap);
 	}
 
+	public And(Compose compose, List<? extends Formula> nodes) {
+		super(compose, nodes);
+	}
+
 	public And(List<? extends Formula> nodes) {
 		super(nodes);
 	}
 
-	public And(Formula... nodes) {
+	public And(Compose compose, Formula... nodes) {
+		super(compose, nodes);
+	}
+
+	public And(Expression... nodes) {
 		super(nodes);
 	}
 

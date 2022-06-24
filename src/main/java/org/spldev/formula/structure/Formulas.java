@@ -24,6 +24,8 @@ package org.spldev.formula.structure;
 
 import java.io.*;
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.*;
 
 import org.spldev.formula.io.textual.*;
@@ -115,21 +117,7 @@ public final class Formulas {
 		return getVariableStream(node).map(Variable::getName).collect(Collectors.toList());
 	}
 
-	/**
-	 * Composes formulas by conjunction (e.g., for feature model fragments and
-	 * interfaces). Assumes that the supplied formulas are partly independent,
-	 * partly dependent (on common variables). Leaves the input formulas and their
-	 * variable maps untouched.
-	 */
-	public static Formula compose(Collection<Formula> formulas) {
-		VariableMap composedMap = VariableMap.merge(
-			formulas.stream().map(Formula::getVariableMap).collect(Collectors.toList()));
-		Formula composedFormula = new And(formulas.stream().map(Trees::cloneTree).collect(Collectors.toList()));
-		composedFormula.adaptVariableMap(composedMap);
-		return composedFormula;
-	}
-
-	public static Formula compose(Formula... formulas) {
-		return compose(Arrays.asList(formulas));
+	public static <T extends Expression> T create(Function<VariableMap, T> fn) {
+		return fn.apply(VariableMap.emptyMap());
 	}
 }

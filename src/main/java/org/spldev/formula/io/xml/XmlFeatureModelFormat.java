@@ -143,7 +143,8 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 		return new And(constraints);
 	}
 
-	public void parseConstraints(List<Element> elements, Function<String, Optional<Variable<?>>> variableFunction, List<Problem> parseProblems, Consumer<Formula> formulaConsumer) throws ParseException {
+	public void parseConstraints(List<Element> elements, Function<String, Optional<Variable<?>>> variableFunction,
+		List<Problem> parseProblems, Consumer<Formula> formulaConsumer) throws ParseException {
 		if (elements.size() > 1) {
 			throw new ParseException("Multiple <constraints> elements!");
 		}
@@ -152,16 +153,17 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 				final String nodeName = child.getNodeName();
 				if (nodeName.equals(RULE)) {
 					try {
-						final List<Formula> parseConstraintNode = parseConstraintNode(child.getChildNodes(), variableFunction);
+						final List<Formula> parseConstraintNode = parseConstraintNode(child.getChildNodes(),
+							variableFunction);
 						if (parseConstraintNode.size() == 1) {
 							formulaConsumer.accept(parseConstraintNode.get(0));
 						} else {
 							parseProblems.add(new ParseProblem(nodeName,
-									(int) child.getUserData(PositionalXMLHandler.LINE_NUMBER_KEY_NAME), Severity.WARNING));
+								(int) child.getUserData(PositionalXMLHandler.LINE_NUMBER_KEY_NAME), Severity.WARNING));
 						}
 					} catch (final Exception exception) {
 						parseProblems.add(new ParseProblem(exception.getMessage(),
-								(int) child.getUserData(PositionalXMLHandler.LINE_NUMBER_KEY_NAME), Severity.WARNING));
+							(int) child.getUserData(PositionalXMLHandler.LINE_NUMBER_KEY_NAME), Severity.WARNING));
 					}
 				}
 			}
@@ -172,7 +174,8 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 		parseConstraints(elements, map::getVariable, parseProblems, constraints::add);
 	}
 
-	protected List<Formula> parseConstraintNode(NodeList nodeList, Function<String, Optional<Variable<?>>> variableFunction) throws ParseException {
+	protected List<Formula> parseConstraintNode(NodeList nodeList,
+		Function<String, Optional<Variable<?>>> variableFunction) throws ParseException {
 		final List<Formula> nodes = new ArrayList<>();
 		List<Formula> children;
 		final List<Element> elements = getElements(nodeList);
@@ -202,7 +205,7 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 				nodes.add(implies(children.get(0), children.get(1)));
 				break;
 			case NOT:
-				children = parseConstraintNode( e.getChildNodes(), variableFunction);
+				children = parseConstraintNode(e.getChildNodes(), variableFunction);
 				if (children.size() == 1) {
 					nodes.add(new Not(children.get(0)));
 				}

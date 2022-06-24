@@ -27,6 +27,8 @@ import java.util.*;
 import java.util.stream.*;
 
 import org.spldev.formula.structure.*;
+import org.spldev.formula.structure.compound.And;
+import org.spldev.formula.structure.compound.Or;
 import org.spldev.formula.structure.term.*;
 import org.spldev.formula.structure.term.bool.*;
 import org.spldev.formula.structure.term.integer.*;
@@ -175,7 +177,14 @@ public class VariableMap implements Cloneable, Serializable, Iterable<VariableMa
 		return newMap;
 	}
 
+	/**
+	 * Merges variable maps over common variables. Returns a new variable map.
+	 */
 	public static VariableMap merge(Collection<VariableMap> maps) {
+		// todo: could be optimized for feature-model interfaces (return bigger
+		// VariableMap), but may have unwanted interactions with mutation
+		// todo: could also be optimized to merge many maps at once (not create a copy
+		// for each map)
 		return maps.stream().reduce(emptyMap(), VariableMap::new);
 	}
 
@@ -225,11 +234,13 @@ public class VariableMap implements Cloneable, Serializable, Iterable<VariableMa
 	/**
 	 * Merges two variable maps in one new map, useful for composing formulas. Joins
 	 * common variables and does not necessarily preserve variable numbering. If one
-	 * map is empty, creates a clone of the other.
+	 * map is empty, creates a clone of the other. If used for composition, formulas
+	 * must be manually adapted to the merged variable map.
 	 */
 	private VariableMap(VariableMap map1, VariableMap map2) {
-		Set<String> joinVariables = map1.getNames().stream().filter(map2.getNames()::contains).collect(Collectors
-			.toSet());
+		Set<String> joinVariables = map1.getNames().stream()
+			.filter(map2.getNames()::contains)
+			.collect(Collectors.toSet());
 		joinVariables.forEach(joinVariable -> {
 			if (!map1.nameToIndex.get(joinVariable).type.equals(map2.nameToIndex.get(joinVariable).type))
 				throw new IllegalArgumentException("merged variable maps have incompatible variable " + joinVariable);
@@ -359,6 +370,33 @@ public class VariableMap implements Cloneable, Serializable, Iterable<VariableMa
 		return (name != null) && !nameToIndex.containsKey(name)
 			? Optional.ofNullable((BoolVariable) addVariable(name, getMaxIndex() + 1, BoolVariable.class).newInstance())
 			: Optional.empty();
+	}
+
+	// todo: these are convenience methods for building formulas. possibly, these
+	// should be extracted into a FormulaBuilder helper class together with
+	// Formulas.create
+	/**
+	 * Gets an existing Boolean variable or adds one if it does not exist.
+	 */
+	public BoolVariable booleanVariable(String name) {
+		Objects.requireNonNull(name);
+		return nameToIndex.containsKey(name) ? (BoolVariable) getVariable(name).get() : addBooleanVariable(name).get();
+	}
+
+	/**
+	 * Returns a positive literal for a named Boolean variable, which is added if
+	 * necessary.
+	 */
+	public LiteralPredicate booleanLiteral(String name) {
+		return new LiteralPredicate(booleanVariable(name));
+	}
+
+	public And trueLiteral() { // todo: combine And.EmptyAnd with Literal.True?
+		return And.empty(this);
+	}
+
+	public Or falseLiteral() { // todo: combine And.EmptyOr with Literal.False?
+		return Or.empty(this);
 	}
 
 	/**

@@ -26,6 +26,7 @@ import java.util.*;
 
 import org.spldev.formula.structure.atomic.literal.*;
 import org.spldev.formula.structure.term.*;
+import org.spldev.util.tree.Trees;
 import org.spldev.util.tree.structure.*;
 
 /**
@@ -51,9 +52,10 @@ public interface Expression extends Tree<Expression> {
 	}
 
 	default VariableMap getVariableMap() {
-		return Formulas.getVariableStream(this)
+		return Trees.preOrderStream(this)
+			.skip(1)
 			.findAny()
-			.map(Variable::getVariableMap)
+			.map(Expression::getVariableMap)
 			.orElseGet(VariableMap::emptyMap);
 	}
 
