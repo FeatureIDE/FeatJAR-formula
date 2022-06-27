@@ -2,7 +2,7 @@
 <extensions>
 	<point id="org.spldev.formula.io.FormulaFormatManager">
 	    <extension id="org.spldev.formula.io.dimacs.DIMACSFormat" />
-	    <extension id="org.spldev.formula.io.xml.XmlFeatureModelCNFFormat" />
+	    <extension id="org.spldev.formula.io.xml.XMLFeatureModelCNFFormat" />
 	    <extension id="org.spldev.formula.io.textual.FormulaFormat" />
 	    <extension id="org.spldev.formula.io.KConfigReaderFormat" />
 	</point>

@@ -38,7 +38,7 @@ public abstract class Cardinal extends Compound {
 	protected int min;
 	protected int max;
 
-	public Cardinal(List<Formula> nodes, int min, int max) {
+	public Cardinal(List<? extends Formula> nodes, int min, int max) {
 		super(nodes);
 		setMin(min);
 		setMax(max);

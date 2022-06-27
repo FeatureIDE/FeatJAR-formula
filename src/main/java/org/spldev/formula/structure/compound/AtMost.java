@@ -34,7 +34,7 @@ import org.spldev.formula.structure.*;
  */
 public class AtMost extends Cardinal {
 
-	public AtMost(List<Formula> nodes, int max) {
+	public AtMost(List<? extends Formula> nodes, int max) {
 		super(nodes, 0, max);
 	}
 

@@ -33,58 +33,63 @@ import org.spldev.util.io.format.*;
 import org.spldev.util.tree.*;
 import org.w3c.dom.*;
 
-public class XmlFeatureModelCNFFormat extends XmlFeatureModelFormat {
-
-	public static final String ID = XmlFeatureModelCNFFormat.class.getCanonicalName();
-
-	public XmlFeatureModelCNFFormat() {
+/**
+ * Parses feature model CNF formulas from FeatureIDE XML files. Returns a
+ * formula that is already partially in CNF, except for cross-tree constraints.
+ *
+ * @author Sebastian Krieter
+ * @author Elias Kuiter
+ */
+public class XMLFeatureModelCNFFormat extends XMLFeatureModelFormat {
+	@Override
+	public XMLFeatureModelCNFFormat getInstance() {
+		return new XMLFeatureModelCNFFormat();
 	}
 
 	@Override
-	protected Formula readDocument(Document doc) throws ParseException {
-		map = VariableMap.emptyMap();
-		final List<Element> elementList = getElement(doc, FEATURE_MODEL);
-		if (elementList.size() == 1) {
-			final Element e = elementList.get(0);
-			parseStruct(getElement(e, STRUCT));
-			final int crossTreeConstraintsIndex = constraints.size();
-			parseConstraints(getElement(e, CONSTRAINTS));
-			final List<Formula> crossTreeConstraints = constraints.subList(crossTreeConstraintsIndex,
-				constraints.size());
-			final List<Formula> cnfConstraints = new ArrayList<>(crossTreeConstraints);
-			crossTreeConstraints.clear();
-			constraints.addAll(cnfConstraints);
-		} else if (elementList.isEmpty()) {
-			throw new ParseException("Not a feature model xml element!");
-		} else {
-			throw new ParseException("More than one feature model xml elements!");
-		}
+	public String getName() {
+		return "FeatureIDECNF";
+	}
+
+	@Override
+	protected Formula parseDocument(Document document) throws ParseException {
+		final Element featureModelElement = getDocumentElement(document, FEATURE_MODEL);
+		parseFeatures(getElement(featureModelElement, STRUCT));
+		final int crossTreeConstraintsIndex = constraints.size(); // todo ??
+		Optional<Element> constraintsElement = getOptionalElement(featureModelElement, CONSTRAINTS);
+		if (constraintsElement.isPresent())
+			constraints.addAll(parseConstraints(constraintsElement.get(), variableMap::getVariable));
+		final List<Formula> crossTreeConstraints = constraints.subList(crossTreeConstraintsIndex,
+			constraints.size());
+		final List<Formula> cnfConstraints = new ArrayList<>(crossTreeConstraints);
+		crossTreeConstraints.clear();
+		constraints.addAll(cnfConstraints);
 		return Trees.cloneTree(simplify(new And(constraints)));
 	}
 
 	@Override
-	protected Formula atMost(final List<Formula> parseFeatures) {
+	protected Formula atMostOne(List<? extends Formula> parseFeatures) {
 		return new And(groupElements(parseFeatures.stream().map(Not::new).collect(Collectors.toList()), 1,
 			parseFeatures.size()));
 	}
 
 	@Override
-	protected Formula biimplies(Formula a, final Formula b) {
+	protected Formula biImplies(Formula a, Formula b) {
 		return new And(new Or(new Not(a), b), new Or(new Not(b), a));
 	}
 
 	@Override
-	protected Formula implies(Literal a, final Formula b) {
+	protected Formula implies(Literal a, Formula b) {
 		return new Or(a.flip(), b);
 	}
 
 	@Override
-	protected Formula implies(Formula a, final Formula b) {
+	protected Formula implies(Formula a, Formula b) {
 		return new Or(new Not(a), b);
 	}
 
 	@Override
-	protected Formula implies(final LiteralPredicate f, final List<Formula> parseFeatures) {
+	protected Formula implies(Literal f, List<? extends Formula> parseFeatures) {
 		final ArrayList<Formula> list = new ArrayList<>(parseFeatures.size() + 1);
 		list.add(f.flip());
 		list.addAll(parseFeatures);
@@ -133,20 +138,4 @@ public class XmlFeatureModelCNFFormat extends XmlFeatureModelFormat {
 		Trees.traverse(auxiliaryRoot, new TreeSimplifier());
 		return (Formula) auxiliaryRoot.getChild();
 	}
-
-	@Override
-	public XmlFeatureModelCNFFormat getInstance() {
-		return new XmlFeatureModelCNFFormat();
-	}
-
-	@Override
-	public String getIdentifier() {
-		return ID;
-	}
-
-	@Override
-	public String getName() {
-		return "FeatureIDECNF";
-	}
-
 }
