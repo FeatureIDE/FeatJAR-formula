@@ -1,22 +1,22 @@
 /* -----------------------------------------------------------------------------
  * Formula Lib - Library to represent and edit propositional formulas.
  * Copyright (C) 2021-2022  Sebastian Krieter
- * 
+ *
  * This file is part of Formula Lib.
- * 
+ *
  * Formula Lib is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License,
  * or (at your option) any later version.
- * 
+ *
  * Formula Lib is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Formula Lib.  If not, see <https://www.gnu.org/licenses/>.
- * 
+ *
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
  */
@@ -30,6 +30,7 @@ import org.spldev.formula.structure.atomic.literal.*;
 import org.spldev.formula.structure.compound.*;
 import org.spldev.formula.structure.transform.*;
 import org.spldev.util.io.format.*;
+import org.spldev.util.job.Executor;
 import org.spldev.util.tree.*;
 import org.w3c.dom.*;
 
@@ -54,17 +55,18 @@ public class XMLFeatureModelCNFFormat extends XMLFeatureModelFormat {
 	@Override
 	protected Formula parseDocument(Document document) throws ParseException {
 		final Element featureModelElement = getDocumentElement(document, FEATURE_MODEL);
-		parseFeatures(getElement(featureModelElement, STRUCT));
-		final int crossTreeConstraintsIndex = constraints.size(); // todo ??
+		parseFeatureTree(getElement(featureModelElement, STRUCT));
 		Optional<Element> constraintsElement = getOptionalElement(featureModelElement, CONSTRAINTS);
-		if (constraintsElement.isPresent())
-			constraints.addAll(parseConstraints(constraintsElement.get(), variableMap::getVariable));
-		final List<Formula> crossTreeConstraints = constraints.subList(crossTreeConstraintsIndex,
-			constraints.size());
-		final List<Formula> cnfConstraints = new ArrayList<>(crossTreeConstraints);
-		crossTreeConstraints.clear();
-		constraints.addAll(cnfConstraints);
+		if (constraintsElement.isPresent()) {
+			parseConstraints(constraintsElement.get(), variableMap::getVariable);
+		}
 		return Trees.cloneTree(simplify(new And(constraints)));
+	}
+
+	@Override
+	protected void addConstraint(Boolean constraintLabel, Formula formula) throws ParseException {
+		super.addConstraint(constraintLabel, Executor.run(new CNFTransformer(), formula)
+			.orElseThrow(p -> new ParseException("failed to transform " + formula)));
 	}
 
 	@Override

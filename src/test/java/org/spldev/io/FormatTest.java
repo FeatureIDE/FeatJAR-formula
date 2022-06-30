@@ -78,7 +78,9 @@ public class FormatTest {
 	}
 
 	private static <T> T load(Format<T> format, Path path) {
-		return FileHandler.load(path, format).get();
+		Result<T> result = FileHandler.load(path, format);
+		System.out.println(result.getProblems());
+		return result.get();
 	}
 
 	private static List<Path> getFileList(String name, Format<Formula> format) {

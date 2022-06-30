@@ -32,6 +32,7 @@ import org.spldev.formula.structure.term.bool.BoolVariable;
 import org.spldev.util.io.format.ParseException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +45,7 @@ import java.util.regex.Pattern;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class XMLFeatureModelFormat extends AbstractXMLFeatureModelFormat<Formula, Literal> {
+public class XMLFeatureModelFormat extends AbstractXMLFeatureModelFormat<Formula, Literal, Boolean> {
 	protected final List<Formula> constraints = new ArrayList<>();
 	protected final VariableMap variableMap = VariableMap.emptyMap();
 
@@ -66,10 +67,10 @@ public class XMLFeatureModelFormat extends AbstractXMLFeatureModelFormat<Formula
 	@Override
 	protected Formula parseDocument(Document document) throws ParseException {
 		final Element featureModelElement = getDocumentElement(document, FEATURE_MODEL);
-		parseFeatures(getElement(featureModelElement, STRUCT));
+		parseFeatureTree(getElement(featureModelElement, STRUCT));
 		Optional<Element> constraintsElement = getOptionalElement(featureModelElement, CONSTRAINTS);
 		if (constraintsElement.isPresent())
-			constraints.addAll(parseConstraints(constraintsElement.get(), variableMap::getVariable));
+			parseConstraints(constraintsElement.get(), variableMap::getVariable);
 		if (constraints.isEmpty()) {
 			return And.empty(variableMap);
 		} else {
@@ -91,7 +92,8 @@ public class XMLFeatureModelFormat extends AbstractXMLFeatureModelFormat<Formula
 	}
 
 	@Override
-	protected Literal createFeatureLabel(String name, Literal parentFeatureLabel, boolean mandatory)
+	protected Literal createFeatureLabel(String name, Literal parentFeatureLabel, boolean mandatory, boolean _abstract,
+		boolean hidden)
 		throws ParseException {
 		if (variableMap.getIndex(name).isEmpty()) {
 			variableMap.addBooleanVariable(name);
@@ -127,5 +129,23 @@ public class XMLFeatureModelFormat extends AbstractXMLFeatureModelFormat<Formula
 		} else {
 			constraints.add(new And(implies(featureLabel, childFeatureLabels), atMostOne(childFeatureLabels)));
 		}
+	}
+
+	@Override
+	protected void addFeatureMetadata(Literal featureLabel, Element e) {
+	}
+
+	@Override
+	protected Boolean createConstraintLabel() {
+		return true;
+	}
+
+	@Override
+	protected void addConstraint(Boolean constraintLabel, Formula formula) throws ParseException {
+		constraints.add(formula);
+	}
+
+	@Override
+	protected void addConstraintMetadata(Boolean constraintLabel, Element e) {
 	}
 }

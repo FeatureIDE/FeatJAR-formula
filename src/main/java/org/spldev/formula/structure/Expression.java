@@ -33,8 +33,11 @@ import org.spldev.util.tree.structure.*;
  * A propositional node that can be transformed into conjunctive normal form
  * (cnf).
  *
+ * @deprecated use {@link Formula} instead
  * @author Sebastian Krieter
+ * @author Elias Kuiter
  */
+@Deprecated
 public interface Expression extends Tree<Expression> {
 
 	String getName();

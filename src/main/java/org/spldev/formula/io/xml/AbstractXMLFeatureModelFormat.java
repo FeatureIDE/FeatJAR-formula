@@ -12,24 +12,23 @@ import org.spldev.util.io.format.ParseException;
 import org.spldev.util.io.xml.XMLFormat;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * Implements common behaviours for parsing and writing XML feature model files.
  *
  * @param <T> type of read/written data
  * @param <U> type of feature labels
+ * @param <V> type of constraint labels
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public abstract class AbstractXMLFeatureModelFormat<T, U> extends XMLFormat<T> {
+public abstract class AbstractXMLFeatureModelFormat<T, U, V> extends XMLFormat<T> {
 	protected static final Pattern inputHeaderPattern = Pattern.compile(
 		"\\A\\s*(<[?]xml\\s.*[?]>\\s*)?<featureModel[\\s>]");
 	protected static final String FEATURE_MODEL = "featureModel";
@@ -50,8 +49,16 @@ public abstract class AbstractXMLFeatureModelFormat<T, U> extends XMLFormat<T> {
 	protected static final String NAME = "name";
 	protected static final String RULE = "rule";
 	protected static final String ATMOST1 = "atmost1";
+	protected static final String COORDINATES = "coordinates";
+	protected static final String DESCRIPTION = "description";
+	protected static final String PROPERTY = "property";
+	protected static final String GRAPHICS = "graphics";
+	protected static final String TAGS = "tags";
+	public static final String ABSTRACT = "abstract";
+	public static final String HIDDEN = "hidden";
 
-	abstract protected U createFeatureLabel(String name, U parentFeatureLabel, boolean mandatory) throws ParseException;
+	abstract protected U createFeatureLabel(String name, U parentFeatureLabel, boolean mandatory, boolean _abstract,
+		boolean hidden) throws ParseException;
 
 	abstract protected void addAndGroup(U featureLabel, List<U> childFeatureLabels);
 
@@ -59,11 +66,20 @@ public abstract class AbstractXMLFeatureModelFormat<T, U> extends XMLFormat<T> {
 
 	abstract protected void addAlternativeGroup(U featureLabel, List<U> childFeatureLabels);
 
-	protected void parseFeatures(Element element) throws ParseException {
-		parseFeatures(element.getChildNodes(), null, false);
+	abstract protected void addFeatureMetadata(U featureLabel, Element e) throws ParseException;
+
+	abstract protected V createConstraintLabel();
+
+	abstract protected void addConstraint(V constraintLabel, Formula formula) throws ParseException;
+
+	abstract protected void addConstraintMetadata(V constraintLabel, Element e) throws ParseException;
+
+	protected void parseFeatureTree(Element element) throws ParseException {
+		parseFeatureTree(element.getChildNodes(), null, false);
 	}
 
-	protected ArrayList<U> parseFeatures(NodeList nodeList, U parentFeatureLabel, boolean and) throws ParseException {
+	protected ArrayList<U> parseFeatureTree(NodeList nodeList, U parentFeatureLabel, boolean and)
+		throws ParseException {
 		final ArrayList<U> featureLabels = new ArrayList<>();
 		final List<Element> elements = getElements(nodeList);
 		if (parentFeatureLabel == null) {
@@ -81,6 +97,15 @@ public abstract class AbstractXMLFeatureModelFormat<T, U> extends XMLFormat<T> {
 		for (final Element e : elements) {
 			final String nodeName = e.getNodeName();
 			switch (nodeName) {
+			case DESCRIPTION:
+			case GRAPHICS:
+			case PROPERTY:
+				if (parentFeatureLabel != null) {
+					addFeatureMetadata(parentFeatureLabel, e);
+				} else {
+					addParseProblem("Misplaced metadata element " + nodeName, e, Problem.Severity.WARNING);
+				}
+				break;
 			case AND:
 			case OR:
 			case ALT:
@@ -96,7 +121,7 @@ public abstract class AbstractXMLFeatureModelFormat<T, U> extends XMLFormat<T> {
 
 	protected U parseFeature(U parentFeatureLabel, final Element e, final String nodeName, boolean and)
 		throws ParseException {
-		boolean mandatory = false;
+		boolean _abstract = false, mandatory = false, hidden = false;
 		String name = null;
 		if (e.hasAttributes()) {
 			final NamedNodeMap nodeMap = e.getAttributes();
@@ -104,18 +129,26 @@ public abstract class AbstractXMLFeatureModelFormat<T, U> extends XMLFormat<T> {
 				final org.w3c.dom.Node node = nodeMap.item(i);
 				final String attributeName = node.getNodeName();
 				final String attributeValue = node.getNodeValue();
-				if (attributeName.equals(MANDATORY)) {
+				if (attributeName.equals(ABSTRACT)) {
+					_abstract = attributeValue.equals(TRUE);
+				} else if (attributeName.equals(MANDATORY)) {
 					mandatory = attributeValue.equals(TRUE);
 				} else if (attributeName.equals(NAME)) {
 					name = attributeValue;
+				} else if (attributeName.equals(HIDDEN)) {
+					hidden = attributeValue.equals(TRUE);
+				} else if (attributeName.equals(COORDINATES)) {
+					// Legacy case, for backwards compatibility
+				} else {
+					addParseProblem("Unknown feature attribute: " + attributeName, e, Problem.Severity.WARNING);
 				}
 			}
 		}
 
-		U featureLabel = createFeatureLabel(name, parentFeatureLabel, and && mandatory);
+		U featureLabel = createFeatureLabel(name, parentFeatureLabel, and && mandatory, _abstract, hidden);
 
 		if (e.hasChildNodes()) {
-			final ArrayList<U> featureLabels = parseFeatures(e.getChildNodes(), featureLabel, nodeName.equals(AND));
+			final ArrayList<U> featureLabels = parseFeatureTree(e.getChildNodes(), featureLabel, nodeName.equals(AND));
 			switch (nodeName) {
 			case AND:
 				addAndGroup(featureLabel, featureLabels);
@@ -136,19 +169,32 @@ public abstract class AbstractXMLFeatureModelFormat<T, U> extends XMLFormat<T> {
 		return featureLabel;
 	}
 
-	protected List<Formula> parseConstraints(Element constraintsElement,
+	protected void parseConstraints(Element constraintsElement,
 		Function<String, Optional<Variable<?>>> variableFunction) throws ParseException {
-		List<Formula> constraints = new ArrayList<>();
 		for (final Element child : getElements(constraintsElement.getChildNodes())) {
 			final String nodeName = child.getNodeName();
 			if (nodeName.equals(RULE)) {
 				try {
+					V constraintLabel = createConstraintLabel();
 					final List<Formula> parsedConstraints = parseConstraints(child.getChildNodes(),
-						variableFunction);
+						constraintLabel, variableFunction);
 					if (parsedConstraints.size() == 1) {
-						constraints.add(parsedConstraints.get(0));
+						addConstraint(constraintLabel, parsedConstraints.get(0));
+						if (child.hasAttributes()) {
+							final NamedNodeMap nodeMap = child.getAttributes();
+							for (int i = 0; i < nodeMap.getLength(); i++) {
+								final Node node = nodeMap.item(i);
+								final String attributeName = node.getNodeName();
+								if (attributeName.equals(COORDINATES)) {
+									// Legacy case, for backwards compatibility
+								} else {
+									addParseProblem("Unknown constraint attribute: " + attributeName, node,
+										Problem.Severity.WARNING);
+								}
+							}
+						}
 					} else {
-						addParseProblem(nodeName, child, Problem.Severity.WARNING);
+						addParseProblem("could not parse constraint node " + nodeName, child, Problem.Severity.WARNING);
 					}
 				} catch (final Exception exception) {
 					addParseProblem(exception.getMessage(), child, Problem.Severity.WARNING);
@@ -157,10 +203,9 @@ public abstract class AbstractXMLFeatureModelFormat<T, U> extends XMLFormat<T> {
 				addParseProblem("Encountered unknown node " + nodeName, child, Problem.Severity.WARNING);
 			}
 		}
-		return constraints;
 	}
 
-	protected List<Formula> parseConstraints(NodeList nodeList,
+	protected List<Formula> parseConstraints(NodeList nodeList, V parentConstraintLabel,
 		Function<String, Optional<Variable<?>>> variableFunction) throws ParseException {
 		final List<Formula> nodes = new ArrayList<>();
 		List<Formula> children;
@@ -168,14 +213,24 @@ public abstract class AbstractXMLFeatureModelFormat<T, U> extends XMLFormat<T> {
 		for (final Element e : elements) {
 			final String nodeName = e.getNodeName();
 			switch (nodeName) {
+			case DESCRIPTION:
+			case GRAPHICS:
+			case PROPERTY:
+			case TAGS:
+				if (parentConstraintLabel != null) {
+					addConstraintMetadata(parentConstraintLabel, e);
+				} else {
+					addParseProblem("Misplaced metadata element " + nodeName, e, Problem.Severity.WARNING);
+				}
+				break;
 			case DISJ:
-				nodes.add(new Or(parseConstraints(e.getChildNodes(), variableFunction)));
+				nodes.add(new Or(parseConstraints(e.getChildNodes(), null, variableFunction)));
 				break;
 			case CONJ:
-				nodes.add(new And(parseConstraints(e.getChildNodes(), variableFunction)));
+				nodes.add(new And(parseConstraints(e.getChildNodes(), null, variableFunction)));
 				break;
 			case EQ:
-				children = parseConstraints(e.getChildNodes(), variableFunction);
+				children = parseConstraints(e.getChildNodes(), null, variableFunction);
 				if (children.size() == 2) {
 					nodes.add(biImplies(children.get(0), children.get(1)));
 				} else {
@@ -183,7 +238,7 @@ public abstract class AbstractXMLFeatureModelFormat<T, U> extends XMLFormat<T> {
 				}
 				break;
 			case IMP:
-				children = parseConstraints(e.getChildNodes(), variableFunction);
+				children = parseConstraints(e.getChildNodes(), null, variableFunction);
 				if (children.size() == 2) {
 					nodes.add(implies(children.get(0), children.get(1)));
 				} else {
@@ -191,7 +246,7 @@ public abstract class AbstractXMLFeatureModelFormat<T, U> extends XMLFormat<T> {
 				}
 				break;
 			case NOT:
-				children = parseConstraints(e.getChildNodes(), variableFunction);
+				children = parseConstraints(e.getChildNodes(), null, variableFunction);
 				if (children.size() == 1) {
 					nodes.add(new Not(children.get(0)));
 				} else {
@@ -199,7 +254,7 @@ public abstract class AbstractXMLFeatureModelFormat<T, U> extends XMLFormat<T> {
 				}
 				break;
 			case ATMOST1:
-				nodes.add(atMostOne(parseConstraints(e.getChildNodes(), variableFunction)));
+				nodes.add(atMostOne(parseConstraints(e.getChildNodes(), null, variableFunction)));
 				break;
 			case VAR:
 				nodes.add(variableFunction.apply(e.getTextContent())
@@ -207,7 +262,7 @@ public abstract class AbstractXMLFeatureModelFormat<T, U> extends XMLFormat<T> {
 					.orElse(new ErrorLiteral(nodeName)));
 				break;
 			default:
-				throw new ParseException(nodeName);
+				addParseProblem("Unknown constraint type: " + nodeName, e, Problem.Severity.WARNING);
 			}
 		}
 		return nodes;

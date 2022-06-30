@@ -120,4 +120,10 @@ public final class Formulas {
 	public static <T extends Expression> T create(Function<VariableMap, T> fn) {
 		return fn.apply(VariableMap.emptyMap());
 	}
+
+	public static <T, U> T xyz(List<U> expressions, Function<List<U>, T> fn) {
+		return fn.apply(expressions);
+	}
+
+	//todo: bifunction, function (unary)
 }
