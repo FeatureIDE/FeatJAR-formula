@@ -122,10 +122,7 @@ public final class Formulas {
 	}
 
 	/**
-	 * If Compose.FALSE is supplied (the default), child formulas are not cloned.
-	 * This requires that all involved formulas share one variable map. This is
-	 * useful e.g. for assembling the formula of a single feature model. If
-	 * Compose.TRUE is supplied, child formulas are cloned and their variable maps
+	 * Child formulas are cloned and their variable maps
 	 * merged. That is, the composed formula exists independently of its children.
 	 * This is useful e.g. for composing several feature model (interface) formulas.
 	 */
