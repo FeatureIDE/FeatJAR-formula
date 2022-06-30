@@ -33,20 +33,10 @@ import org.spldev.formula.structure.*;
  * @author Sebastian Krieter
  */
 public abstract class Compound extends NonTerminal implements Formula {
-	public Compound(Compose compose, List<? extends Formula> nodes) {
-		super(compose, nodes);
-	}
-
 	public Compound(List<? extends Formula> nodes) {
 		super(nodes);
 	}
 
-	@SafeVarargs
-	public Compound(Compose compose, Formula... nodes) {
-		super(compose, nodes);
-	}
-
-	@SafeVarargs
 	public Compound(Expression... nodes) {
 		super(nodes);
 	}

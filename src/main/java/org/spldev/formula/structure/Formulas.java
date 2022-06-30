@@ -121,9 +121,38 @@ public final class Formulas {
 		return fn.apply(VariableMap.emptyMap());
 	}
 
-	public static <T, U> T xyz(List<U> expressions, Function<List<U>, T> fn) {
-		return fn.apply(expressions);
+	/**
+	 * If Compose.FALSE is supplied (the default), child formulas are not cloned.
+	 * This requires that all involved formulas share one variable map. This is
+	 * useful e.g. for assembling the formula of a single feature model. If
+	 * Compose.TRUE is supplied, child formulas are cloned and their variable maps
+	 * merged. That is, the composed formula exists independently of its children.
+	 * This is useful e.g. for composing several feature model (interface) formulas.
+	 */
+	public static <T, U extends Expression> T compose(Function<List<U>, T> fn, List<U> expressions) {
+		return fn.apply(cloneWithSharedVariableMap(expressions));
 	}
 
-	//todo: bifunction, function (unary)
+	@SafeVarargs
+	public static <T, U extends Expression> T compose(Function<List<U>, T> fn, U... expressions) {
+		return compose(fn, Arrays.asList(expressions));
+	}
+
+	/**
+	 * Composes formulas (e.g., for feature model fragments and interfaces) by
+	 * cloning and variable map merging. Assumes that the supplied formulas are
+	 * partly independent, partly dependent (on common variables). Leaves the input
+	 * formulas and their variable maps untouched by returning copies.
+	 */
+	public static <T extends Expression> List<T> cloneWithSharedVariableMap(List<T> children) {
+		VariableMap composedMap = VariableMap.merge(
+				children.stream().map(Expression::getVariableMap).collect(Collectors.toList()));
+		return children.stream()
+				.map(Trees::cloneTree)
+				.peek(formula -> {
+					formula.setVariableMap(composedMap);
+					formula.adaptVariableMap(composedMap);
+				})
+				.collect(Collectors.toList());
+	}
 }

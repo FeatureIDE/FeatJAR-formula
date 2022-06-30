@@ -24,6 +24,8 @@ package org.spldev.formula.structure.compound;
 
 import org.spldev.formula.structure.*;
 
+import java.util.List;
+
 /**
  * A logical connector that is {@code true} iff its child is {@code false}.
  *
@@ -37,6 +39,12 @@ public class Not extends Compound {
 
 	private Not() {
 		super();
+	}
+
+	public Not(List<? extends Formula> nodes) {
+		super(nodes);
+		if (nodes.size() != 1)
+			throw new IllegalArgumentException("not requires one argument");
 	}
 
 	@Override

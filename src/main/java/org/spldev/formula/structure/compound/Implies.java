@@ -24,6 +24,8 @@ package org.spldev.formula.structure.compound;
 
 import org.spldev.formula.structure.*;
 
+import java.util.List;
+
 /**
  * A logical connector that is {@code true} iff the left child is {@code false}
  * or the right child is {@code true}.
@@ -38,6 +40,12 @@ public class Implies extends Compound {
 
 	private Implies() {
 		super();
+	}
+
+	public Implies(List<? extends Formula> nodes) {
+		super(nodes);
+		if (nodes.size() != 2)
+			throw new IllegalArgumentException("implies requires two arguments");
 	}
 
 	@Override

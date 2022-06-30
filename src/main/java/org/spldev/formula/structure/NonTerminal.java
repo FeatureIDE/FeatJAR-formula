@@ -37,18 +37,6 @@ import org.spldev.util.tree.structure.*;
  * @author Sebastian Krieter
  */
 public abstract class NonTerminal extends AbstractNonTerminal<Expression> implements Expression {
-	/**
-	 * If Compose.FALSE is supplied (the default), child formulas are not cloned.
-	 * This requires that all involved formulas share one variable map. This is
-	 * useful e.g. for assembling the formula of a single feature model. If
-	 * Compose.TRUE is supplied, child formulas are cloned and their variable maps
-	 * merged. That is, the composed formula exists independently of its children.
-	 * This is useful e.g. for composing several feature model (interface) formulas.
-	 */
-	public enum Compose {
-		TRUE, FALSE
-	}
-
 	private int hashCode = 0;
 	private boolean hasHashCode = false;
 
@@ -56,80 +44,48 @@ public abstract class NonTerminal extends AbstractNonTerminal<Expression> implem
 		super();
 	}
 
-	protected NonTerminal(Compose compose, List<? extends Expression> children) {
-		super();
-		ensureSharedVariableMap(compose, children);
-		super.setChildren(compose == Compose.TRUE ? compose(children) : children);
-	}
-
 	protected NonTerminal(List<? extends Expression> children) {
-		this(Compose.FALSE, children);
+		super();
+		ensureSharedVariableMap(children);
+		super.setChildren(children);
 	}
 
-	@SafeVarargs
-	protected NonTerminal(Compose compose, Expression... children) {
-		this(compose, Arrays.asList(children));
-	}
-
-	@SafeVarargs
 	protected NonTerminal(Expression... children) {
-		this(Compose.FALSE, children);
+		this(Arrays.asList(children));
 	}
 
-	protected void ensureSharedVariableMap(Compose compose, List<? extends Expression> children) {
-		if (compose == Compose.FALSE) {
-			children.stream().map(Expression::getVariableMap).reduce((acc, val) -> {
-				if (acc != val)
-					throw new IllegalArgumentException(
-						"tried to instantiate formula with different variable maps. perhaps you meant to use Compose.TRUE?");
-				return val;
-			});
-		}
-	}
-
-	protected void ensureSharedVariableMap(Compose compose, Expression newChild) {
-		if (compose == Compose.FALSE) {
-			if (getVariableMap() != newChild.getVariableMap())
+	protected void ensureSharedVariableMap(List<? extends Expression> children) {
+		children.stream().map(Expression::getVariableMap).reduce((acc, val) -> {
+			if (acc != val)
 				throw new IllegalArgumentException(
-					"tried to add formula with different variable map. perhaps you meant to use Compose.TRUE?");
-		}
+					"tried to instantiate formula with different variable maps. perhaps you meant to use Formulas.compose(...)?");
+			return val;
+		});
 	}
 
-	/**
-	 * Composes formulas (e.g., for feature model fragments and interfaces) by
-	 * cloning and variable map merging. Assumes that the supplied formulas are
-	 * partly independent, partly dependent (on common variables). Leaves the input
-	 * formulas and their variable maps untouched by returning copies.
-	 */
-	public static List<? extends Expression> compose(List<? extends Expression> children) {
-		VariableMap composedMap = VariableMap.merge(
-			children.stream().map(Expression::getVariableMap).collect(Collectors.toList()));
-		return children.stream()
-			.map(Trees::cloneTree)
-			.peek(formula -> {
-				formula.setVariableMap(composedMap);
-				formula.adaptVariableMap(composedMap);
-			})
-			.collect(Collectors.toList());
+	protected void ensureSharedVariableMap(Expression newChild) {
+		if (getVariableMap() != newChild.getVariableMap())
+			throw new IllegalArgumentException(
+				"tried to add formula with different variable map. perhaps you meant to use Formulas.compose(...)?");
 	}
 
 	@Override
 	public void setChildren(List<? extends Expression> children) {
-		ensureSharedVariableMap(Compose.FALSE, children);
+		ensureSharedVariableMap(children);
 		super.setChildren(children);
 		hasHashCode = false;
 	}
 
 	@Override
 	public void addChild(int index, Expression newChild) {
-		ensureSharedVariableMap(Compose.FALSE, newChild);
+		ensureSharedVariableMap(newChild);
 		super.addChild(index, newChild);
 		hasHashCode = false;
 	}
 
 	@Override
 	public void addChild(Expression newChild) {
-		ensureSharedVariableMap(Compose.FALSE, newChild);
+		ensureSharedVariableMap(newChild);
 		super.addChild(newChild);
 		hasHashCode = false;
 	}
@@ -149,7 +105,7 @@ public abstract class NonTerminal extends AbstractNonTerminal<Expression> implem
 
 	@Override
 	public void replaceChild(Expression oldChild, Expression newChild) {
-		ensureSharedVariableMap(Compose.FALSE, newChild);
+		ensureSharedVariableMap(newChild);
 		super.replaceChild(oldChild, newChild);
 		hasHashCode = false;
 	}
