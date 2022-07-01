@@ -22,24 +22,30 @@
  */
 package org.spldev.formula.structure;
 
-import java.io.*;
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.stream.*;
-
-import org.spldev.formula.io.textual.*;
-import org.spldev.formula.structure.ValueVisitor.*;
-import org.spldev.formula.structure.atomic.*;
+import org.spldev.formula.io.textual.FormulaFormat;
+import org.spldev.formula.structure.ValueVisitor.UnknownVariableHandling;
+import org.spldev.formula.structure.atomic.Assignment;
 import org.spldev.formula.structure.atomic.literal.VariableMap;
-import org.spldev.formula.structure.compound.And;
-import org.spldev.formula.structure.term.*;
-import org.spldev.formula.structure.transform.*;
-import org.spldev.formula.structure.transform.NormalForms.*;
-import org.spldev.util.data.*;
-import org.spldev.util.io.*;
-import org.spldev.util.tree.*;
-import org.spldev.util.tree.visitor.*;
+import org.spldev.formula.structure.term.Variable;
+import org.spldev.formula.structure.transform.CNFTransformer;
+import org.spldev.formula.structure.transform.DNFTransformer;
+import org.spldev.formula.structure.transform.NormalForms;
+import org.spldev.formula.structure.transform.NormalForms.NormalForm;
+import org.spldev.util.data.Result;
+import org.spldev.util.io.FileHandler;
+import org.spldev.util.tree.Trees;
+import org.spldev.util.tree.visitor.TreeDepthCounter;
+import org.spldev.util.tree.visitor.TreePrinter;
+import org.spldev.util.tree.visitor.TreeVisitor;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class Formulas {
 

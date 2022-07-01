@@ -54,6 +54,7 @@ public interface Expression extends Tree<Expression> {
 		}
 	}
 
+	// todo return Optional<VariableMap>
 	default VariableMap getVariableMap() {
 		return Trees.preOrderStream(this)
 			.skip(1)
