@@ -110,7 +110,11 @@ public class NamedTermMap<T extends ValueTerm> implements Cloneable, Iterable<T>
 		}
 
 		@Override
-		public VariableMap getVariableMap() {
+		public Optional<VariableMap> getVariableMap() {
+			return Optional.of(map);
+		}
+
+		public VariableMap getMap() {
 			return map;
 		}
 

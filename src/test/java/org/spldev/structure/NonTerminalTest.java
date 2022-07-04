@@ -48,7 +48,7 @@ public class NonTerminalTest {
 			assertThrows(IllegalArgumentException.class, () -> new And(formula1, formula2));
 			assertDoesNotThrow(() -> Formulas.compose(And::new, formula1, formula2));
 			Formula formula3 = Formulas.compose(And::new, formula1, formula2);
-			Literal x = formula3.getFirstChild().get().getVariableMap().createLiteral("x");
+			Literal x = formula3.getFirstChild().get().getVariableMap().orElseThrow().createLiteral("x");
 			assertDoesNotThrow(() -> Formulas.compose(And::new, formula3, x));
 		}
 		Consumer<Formula> test = formula1 -> {

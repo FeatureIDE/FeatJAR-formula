@@ -57,7 +57,7 @@ public final class FormulaToCNF implements MonitorableFunction<Formula, CNF> {
 		if (node == null) {
 			return null;
 		}
-		final VariableMap mapping = variableMapping != null ? variableMapping : node.getVariableMap();
+		final VariableMap mapping = variableMapping != null ? variableMapping : node.getVariableMap().orElseGet(VariableMap::new);
 		final ClauseList clauses = new ClauseList();
 		final Optional<Object> formulaValue = Formulas.evaluate(node, new VariableAssignment(mapping));
 		if (formulaValue.isPresent()) {

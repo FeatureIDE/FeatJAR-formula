@@ -44,13 +44,11 @@ public interface Formula extends Tree<Formula> {
 
 	void setVariableMap(VariableMap map);
 
-	// TODO return Optional<VariableMap>
-	default VariableMap getVariableMap() {
+	default Optional<VariableMap> getVariableMap() {
 		return Trees.preOrderStream(this)
 			.filter(n -> n instanceof ValueTerm)
-			.map(Formula::getVariableMap)
-			.findAny()
-			.orElseGet(VariableMap::new);
+			.map(n -> ((ValueTerm) n).getMap())
+			.findAny();
 	}
 
 	@Override

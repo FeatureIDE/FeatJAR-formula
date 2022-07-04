@@ -130,7 +130,7 @@ public class TseytinTransformer implements MonitorableFunction<Formula, List<Tse
 
 		Trees.sortTree(child);
 		if (variableMap == null) {
-			variableMap = child.getVariableMap().clone();
+			variableMap = child.getVariableMap().map(VariableMap::clone).orElseGet(VariableMap::new);
 		}
 
 		try {

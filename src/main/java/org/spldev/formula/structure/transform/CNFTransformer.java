@@ -70,7 +70,7 @@ public class CNFTransformer implements Transformer {
 				return Trees.cloneTree(orgFormula);
 			}
 		}
-		variableMap = orgFormula.getVariableMap().clone();
+		variableMap = orgFormula.getVariableMap().map(VariableMap::clone).orElseGet(VariableMap::new);
 		Formula formula = NormalForms.simplifyForNF(Trees.cloneTree(orgFormula));
 		if (formula instanceof And) {
 			final List<Formula> children = ((And) formula).getChildren();

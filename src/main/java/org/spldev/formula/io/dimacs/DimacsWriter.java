@@ -78,7 +78,7 @@ public class DimacsWriter {
 	 * @return the transformed CNF; not null
 	 */
 	public String write() {
-		variables = formula.getVariableMap();
+		variables = formula.getVariableMap().orElseGet(VariableMap::new);
 		final StringBuilder sb = new StringBuilder();
 		if (writingVariableDirectory) {
 			writeVariableDirectory(sb);
