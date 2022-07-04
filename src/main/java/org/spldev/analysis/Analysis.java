@@ -41,7 +41,7 @@ public interface Analysis<T> extends MonitorableFunction<Cache, T>, Provider<T> 
 	Assignment getAssumptions();
 
 	List<Formula> getAssumedConstraints();
-	
+
 	void updateAssumptions();
 
 }

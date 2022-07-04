@@ -34,7 +34,7 @@ import org.spldev.formula.structure.*;
  */
 public class Or extends Compound {
 
-	public Or(Collection<? extends Formula> nodes) {
+	public Or(List<? extends Formula> nodes) {
 		super(nodes);
 	}
 

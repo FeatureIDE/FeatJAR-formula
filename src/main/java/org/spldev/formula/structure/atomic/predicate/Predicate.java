@@ -30,7 +30,7 @@ import org.spldev.formula.structure.term.*;
 
 public abstract class Predicate extends NonTerminal implements Atomic {
 
-	protected Predicate(Collection<Term> nodes) {
+	protected Predicate(List<Term> nodes) {
 		super(nodes);
 	}
 

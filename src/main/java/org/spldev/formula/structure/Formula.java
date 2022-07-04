@@ -23,5 +23,4 @@
 package org.spldev.formula.structure;
 
 public interface Formula extends Expression {
-
 }

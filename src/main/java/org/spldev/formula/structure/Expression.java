@@ -34,8 +34,11 @@ import org.spldev.util.tree.structure.*;
  * A propositional node that can be transformed into conjunctive normal form
  * (cnf).
  *
+ * @deprecated use {@link Formula} instead
  * @author Sebastian Krieter
+ * @author Elias Kuiter
  */
+@Deprecated
 public interface Expression extends Tree<Expression> {
 // TODO Expression -> Formula
 	String getName();
@@ -44,6 +47,7 @@ public interface Expression extends Tree<Expression> {
 
 	void setVariableMap(VariableMap map);
 
+	// TODO return Optional<VariableMap>
 	default VariableMap getVariableMap() {
 		return Trees.preOrderStream(this)
 			.filter(n -> n instanceof ValueTerm)

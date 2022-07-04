@@ -28,7 +28,7 @@ import org.spldev.formula.structure.*;
 
 public abstract class Function extends NonTerminal implements Term {
 
-	public Function(Collection<Term> nodes) {
+	public Function(List<Term> nodes) {
 		super(nodes);
 	}
 

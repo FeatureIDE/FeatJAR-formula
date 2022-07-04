@@ -24,11 +24,13 @@ package org.spldev.formula.structure;
 
 import java.io.*;
 import java.util.*;
+import java.util.function.*;
 import java.util.stream.*;
 
 import org.spldev.formula.io.textual.*;
 import org.spldev.formula.structure.ValueVisitor.*;
 import org.spldev.formula.structure.atomic.*;
+import org.spldev.formula.structure.atomic.literal.*;
 import org.spldev.formula.structure.atomic.literal.VariableMap.*;
 import org.spldev.formula.structure.transform.*;
 import org.spldev.formula.structure.transform.NormalForms.*;
@@ -109,4 +111,42 @@ public final class Formulas {
 		return getVariableStream(node).collect(Collectors.toList());
 	}
 
+	public static List<String> getVariableNames(Expression node) {
+		return getVariableStream(node).map(Variable::getName).collect(Collectors.toList());
+	}
+
+	public static <T extends Expression> T create(Function<VariableMap, T> fn) {
+		return fn.apply(new VariableMap());
+	}
+
+	/**
+	 * Child formulas are cloned and their variable maps
+	 * merged. That is, the composed formula exists independently of its children.
+	 * This is useful e.g. for composing several feature model (interface) formulas.
+	 */
+	public static <T, U extends Expression> T compose(Function<List<U>, T> fn, List<U> expressions) {
+		return fn.apply(cloneWithSharedVariableMap(expressions));
+	}
+
+	@SafeVarargs
+	public static <T, U extends Expression> T compose(Function<List<U>, T> fn, U... expressions) {
+		return compose(fn, Arrays.asList(expressions));
+	}
+
+	/**
+	 * Composes formulas (e.g., for feature model fragments and interfaces) by
+	 * cloning and variable map merging. Assumes that the supplied formulas are
+	 * partly independent, partly dependent (on common variables). Leaves the input
+	 * formulas and their variable maps untouched by returning copies.
+	 */
+	public static <T extends Expression> List<T> cloneWithSharedVariableMap(List<T> children) {
+		VariableMap composedMap = VariableMap.merge(
+				children.stream().map(Expression::getVariableMap).collect(Collectors.toList()));
+		return children.stream()
+				.map(Trees::cloneTree)
+				.peek(formula -> {
+					formula.setVariableMap(composedMap);
+				})
+				.collect(Collectors.toList());
+	}
 }

@@ -32,11 +32,11 @@ import org.spldev.formula.structure.atomic.literal.*;
 import org.spldev.formula.structure.compound.*;
 
 /**
- * Tests {@link XmlFeatureModelCNFFormat FeatureIDE} format.
+ * Tests {@link XMLFeatureModelCNFFormat FeatureIDE} format.
  *
  * @author Sebastian Krieter
  */
-public class XmlFeatureModelCNFFormatTest {
+public class XMLFeatureModelCNFFormatTest {
 
 	@Test
 	public void FeatureIDE_CNF_ABC_nAnBnC() {
@@ -59,7 +59,7 @@ public class XmlFeatureModelCNFFormatTest {
 	}
 
 	private static void test(String name) {
-		testLoad(getFormula(name), name, new XmlFeatureModelCNFFormat());
+		testLoad(getFormula(name), name, new XMLFeatureModelCNFFormat());
 	}
 
 	private static Formula getFormula(String name) {

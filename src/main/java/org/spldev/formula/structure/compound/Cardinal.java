@@ -38,7 +38,7 @@ public abstract class Cardinal extends Compound {
 	protected int min;
 	protected int max;
 
-	public Cardinal(List<Formula> nodes, int min, int max) {
+	public Cardinal(List<? extends Formula> nodes, int min, int max) {
 		super(nodes);
 		setMin(min);
 		setMax(max);
@@ -72,7 +72,7 @@ public abstract class Cardinal extends Compound {
 		this.max = max;
 	}
 
-	public void setChildren(List<Formula> children) {
+	public void setChildren(List<? extends Expression> children) {
 		if (min > children.size()) {
 			throw new IllegalArgumentException(Integer.toString(min));
 		}

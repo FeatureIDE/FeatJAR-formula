@@ -46,7 +46,7 @@ public abstract class ComparingPredicate extends Predicate {
 	}
 
 	@Override
-	public void setChildren(Collection<? extends Expression> children) {
+	public void setChildren(List<? extends Expression> children) {
 		if (children.size() != 2) {
 			throw new IllegalArgumentException("Must specify exactly two children");
 		}

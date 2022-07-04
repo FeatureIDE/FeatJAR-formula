@@ -133,6 +133,32 @@ public class NamedTermMap<T extends ValueTerm> implements Cloneable, Iterable<T>
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	public NamedTermMap(NamedTermMap<T> map1, NamedTermMap<T> map2) {
+		for (T term : map1.fromIndex) {
+			if (term != null) {
+				term = (T) term.copy();
+				fromName.put(term.getName(), term);
+			}
+		}
+		for (T term : map2.fromIndex) {
+			if (term != null) {
+				if (fromName.get(term.name).type != term.type) {
+					throw new IllegalArgumentException("Merged maps have incompatible types for term " + term.name);
+				} else {
+					term = (T) term.copy();
+					fromName.put(term.getName(), term);
+				}
+			}
+		}
+		fromIndex = new ArrayList<>(fromName.size());
+		fromIndex.add(null);
+		for (ValueTerm term : fromName.values()) {
+			term.setIndex(fromIndex.size());
+			fromIndex.add((T) term);
+		}
+	}
+
 	NamedTermMap() {
 		fromIndex = new ArrayList<>();
 		fromIndex.add(null);

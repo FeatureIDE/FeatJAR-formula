@@ -36,6 +36,7 @@ import org.spldev.formula.structure.atomic.literal.NamedTermMap.*;
 public class VariableMap implements Cloneable {
 
 	public final static class Variable extends ValueTerm {
+		// todo inv: all subtrees have the same variablemap
 
 		public Variable(String name, int index, Class<?> type, VariableMap variableMap) {
 			super(name, index, type, variableMap);
@@ -87,12 +88,38 @@ public class VariableMap implements Cloneable {
 
 	}
 
+	/**
+	 * Merges two variable maps in one new map, useful for composing formulas. Joins
+	 * common variables and does not necessarily preserve variable numbering. If one
+	 * map is empty, creates a clone of the other. If used for composition, formulas
+	 * must be manually adapted to the merged variable map.
+	 */
+
+	public static VariableMap merge(Collection<VariableMap> maps) {
+		// TODO: could be optimized for feature-model interfaces (return bigger
+		// VariableMap), but may have unwanted interactions with mutation
+		// TODO: could also be optimized to merge many maps at once (not create a copy
+		// for each map)
+		
+		return maps.stream().reduce(new VariableMap(), VariableMap::new);
+	}
+
+	public static VariableMap merge(VariableMap... maps) {
+		return merge(Arrays.asList(maps));
+	}
+
+
 	private final NamedTermMap<Variable> variables;
 	private final NamedTermMap<Constant> constants;
 
 	public VariableMap(VariableMap map) {
 		variables = map.variables.clone();
 		constants = map.constants.clone();
+	}
+	
+	private VariableMap(VariableMap map1, VariableMap map2) {
+		variables = new NamedTermMap<>(map1.variables, map2.variables);
+		constants = new NamedTermMap<>(map1.constants, map2.constants);
 	}
 
 	public VariableMap(String... variableNames) {
@@ -420,6 +447,22 @@ public class VariableMap implements Cloneable {
 
 	public Optional<Constant> getRealConstant(int index) {
 		return getConstant(index, Double.class);
+	}
+
+	public Optional<BooleanLiteral> getLiteral(String name, boolean positive) {
+		return getBooleanVariable(name).map(v -> new BooleanLiteral(v, positive));
+	}
+
+	public Optional<BooleanLiteral> getLiteral(int index, boolean positive) {
+		return getBooleanVariable(index).map(v -> new BooleanLiteral(v, positive));
+	}
+
+	public Optional<BooleanLiteral> getLiteral(String name) {
+		return getBooleanVariable(name).map(BooleanLiteral::new);
+	}
+
+	public Optional<BooleanLiteral> getLiteral(int index) {
+		return getBooleanVariable(index).map(BooleanLiteral::new);
 	}
 
 	public BooleanLiteral createLiteral(String name) {

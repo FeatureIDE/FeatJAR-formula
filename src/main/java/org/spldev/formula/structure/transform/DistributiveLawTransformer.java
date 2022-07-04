@@ -52,7 +52,7 @@ public class DistributiveLawTransformer implements MonitorableFunction<Formula, 
 		}
 	}
 
-	private final Function<Collection<? extends Formula>, Formula> clauseConstructor;
+	private final Function<List<? extends Formula>, Formula> clauseConstructor;
 	private final Class<? extends Compound> clauseClass;
 
 	private int maximumNumberOfLiterals = Integer.MAX_VALUE;
@@ -62,7 +62,7 @@ public class DistributiveLawTransformer implements MonitorableFunction<Formula, 
 	private List<Formula> children;
 
 	public DistributiveLawTransformer(Class<? extends Compound> clauseClass,
-		Function<Collection<? extends Formula>, Formula> clauseConstructor) {
+		Function<List<? extends Formula>, Formula> clauseConstructor) {
 		this.clauseClass = clauseClass;
 		this.clauseConstructor = clauseConstructor;
 	}
@@ -138,7 +138,7 @@ public class DistributiveLawTransformer implements MonitorableFunction<Formula, 
 							}
 						}
 					}
-					filteredClauseList.add(clauseConstructor.apply(set));
+					filteredClauseList.add(clauseConstructor.apply(new ArrayList<>(set)));
 				}
 			}
 			return filteredClauseList;

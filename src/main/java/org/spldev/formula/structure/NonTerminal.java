@@ -23,9 +23,12 @@
 package org.spldev.formula.structure;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.spldev.formula.structure.atomic.literal.*;
 import org.spldev.formula.structure.atomic.literal.VariableMap.*;
+import org.spldev.formula.structure.atomic.literal.VariableMap;
+import org.spldev.formula.structure.compound.And;
 import org.spldev.util.tree.*;
 import org.spldev.util.tree.structure.*;
 
@@ -36,7 +39,6 @@ import org.spldev.util.tree.structure.*;
  * @author Sebastian Krieter
  */
 public abstract class NonTerminal extends AbstractNonTerminal<Expression> implements Expression {
-
 	private int hashCode = 0;
 	private boolean hasHashCode = false;
 
@@ -44,15 +46,29 @@ public abstract class NonTerminal extends AbstractNonTerminal<Expression> implem
 		super();
 	}
 
-	@SafeVarargs
-	protected NonTerminal(Expression... children) {
+	protected NonTerminal(List<? extends Expression> children) {
 		super();
-		setChildren(Arrays.asList(children));
+		ensureSharedVariableMap(children);
+		super.setChildren(children);
 	}
 
-	protected NonTerminal(Collection<? extends Expression> children) {
-		super();
-		setChildren(children);
+	protected NonTerminal(Expression... children) {
+		this(Arrays.asList(children));
+	}
+
+	protected void ensureSharedVariableMap(List<? extends Expression> children) {
+		children.stream().map(Expression::getVariableMap).reduce((acc, val) -> {
+			if (acc != val)
+				throw new IllegalArgumentException(
+					"tried to instantiate formula with different variable maps. perhaps you meant to use Formulas.compose(...)?");
+			return val;
+		});
+	}
+
+	protected void ensureSharedVariableMap(Expression newChild) {
+		if (getVariableMap() != newChild.getVariableMap())
+			throw new IllegalArgumentException(
+				"tried to add formula with different variable map. perhaps you meant to use Formulas.compose(...)?");
 	}
 
 	@Override
@@ -80,8 +96,43 @@ public abstract class NonTerminal extends AbstractNonTerminal<Expression> implem
 	}
 
 	@Override
-	public void setChildren(Collection<? extends Expression> children) {
+	public void setChildren(List<? extends Expression> children) {
+		ensureSharedVariableMap(children); // TODO 
 		super.setChildren(children);
+		hasHashCode = false;
+	}
+
+	@Override
+	public void addChild(int index, Expression newChild) {
+		ensureSharedVariableMap(newChild);
+		super.addChild(index, newChild);
+		hasHashCode = false;
+	}
+
+	@Override
+	public void addChild(Expression newChild) {
+		ensureSharedVariableMap(newChild);
+		super.addChild(newChild);
+		hasHashCode = false;
+	}
+
+	@Override
+	public void removeChild(Expression child) {
+		super.removeChild(child);
+		hasHashCode = false;
+	}
+
+	@Override
+	public Expression removeChild(int index) {
+		Expression expression = super.removeChild(index);
+		hasHashCode = false;
+		return expression;
+	}
+
+	@Override
+	public void replaceChild(Expression oldChild, Expression newChild) {
+		ensureSharedVariableMap(newChild);
+		super.replaceChild(oldChild, newChild);
 		hasHashCode = false;
 	}
 

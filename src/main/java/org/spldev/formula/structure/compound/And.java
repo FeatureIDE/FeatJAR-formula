@@ -34,11 +34,11 @@ import org.spldev.formula.structure.*;
  */
 public class And extends Compound {
 
-	public And(Collection<? extends Formula> nodes) {
+	public And(List<? extends Formula> nodes) {
 		super(nodes);
 	}
 
-	public And(Formula... nodes) {
+	public And(Expression... nodes) {
 		super(nodes);
 	}
 

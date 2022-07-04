@@ -45,7 +45,7 @@ public class ListFormat implements Format<SolutionList> {
 	public String serialize(SolutionList configurationList) {
 		final StringBuilder csv = new StringBuilder();
 		csv.append("Configuration");
-		final List<String> names = configurationList.getVariableMap().getVariableNames();
+ 		final List<String> names = configurationList.getVariableMap().getVariableNames();
 		for (final String name : names) {
 			csv.append(';');
 			csv.append(name);
