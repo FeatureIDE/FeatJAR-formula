@@ -44,7 +44,7 @@ public class DIMACSFormatCNF implements Format<CNF> {
 
 		// Variables
 		int index = 1;
-		for (final String name : cnf.getVariables().getNames()) {
+		for (final String name : cnf.getVariableMap().getVariableNames()) {
 			sb.append(DIMACSConstants.COMMENT_START);
 			sb.append(index++);
 			sb.append(' ');
@@ -57,7 +57,7 @@ public class DIMACSFormatCNF implements Format<CNF> {
 		sb.append(' ');
 		sb.append(DIMACSConstants.CNF);
 		sb.append(' ');
-		sb.append(cnf.getVariables().size());
+		sb.append(cnf.getVariableMap().getVariableSignatures().size());
 		sb.append(' ');
 		sb.append(cnf.getClauses().size());
 		sb.append(System.lineSeparator());

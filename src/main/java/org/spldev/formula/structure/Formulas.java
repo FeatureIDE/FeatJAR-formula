@@ -29,7 +29,7 @@ import java.util.stream.*;
 import org.spldev.formula.io.textual.*;
 import org.spldev.formula.structure.ValueVisitor.*;
 import org.spldev.formula.structure.atomic.*;
-import org.spldev.formula.structure.term.*;
+import org.spldev.formula.structure.atomic.literal.VariableMap.*;
 import org.spldev.formula.structure.transform.*;
 import org.spldev.formula.structure.transform.NormalForms.*;
 import org.spldev.util.data.*;
@@ -44,7 +44,7 @@ public final class Formulas {
 
 	public static String printTree(Formula formula) {
 		final TreePrinter visitor = new TreePrinter();
-		visitor.setFilter(n -> (!(n instanceof Variable<?>)));
+		visitor.setFilter(n -> (!(n instanceof Variable)));
 		return Trees.traverse(formula, visitor).orElse("");
 	}
 
@@ -99,13 +99,13 @@ public final class Formulas {
 		return Trees.traverse(expression, new TreeDepthCounter()).get();
 	}
 
-	public static Stream<Variable<?>> getVariableStream(Expression node) {
-		final Stream<Variable<?>> stream = Trees.preOrderStream(node).filter(n -> n instanceof Variable)
-			.map(n -> (Variable<?>) n);
+	public static Stream<Variable> getVariableStream(Expression node) {
+		final Stream<Variable> stream = Trees.preOrderStream(node).filter(n -> n instanceof Variable)
+			.map(n -> (Variable) n);
 		return stream.distinct();
 	}
 
-	public static List<Variable<?>> getVariables(Expression node) {
+	public static List<Variable> getVariables(Expression node) {
 		return getVariableStream(node).collect(Collectors.toList());
 	}
 

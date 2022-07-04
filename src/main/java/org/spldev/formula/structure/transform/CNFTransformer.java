@@ -26,8 +26,8 @@ import java.util.*;
 
 import org.spldev.formula.structure.*;
 import org.spldev.formula.structure.atomic.literal.*;
+import org.spldev.formula.structure.atomic.literal.VariableMap.*;
 import org.spldev.formula.structure.compound.*;
-import org.spldev.formula.structure.term.bool.*;
 import org.spldev.formula.structure.transform.DistributiveLawTransformer.*;
 import org.spldev.formula.structure.transform.NormalForms.*;
 import org.spldev.formula.structure.transform.TseytinTransformer.*;
@@ -70,7 +70,7 @@ public class CNFTransformer implements Transformer {
 				return Trees.cloneTree(orgFormula);
 			}
 		}
-		variableMap = VariableMap.fromExpression(orgFormula).clone();
+		variableMap = orgFormula.getVariableMap().clone();
 		Formula formula = NormalForms.simplifyForNF(Trees.cloneTree(orgFormula));
 		if (formula instanceof And) {
 			final List<Formula> children = ((And) formula).getChildren();
@@ -97,32 +97,24 @@ public class CNFTransformer implements Transformer {
 		if (!tseytinClauses.isEmpty()) {
 			variableMap = variableMap.clone();
 			final HashMap<Substitute, Substitute> combinedTseytinClauses = new HashMap<>();
-			int count = 0;
 			for (final Substitute tseytinClause : tseytinClauses) {
 				Substitute substitute = combinedTseytinClauses.get(tseytinClause);
 				if (substitute == null) {
-					substitute = tseytinClause;
-					combinedTseytinClauses.put(substitute, substitute);
-					final BoolVariable variable = substitute.getVariable();
+					combinedTseytinClauses.put(tseytinClause, tseytinClause);
+					final Variable variable = tseytinClause.getVariable();
 					if (variable != null) {
-						Optional<BoolVariable> addBooleanVariable;
-						do {
-							addBooleanVariable = variableMap.addBooleanVariable("__temp__" + count++);
-						} while (addBooleanVariable.isEmpty());
-						variable.getVariableMap().renameVariable(variable.getIndex(), addBooleanVariable.get()
-							.getName());
+						variable.rename(variableMap.addBooleanVariable().getName());
 					}
 				} else {
-					final BoolVariable variable = substitute.getVariable();
+					final Variable variable = substitute.getVariable();
 					if (variable != null) {
-						final BoolVariable otherVariable = tseytinClause.getVariable();
-						otherVariable.getVariableMap().renameVariable(otherVariable.getIndex(), variable.getName());
+						tseytinClause.getVariable().rename(variable.getName());
 					}
 				}
 			}
 			for (final Substitute tseytinClause : combinedTseytinClauses.keySet()) {
 				for (final Formula formula : tseytinClause.getClauses()) {
-					formula.adaptVariableMap(variableMap);
+					formula.setVariableMap(variableMap);
 					transformedClauses.add(formula);
 				}
 			}
@@ -160,7 +152,7 @@ public class CNFTransformer implements Transformer {
 
 	protected List<Substitute> tseytin(Formula child, InternalMonitor monitor) {
 		final TseytinTransformer tseytinTransformer = new TseytinTransformer();
-		tseytinTransformer.setVariableMap(VariableMap.emptyMap());
+		tseytinTransformer.setVariableMap(new VariableMap());
 		return tseytinTransformer.execute(child, monitor);
 	}
 

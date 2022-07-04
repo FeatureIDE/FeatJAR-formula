@@ -59,4 +59,14 @@ public class AuxiliaryRoot extends NonTerminal {
 		return new AuxiliaryRoot();
 	}
 
+	@Override
+	public Class<?> getType() {
+		return getChild().getType();
+	}
+
+	@Override
+	public Object eval(List<?> values) {
+		return getChild().eval(values);
+	}
+
 }

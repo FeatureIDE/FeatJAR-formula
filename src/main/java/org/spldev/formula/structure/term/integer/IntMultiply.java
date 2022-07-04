@@ -24,12 +24,17 @@ package org.spldev.formula.structure.term.integer;
 
 import java.util.*;
 
+import org.spldev.formula.structure.*;
 import org.spldev.formula.structure.term.*;
 
-public class IntMultiply extends Multiply<Long> {
+public class IntMultiply extends Multiply {
 
-	public IntMultiply(Term<Long> leftArgument, Term<Long> rightArgument) {
+	public IntMultiply(Term leftArgument, Term rightArgument) {
 		super(leftArgument, rightArgument);
+	}
+
+	public IntMultiply(List<Term> arguments) {
+		super(arguments);
 	}
 
 	private IntMultiply() {
@@ -47,11 +52,8 @@ public class IntMultiply extends Multiply<Long> {
 	}
 
 	@Override
-	public Optional<Long> eval(List<Long> values) {
-		if (values.stream().anyMatch(value -> value == null)) {
-			return Optional.empty();
-		}
-		return values.stream().reduce((a, b) -> a * b);
+	public Long eval(List<?> values) {
+		return Expression.reduce(values, (a, b) -> a * b);
 	}
 
 }

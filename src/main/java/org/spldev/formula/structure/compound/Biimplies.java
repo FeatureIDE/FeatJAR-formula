@@ -22,6 +22,8 @@
  */
 package org.spldev.formula.structure.compound;
 
+import java.util.*;
+
 import org.spldev.formula.structure.*;
 
 /**
@@ -48,6 +50,11 @@ public class Biimplies extends Compound {
 	@Override
 	public String getName() {
 		return "biimplies";
+	}
+
+	@Override
+	public Object eval(List<?> values) {
+		return (boolean) values.get(1) == (boolean) values.get(0);
 	}
 
 }

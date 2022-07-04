@@ -27,7 +27,7 @@ import java.util.*;
 import java.util.stream.*;
 
 import org.spldev.formula.structure.atomic.literal.*;
-import org.spldev.formula.structure.term.*;
+import org.spldev.formula.structure.atomic.literal.NamedTermMap.*;
 import org.spldev.util.data.*;
 import org.spldev.util.data.Problem.*;
 
@@ -96,14 +96,14 @@ public class LiteralList implements Cloneable, Comparable<LiteralList>, Serializ
 	}
 
 	private static IntStream constructVariableStream(VariableMap variables) {
-		return IntStream.rangeClosed(variables.getMinIndex(), variables.getMaxIndex());
+		return IntStream.rangeClosed(1, variables.getVariableCount());
 	}
 
 	private static IntStream constructVariableStream(VariableMap variableMap, Collection<String> variableNames) {
 		return variableNames.stream()
 			.map(variableMap::getVariable)
 			.flatMap(Optional::stream)
-			.mapToInt(Variable::getIndex)
+			.mapToInt(ValueTerm::getIndex)
 			.distinct();
 	}
 
@@ -650,9 +650,9 @@ public class LiteralList implements Cloneable, Comparable<LiteralList>, Serializ
 		final int[] newLiterals = new int[oldLiterals.length];
 		for (int i = 0; i < oldLiterals.length; i++) {
 			final int l = oldLiterals[i];
-			final Optional<String> name = oldVariables.getName(Math.abs(l));
+			final Optional<String> name = oldVariables.getVariableName(Math.abs(l));
 			if (name.isPresent()) {
-				final Optional<Integer> index = newVariables.getIndex(name.get());
+				final Optional<Integer> index = newVariables.getVariableIndex(name.get());
 				if (index.isPresent()) {
 					newLiterals[i] = l < 0 ? -index.get() : index.get();
 				} else {

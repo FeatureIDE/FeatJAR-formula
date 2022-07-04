@@ -25,7 +25,6 @@ package org.spldev.formula.structure.compound;
 import java.util.*;
 
 import org.spldev.formula.structure.*;
-import org.spldev.formula.structure.atomic.literal.*;
 
 /**
  * A logical connector that is {@code true} iff at least one of its children is
@@ -34,42 +33,6 @@ import org.spldev.formula.structure.atomic.literal.*;
  * @author Sebastian Krieter
  */
 public class Or extends Compound {
-
-	private static class EmptyOr extends Or {
-		private VariableMap variableMap;
-
-		public EmptyOr(VariableMap variableMap) {
-			this.variableMap = variableMap;
-		}
-
-		@Override
-		public void setVariableMap(VariableMap variableMap) {
-			this.variableMap = variableMap;
-		}
-
-		@Override
-		public VariableMap getVariableMap() {
-			return variableMap;
-		}
-
-		@Override
-		public Or cloneNode() {
-			return new EmptyOr(variableMap);
-		}
-
-		@Override
-		protected int computeHashCode() {
-			return Objects.hash(Or.class, 0);
-		}
-	}
-
-	public static Or empty() {
-		return new EmptyOr(VariableMap.emptyMap());
-	}
-
-	public static Or empty(VariableMap variableMap) {
-		return new EmptyOr(variableMap);
-	}
 
 	public Or(Collection<? extends Formula> nodes) {
 		super(nodes);
@@ -91,6 +54,14 @@ public class Or extends Compound {
 	@Override
 	public String getName() {
 		return "or";
+	}
+	
+	@Override
+	public Object eval(List<?> values) {
+		if (values.stream().anyMatch(v -> v == Boolean.TRUE)) {
+			return Boolean.TRUE;
+		}
+		return values.stream().filter(v -> v == Boolean.FALSE).count() == children.size() ? Boolean.FALSE : null;
 	}
 
 }

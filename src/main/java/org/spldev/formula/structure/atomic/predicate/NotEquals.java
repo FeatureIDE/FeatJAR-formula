@@ -30,9 +30,9 @@ import org.spldev.formula.structure.term.*;
  *
  * @author Sebastian Krieter
  */
-public class NotEquals<D extends Comparable<D>> extends Predicate<D> {
+public class NotEquals extends ComparingPredicate {
 
-	public NotEquals(Term<D> leftArgument, Term<D> rightArgument) {
+	public NotEquals(Term leftArgument, Term rightArgument) {
 		super(leftArgument, rightArgument);
 	}
 
@@ -46,22 +46,19 @@ public class NotEquals<D extends Comparable<D>> extends Predicate<D> {
 	}
 
 	@Override
-	public Optional<Boolean> eval(List<D> values) {
-		if (values.stream().anyMatch(value -> value == null)) {
-			return Optional.empty();
-		}
-		return Optional.of((values.size() == 2) && (values.get(0).compareTo(values.get(1)) != 0));
+	public NotEquals cloneNode() {
+		return new NotEquals();
 	}
 
 	@Override
-	public NotEquals<D> cloneNode() {
-		return new NotEquals<>();
+	public Equals flip() {
+		final List<? extends Term> children = getChildren();
+		return new Equals(children.get(0), children.get(1));
 	}
 
 	@Override
-	public Equals<D> flip() {
-		final List<? extends Term<D>> children = getChildren();
-		return new Equals<>(children.get(0), children.get(1));
+	protected boolean compareDiff(int diff) {
+		return diff != 0;
 	}
 
 }

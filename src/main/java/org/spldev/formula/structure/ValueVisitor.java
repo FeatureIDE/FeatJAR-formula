@@ -25,17 +25,13 @@ package org.spldev.formula.structure;
 import java.util.*;
 
 import org.spldev.formula.structure.atomic.*;
-import org.spldev.formula.structure.atomic.literal.*;
-import org.spldev.formula.structure.atomic.predicate.*;
-import org.spldev.formula.structure.compound.*;
-import org.spldev.formula.structure.term.*;
-import org.spldev.formula.structure.term.bool.*;
+import org.spldev.formula.structure.atomic.literal.VariableMap.*;
 import org.spldev.util.tree.visitor.*;
 
 public class ValueVisitor implements TreeVisitor<Object, Expression> {
 
 	public enum UnknownVariableHandling {
-		ERROR, FALSE, TRUE,
+		ERROR, FALSE, TRUE, NULL
 	}
 
 	private final LinkedList<Object> values = new LinkedList<>();
@@ -71,166 +67,54 @@ public class ValueVisitor implements TreeVisitor<Object, Expression> {
 	}
 
 	@Override
-	public Object getResult() {
-		return values.pop();
+	public Optional<Object> getResult() {
+		return Optional.ofNullable(values.peek());
 	}
 
 	@Override
 	public VisitorResult lastVisit(List<Expression> path) {
 		final Expression node = TreeVisitor.getCurrentNode(path);
-		if (node instanceof Atomic) {
-			if (node == Literal.True) {
-				values.push(Boolean.TRUE);
-			} else if (node == Literal.False) {
-				values.push(Boolean.FALSE);
-			} else if (node instanceof Predicate) {
-				@SuppressWarnings("unchecked")
-				final Predicate<Object> predicate = (Predicate<Object>) node;
-				final List<Object> arguments = values.subList(0, predicate.getChildren().size());
-				Collections.reverse(arguments);
-				final Boolean value = predicate.eval(arguments).orElse(null);
-				arguments.clear();
-				values.push(value);
-			} else if (node instanceof ErrorLiteral) {
-				final Literal literal = (ErrorLiteral) node;
-				final boolean positive = literal.isPositive();
-				switch (unknownVariableHandling) {
-				case ERROR:
-					throw new NullPointerException(literal.getName());
-				case FALSE:
-					values.push(positive ? Boolean.FALSE : Boolean.TRUE);
-					break;
-				case TRUE:
-					values.push(positive ? Boolean.TRUE : Boolean.FALSE);
-					break;
-				default:
-					throw new IllegalStateException(String.valueOf(unknownVariableHandling));
-				}
-			} else {
-				throw new IllegalStateException(String.valueOf(node));
-			}
-		} else if (node instanceof Compound) {
-			final int size = node.getChildren().size();
-			if (node instanceof And) {
-				final List<Object> arguments = values.subList(0, size);
-				Object result = null;
-				if (arguments.stream().anyMatch(value -> value == Boolean.FALSE)) {
-					result = Boolean.FALSE;
-				} else if (arguments.stream().allMatch(Objects::nonNull)) {
-					result = Boolean.TRUE;
-				}
-				arguments.clear();
-				values.push(result);
-			} else if (node instanceof Or) {
-				final List<Object> arguments = values.subList(0, size);
-				Object result = null;
-				if (arguments.stream().anyMatch(value -> value == Boolean.TRUE)) {
-					result = Boolean.TRUE;
-				} else if (arguments.stream().allMatch(Objects::nonNull)) {
-					result = Boolean.FALSE;
-				}
-				arguments.clear();
-				values.push(result);
-			} else if (node instanceof Not) {
-				final Boolean value = (Boolean) values.pop();
-				if (value == null) {
-					values.push(null);
-				} else {
-					values.push(!value);
-				}
-			} else if (node instanceof Implies) {
-				if (size != 2) {
-					for (int i = 0; i < size; i++) {
-						values.pop();
-					}
-					values.push(Boolean.FALSE);
-				} else {
-					final Boolean rightChild = (Boolean) values.pop();
-					final Boolean leftChild = (Boolean) values.pop();
-					if ((rightChild == Boolean.TRUE) || (leftChild == Boolean.FALSE)) {
-						values.push(Boolean.TRUE);
-					} else {
-						if ((leftChild == null) || (rightChild == null)) {
-							values.push(null);
-						} else {
-							values.push(Boolean.FALSE);
-						}
-					}
-				}
-			} else if (node instanceof Biimplies) {
-				if (size != 2) {
-					for (int i = 0; i < size; i++) {
-						values.pop();
-					}
-					values.push(Boolean.FALSE);
-				} else {
-					final Boolean rightChild = (Boolean) values.pop();
-					final Boolean leftChild = (Boolean) values.pop();
-					if ((leftChild == null) || (rightChild == null)) {
-						values.push(null);
-					} else {
-						values.push(leftChild == rightChild);
-					}
-				}
-			} else if (node instanceof Cardinal) {
-				final List<Object> arguments = values.subList(0, size);
-				Object result = null;
-				final long nullCount = arguments.stream().filter(Objects::isNull).count();
-				final long trueCount = arguments.stream().filter(value -> value == Boolean.TRUE).count();
-				final Cardinal cardinal = (Cardinal) node;
-				if ((trueCount >= cardinal.getMin()) && ((trueCount + nullCount) <= cardinal.getMax())) {
-					result = Boolean.TRUE;
-				} else if (((trueCount + nullCount) < cardinal.getMin()) || (trueCount > cardinal.getMax())) {
-					result = Boolean.FALSE;
-				}
-				arguments.clear();
-				values.push(result);
-			} else {
-				throw new IllegalStateException(String.valueOf(node));
-			}
-		} else if (node instanceof Variable) {
-			final Variable<?> variable = (Variable<?>) node;
+		if (node instanceof Variable) {
+			final Variable variable = (Variable) node;
 			final int index = variable.getIndex();
-			if (index == 0) {
+			if (index <= 0) {
 				switch (unknownVariableHandling) {
 				case ERROR:
 					throw new IllegalArgumentException(variable.getName());
+				case NULL:
+					values.push(null);
+					break;
 				case FALSE:
+					values.push(Boolean.FALSE);
+					break;
 				case TRUE:
-					values.push(defaultBooleanValue);
+					values.push(Boolean.TRUE);
 					break;
 				default:
 					throw new IllegalStateException(String.valueOf(unknownVariableHandling));
 				}
-			} else if (node instanceof Constant) {
-				final Constant<?> constant = (Constant<?>) node;
-				values.push(constant.getValue());
 			} else {
 				final Object value = assignment.get(index).orElse(null);
-				if (value == null) {
-					if (variable instanceof BoolVariable) {
+				if (value != null) {
+					if (variable.getType().isInstance(value)) {
+						values.push(value);
+					} else {
+						throw new IllegalArgumentException(String.valueOf(value));
+					}
+				} else {
+					if (variable.getType() == Boolean.class) {
 						values.push(defaultBooleanValue);
 					} else {
 						values.push(null);
 					}
-				} else {
-					if (!variable.getType().isInstance(value)) {
-						throw new IllegalArgumentException(String.valueOf(value));
-					}
-					values.push(value);
 				}
 			}
-		} else if (node instanceof Function) {
-			@SuppressWarnings("unchecked")
-			final Function<Object, Object> function = (Function<Object, Object>) node;
-			final List<Object> arguments = values.subList(0, function.getChildren().size());
+		} else {
+			final List<Object> arguments = values.subList(0, node.getChildren().size());
 			Collections.reverse(arguments);
-			final Object value = function.eval(arguments).get();
+			final Object value = node.eval(arguments);
 			arguments.clear();
 			values.push(value);
-		} else {
-			throw new IllegalStateException(String.valueOf(node));
-
 		}
 		return VisitorResult.Continue;
 	}

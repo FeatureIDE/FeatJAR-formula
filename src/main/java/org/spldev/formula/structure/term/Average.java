@@ -20,29 +20,38 @@
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
  */
-package org.spldev.formula.structure.term.bool;
+package org.spldev.formula.structure.term;
 
-import org.spldev.formula.structure.atomic.literal.*;
-import org.spldev.formula.structure.term.*;
+import java.util.*;
 
-public class BoolVariable extends Variable<Boolean> {
+public abstract class Average extends Function {
 
-	public BoolVariable(int index, VariableMap map) {
-		super(index, map);
+	public Average(Term leftArgument, Term rightArgument) {
+		super(leftArgument, rightArgument);
 	}
 
-	protected BoolVariable(BoolVariable oldVariable) {
-		super(oldVariable);
+	public Average(List<Term> arguments) {
+		super(arguments);
+	}
+
+	protected Average() {
+		super();
+	}
+
+	public void setArguments(List<Term> arguments) {
+		setChildren(arguments);
+	}
+
+	public void setArguments(Term leftArgument, Term rightArgument) {
+		setChildren(Arrays.asList(leftArgument, rightArgument));
 	}
 
 	@Override
-	public Class<Boolean> getType() {
-		return Boolean.class;
+	public String getName() {
+		return "add";
 	}
 
 	@Override
-	public BoolVariable cloneNode() {
-		return new BoolVariable(this);
-	}
+	public abstract Average cloneNode();
 
 }

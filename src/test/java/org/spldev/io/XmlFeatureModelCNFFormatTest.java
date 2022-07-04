@@ -68,11 +68,11 @@ public class XmlFeatureModelCNFFormatTest {
 			return null;
 		}
 		case "ABC-nAnBnC": {
-			final VariableMap map = VariableMap.emptyMap();
-			final Literal root = new LiteralPredicate(map.addBooleanVariable("Root").get());
-			final Literal a = new LiteralPredicate(map.addBooleanVariable("A").get());
-			final Literal b = new LiteralPredicate(map.addBooleanVariable("B").get());
-			final Literal c = new LiteralPredicate(map.addBooleanVariable("C").get());
+			final VariableMap map = new VariableMap();
+			final Literal root = map.createLiteral("Root");
+			final Literal a = map.createLiteral("A");
+			final Literal b = map.createLiteral("B");
+			final Literal c = map.createLiteral("C");
 			return new And(
 				root.cloneNode(),
 				new Or(a.flip(), root.cloneNode()),
@@ -82,12 +82,12 @@ public class XmlFeatureModelCNFFormatTest {
 				new Or(a.flip(), b.flip(), c.flip()));
 		}
 		case "SingleGroups": {
-			final VariableMap map = VariableMap.emptyMap();
-			final Literal root = new LiteralPredicate(map.addBooleanVariable("Root").get());
-			final Literal a = new LiteralPredicate(map.addBooleanVariable("A").get());
-			final Literal a1 = new LiteralPredicate(map.addBooleanVariable("A1").get());
-			final Literal b = new LiteralPredicate(map.addBooleanVariable("B").get());
-			final Literal b1 = new LiteralPredicate(map.addBooleanVariable("B1").get());
+			final VariableMap map = new VariableMap();
+			final Literal root = map.createLiteral("Root");
+			final Literal a = map.createLiteral("A");
+			final Literal a1 = map.createLiteral("A1");
+			final Literal b = map.createLiteral("B");
+			final Literal b1 = map.createLiteral("B1");
 			return new And(
 				root.cloneNode(),
 				new Or(a.flip(), root.cloneNode()),
@@ -100,8 +100,8 @@ public class XmlFeatureModelCNFFormatTest {
 				new Or(b.flip(), b1.cloneNode()));
 		}
 		case "A": {
-			final VariableMap map = VariableMap.emptyMap();
-			final Literal a = new LiteralPredicate(map.addBooleanVariable("A").get());
+			final VariableMap map = new VariableMap();
+			final Literal a = map.createLiteral("A");
 			return new And(a.cloneNode());
 		}
 		default:

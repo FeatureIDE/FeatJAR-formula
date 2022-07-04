@@ -22,6 +22,8 @@
  */
 package org.spldev.formula.structure.compound;
 
+import java.util.*;
+
 import org.spldev.formula.structure.*;
 
 /**
@@ -47,6 +49,11 @@ public class Not extends Compound {
 	@Override
 	public String getName() {
 		return "not";
+	}
+
+	@Override
+	public Boolean eval(List<?> values) {
+		return !(boolean)values.get(0);
 	}
 
 }

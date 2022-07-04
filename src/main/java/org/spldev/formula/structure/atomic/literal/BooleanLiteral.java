@@ -24,43 +24,50 @@ package org.spldev.formula.structure.atomic.literal;
 
 import java.util.*;
 
-import org.spldev.formula.structure.atomic.predicate.*;
-import org.spldev.formula.structure.term.bool.*;
+import org.spldev.formula.structure.*;
+import org.spldev.formula.structure.atomic.literal.NamedTermMap.*;
+import org.spldev.formula.structure.atomic.literal.VariableMap.*;
 
 /**
- * A positive or negative literal. Is associated with a {@link BoolVariable
- * boolean variable}. It can be seen as an expression in the form of
+ * A positive or negative literal. Is associated with a {@link Variable
+ * variable}. It can be seen as an expression in the form of
  * {@code x == positive}, where x is the variable and positive is the either
  * {@code true} or {@code false}.
  *
  * @author Sebastian Krieter
  */
-public final class LiteralPredicate extends Predicate<Boolean> implements Literal {
+public final class BooleanLiteral extends NonTerminal implements Literal {
 
 	private final boolean positive;
 
-	public LiteralPredicate(BoolVariable variable) {
-		this(variable, true);
+	public BooleanLiteral(ValueTerm valueTerm) {
+		this(valueTerm, true);
 	}
 
-	public LiteralPredicate(BoolVariable variable, boolean positive) {
-		super(Objects.requireNonNull(variable));
+	public BooleanLiteral(ValueTerm valueTerm, boolean positive) {
+		super(valueTerm);
 		this.positive = positive;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<? extends ValueTerm> getChildren() {
+		return (List<? extends ValueTerm>) super.getChildren();
 	}
 
 	@Override
 	public String getName() {
 		// TODO change to this and update all uses of Literal#getName
 //		return (positive ? "+" : "-") + children.get(0).getName();
-		return children.get(0).getName();
+		return getVariable().getName();
 	}
 
 	public int getIndex() {
-		return ((BoolVariable) children.get(0)).getIndex();
+		return getVariable().getIndex();
 	}
 
-	public BoolVariable getVariable() {
-		return (BoolVariable) children.get(0);
+	public ValueTerm getVariable() {
+		return (ValueTerm) children.get(0);
 	}
 
 	@Override
@@ -69,25 +76,18 @@ public final class LiteralPredicate extends Predicate<Boolean> implements Litera
 	}
 
 	@Override
-	public Optional<Boolean> eval(List<Boolean> values) {
-		return (values.size() == 1) && (values.get(0) != null)
-			? Optional.of(values.get(0) == positive)
-			: Optional.empty();
+	public BooleanLiteral flip() {
+		return new BooleanLiteral(getVariable(), !positive);
 	}
 
 	@Override
-	public LiteralPredicate flip() {
-		return new LiteralPredicate(getVariable(), !positive);
-	}
-
-	@Override
-	public LiteralPredicate cloneNode() {
-		return new LiteralPredicate(getVariable(), positive);
+	public BooleanLiteral cloneNode() {
+		return new BooleanLiteral(getVariable(), positive);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(children.get(0), positive);
+		return Objects.hash(getVariable(), positive);
 	}
 
 	@Override
@@ -95,14 +95,24 @@ public final class LiteralPredicate extends Predicate<Boolean> implements Litera
 		if (getClass() != other.getClass()) {
 			return false;
 		}
-		final LiteralPredicate otherLiteral = (LiteralPredicate) other;
+		final BooleanLiteral otherLiteral = (BooleanLiteral) other;
 		return ((positive == otherLiteral.positive)
-			&& Objects.equals(children.get(0), otherLiteral.children.get(0)));
+			&& Objects.equals(getVariable(), otherLiteral.getVariable()));
 	}
 
 	@Override
 	public String toString() {
 		return (positive ? "+" : "-") + getName();
+	}
+
+	@Override
+	public Boolean eval(List<?> values) {
+		assert Expression.checkValues(1, values);
+		assert Expression.checkValues(Boolean.class, values);
+		final Boolean b = (Boolean) values.get(0);
+		return b != null
+			? positive == b
+			: null;
 	}
 
 }

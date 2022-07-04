@@ -78,7 +78,7 @@ public class DimacsWriter {
 	 * @return the transformed CNF; not null
 	 */
 	public String write() {
-		variables = VariableMap.fromExpression(formula);
+		variables = formula.getVariableMap();
 		final StringBuilder sb = new StringBuilder();
 		if (writingVariableDirectory) {
 			writeVariableDirectory(sb);
@@ -95,7 +95,7 @@ public class DimacsWriter {
 	 */
 	private void writeVariableDirectory(StringBuilder sb) {
 		int index = 1;
-		for (final String name : variables.getNames()) {
+		for (final String name : variables.getVariableNames()) {
 			writeVariableDirectoryEntry(sb, index++, name);
 		}
 	}
@@ -125,7 +125,7 @@ public class DimacsWriter {
 		sb.append(' ');
 		sb.append(DIMACSConstants.CNF);
 		sb.append(' ');
-		sb.append(variables.size());
+		sb.append(variables.getVariableCount());
 		sb.append(' ');
 		sb.append(formula.getChildren().size());
 		sb.append(System.lineSeparator());
@@ -140,7 +140,7 @@ public class DimacsWriter {
 	private void writeClause(StringBuilder sb, Or clause) {
 		for (final Formula child : clause.getChildren()) {
 			final Literal l = (Literal) child;
-			final Integer index = variables.getIndex(l.getName()).get();
+			final Integer index = variables.getVariableIndex(l.getName()).orElseThrow(() -> new IllegalArgumentException(l.getName()));
 			sb.append(l.isPositive() ? index : -index);
 			sb.append(' ');
 		}

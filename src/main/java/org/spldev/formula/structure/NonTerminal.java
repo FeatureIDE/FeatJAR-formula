@@ -24,6 +24,8 @@ package org.spldev.formula.structure;
 
 import java.util.*;
 
+import org.spldev.formula.structure.atomic.literal.*;
+import org.spldev.formula.structure.atomic.literal.VariableMap.*;
 import org.spldev.util.tree.*;
 import org.spldev.util.tree.structure.*;
 
@@ -51,6 +53,30 @@ public abstract class NonTerminal extends AbstractNonTerminal<Expression> implem
 	protected NonTerminal(Collection<? extends Expression> children) {
 		super();
 		setChildren(children);
+	}
+
+	@Override
+	public void setVariableMap(VariableMap map) {
+		for (ListIterator<Expression> it = children.listIterator(); it.hasNext();) {
+			final Expression child = it.next();
+			if (child instanceof Variable) {
+				final Variable replacement = map.getVariable(child.getName()).orElseThrow(
+					() -> new IllegalArgumentException(
+						"Map does not contain variable with name " + child.getName()));
+				if (replacement != child) {
+					it.set(replacement);
+				}
+			} else if (child instanceof Constant) {
+				final Constant replacement = map.getConstant(child.getName()).orElseThrow(
+					() -> new IllegalArgumentException(
+						"Map does not contain constant with name " + child.getName()));
+				if (replacement != child) {
+					it.set(replacement);
+				}
+			} else {
+				child.setVariableMap(map);
+			}
+		}
 	}
 
 	@Override

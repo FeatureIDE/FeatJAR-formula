@@ -49,8 +49,8 @@ public class DistributiveLawCounter implements TreeVisitor<Integer, Formula> {
 	}
 
 	@Override
-	public Integer getResult() { // TODO BigInteger?
-		return stack.pop().clauseNumber;
+	public Optional<Integer> getResult() { // TODO BigInteger?
+		return Optional.of(stack.pop().clauseNumber);
 	}
 
 	@Override

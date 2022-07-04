@@ -22,6 +22,8 @@
  */
 package org.spldev.formula.structure.compound;
 
+import java.util.*;
+
 import org.spldev.formula.structure.*;
 
 /**
@@ -50,4 +52,8 @@ public class Implies extends Compound {
 		return "implies";
 	}
 
+	@Override
+	public Object eval(List<?> values) {
+		return (boolean) values.get(1) || !(boolean) values.get(0);
+	}
 }

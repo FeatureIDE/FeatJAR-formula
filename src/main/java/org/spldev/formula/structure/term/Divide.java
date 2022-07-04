@@ -20,29 +20,24 @@
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
  */
-package org.spldev.formula.structure.term.real;
+package org.spldev.formula.structure.term;
 
-import org.spldev.formula.structure.atomic.literal.*;
-import org.spldev.formula.structure.term.*;
+public abstract class Divide extends Function {
 
-public class RealVariable extends Variable<Double> {
-
-	public RealVariable(int index, VariableMap map) {
-		super(index, map);
+	public Divide(Term leftArgument, Term rightArgument) {
+		super(leftArgument, rightArgument);
 	}
 
-	protected RealVariable(RealVariable oldVariable) {
-		super(oldVariable);
+	protected Divide() {
+		super();
 	}
 
 	@Override
-	public Class<Double> getType() {
-		return Double.class;
+	public String getName() {
+		return "/";
 	}
 
 	@Override
-	public RealVariable cloneNode() {
-		return new RealVariable(this);
-	}
+	public abstract Divide cloneNode();
 
 }

@@ -68,23 +68,23 @@ public class FormulaFormatTest {
 			return null;
 		}
 		case "ABC-nAnBnC": {
-			final VariableMap map = VariableMap.emptyMap();
-			final Literal a = new LiteralPredicate(map.addBooleanVariable("A").get());
-			final Literal b = new LiteralPredicate(map.addBooleanVariable("B").get());
-			final Literal c = new LiteralPredicate(map.addBooleanVariable("C").get());
+			final VariableMap map = new VariableMap();
+			final Literal a = map.createLiteral("A");
+			final Literal b = map.createLiteral("B");
+			final Literal c = map.createLiteral("C");
 			return new And(
 				new Or(a.cloneNode(), new Or(b.cloneNode(), c.cloneNode())),
 				new Or(new Not(a.cloneNode()), new Or(new Not(b.cloneNode()), new Not(c.cloneNode()))));
 		}
 		case "nA": {
-			final VariableMap map = VariableMap.emptyMap();
-			final Literal a = new LiteralPredicate(map.addBooleanVariable("A").get());
+			final VariableMap map = new VariableMap();
+			final Literal a = map.createLiteral("A");
 			return new Not(a.cloneNode());
 		}
 		case "nAB": {
-			final VariableMap map = VariableMap.emptyMap();
-			final Literal a = new LiteralPredicate(map.addBooleanVariable("A").get());
-			final Literal b = new LiteralPredicate(map.addBooleanVariable("B").get());
+			final VariableMap map = new VariableMap();
+			final Literal a = map.createLiteral("A");
+			final Literal b = map.createLiteral("B");
 			return new Or(new Not(a.cloneNode()), b.cloneNode());
 		}
 		default:

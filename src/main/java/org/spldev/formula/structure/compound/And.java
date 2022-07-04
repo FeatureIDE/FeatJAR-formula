@@ -25,7 +25,6 @@ package org.spldev.formula.structure.compound;
 import java.util.*;
 
 import org.spldev.formula.structure.*;
-import org.spldev.formula.structure.atomic.literal.*;
 
 /**
  * A logical connector that is {@code true} iff all of its children are
@@ -34,42 +33,6 @@ import org.spldev.formula.structure.atomic.literal.*;
  * @author Sebastian Krieter
  */
 public class And extends Compound {
-
-	private static class EmptyAnd extends And {
-		private VariableMap variableMap;
-
-		public EmptyAnd(VariableMap variableMap) {
-			this.variableMap = variableMap;
-		}
-
-		@Override
-		public void setVariableMap(VariableMap variableMap) {
-			this.variableMap = variableMap;
-		}
-
-		@Override
-		public VariableMap getVariableMap() {
-			return variableMap;
-		}
-
-		@Override
-		public And cloneNode() {
-			return new EmptyAnd(variableMap);
-		}
-
-		@Override
-		protected int computeHashCode() {
-			return Objects.hash(And.class, 0);
-		}
-	}
-
-	public static And empty() {
-		return new EmptyAnd(VariableMap.emptyMap());
-	}
-
-	public static And empty(VariableMap variableMap) {
-		return new EmptyAnd(variableMap);
-	}
 
 	public And(Collection<? extends Formula> nodes) {
 		super(nodes);
@@ -91,6 +54,14 @@ public class And extends Compound {
 	@Override
 	public String getName() {
 		return "and";
+	}
+
+	@Override
+	public Object eval(List<?> values) {
+		if (values.stream().anyMatch(v -> v == Boolean.FALSE)) {
+			return Boolean.FALSE;
+		}
+		return values.stream().filter(v -> v == Boolean.TRUE).count() == children.size() ? Boolean.TRUE : null;
 	}
 
 }

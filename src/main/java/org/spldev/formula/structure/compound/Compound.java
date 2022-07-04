@@ -52,4 +52,9 @@ public abstract class Compound extends NonTerminal implements Formula {
 		return (List<Formula>) super.getChildren();
 	}
 
+	@Override
+	public Class<Boolean> getType() {
+		return Boolean.class;
+	}
+
 }

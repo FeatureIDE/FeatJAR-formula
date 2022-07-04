@@ -42,7 +42,7 @@ public class XmlFeatureModelCNFFormat extends XmlFeatureModelFormat {
 
 	@Override
 	protected Formula readDocument(Document doc) throws ParseException {
-		map = VariableMap.emptyMap();
+		map = new VariableMap();
 		final List<Element> elementList = getElement(doc, FEATURE_MODEL);
 		if (elementList.size() == 1) {
 			final Element e = elementList.get(0);
@@ -84,7 +84,7 @@ public class XmlFeatureModelCNFFormat extends XmlFeatureModelFormat {
 	}
 
 	@Override
-	protected Formula implies(final LiteralPredicate f, final List<Formula> parseFeatures) {
+	protected Formula implies(final BooleanLiteral f, final List<Formula> parseFeatures) {
 		final ArrayList<Formula> list = new ArrayList<>(parseFeatures.size() + 1);
 		list.add(f.flip());
 		list.addAll(parseFeatures);

@@ -28,8 +28,8 @@ import java.util.stream.*;
 import org.spldev.formula.structure.*;
 import org.spldev.formula.structure.atomic.*;
 import org.spldev.formula.structure.atomic.literal.*;
+import org.spldev.formula.structure.atomic.literal.VariableMap.*;
 import org.spldev.formula.structure.compound.*;
-import org.spldev.formula.structure.term.*;
 import org.spldev.util.tree.visitor.*;
 
 public class EquivalenceVisitor implements TreeVisitor<Void, Expression> {
@@ -70,7 +70,7 @@ public class EquivalenceVisitor implements TreeVisitor<Void, Expression> {
 
 	@SuppressWarnings("unchecked")
 	private Formula replace(Expression node) {
-		if (((node instanceof Variable<?>) || (node instanceof Atomic) || (node instanceof And) || (node instanceof Or)
+		if (((node instanceof Variable) || (node instanceof Atomic) || (node instanceof And) || (node instanceof Or)
 			|| (node instanceof Not))) {
 			return null;
 		}

@@ -20,69 +20,36 @@
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
  */
-package org.spldev.formula.structure.term;
+package org.spldev.formula.structure.term.integer;
 
 import java.util.*;
 
 import org.spldev.formula.structure.*;
-import org.spldev.formula.structure.atomic.literal.*;
+import org.spldev.formula.structure.term.*;
 
-public abstract class Variable<T> extends Terminal implements Term<T> {
+public class IntDivide extends Divide {
 
-	protected int index;
-	protected VariableMap map;
-
-	public Variable(int index, VariableMap map) {
-		this.map = Objects.requireNonNull(map);
-		this.index = index;
+	public IntDivide(Term leftArgument, Term rightArgument) {
+		super(leftArgument, rightArgument);
 	}
 
-	protected Variable(Variable<T> oldVariable) {
-		this.index = oldVariable.index;
-		this.map = oldVariable.map;
-	}
-
-	public int getIndex() {
-		return index;
+	private IntDivide() {
+		super();
 	}
 
 	@Override
-	public String getName() {
-		return map.getName(index).orElse("??");
+	public Class<Long> getType() {
+		return Long.class;
 	}
 
 	@Override
-	public VariableMap getVariableMap() {
-		return map;
+	public IntDivide cloneNode() {
+		return new IntDivide();
 	}
 
 	@Override
-	public List<Term<T>> getChildren() {
-		return Collections.emptyList();
-	}
-
-	@Override
-	public void setVariableMap(VariableMap map) {
-		this.map = Objects.requireNonNull(map);
-	}
-
-	@Override
-	public void adaptVariableMap(VariableMap newMap) {
-		index = newMap.getIndex(getName()).orElse(0);
-		this.map = newMap;
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(index);
-	}
-
-	@Override
-	public boolean equalsNode(Object other) {
-		if (getClass() != other.getClass()) {
-			return false;
-		}
-		return index == ((Variable<?>) other).index;
+	public Long eval(List<?> values) {
+		return Expression.reduce(values, (a, b) -> a / b);
 	}
 
 }

@@ -24,41 +24,53 @@ package org.spldev.formula.structure.atomic.predicate;
 
 import java.util.*;
 
+import org.spldev.formula.structure.*;
 import org.spldev.formula.structure.term.*;
 
 /**
  *
  * @author Sebastian Krieter
  */
-public class GreaterEqual extends ComparingPredicate {
+public abstract class ComparingPredicate extends Predicate {
 
-	public GreaterEqual(Term leftArgument, Term rightArgument) {
+	public ComparingPredicate(Term leftArgument, Term rightArgument) {
 		super(leftArgument, rightArgument);
 	}
 
-	protected GreaterEqual() {
+	protected ComparingPredicate() {
 		super();
 	}
 
-	@Override
-	public String getName() {
-		return ">=";
+	public void setArguments(Term leftArgument, Term rightArgument) {
+		setChildren(Arrays.asList(leftArgument, rightArgument));
 	}
 
 	@Override
-	public GreaterEqual cloneNode() {
-		return new GreaterEqual();
+	public void setChildren(Collection<? extends Expression> children) {
+		if (children.size() != 2) {
+			throw new IllegalArgumentException("Must specify exactly two children");
+		}
+		final Iterator<? extends Expression> iterator = children.iterator();
+		final Class<?> type1 = iterator.next().getType();
+		final Class<?> type2 = iterator.next().getType();
+		if (type1 != type2) {
+			throw new IllegalArgumentException("Type of children differs: " + type1 + " != " + type2);
+		}
+		super.setChildren(children);
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public LessThan flip() {
-		final List<? extends Term> children = getChildren();
-		return new LessThan(children.get(0), children.get(1));
+	public Boolean eval(List<?> values) {
+		assert Expression.checkValues(2, values);
+		assert Expression.checkValues(Comparable.class, values);
+		final Comparable v1 = (Comparable) values.get(0);
+		final Comparable v2 = (Comparable) values.get(1);
+		return (v1 != null && v2 != null)
+			? compareDiff(v1.compareTo(v2))
+			: null;
 	}
 
-	@Override
-	protected boolean compareDiff(int diff) {
-		return diff >= 0;
-	}
+	protected abstract boolean compareDiff(int diff);
 
 }

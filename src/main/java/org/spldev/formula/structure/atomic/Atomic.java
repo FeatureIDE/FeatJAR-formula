@@ -35,8 +35,12 @@ import org.spldev.formula.structure.term.*;
 public interface Atomic extends Formula {
 
 	@Override
-	List<? extends Term<?>> getChildren();
+	List<? extends Term> getChildren();
 
 	Atomic flip();
+
+	default Class<?> getType() {
+		return Boolean.class;
+	}
 
 }

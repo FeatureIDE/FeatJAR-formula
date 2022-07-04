@@ -26,14 +26,13 @@ import java.util.*;
 
 import org.spldev.formula.structure.*;
 
-public abstract class Function<R, T> extends NonTerminal implements Term<R> {
+public abstract class Function extends NonTerminal implements Term {
 
-	public Function(Collection<Term<T>> nodes) {
+	public Function(Collection<Term> nodes) {
 		super(nodes);
 	}
 
-	@SafeVarargs
-	public Function(Term<T>... nodes) {
+	public Function(Term... nodes) {
 		super(nodes);
 	}
 
@@ -43,10 +42,8 @@ public abstract class Function<R, T> extends NonTerminal implements Term<R> {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Term<T>> getChildren() {
-		return (List<Term<T>>) super.getChildren();
+	public List<Term> getChildren() {
+		return (List<Term>) super.getChildren();
 	}
-
-	public abstract Optional<T> eval(List<T> values);
 
 }

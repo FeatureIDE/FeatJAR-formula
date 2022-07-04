@@ -29,7 +29,6 @@ import javax.xml.parsers.*;
 import org.spldev.formula.structure.*;
 import org.spldev.formula.structure.atomic.literal.*;
 import org.spldev.formula.structure.compound.*;
-import org.spldev.formula.structure.term.bool.*;
 import org.spldev.util.data.*;
 import org.spldev.util.data.Problem.*;
 import org.spldev.util.io.*;
@@ -118,7 +117,7 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 	}
 
 	protected Formula readDocument(Document doc) throws ParseException {
-		map = VariableMap.emptyMap();
+		map = new VariableMap();
 		final List<Element> elementList = getElement(doc, FEATURE_MODEL);
 		if (elementList.size() == 1) {
 			final Element e = elementList.get(0);
@@ -130,10 +129,10 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 			throw new ParseException("More than one feature model xml elements!");
 		}
 		if (constraints.isEmpty()) {
-			return And.empty(map);
+			return new And();
 		} else {
 			if (constraints.get(0).getChildren().isEmpty()) {
-				constraints.set(0, Or.empty(map));
+				constraints.set(0, new Or());
 			}
 		}
 		return new And(constraints);
@@ -206,9 +205,9 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 				}
 				break;
 			case VAR:
-				nodes.add(map.getVariable(e.getTextContent())
-					.map(v -> (Literal) new LiteralPredicate((BoolVariable) v, true))
-					.orElse(new ErrorLiteral(nodeName)));
+				nodes.add(map.getBooleanVariable(e.getTextContent())
+					.map(v -> (Literal)new BooleanLiteral(v))
+					.orElseGet(() -> new ErrorLiteral(nodeName)));
 				break;
 			default:
 				throw new ParseException(nodeName);
@@ -248,7 +247,7 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 		return children;
 	}
 
-	protected LiteralPredicate parseFeature(Literal parent, final Element e, final String nodeName, boolean and)
+	protected BooleanLiteral parseFeature(Literal parent, final Element e, final String nodeName, boolean and)
 		throws ParseException {
 		boolean mandatory = false;
 		String name = null;
@@ -265,13 +264,13 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 				}
 			}
 		}
-		if (map.getIndex(name).isEmpty()) {
+		if (map.getVariableIndex(name).isEmpty()) {
 			map.addBooleanVariable(name);
 		} else {
 			throw new ParseException("Duplicate feature name!");
 		}
 
-		final LiteralPredicate f = new LiteralPredicate((BoolVariable) map.getVariable(name).get(), true);
+		final BooleanLiteral f = map.createLiteral(name);
 
 		if (parent == null) {
 			constraints.add(f);
@@ -307,6 +306,10 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 		return f;
 	}
 
+	protected Formula choose1(final List<Formula> parseFeatures) {
+		return new Choose(parseFeatures, 1);
+	}
+
 	protected Formula atMost(final List<Formula> parseFeatures) {
 		return new AtMost(parseFeatures, 1);
 	}
@@ -323,7 +326,7 @@ public class XmlFeatureModelFormat implements Format<Formula> {
 		return new Implies(a, b);
 	}
 
-	protected Formula implies(final LiteralPredicate f, final List<Formula> parseFeatures) {
+	protected Formula implies(final BooleanLiteral f, final List<Formula> parseFeatures) {
 		return parseFeatures.size() == 1
 			? new Implies(f, parseFeatures.get(0))
 			: new Implies(f, new Or(parseFeatures));

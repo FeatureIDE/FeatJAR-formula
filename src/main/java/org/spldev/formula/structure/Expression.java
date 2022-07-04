@@ -23,9 +23,11 @@
 package org.spldev.formula.structure;
 
 import java.util.*;
+import java.util.function.*;
 
 import org.spldev.formula.structure.atomic.literal.*;
-import org.spldev.formula.structure.term.*;
+import org.spldev.formula.structure.atomic.literal.NamedTermMap.*;
+import org.spldev.util.tree.*;
 import org.spldev.util.tree.structure.*;
 
 /**
@@ -35,26 +37,19 @@ import org.spldev.util.tree.structure.*;
  * @author Sebastian Krieter
  */
 public interface Expression extends Tree<Expression> {
-
+// TODO Expression -> Formula
 	String getName();
 
-	default void setVariableMap(VariableMap map) {
-		for (final Expression child : getChildren()) {
-			child.setVariableMap(map);
-		}
-	}
+	Class<?> getType();
 
-	default void adaptVariableMap(VariableMap map) {
-		for (final Expression child : getChildren()) {
-			child.adaptVariableMap(map);
-		}
-	}
+	void setVariableMap(VariableMap map);
 
 	default VariableMap getVariableMap() {
-		return Formulas.getVariableStream(this)
+		return Trees.preOrderStream(this)
+			.filter(n -> n instanceof ValueTerm)
+			.map(Expression::getVariableMap)
 			.findAny()
-			.map(Variable::getVariableMap)
-			.orElseGet(VariableMap::emptyMap);
+			.orElseGet(VariableMap::new);
 	}
 
 	@Override
@@ -62,5 +57,23 @@ public interface Expression extends Tree<Expression> {
 
 	@Override
 	Expression cloneNode();
+
+	Object eval(List<?> values);
+
+	public static boolean checkValues(int size, List<?> values) {
+		return values.size() == size;
+	}
+
+	public static boolean checkValues(Class<?> type, List<?> values) {
+		return values.stream().allMatch(type::isInstance);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> T reduce(List<?> values, final BinaryOperator<T> binaryOperator) {
+		if (values.stream().anyMatch(value -> value == null)) {
+			return null;
+		}
+		return values.stream().map(l -> (T) l).reduce(binaryOperator).orElse(null);
+	}
 
 }

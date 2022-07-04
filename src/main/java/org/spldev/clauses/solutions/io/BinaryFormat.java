@@ -32,6 +32,7 @@ import org.spldev.formula.structure.atomic.literal.*;
 import org.spldev.util.data.*;
 import org.spldev.util.io.format.*;
 
+// TODO implement saving/loading constants
 /**
  * Reads / Writes a list of configuration.
  *
@@ -44,7 +45,7 @@ public class BinaryFormat extends org.spldev.util.io.binary.BinaryFormat<Solutio
 	@Override
 	public void write(SolutionList configurationList, Output out) throws IOException {
 		final OutputStream outputStream = out.getOutputStream();
-		final List<String> names = configurationList.getVariables().getNames();
+		final List<String> names = configurationList.getVariableMap().getVariableNames();
 		writeInt(outputStream, names.size());
 		for (final String name : names) {
 			writeString(outputStream, name);
@@ -74,7 +75,8 @@ public class BinaryFormat extends org.spldev.util.io.binary.BinaryFormat<Solutio
 			for (int i = 0; i < numberOfVariables; i++) {
 				variableNames.add(readString(inputStream));
 			}
-			final VariableMap variableMap = VariableMap.fromNames(variableNames);
+			final VariableMap variableMap = new VariableMap();
+			variableNames.forEach(variableMap::addBooleanVariable);
 			final int numberOfSolutions = readInt(inputStream);
 			final List<LiteralList> solutionList = new ArrayList<>(numberOfSolutions);
 			for (int i = 0; i < numberOfSolutions; i++) {

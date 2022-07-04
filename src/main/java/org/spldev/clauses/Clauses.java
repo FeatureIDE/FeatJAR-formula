@@ -30,7 +30,6 @@ import org.spldev.formula.io.*;
 import org.spldev.formula.structure.*;
 import org.spldev.formula.structure.atomic.literal.*;
 import org.spldev.formula.structure.compound.*;
-import org.spldev.formula.structure.term.bool.*;
 import org.spldev.util.data.*;
 import org.spldev.util.job.*;
 import org.spldev.util.logging.*;
@@ -50,7 +49,7 @@ public final class Clauses {
 	}
 
 	public static LiteralList getLiterals(VariableMap variables) {
-		return new LiteralList(IntStream.rangeClosed(1, variables.getMaxIndex()).flatMap(i -> IntStream.of(-i, i))
+		return new LiteralList(IntStream.rangeClosed(1, variables.getVariableCount()).flatMap(i -> IntStream.of(-i, i))
 			.toArray());
 	}
 
@@ -71,14 +70,10 @@ public final class Clauses {
 
 	public static int adapt(int literal, VariableMap oldVariables,
 		VariableMap newVariables) {
-		final String name = oldVariables.getName(Math.abs(literal)).get();
-		final int index = newVariables.getIndex(name).orElse(0);
+		final String name = oldVariables.getVariableName(Math.abs(literal)).orElse(null);
+		final int index = newVariables.getVariableIndex(name).orElse(0);
 		return literal < 0 ? -index : index;
 	}
-
-//	public static CNF slice(CNF cnf, Collection<String> dirtyVariableNames) {
-//		return Executor.run(new CNFSlicer(dirtyVariableNames, cnf.getVariableMap()), cnf).get();
-//	}
 
 	public static CNF convertToCNF(Formula formula) {
 		return Executor.run(new FormulaToCNF(), formula).get();
@@ -186,12 +181,8 @@ public final class Clauses {
 	}
 
 	public static List<Literal> toLiterals(LiteralList clause, VariableMap variableMap) {
-		final ArrayList<Literal> orChildren = new ArrayList<>(clause.size());
-		for (final int literal : clause.getLiterals()) {
-			final BoolVariable variable = (BoolVariable) variableMap.getVariable(Math.abs(literal)).orElseThrow();
-			orChildren.add(new LiteralPredicate(variable, literal > 0));
-		}
-		return orChildren;
+		return Arrays.stream(clause.getLiterals()).mapToObj(l -> variableMap.createLiteral(Math.abs(l), l > 0)).collect(
+			Collectors.toList());
 	}
 
 }

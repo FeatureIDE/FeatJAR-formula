@@ -46,7 +46,7 @@ public final class True extends Terminal implements Literal {
 	}
 
 	@Override
-	public List<? extends Term<?>> getChildren() {
+	public List<? extends Term> getChildren() {
 		return Collections.emptyList();
 	}
 
@@ -78,6 +78,11 @@ public final class True extends Terminal implements Literal {
 	@Override
 	public boolean equalsNode(Object other) {
 		return other == INSTANCE;
+	}
+
+	@Override
+	public Boolean eval(List<?> values) {
+		return Boolean.TRUE;
 	}
 
 }
