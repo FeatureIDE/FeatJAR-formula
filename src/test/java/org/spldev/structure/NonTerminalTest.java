@@ -77,6 +77,6 @@ public class NonTerminalTest {
 		List<Literal> children = List.of(m.booleanLiteral("p"), m.booleanLiteral("q"));
 		test.accept(Formulas.create(VariableMap::trueLiteral));
 		test.accept(And.empty());
-		test.accept(Literal.True);
+		test.accept(Literal.True); // todo fails
 	}
 }
