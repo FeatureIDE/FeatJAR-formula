@@ -32,7 +32,7 @@ import org.spldev.formula.structure.atomic.literal.VariableMap.*;
 import org.spldev.formula.structure.compound.*;
 import org.spldev.util.tree.visitor.*;
 
-public class EquivalenceVisitor implements TreeVisitor<Void, Expression> {
+public class EquivalenceVisitor implements TreeVisitor<Void, Formula> {
 
 	private boolean fail;
 
@@ -42,8 +42,8 @@ public class EquivalenceVisitor implements TreeVisitor<Void, Expression> {
 	}
 
 	@Override
-	public VisitorResult firstVisit(List<Expression> path) {
-		final Expression node = TreeVisitor.getCurrentNode(path);
+	public VisitorResult firstVisit(List<Formula> path) {
+		final Formula node = TreeVisitor.getCurrentNode(path);
 		if (node instanceof Atomic) {
 			return VisitorResult.SkipChildren;
 		} else if (node instanceof Compound) {
@@ -59,8 +59,8 @@ public class EquivalenceVisitor implements TreeVisitor<Void, Expression> {
 	}
 
 	@Override
-	public VisitorResult lastVisit(List<Expression> path) {
-		final Expression node = TreeVisitor.getCurrentNode(path);
+	public VisitorResult lastVisit(List<Formula> path) {
+		final Formula node = TreeVisitor.getCurrentNode(path);
 		node.mapChildren(this::replace);
 		if (fail) {
 			return VisitorResult.Fail;
@@ -69,7 +69,7 @@ public class EquivalenceVisitor implements TreeVisitor<Void, Expression> {
 	}
 
 	@SuppressWarnings("unchecked")
-	private Formula replace(Expression node) {
+	private Formula replace(Formula node) {
 		if (((node instanceof Variable) || (node instanceof Atomic) || (node instanceof And) || (node instanceof Or)
 			|| (node instanceof Not))) {
 			return null;

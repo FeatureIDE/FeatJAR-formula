@@ -43,11 +43,11 @@ public class DistributiveLawTransformer implements MonitorableFunction<Formula, 
 	}
 
 	private static class PathElement {
-		Expression node;
-		List<Expression> newChildren = new ArrayList<>();
+		Formula node;
+		List<Formula> newChildren = new ArrayList<>();
 		int maxDepth = 0;
 
-		PathElement(Expression node) {
+		PathElement(Formula node) {
 			this.node = node;
 		}
 	}
@@ -74,10 +74,10 @@ public class DistributiveLawTransformer implements MonitorableFunction<Formula, 
 	@Override
 	public Compound execute(Formula node, InternalMonitor monitor) throws MaximumNumberOfLiteralsExceededException {
 		final ArrayList<PathElement> path = new ArrayList<>();
-		final ArrayDeque<Expression> stack = new ArrayDeque<>();
+		final ArrayDeque<Formula> stack = new ArrayDeque<>();
 		stack.addLast(node);
 		while (!stack.isEmpty()) {
-			final Expression curNode = stack.getLast();
+			final Formula curNode = stack.getLast();
 			final boolean firstEncounter = path.isEmpty() || (curNode != path.get(path.size() - 1).node);
 			if (firstEncounter) {
 				if (curNode instanceof Literal) {
@@ -114,7 +114,7 @@ public class DistributiveLawTransformer implements MonitorableFunction<Formula, 
 	}
 
 	@SuppressWarnings("unchecked")
-	private List<Formula> convert(Expression child) throws MaximumNumberOfLiteralsExceededException {
+	private List<Formula> convert(Formula child) throws MaximumNumberOfLiteralsExceededException {
 		if (child instanceof Literal) {
 			return null;
 		} else {
@@ -169,7 +169,7 @@ public class DistributiveLawTransformer implements MonitorableFunction<Formula, 
 				if (isRedundant(literals, child)) {
 					convertNF(clauses, literals, index + 1);
 				} else {
-					for (final Expression grandChild : child.getChildren()) {
+					for (final Formula grandChild : child.getChildren()) {
 						if (grandChild instanceof Literal) {
 							final Literal newlyAddedLiteral = (Literal) grandChild;
 							if (!literals.contains(newlyAddedLiteral.flip())) {
@@ -204,7 +204,7 @@ public class DistributiveLawTransformer implements MonitorableFunction<Formula, 
 		return child.getChildren().stream().anyMatch(e -> isRedundant(e, literals));
 	}
 
-	private static boolean isRedundant(Expression expression, LinkedHashSet<Literal> literals) {
+	private static boolean isRedundant(Formula expression, LinkedHashSet<Literal> literals) {
 		return (expression instanceof Literal)
 			? literals.contains(expression)
 			: expression.getChildren().stream().allMatch(literals::contains);

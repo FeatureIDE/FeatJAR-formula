@@ -46,11 +46,11 @@ public abstract class ComparingPredicate extends Predicate {
 	}
 
 	@Override
-	public void setChildren(List<? extends Expression> children) {
+	public void setChildren(List<? extends Formula> children) {
 		if (children.size() != 2) {
 			throw new IllegalArgumentException("Must specify exactly two children");
 		}
-		final Iterator<? extends Expression> iterator = children.iterator();
+		final Iterator<? extends Formula> iterator = children.iterator();
 		final Class<?> type1 = iterator.next().getType();
 		final Class<?> type2 = iterator.next().getType();
 		if (type1 != type2) {
@@ -62,8 +62,8 @@ public abstract class ComparingPredicate extends Predicate {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Boolean eval(List<?> values) {
-		assert Expression.checkValues(2, values);
-		assert Expression.checkValues(Comparable.class, values);
+		assert Formula.checkValues(2, values);
+		assert Formula.checkValues(Comparable.class, values);
 		final Comparable v1 = (Comparable) values.get(0);
 		final Comparable v2 = (Comparable) values.get(1);
 		return (v1 != null && v2 != null)

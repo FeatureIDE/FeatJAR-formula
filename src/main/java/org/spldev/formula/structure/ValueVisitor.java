@@ -28,7 +28,7 @@ import org.spldev.formula.structure.atomic.*;
 import org.spldev.formula.structure.atomic.literal.VariableMap.*;
 import org.spldev.util.tree.visitor.*;
 
-public class ValueVisitor implements TreeVisitor<Object, Expression> {
+public class ValueVisitor implements TreeVisitor<Object, Formula> {
 
 	public enum UnknownVariableHandling {
 		ERROR, FALSE, TRUE, NULL
@@ -72,8 +72,8 @@ public class ValueVisitor implements TreeVisitor<Object, Expression> {
 	}
 
 	@Override
-	public VisitorResult lastVisit(List<Expression> path) {
-		final Expression node = TreeVisitor.getCurrentNode(path);
+	public VisitorResult lastVisit(List<Formula> path) {
+		final Formula node = TreeVisitor.getCurrentNode(path);
 		if (node instanceof Variable) {
 			final Variable variable = (Variable) node;
 			final int index = variable.getIndex();

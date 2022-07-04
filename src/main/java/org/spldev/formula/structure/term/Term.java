@@ -26,7 +26,7 @@ import java.util.*;
 
 import org.spldev.formula.structure.*;
 
-public interface Term extends Expression {
+public interface Term extends Formula {
 
 	@Override
 	List<? extends Term> getChildren();

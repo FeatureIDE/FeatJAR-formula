@@ -37,7 +37,7 @@ public abstract class Compound extends NonTerminal implements Formula {
 		super(nodes);
 	}
 
-	public Compound(Expression... nodes) {
+	public Compound(Formula... nodes) {
 		super(nodes);
 	}
 

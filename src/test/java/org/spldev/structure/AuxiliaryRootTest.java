@@ -32,7 +32,7 @@ import org.spldev.formula.structure.atomic.literal.*;
 
 public class AuxiliaryRootTest {
 
-	private Expression expression1, expression2;
+	private Formula expression1, expression2;
 
 	@BeforeEach
 	public void setUp() {

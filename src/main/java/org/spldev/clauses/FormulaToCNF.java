@@ -32,7 +32,7 @@ import org.spldev.util.job.*;
 import org.spldev.util.tree.*;
 
 /**
- * Several methods concerning {@link Expression} framework.
+ * Several methods concerning {@link Formula} framework.
  *
  * @author Sebastian Krieter
  */
@@ -88,7 +88,7 @@ public final class FormulaToCNF implements MonitorableFunction<Formula, CNF> {
 		this.variableMapping = variableMapping;
 	}
 
-	private LiteralList getClause(Expression clauseExpression, VariableMap mapping) {
+	private LiteralList getClause(Formula clauseExpression, VariableMap mapping) {
 		if (clauseExpression instanceof Literal) {
 			final Literal literal = (Literal) clauseExpression;
 			final int variable = mapping.getVariableSignature(literal.getName()).orElseThrow(RuntimeException::new).getIndex();
@@ -96,7 +96,7 @@ public final class FormulaToCNF implements MonitorableFunction<Formula, CNF> {
 				? Order.UNORDERED
 				: Order.NATURAL);
 		} else {
-			final List<? extends Expression> clauseChildren = clauseExpression.getChildren();
+			final List<? extends Formula> clauseChildren = clauseExpression.getChildren();
 			if (clauseChildren.stream().anyMatch(literal -> literal == Literal.True)) {
 				return null;
 			} else {

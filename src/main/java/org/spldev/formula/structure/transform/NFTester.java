@@ -27,7 +27,7 @@ import java.util.*;
 import org.spldev.formula.structure.*;
 import org.spldev.util.tree.visitor.*;
 
-public class NFTester implements TreeVisitor<Boolean, Expression> {
+public class NFTester implements TreeVisitor<Boolean, Formula> {
 
 	protected boolean isNf;
 	protected boolean isClausalNf;

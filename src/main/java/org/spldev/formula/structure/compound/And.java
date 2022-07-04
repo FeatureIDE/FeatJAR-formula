@@ -38,7 +38,7 @@ public class And extends Compound {
 		super(nodes);
 	}
 
-	public And(Expression... nodes) {
+	public And(Formula... nodes) {
 		super(nodes);
 	}
 

@@ -81,7 +81,7 @@ public class NamedTermMap<T extends ValueTerm> implements Cloneable, Iterable<T>
 		}
 
 		@Override
-		public Expression cloneNode() {
+		public Formula cloneNode() {
 			return this;
 		}
 

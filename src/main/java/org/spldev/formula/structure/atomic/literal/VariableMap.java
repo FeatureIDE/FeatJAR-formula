@@ -49,8 +49,8 @@ public class VariableMap implements Cloneable {
 
 		@Override
 		public Object eval(List<?> values) {
-			assert Expression.checkValues(1, values);
-			assert Expression.checkValues(getType(), values);
+			assert Formula.checkValues(1, values);
+			assert Formula.checkValues(getType(), values);
 			return values.get(0);
 		}
 
@@ -81,8 +81,8 @@ public class VariableMap implements Cloneable {
 
 		@Override
 		public Object eval(List<?> values) {
-			assert Expression.checkValues(0, values);
-			assert Expression.checkValues(getType(), values);
+			assert Formula.checkValues(0, values);
+			assert Formula.checkValues(getType(), values);
 			return value;
 		}
 
@@ -100,14 +100,13 @@ public class VariableMap implements Cloneable {
 		// VariableMap), but may have unwanted interactions with mutation
 		// TODO: could also be optimized to merge many maps at once (not create a copy
 		// for each map)
-		
+
 		return maps.stream().reduce(new VariableMap(), VariableMap::new);
 	}
 
 	public static VariableMap merge(VariableMap... maps) {
 		return merge(Arrays.asList(maps));
 	}
-
 
 	private final NamedTermMap<Variable> variables;
 	private final NamedTermMap<Constant> constants;
@@ -116,7 +115,7 @@ public class VariableMap implements Cloneable {
 		variables = map.variables.clone();
 		constants = map.constants.clone();
 	}
-	
+
 	private VariableMap(VariableMap map1, VariableMap map2) {
 		variables = new NamedTermMap<>(map1.variables, map2.variables);
 		constants = new NamedTermMap<>(map1.constants, map2.constants);
@@ -181,7 +180,7 @@ public class VariableMap implements Cloneable {
 		return new VariableMap(this);
 	}
 
-	public Expression get(Expression expression) {
+	public Formula get(Formula expression) {
 		if (expression instanceof Variable) {
 			return getVariable(expression.getName()).orElseThrow(() -> new IllegalArgumentException(
 				"Map does not contain variable with name " + expression.getName()));

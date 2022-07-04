@@ -32,15 +32,15 @@ import org.spldev.util.tree.visitor.*;
 public class DNFTester extends NFTester {
 
 	@Override
-	public VisitorResult firstVisit(List<Expression> path) {
-		final Expression node = TreeVisitor.getCurrentNode(path);
+	public VisitorResult firstVisit(List<Formula> path) {
+		final Formula node = TreeVisitor.getCurrentNode(path);
 		if (node instanceof Or) {
 			if (path.size() > 1) {
 				isNf = false;
 				isClausalNf = false;
 				return VisitorResult.SkipAll;
 			}
-			for (final Expression child : node.getChildren()) {
+			for (final Formula child : node.getChildren()) {
 				if (!(child instanceof And)) {
 					if (!(child instanceof Atomic)) {
 						isNf = false;
@@ -60,7 +60,7 @@ public class DNFTester extends NFTester {
 			if (path.size() < 2) {
 				isClausalNf = false;
 			}
-			for (final Expression child : node.getChildren()) {
+			for (final Formula child : node.getChildren()) {
 				if (!(child instanceof Atomic)) {
 					isNf = false;
 					isClausalNf = false;

@@ -23,12 +23,9 @@
 package org.spldev.formula.structure;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import org.spldev.formula.structure.atomic.literal.*;
 import org.spldev.formula.structure.atomic.literal.VariableMap.*;
-import org.spldev.formula.structure.atomic.literal.VariableMap;
-import org.spldev.formula.structure.compound.And;
 import org.spldev.util.tree.*;
 import org.spldev.util.tree.structure.*;
 
@@ -38,7 +35,7 @@ import org.spldev.util.tree.structure.*;
  *
  * @author Sebastian Krieter
  */
-public abstract class NonTerminal extends AbstractNonTerminal<Expression> implements Expression {
+public abstract class NonTerminal extends AbstractNonTerminal<Formula> implements Formula {
 	private int hashCode = 0;
 	private boolean hasHashCode = false;
 
@@ -46,18 +43,18 @@ public abstract class NonTerminal extends AbstractNonTerminal<Expression> implem
 		super();
 	}
 
-	protected NonTerminal(List<? extends Expression> children) {
+	protected NonTerminal(List<? extends Formula> children) {
 		super();
 		ensureSharedVariableMap(children);
 		super.setChildren(children);
 	}
 
-	protected NonTerminal(Expression... children) {
+	protected NonTerminal(Formula... children) {
 		this(Arrays.asList(children));
 	}
 
-	protected void ensureSharedVariableMap(List<? extends Expression> children) {
-		children.stream().map(Expression::getVariableMap).reduce((acc, val) -> {
+	protected void ensureSharedVariableMap(List<? extends Formula> children) {
+		children.stream().map(Formula::getVariableMap).reduce((acc, val) -> {
 			if (acc != val)
 				throw new IllegalArgumentException(
 					"tried to instantiate formula with different variable maps. perhaps you meant to use Formulas.compose(...)?");
@@ -65,7 +62,7 @@ public abstract class NonTerminal extends AbstractNonTerminal<Expression> implem
 		});
 	}
 
-	protected void ensureSharedVariableMap(Expression newChild) {
+	protected void ensureSharedVariableMap(Formula newChild) {
 		if (getVariableMap() != newChild.getVariableMap())
 			throw new IllegalArgumentException(
 				"tried to add formula with different variable map. perhaps you meant to use Formulas.compose(...)?");
@@ -73,8 +70,8 @@ public abstract class NonTerminal extends AbstractNonTerminal<Expression> implem
 
 	@Override
 	public void setVariableMap(VariableMap map) {
-		for (ListIterator<Expression> it = children.listIterator(); it.hasNext();) {
-			final Expression child = it.next();
+		for (ListIterator<Formula> it = children.listIterator(); it.hasNext();) {
+			final Formula child = it.next();
 			if (child instanceof Variable) {
 				final Variable replacement = map.getVariable(child.getName()).orElseThrow(
 					() -> new IllegalArgumentException(
@@ -96,41 +93,41 @@ public abstract class NonTerminal extends AbstractNonTerminal<Expression> implem
 	}
 
 	@Override
-	public void setChildren(List<? extends Expression> children) {
+	public void setChildren(List<? extends Formula> children) {
 		ensureSharedVariableMap(children); // TODO 
 		super.setChildren(children);
 		hasHashCode = false;
 	}
 
 	@Override
-	public void addChild(int index, Expression newChild) {
+	public void addChild(int index, Formula newChild) {
 		ensureSharedVariableMap(newChild);
 		super.addChild(index, newChild);
 		hasHashCode = false;
 	}
 
 	@Override
-	public void addChild(Expression newChild) {
+	public void addChild(Formula newChild) {
 		ensureSharedVariableMap(newChild);
 		super.addChild(newChild);
 		hasHashCode = false;
 	}
 
 	@Override
-	public void removeChild(Expression child) {
+	public void removeChild(Formula child) {
 		super.removeChild(child);
 		hasHashCode = false;
 	}
 
 	@Override
-	public Expression removeChild(int index) {
-		Expression expression = super.removeChild(index);
+	public Formula removeChild(int index) {
+		Formula expression = super.removeChild(index);
 		hasHashCode = false;
 		return expression;
 	}
 
 	@Override
-	public void replaceChild(Expression oldChild, Expression newChild) {
+	public void replaceChild(Formula oldChild, Formula newChild) {
 		ensureSharedVariableMap(newChild);
 		super.replaceChild(oldChild, newChild);
 		hasHashCode = false;
@@ -140,7 +137,7 @@ public abstract class NonTerminal extends AbstractNonTerminal<Expression> implem
 	public int hashCode() {
 		if (!hasHashCode) {
 			int tempHashCode = computeHashCode();
-			for (final Expression child : children) {
+			for (final Formula child : children) {
 				tempHashCode += (tempHashCode * 37) + child.hashCode();
 			}
 			hashCode = tempHashCode;
@@ -169,7 +166,7 @@ public abstract class NonTerminal extends AbstractNonTerminal<Expression> implem
 			final StringBuilder sb = new StringBuilder();
 			sb.append(getName());
 			sb.append("[");
-			for (final Expression child : children) {
+			for (final Formula child : children) {
 				sb.append(child.getName());
 				sb.append(", ");
 			}

@@ -107,8 +107,8 @@ public final class BooleanLiteral extends NonTerminal implements Literal {
 
 	@Override
 	public Boolean eval(List<?> values) {
-		assert Expression.checkValues(1, values);
-		assert Expression.checkValues(Boolean.class, values);
+		assert Formula.checkValues(1, values);
+		assert Formula.checkValues(Boolean.class, values);
 		final Boolean b = (Boolean) values.get(0);
 		return b != null
 			? positive == b

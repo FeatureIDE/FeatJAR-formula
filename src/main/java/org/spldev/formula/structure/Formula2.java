@@ -20,40 +20,7 @@
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
  */
-package org.spldev.formula.structure.term.real;
+package org.spldev.formula.structure;
 
-import java.util.*;
-
-import org.spldev.formula.structure.*;
-import org.spldev.formula.structure.term.*;
-
-public class RealAdd extends Add {
-
-	public RealAdd(Term leftArgument, Term rightArgument) {
-		super(leftArgument, rightArgument);
-	}
-
-	public RealAdd(List<Term> arguments) {
-		super(arguments);
-	}
-
-	private RealAdd() {
-		super();
-	}
-
-	@Override
-	public Class<Double> getType() {
-		return Double.class;
-	}
-
-	@Override
-	public RealAdd cloneNode() {
-		return new RealAdd();
-	}
-
-	@Override
-	public Double eval(List<?> values) {
-		return Formula.reduce(values, Double::sum);
-	}
-
+public interface Formula2 extends Formula {
 }

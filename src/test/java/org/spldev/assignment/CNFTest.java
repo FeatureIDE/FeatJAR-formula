@@ -61,9 +61,9 @@ public class CNFTest {
 		assertEquals(Trees.getPostOrderList(cnfFormula), Trees.getPostOrderList(and2));
 	}
 
-	private void sortChildren(final Expression root) {
+	private void sortChildren(final Formula root) {
 		Trees.postOrderStream(root).forEach(node -> {
-			final ArrayList<Expression> sortedChildren = new ArrayList<>(node.getChildren());
+			final ArrayList<Formula> sortedChildren = new ArrayList<>(node.getChildren());
 			Collections.sort(sortedChildren, Comparator.comparing(e -> Trees.getPreOrderList(e).toString()));
 			node.setChildren(sortedChildren);
 		});

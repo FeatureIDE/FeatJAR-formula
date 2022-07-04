@@ -154,7 +154,7 @@ public class DimacsWriter {
 	 * @param sb the string builder that builds the document
 	 */
 	private void writeClauses(StringBuilder sb) {
-		for (final Expression clause : formula.getChildren()) {
+		for (final Formula clause : formula.getChildren()) {
 			writeClause(sb, (Or) clause);
 		}
 	}

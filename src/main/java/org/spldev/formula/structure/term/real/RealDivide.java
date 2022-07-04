@@ -49,7 +49,7 @@ public class RealDivide extends Divide {
 
 	@Override
 	public Double eval(List<?> values) {
-		return Expression.reduce(values, (a, b) -> a / b);
+		return Formula.reduce(values, (a, b) -> a / b);
 	}
 
 }

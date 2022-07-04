@@ -65,7 +65,7 @@ public class NonTerminalTest {
 			assertEquals(formula.getVariableMap(), formula.getChildren().get(2).getVariableMap());
 		};
 		VariableMap m = new VariableMap();
-		List<Literal> children = List.of(m.createLiteral("p"), m.createLiteral("q"));
+		List.of(m.createLiteral("p"), m.createLiteral("q"));
 		test.accept(Formulas.create(map -> m.createLiteral("a")));
 		test.accept(new And());
 		test.accept(Literal.True);

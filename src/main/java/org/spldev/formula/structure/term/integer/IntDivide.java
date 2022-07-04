@@ -49,7 +49,7 @@ public class IntDivide extends Divide {
 
 	@Override
 	public Long eval(List<?> values) {
-		return Expression.reduce(values, (a, b) -> a / b);
+		return Formula.reduce(values, (a, b) -> a / b);
 	}
 
 }

@@ -30,11 +30,11 @@ import org.spldev.formula.structure.atomic.literal.*;
 import org.spldev.formula.structure.compound.*;
 import org.spldev.util.tree.visitor.*;
 
-public class TreeSimplifier implements TreeVisitor<Void, Expression> {
+public class TreeSimplifier implements TreeVisitor<Void, Formula> {
 
 	@Override
-	public VisitorResult firstVisit(List<Expression> path) {
-		final Expression node = TreeVisitor.getCurrentNode(path);
+	public VisitorResult firstVisit(List<Formula> path) {
+		final Formula node = TreeVisitor.getCurrentNode(path);
 		if (node instanceof Atomic) {
 			return VisitorResult.SkipChildren;
 		} else if ((node instanceof AuxiliaryRoot) || (node instanceof Compound)) {
@@ -45,8 +45,8 @@ public class TreeSimplifier implements TreeVisitor<Void, Expression> {
 	}
 
 	@Override
-	public VisitorResult lastVisit(List<Expression> path) {
-		final Expression node = TreeVisitor.getCurrentNode(path);
+	public VisitorResult lastVisit(List<Formula> path) {
+		final Formula node = TreeVisitor.getCurrentNode(path);
 		if ((node instanceof AuxiliaryRoot) || (node instanceof Compound)) {
 			if (node instanceof And) {
 				if (node.getChildren().stream().anyMatch(c -> c == Literal.False)) {
@@ -65,12 +65,12 @@ public class TreeSimplifier implements TreeVisitor<Void, Expression> {
 		return VisitorResult.Continue;
 	}
 
-	private List<? extends Expression> mergeAnd(final Expression child) {
+	private List<? extends Formula> mergeAnd(final Formula child) {
 		return (child instanceof And) || (!(child instanceof Atomic) && (child.getChildren().size() == 1)) ? child
 			.getChildren() : null;
 	}
 
-	private List<? extends Expression> mergeOr(final Expression child) {
+	private List<? extends Formula> mergeOr(final Formula child) {
 		return (child instanceof Or) || (!(child instanceof Atomic) && (child.getChildren().size() == 1)) ? child
 			.getChildren() : null;
 	}

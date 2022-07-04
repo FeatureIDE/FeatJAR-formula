@@ -26,8 +26,6 @@ import java.util.*;
 
 import org.spldev.formula.structure.*;
 
-import java.util.List;
-
 /**
  * A logical connector that is {@code true} iff the left child has the same
  * value as the right child.

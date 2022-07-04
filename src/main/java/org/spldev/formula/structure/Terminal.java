@@ -34,7 +34,7 @@ import org.spldev.util.tree.structure.*;
  *
  * @author Sebastian Krieter
  */
-public abstract class Terminal extends AbstractTerminal<Expression> implements Expression {
+public abstract class Terminal extends AbstractTerminal<Formula> implements Formula {
 
 	@Override
 	public void setVariableMap(VariableMap map) {

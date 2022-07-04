@@ -53,7 +53,7 @@ public class RealMultiply extends Multiply {
 
 	@Override
 	public Double eval(List<?> values) {
-		return Expression.reduce(values, (a, b) -> a * b);
+		return Formula.reduce(values, (a, b) -> a * b);
 	}
 
 }

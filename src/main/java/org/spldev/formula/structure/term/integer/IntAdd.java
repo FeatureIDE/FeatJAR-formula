@@ -53,7 +53,7 @@ public class IntAdd extends Add {
 
 	@Override
 	public Long eval(List<?> values) {
-		return Expression.reduce(values, Long::sum);
+		return Formula.reduce(values, Long::sum);
 	}
 
 }

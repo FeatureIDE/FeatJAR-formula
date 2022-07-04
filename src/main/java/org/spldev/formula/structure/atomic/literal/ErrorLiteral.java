@@ -86,7 +86,7 @@ public class ErrorLiteral extends Terminal implements Literal {
 
 	@Override
 	public Object eval(List<?> values) {
-		assert Expression.checkValues(0, values);
+		assert Formula.checkValues(0, values);
 		return positive;
 	}
 
