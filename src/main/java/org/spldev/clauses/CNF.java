@@ -72,10 +72,6 @@ public class CNF implements Serializable {
 		this.variables = variables;
 	}
 
-	public VariableMap getVariables() {
-		return variables;
-	}
-
 	public VariableMap getVariableMap() {
 		return variables;
 	}
@@ -119,13 +115,12 @@ public class CNF implements Serializable {
 	}
 
 	public CNF randomize(Random random) {
-		final List<String> shuffledVariableNames = new ArrayList<>(variables.getNames());
-		Collections.shuffle(shuffledVariableNames, random);
-		final VariableMap newVariableMap = VariableMap.fromNames(shuffledVariableNames);
-
+		final VariableMap newVariableMap = variables.clone();
+		newVariableMap.randomize(random);
+		
 		final ClauseList adaptedClauseList = clauses.adapt(variables, newVariableMap).get();
 		Collections.shuffle(adaptedClauseList, random);
-
+		
 		return new CNF(newVariableMap, adaptedClauseList);
 	}
 

@@ -37,17 +37,17 @@ import org.spldev.util.tree.visitor.*;
  * @author Timo Günther
  * @author Sebastian Krieter
  */
-public class NodeWriter2 implements DfsVisitor<Void, Expression> {
+public class NodeWriter2 implements DfsVisitor<Void, Formula> {
 
 	private final StringBuilder sb = new StringBuilder();
 
 	@Override
-	public VisitorResult firstVisit(List<Expression> path) {
+	public VisitorResult firstVisit(List<Formula> path) {
 		final Notation notation = getNotation();
 		switch (notation) {
 		case INFIX:
 			// if literal or not infixable or != 2 children
-			final Expression currentNode = TreeVisitor.getCurrentNode(path);
+			final Formula currentNode = TreeVisitor.getCurrentNode(path);
 
 			alignLine(path.size());
 			if (currentNode instanceof Terminal) {
@@ -77,12 +77,12 @@ public class NodeWriter2 implements DfsVisitor<Void, Expression> {
 	}
 
 	@Override
-	public VisitorResult visit(List<Expression> path) {
+	public VisitorResult visit(List<Formula> path) {
 		final Notation notation = getNotation();
 		switch (notation) {
 		case INFIX:
 			// if not literal and infixable and == 2 children
-			final Expression currentNode = TreeVisitor.getCurrentNode(path);
+			final Formula currentNode = TreeVisitor.getCurrentNode(path);
 			if (currentNode.getChildren().size() == 2) {
 				alignLine(path.size());
 				Symbols.getOperator((Formula) currentNode);
@@ -101,7 +101,7 @@ public class NodeWriter2 implements DfsVisitor<Void, Expression> {
 	}
 
 	@Override
-	public VisitorResult lastVisit(List<Expression> path) {
+	public VisitorResult lastVisit(List<Formula> path) {
 		final Notation notation = getNotation();
 		switch (notation) {
 		case INFIX:

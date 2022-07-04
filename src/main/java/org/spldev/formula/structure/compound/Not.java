@@ -22,9 +22,9 @@
  */
 package org.spldev.formula.structure.compound;
 
-import org.spldev.formula.structure.*;
+import java.util.*;
 
-import java.util.List;
+import org.spldev.formula.structure.*;
 
 /**
  * A logical connector that is {@code true} iff its child is {@code false}.
@@ -55,6 +55,11 @@ public class Not extends Compound {
 	@Override
 	public String getName() {
 		return "not";
+	}
+
+	@Override
+	public Boolean eval(List<?> values) {
+		return !(boolean)values.get(0);
 	}
 
 }

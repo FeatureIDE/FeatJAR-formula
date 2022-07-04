@@ -29,26 +29,25 @@ import org.spldev.formula.structure.*;
 import org.spldev.formula.structure.atomic.*;
 import org.spldev.formula.structure.atomic.literal.*;
 import org.spldev.formula.structure.compound.*;
-import org.spldev.formula.structure.term.bool.*;
 
 public class FormulaCreator {
 
 	public static Formula getFormula01() {
-		final VariableMap map = VariableMap.fromNames(Arrays.asList("p", "q", "r", "s"));
-		final Literal p = new LiteralPredicate((BoolVariable) map.getVariable("p").get(), true);
-		final Literal q = new LiteralPredicate((BoolVariable) map.getVariable("q").get(), true);
-		final Literal r = new LiteralPredicate((BoolVariable) map.getVariable("r").get(), true);
-		final Literal s = new LiteralPredicate((BoolVariable) map.getVariable("s").get(), true);
+		final VariableMap map = new VariableMap(Arrays.asList("p", "q", "r", "s"));
+		final Literal p = map.createLiteral("p");
+		final Literal q = map.createLiteral("q");
+		final Literal r = map.createLiteral("r");
+		final Literal s = map.createLiteral("s");
 
 		return new Implies(new And(new Or(p, q), r), s.flip());
 	}
 
 	public static Formula getFormula02() {
-		final VariableMap map = VariableMap.fromNames(Arrays.asList("p", "q", "r", "s"));
-		final Literal p = new LiteralPredicate((BoolVariable) map.getVariable("p").get(), true);
-		final Literal q = new LiteralPredicate((BoolVariable) map.getVariable("q").get(), true);
-		final Literal r = new LiteralPredicate((BoolVariable) map.getVariable("r").get(), true);
-		final Literal s = new LiteralPredicate((BoolVariable) map.getVariable("s").get(), true);
+		final VariableMap map = new VariableMap(Arrays.asList("p", "q", "r", "s"));
+		final Literal p = map.createLiteral("p");
+		final Literal q = map.createLiteral("q");
+		final Literal r = map.createLiteral("r");
+		final Literal s = map.createLiteral("s");
 
 		return new And(
 			new Implies(
@@ -64,7 +63,7 @@ public class FormulaCreator {
 
 	public static void testAllAssignments(VariableMap map, Consumer<Assignment> testFunction) {
 		final Assignment assignment = new VariableAssignment(map);
-		final int numVariables = map.size();
+		final int numVariables = map.getVariableCount();
 		final int numAssignments = (int) Math.pow(2, numVariables);
 		for (int i = 0; i < numAssignments; i++) {
 			for (int j = 0; j < numVariables; j++) {

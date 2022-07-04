@@ -22,22 +22,14 @@
  */
 package org.spldev.formula.io.xml;
 
-import org.spldev.formula.structure.Formula;
-import org.spldev.formula.structure.atomic.literal.Literal;
-import org.spldev.formula.structure.atomic.literal.LiteralPredicate;
-import org.spldev.formula.structure.atomic.literal.VariableMap;
-import org.spldev.formula.structure.compound.And;
-import org.spldev.formula.structure.compound.Or;
-import org.spldev.formula.structure.term.bool.BoolVariable;
-import org.spldev.util.io.format.ParseException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
+import java.util.*;
+import java.util.regex.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.regex.Pattern;
+import org.spldev.formula.structure.*;
+import org.spldev.formula.structure.atomic.literal.*;
+import org.spldev.formula.structure.compound.*;
+import org.spldev.util.io.format.*;
+import org.w3c.dom.*;
 
 /**
  * Parses feature model formulas from FeatureIDE XML files.
@@ -47,7 +39,7 @@ import java.util.regex.Pattern;
  */
 public class XMLFeatureModelFormat extends AbstractXMLFeatureModelFormat<Formula, Literal, Boolean> {
 	protected final List<Formula> constraints = new ArrayList<>();
-	protected final VariableMap variableMap = VariableMap.emptyMap();
+	protected final VariableMap variableMap = new VariableMap();
 
 	@Override
 	public XMLFeatureModelFormat getInstance() {
@@ -70,12 +62,12 @@ public class XMLFeatureModelFormat extends AbstractXMLFeatureModelFormat<Formula
 		parseFeatureTree(getElement(featureModelElement, STRUCT));
 		Optional<Element> constraintsElement = getOptionalElement(featureModelElement, CONSTRAINTS);
 		if (constraintsElement.isPresent())
-			parseConstraints(constraintsElement.get(), variableMap::getVariable);
+			parseConstraints(constraintsElement.get(), variableMap);
 		if (constraints.isEmpty()) {
-			return And.empty(variableMap);
+			return new And();
 		} else {
 			if (constraints.get(0).getChildren().isEmpty()) {
-				constraints.set(0, Or.empty(variableMap));
+				constraints.set(0, new Or());
 			}
 		}
 		return new And(constraints);
@@ -95,13 +87,13 @@ public class XMLFeatureModelFormat extends AbstractXMLFeatureModelFormat<Formula
 	protected Literal createFeatureLabel(String name, Literal parentFeatureLabel, boolean mandatory, boolean _abstract,
 		boolean hidden)
 		throws ParseException {
-		if (variableMap.getIndex(name).isEmpty()) {
-			variableMap.addBooleanVariable(name);
-		} else {
+		if (variableMap.hasVariable(name)) {
 			throw new ParseException("Duplicate feature name!");
+		} else {
+			variableMap.addBooleanVariable(name);
 		}
 
-		Literal literal = new LiteralPredicate((BoolVariable) variableMap.getVariable(name).get(), true);
+		Literal literal = variableMap.createLiteral(name);
 		if (parentFeatureLabel == null) {
 			constraints.add(literal);
 		} else {

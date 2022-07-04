@@ -49,13 +49,13 @@ public class DistributiveLawCounter implements TreeVisitor<Integer, Formula> {
 	}
 
 	@Override
-	public Integer getResult() { // TODO BigInteger?
-		return stack.pop().clauseNumber;
+	public Optional<Integer> getResult() { // TODO BigInteger?
+		return Optional.of(stack.pop().clauseNumber);
 	}
 
 	@Override
 	public VisitorResult firstVisit(List<Formula> path) {
-		final Expression node = TreeVisitor.getCurrentNode(path);
+		final Formula node = TreeVisitor.getCurrentNode(path);
 		if (node instanceof Atomic) {
 			return VisitorResult.SkipChildren;
 		} else if ((node instanceof Compound) || (node instanceof AuxiliaryRoot)) {

@@ -58,7 +58,7 @@ public class XMLFeatureModelCNFFormat extends XMLFeatureModelFormat {
 		parseFeatureTree(getElement(featureModelElement, STRUCT));
 		Optional<Element> constraintsElement = getOptionalElement(featureModelElement, CONSTRAINTS);
 		if (constraintsElement.isPresent()) {
-			parseConstraints(constraintsElement.get(), variableMap::getVariable);
+			parseConstraints(constraintsElement.get(), variableMap);
 		}
 		return Trees.cloneTree(simplify(new And(constraints)));
 	}

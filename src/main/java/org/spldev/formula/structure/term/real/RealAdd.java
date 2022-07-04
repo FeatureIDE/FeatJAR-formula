@@ -24,12 +24,17 @@ package org.spldev.formula.structure.term.real;
 
 import java.util.*;
 
+import org.spldev.formula.structure.*;
 import org.spldev.formula.structure.term.*;
 
-public class RealAdd extends Add<Double> {
+public class RealAdd extends Add {
 
-	public RealAdd(Term<Double> leftArgument, Term<Double> rightArgument) {
+	public RealAdd(Term leftArgument, Term rightArgument) {
 		super(leftArgument, rightArgument);
+	}
+
+	public RealAdd(List<Term> arguments) {
+		super(arguments);
 	}
 
 	private RealAdd() {
@@ -47,11 +52,8 @@ public class RealAdd extends Add<Double> {
 	}
 
 	@Override
-	public Optional<Double> eval(List<Double> values) {
-		if (values.stream().anyMatch(value -> value == null)) {
-			return Optional.empty();
-		}
-		return values.stream().reduce(Double::sum);
+	public Double eval(List<?> values) {
+		return Formula.reduce(values, Double::sum);
 	}
 
 }

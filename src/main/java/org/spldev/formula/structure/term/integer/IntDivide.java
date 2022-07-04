@@ -20,53 +20,36 @@
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
  */
-package org.spldev.formula.structure;
+package org.spldev.formula.structure.term.integer;
 
 import java.util.*;
 
-import org.spldev.formula.structure.atomic.literal.*;
+import org.spldev.formula.structure.*;
 import org.spldev.formula.structure.term.*;
-import org.spldev.util.tree.Trees;
-import org.spldev.util.tree.structure.*;
 
-/**
- * A propositional node that can be transformed into conjunctive normal form
- * (cnf).
- *
- * @deprecated use {@link Formula} instead
- * @author Sebastian Krieter
- * @author Elias Kuiter
- */
-@Deprecated
-public interface Expression extends Tree<Expression> {
+public class IntDivide extends Divide {
 
-	String getName();
-
-	default void setVariableMap(VariableMap map) {
-		for (final Expression child : getChildren()) {
-			child.setVariableMap(map);
-		}
+	public IntDivide(Term leftArgument, Term rightArgument) {
+		super(leftArgument, rightArgument);
 	}
 
-	default void adaptVariableMap(VariableMap map) {
-		for (final Expression child : getChildren()) {
-			child.adaptVariableMap(map);
-		}
-	}
-
-	// todo return Optional<VariableMap>
-	default VariableMap getVariableMap() {
-		return Trees.preOrderStream(this)
-			.skip(1)
-			.findAny()
-			.map(Expression::getVariableMap)
-			.orElseGet(VariableMap::emptyMap);
+	private IntDivide() {
+		super();
 	}
 
 	@Override
-	List<? extends Expression> getChildren();
+	public Class<Long> getType() {
+		return Long.class;
+	}
 
 	@Override
-	Expression cloneNode();
+	public IntDivide cloneNode() {
+		return new IntDivide();
+	}
+
+	@Override
+	public Long eval(List<?> values) {
+		return Formula.reduce(values, (a, b) -> a / b);
+	}
 
 }

@@ -23,11 +23,11 @@
 package org.spldev.formula.structure.compound;
 
 import org.spldev.formula.structure.*;
-import org.spldev.formula.structure.term.*;
+import org.spldev.formula.structure.atomic.literal.VariableMap.*;
 
 public class ForAll extends Quantifier {
 
-	public ForAll(Variable<?> boundVariable, Formula formula) {
+	public ForAll(Variable boundVariable, Formula formula) {
 		super(boundVariable, formula);
 	}
 

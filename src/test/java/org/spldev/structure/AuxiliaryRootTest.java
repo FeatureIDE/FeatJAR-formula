@@ -29,17 +29,16 @@ import java.util.*;
 import org.junit.jupiter.api.*;
 import org.spldev.formula.structure.*;
 import org.spldev.formula.structure.atomic.literal.*;
-import org.spldev.formula.structure.term.bool.*;
 
 public class AuxiliaryRootTest {
 
-	private Expression expression1, expression2;
+	private Formula expression1, expression2;
 
 	@BeforeEach
 	public void setUp() {
-		final VariableMap map = VariableMap.fromNames(Arrays.asList("L1", "L2"));
-		expression1 = new LiteralPredicate((BoolVariable) map.getVariable("L1").get(), true);
-		expression2 = new LiteralPredicate((BoolVariable) map.getVariable("L2").get(), true);
+		final VariableMap map = new VariableMap(Arrays.asList("L1", "L2"));
+		expression1 = map.createLiteral("L1");
+		expression2 = map.createLiteral("L2");
 	}
 
 	@Test

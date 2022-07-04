@@ -34,8 +34,6 @@ import org.spldev.formula.structure.*;
 import org.spldev.util.data.*;
 import org.spldev.util.io.*;
 import org.spldev.util.io.format.*;
-import org.spldev.util.tree.*;
-import org.spldev.util.tree.visitor.*;
 
 /**
  * Tests formats.

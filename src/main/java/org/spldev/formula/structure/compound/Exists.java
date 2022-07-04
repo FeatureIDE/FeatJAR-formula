@@ -23,11 +23,11 @@
 package org.spldev.formula.structure.compound;
 
 import org.spldev.formula.structure.*;
-import org.spldev.formula.structure.term.*;
+import org.spldev.formula.structure.atomic.literal.VariableMap.*;
 
 public class Exists extends Quantifier {
 
-	public Exists(Variable<?> boundVariable, Formula formula) {
+	public Exists(Variable boundVariable, Formula formula) {
 		super(boundVariable, formula);
 	}
 

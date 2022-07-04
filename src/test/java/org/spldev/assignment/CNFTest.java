@@ -30,17 +30,16 @@ import org.junit.jupiter.api.*;
 import org.spldev.formula.structure.*;
 import org.spldev.formula.structure.atomic.literal.*;
 import org.spldev.formula.structure.compound.*;
-import org.spldev.formula.structure.term.bool.*;
 import org.spldev.util.tree.*;
 
 public class CNFTest {
 
 	@Test
 	public void convert() {
-		final VariableMap variables = VariableMap.fromNames(Arrays.asList("a", "b", "c"));
-		final Literal a = new LiteralPredicate((BoolVariable) variables.getVariable("a").get(), true);
-		final Literal b = new LiteralPredicate((BoolVariable) variables.getVariable("b").get(), true);
-		final Literal c = new LiteralPredicate((BoolVariable) variables.getVariable("c").get(), true);
+		final VariableMap variables = new VariableMap(Arrays.asList("a", "b", "c"));
+		final Literal a = variables.createLiteral("a");
+		final Literal b = variables.createLiteral("b");
+		final Literal c = variables.createLiteral("c");
 
 		final Implies implies1 = new Implies(a, b);
 		final Or or = new Or(implies1, c);
@@ -62,9 +61,9 @@ public class CNFTest {
 		assertEquals(Trees.getPostOrderList(cnfFormula), Trees.getPostOrderList(and2));
 	}
 
-	private void sortChildren(final Expression root) {
+	private void sortChildren(final Formula root) {
 		Trees.postOrderStream(root).forEach(node -> {
-			final ArrayList<Expression> sortedChildren = new ArrayList<>(node.getChildren());
+			final ArrayList<Formula> sortedChildren = new ArrayList<>(node.getChildren());
 			Collections.sort(sortedChildren, Comparator.comparing(e -> Trees.getPreOrderList(e).toString()));
 			node.setChildren(sortedChildren);
 		});

@@ -48,7 +48,7 @@ public class ModelRepresentation {
 	}
 
 	public ModelRepresentation(Formula formula) {
-		this(formula, VariableMap.fromExpression(formula));
+		this(formula, formula.getVariableMap().orElseThrow());
 	}
 
 	public ModelRepresentation(Formula formula, VariableMap variables) {

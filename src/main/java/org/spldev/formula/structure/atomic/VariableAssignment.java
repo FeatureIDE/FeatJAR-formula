@@ -27,45 +27,44 @@ import java.util.Map.*;
 import java.util.stream.*;
 
 import org.spldev.formula.structure.atomic.literal.*;
-import org.spldev.formula.structure.term.*;
+import org.spldev.formula.structure.atomic.literal.NamedTermMap.*;
+import org.spldev.formula.structure.atomic.literal.VariableMap.*;
 import org.spldev.util.data.*;
 
 public class VariableAssignment implements Assignment {
 
-	protected final LinkedHashMap<Variable<?>, Object> assignments;
+	protected final LinkedHashMap<Integer, Object> assignments;
 	protected final VariableMap variables;
 
 	public VariableAssignment(VariableMap variables) {
 		this.variables = Objects.requireNonNull(variables);
-		final int assignmentSize = variables.size() + 1;
+		final int assignmentSize = variables.getVariableCount() + 1;
 		assignments = new LinkedHashMap<>(assignmentSize);
 	}
 
 	@Override
 	public void set(int index, Object assignment) {
-		final Variable<?> variable = variables.getVariable(index)
-			.orElseThrow(() -> new NoSuchElementException(String.valueOf(index)));
+		final Variable sig = variables.getVariableSignature(index).orElseThrow(() -> new NoSuchElementException(String.valueOf(index)));
 		if (assignment == null) {
-			assignments.remove(variable);
+			assignments.remove(index);
 		} else {
-			if (assignment.getClass() == variable.getType()) {
-				assignments.put(variable, assignment);
+			if (assignment.getClass() == sig.getType()) {
+				assignments.put(index, assignment);
 			} else {
-				throw new ClassCastException(String.valueOf(variable.getType()));
+				throw new ClassCastException(String.valueOf(sig.getType()));
 			}
 		}
 	}
 
 	public void set(String name, Object assignment) {
-		final Variable<?> variable = variables.getVariable(name)
-			.orElseThrow(() -> new NoSuchElementException(name));
+		final Variable sig = variables.getVariable(name).orElseThrow(() -> new NoSuchElementException(name));
 		if (assignment == null) {
-			assignments.remove(variable);
+			assignments.remove(sig.getIndex());
 		} else {
-			if (assignment.getClass() == variable.getType()) {
-				assignments.put(variable, assignment);
+			if (assignment.getClass() == sig.getType()) {
+				assignments.put(sig.getIndex(), assignment);
 			} else {
-				throw new ClassCastException(String.valueOf(variable.getType()));
+				throw new ClassCastException(String.valueOf(sig.getType()));
 			}
 		}
 	}
@@ -77,15 +76,15 @@ public class VariableAssignment implements Assignment {
 
 	@Override
 	public Optional<Object> get(int index) {
-		return variables.getVariable(index).map(v -> assignments.get(v));
+		return Optional.ofNullable(assignments.get(index));
 	}
 
 	public Optional<Object> get(String name) {
-		return variables.getVariable(name).map(v -> assignments.get(v));
+		return variables.getVariable(name).map(ValueTerm::getIndex).map(assignments::get);
 	}
 
-	public Set<Entry<Variable<?>, Object>> getAllEntries() {
-		return assignments.entrySet();
+	public List<Pair<Integer, Object>> getAll() {
+		return assignments.entrySet().stream().map(e -> new Pair<>(e.getKey(), e.getValue())).collect(Collectors.toList());
 	}
 
 	public VariableMap getVariables() {
@@ -93,16 +92,10 @@ public class VariableAssignment implements Assignment {
 	}
 
 	@Override
-	public List<Pair<Integer, Object>> getAll() {
-		return assignments.entrySet().stream().map(e -> new Pair<>(e.getKey().getIndex(), e.getValue())).collect(
-			Collectors.toList());
-	}
-
-	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder();
-		for (final Entry<Variable<?>, Object> entry : assignments.entrySet()) {
-			sb.append(entry.getKey());
+		for (final Entry<Integer, Object> entry : assignments.entrySet()) {
+			sb.append(variables.getVariableName(entry.getKey()));
 			sb.append(": ");
 			sb.append(entry.getValue());
 			sb.append("\n");

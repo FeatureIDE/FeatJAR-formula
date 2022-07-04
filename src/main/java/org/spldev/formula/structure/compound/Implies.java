@@ -22,9 +22,9 @@
  */
 package org.spldev.formula.structure.compound;
 
-import org.spldev.formula.structure.*;
+import java.util.*;
 
-import java.util.List;
+import org.spldev.formula.structure.*;
 
 /**
  * A logical connector that is {@code true} iff the left child is {@code false}
@@ -58,4 +58,8 @@ public class Implies extends Compound {
 		return "implies";
 	}
 
+	@Override
+	public Object eval(List<?> values) {
+		return (boolean) values.get(1) || !(boolean) values.get(0);
+	}
 }

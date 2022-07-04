@@ -24,17 +24,21 @@ package org.spldev.formula.structure.term;
 
 import java.util.*;
 
-public abstract class Add<T> extends Function<T, T> {
+public abstract class Add extends Function {
 
-	public Add(Term<T> leftArgument, Term<T> rightArgument) {
+	public Add(Term leftArgument, Term rightArgument) {
 		super(leftArgument, rightArgument);
+	}
+
+	public Add(List<Term> arguments) {
+		super(arguments);
 	}
 
 	protected Add() {
 		super();
 	}
 
-	public void setArguments(Term<T> leftArgument, Term<T> rightArgument) {
+	public void setArguments(Term leftArgument, Term rightArgument) {
 		setChildren(Arrays.asList(leftArgument, rightArgument));
 	}
 
@@ -44,6 +48,6 @@ public abstract class Add<T> extends Function<T, T> {
 	}
 
 	@Override
-	public abstract Add<T> cloneNode();
+	public abstract Add cloneNode();
 
 }

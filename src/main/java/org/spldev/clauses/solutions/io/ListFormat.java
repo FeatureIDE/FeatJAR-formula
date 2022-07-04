@@ -45,7 +45,7 @@ public class ListFormat implements Format<SolutionList> {
 	public String serialize(SolutionList configurationList) {
 		final StringBuilder csv = new StringBuilder();
 		csv.append("Configuration");
-		final List<String> names = configurationList.getVariables().getNames();
+ 		final List<String> names = configurationList.getVariableMap().getVariableNames();
 		for (final String name : names) {
 			csv.append(';');
 			csv.append(name);
@@ -79,18 +79,20 @@ public class ListFormat implements Format<SolutionList> {
 					return Result.empty(new ParseProblem("Empty file!", lineNumber, Severity.ERROR));
 				}
 				final String[] names = line.split(";");
-				configurationList.setVariables(VariableMap.fromNames(Arrays.asList(names).subList(1, names.length)));
+				final VariableMap map = new VariableMap();
+				Arrays.asList(names).subList(1, names.length).forEach(map::addBooleanVariable);
+				configurationList.setVariables(map);
 			}
 
 			while (iterator.hasNext()) {
 				final String line = iterator.next();
 				lineNumber++;
 				final String[] split = line.split(";");
-				if ((split.length - 1) != configurationList.getVariables().size()) {
+				if ((split.length - 1) != configurationList.getVariableMap().getVariableSignatures().size()) {
 					return Result.empty(new ParseProblem("Number of selections does not match number of features!",
 						lineNumber, Severity.ERROR));
 				}
-				final int[] literals = new int[configurationList.getVariables().size()];
+				final int[] literals = new int[configurationList.getVariableMap().getVariableSignatures().size()];
 				for (int i = 1; i < split.length; i++) {
 					literals[i - 1] = split[i].equals("0") ? -i : i;
 				}

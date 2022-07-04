@@ -28,14 +28,14 @@ import org.spldev.formula.structure.*;
 import org.spldev.formula.structure.atomic.*;
 import org.spldev.formula.structure.term.*;
 
-public abstract class Predicate<D> extends NonTerminal implements Atomic {
+public abstract class Predicate extends NonTerminal implements Atomic {
 
-	protected Predicate(List<Term<D>> nodes) {
+	protected Predicate(List<Term> nodes) {
 		super(nodes);
 	}
 
 	@SafeVarargs
-	protected Predicate(Term<D>... nodes) {
+	protected Predicate(Term... nodes) {
 		super(nodes);
 	}
 
@@ -43,7 +43,7 @@ public abstract class Predicate<D> extends NonTerminal implements Atomic {
 		super();
 	}
 
-	public void setArguments(Term<D> leftArgument, Term<D> rightArgument) {
+	public void setArguments(Term leftArgument, Term rightArgument) {
 		setChildren(Arrays.asList(leftArgument, rightArgument));
 	}
 
@@ -54,12 +54,11 @@ public abstract class Predicate<D> extends NonTerminal implements Atomic {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<? extends Term<D>> getChildren() {
-		return (List<? extends Term<D>>) super.getChildren();
+	public List<? extends Term> getChildren() {
+		return (List<? extends Term>) super.getChildren();
 	}
 
-	public abstract Optional<Boolean> eval(List<D> values);
-
 	@Override
-	public abstract Predicate<D> flip();
+	public abstract Predicate flip();
+
 }

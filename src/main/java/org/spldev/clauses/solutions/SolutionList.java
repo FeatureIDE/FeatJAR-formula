@@ -63,7 +63,7 @@ public class SolutionList implements Serializable {
 		this.variables = variables;
 	}
 
-	public VariableMap getVariables() {
+	public VariableMap getVariableMap() {
 		return variables;
 	}
 
@@ -125,7 +125,7 @@ public class SolutionList implements Serializable {
 	}
 
 	private String literalToString(int literal) {
-		final Optional<String> name = variables.getName(Math.abs(literal));
+		final Optional<String> name = variables.getVariableName(Math.abs(literal));
 		return name.isEmpty()
 			? "?"
 			: (literal > 0 ? "" : "-") + name.get();

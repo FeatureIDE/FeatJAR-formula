@@ -25,50 +25,68 @@ package org.spldev.formula.structure.atomic.literal;
 import java.util.*;
 
 import org.spldev.formula.structure.*;
-import org.spldev.formula.structure.term.*;
 
 /**
- * A special {@link Literal} that holds an unparsable sub expression from a
- * formula.
+ * A positive or negative literal that results from a parsing or other error in the formula.
  *
  * @author Sebastian Krieter
  */
 public class ErrorLiteral extends Terminal implements Literal {
 
-	private String error;
-	private boolean positive;
+	private final String errorMessage;
+	private final boolean positive;
 
-	public ErrorLiteral(String error) {
-		this(error, true);
+	public ErrorLiteral(String errorMessage) {
+		this(errorMessage, true);
 	}
 
-	public ErrorLiteral(String error, boolean positive) {
-		this.error = error;
+	public ErrorLiteral(String errorMessage, boolean positive) {
+		this.errorMessage = errorMessage;
 		this.positive = positive;
 	}
 
 	@Override
-	public List<? extends Term<?>> getChildren() {
-		return Collections.emptyList();
-	}
-
-	@Override
-	public ErrorLiteral cloneNode() {
-		return new ErrorLiteral(error, positive);
-	}
-
-	@Override
 	public String getName() {
-		return "Error: " + error;
-	}
-
-	@Override
-	public Literal flip() {
-		return new ErrorLiteral(error, !positive);
+		return errorMessage;
 	}
 
 	@Override
 	public boolean isPositive() {
+		return positive;
+	}
+
+	@Override
+	public ErrorLiteral flip() {
+		return new ErrorLiteral(errorMessage, !positive);
+	}
+
+	@Override
+	public ErrorLiteral cloneNode() {
+		return new ErrorLiteral(errorMessage, positive);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(positive);
+	}
+
+	@Override
+	public boolean equalsNode(Object other) {
+		if (getClass() != other.getClass()) {
+			return false;
+		}
+		final ErrorLiteral otherLiteral = (ErrorLiteral) other;
+		return (positive == otherLiteral.positive);
+	}
+
+	@Override
+	public String toString() {
+		return (positive ? "+" : "-") + getName();
+	}
+
+	@Override
+	public Object eval(List<?> values) {
+		assert Formula.checkValues(0, values);
 		return positive;
 	}
 

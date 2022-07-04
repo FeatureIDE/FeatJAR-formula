@@ -27,8 +27,8 @@ import java.util.*;
 import org.spldev.formula.structure.*;
 import org.spldev.formula.structure.atomic.*;
 import org.spldev.formula.structure.atomic.literal.*;
+import org.spldev.formula.structure.atomic.literal.VariableMap.*;
 import org.spldev.formula.structure.compound.*;
-import org.spldev.formula.structure.term.bool.*;
 import org.spldev.util.job.*;
 import org.spldev.util.tree.*;
 import org.spldev.util.tree.visitor.*;
@@ -38,23 +38,23 @@ public class TseytinTransformer implements MonitorableFunction<Formula, List<Tse
 
 	public static final class Substitute {
 		private Formula orgFormula;
-		private BoolVariable variable;
+		private Variable variable;
 		private List<Formula> clauses = new ArrayList<>();
 
-		private Substitute(Formula orgFormula, BoolVariable variable, int numberOfClauses) {
+		private Substitute(Formula orgFormula, Variable variable, int numberOfClauses) {
 			this.orgFormula = orgFormula;
 			this.variable = variable;
 			clauses = new ArrayList<>(numberOfClauses);
 		}
 
-		private Substitute(Formula orgFormula, BoolVariable variable, Formula clause) {
+		private Substitute(Formula orgFormula, Variable variable, Formula clause) {
 			this.orgFormula = orgFormula;
 			this.variable = variable;
 			clauses = new ArrayList<>(1);
 			clauses.add(clause);
 		}
 
-		private Substitute(Formula orgFormula, BoolVariable variable, List<? extends Formula> clauses) {
+		private Substitute(Formula orgFormula, Variable variable, List<? extends Formula> clauses) {
 			this.orgFormula = orgFormula;
 			this.variable = variable;
 			this.clauses = new ArrayList<>(clauses);
@@ -64,7 +64,7 @@ public class TseytinTransformer implements MonitorableFunction<Formula, List<Tse
 			clauses.add(clause);
 		}
 
-		public BoolVariable getVariable() {
+		public Variable getVariable() {
 			return variable;
 		}
 
@@ -88,21 +88,17 @@ public class TseytinTransformer implements MonitorableFunction<Formula, List<Tse
 	private final List<Substitute> substitutes = new ArrayList<>();
 
 	private VariableMap variableMap;
-	private int count = 0;
 
 	public void setVariableMap(VariableMap variableMap) {
 		this.variableMap = variableMap;
 	}
 
-	private BoolVariable newVariable(final ArrayList<Literal> newChildren, final Formula clonedLastNode) {
-		Optional<BoolVariable> addBooleanVariable;
-		do {
-			addBooleanVariable = variableMap.addBooleanVariable("__temp__" + count++);
-		} while (addBooleanVariable.isEmpty());
-		final Substitute substitute = new Substitute(clonedLastNode, addBooleanVariable.get(), newChildren.size() + 1);
+	private Variable newVariable(final ArrayList<Literal> newChildren, final Formula clonedLastNode) {
+		Variable addBooleanVariable = variableMap.addBooleanVariable();
+		final Substitute substitute = new Substitute(clonedLastNode, addBooleanVariable, newChildren.size() + 1);
 		substitutes.add(substitute);
 
-		final LiteralPredicate tempLiteral = new LiteralPredicate(substitute.variable, true);
+		final BooleanLiteral tempLiteral = new BooleanLiteral(substitute.variable, true);
 		if (clonedLastNode instanceof And) {
 			final ArrayList<Literal> flippedChildren = new ArrayList<>();
 			for (final Literal l : newChildren) {
@@ -134,7 +130,7 @@ public class TseytinTransformer implements MonitorableFunction<Formula, List<Tse
 
 		Trees.sortTree(child);
 		if (variableMap == null) {
-			variableMap = VariableMap.fromExpression(child).clone();
+			variableMap = child.getVariableMap().map(VariableMap::clone).orElseGet(VariableMap::new);
 		}
 
 		try {
@@ -146,7 +142,7 @@ public class TseytinTransformer implements MonitorableFunction<Formula, List<Tse
 
 	@Override
 	public VisitorResult firstVisit(List<Formula> path) {
-		final Expression node = TreeVisitor.getCurrentNode(path);
+		final Formula node = TreeVisitor.getCurrentNode(path);
 		if (node instanceof Atomic) {
 			return VisitorResult.SkipChildren;
 		} else if ((node instanceof Compound) || (node instanceof AuxiliaryRoot)) {
@@ -184,8 +180,8 @@ public class TseytinTransformer implements MonitorableFunction<Formula, List<Tse
 				}
 			} else {
 				final Formula clonedLastNode = lastNode;
-				final BoolVariable variable = newVariable(newChildren, clonedLastNode);
-				stack.push(new LiteralPredicate(variable, true));
+				final Variable variable = newVariable(newChildren, clonedLastNode);
+				stack.push(new BooleanLiteral(variable, true));
 			}
 
 		}

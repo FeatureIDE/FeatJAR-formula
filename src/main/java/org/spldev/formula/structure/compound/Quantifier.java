@@ -25,13 +25,13 @@ package org.spldev.formula.structure.compound;
 import java.util.*;
 
 import org.spldev.formula.structure.*;
-import org.spldev.formula.structure.term.*;
+import org.spldev.formula.structure.atomic.literal.VariableMap.*;
 
 public abstract class Quantifier extends Compound {
 
-	protected Variable<?> boundVariable;
+	protected Variable boundVariable;
 
-	public Quantifier(Variable<?> boundVariable, Formula formula) {
+	public Quantifier(Variable boundVariable, Formula formula) {
 		super(formula);
 		setBoundVariable(boundVariable);
 	}
@@ -41,13 +41,18 @@ public abstract class Quantifier extends Compound {
 		setBoundVariable(boundVariable);
 	}
 
-	public Variable<?> getBoundVariable() {
+	public Variable getBoundVariable() {
 		return boundVariable;
 	}
 
-	public void setBoundVariable(Variable<?> boundVariable) {
+	public void setBoundVariable(Variable boundVariable) {
 		Objects.requireNonNull(boundVariable);
 		this.boundVariable = boundVariable;
+	}
+
+	@Override
+	public Object eval(List<?> values) {
+		return null;
 	}
 
 	public void setFormula(Formula formula) {

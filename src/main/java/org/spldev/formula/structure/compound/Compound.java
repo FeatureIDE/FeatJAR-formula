@@ -37,7 +37,7 @@ public abstract class Compound extends NonTerminal implements Formula {
 		super(nodes);
 	}
 
-	public Compound(Expression... nodes) {
+	public Compound(Formula... nodes) {
 		super(nodes);
 	}
 
@@ -49,6 +49,11 @@ public abstract class Compound extends NonTerminal implements Formula {
 	@Override
 	public List<Formula> getChildren() {
 		return (List<Formula>) super.getChildren();
+	}
+
+	@Override
+	public Class<Boolean> getType() {
+		return Boolean.class;
 	}
 
 }

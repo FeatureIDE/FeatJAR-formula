@@ -22,30 +22,22 @@
  */
 package org.spldev.formula.structure;
 
-import org.spldev.formula.io.textual.FormulaFormat;
-import org.spldev.formula.structure.ValueVisitor.UnknownVariableHandling;
-import org.spldev.formula.structure.atomic.Assignment;
-import org.spldev.formula.structure.atomic.literal.VariableMap;
-import org.spldev.formula.structure.term.Variable;
-import org.spldev.formula.structure.transform.CNFTransformer;
-import org.spldev.formula.structure.transform.DNFTransformer;
-import org.spldev.formula.structure.transform.NormalForms;
-import org.spldev.formula.structure.transform.NormalForms.NormalForm;
-import org.spldev.util.data.Result;
-import org.spldev.util.io.FileHandler;
-import org.spldev.util.tree.Trees;
-import org.spldev.util.tree.visitor.TreeDepthCounter;
-import org.spldev.util.tree.visitor.TreePrinter;
-import org.spldev.util.tree.visitor.TreeVisitor;
+import java.io.*;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import org.spldev.formula.io.textual.*;
+import org.spldev.formula.structure.ValueVisitor.*;
+import org.spldev.formula.structure.atomic.*;
+import org.spldev.formula.structure.atomic.literal.*;
+import org.spldev.formula.structure.atomic.literal.VariableMap.*;
+import org.spldev.formula.structure.transform.*;
+import org.spldev.formula.structure.transform.NormalForms.*;
+import org.spldev.util.data.*;
+import org.spldev.util.io.*;
+import org.spldev.util.tree.*;
+import org.spldev.util.tree.visitor.*;
 
 public final class Formulas {
 
@@ -54,7 +46,7 @@ public final class Formulas {
 
 	public static String printTree(Formula formula) {
 		final TreePrinter visitor = new TreePrinter();
-		visitor.setFilter(n -> (!(n instanceof Variable<?>)));
+		visitor.setFilter(n -> (!(n instanceof Variable)));
 		return Trees.traverse(formula, visitor).orElse("");
 	}
 
@@ -67,7 +59,7 @@ public final class Formulas {
 		}
 	}
 
-	public static Optional<Object> evaluate(Expression expression, Assignment assignment) {
+	public static Optional<Object> evaluate(Formula expression, Assignment assignment) {
 		final ValueVisitor visitor = new ValueVisitor(assignment);
 		visitor.setUnknown(UnknownVariableHandling.ERROR);
 		return Trees.traverse(expression, visitor);
@@ -99,32 +91,32 @@ public final class Formulas {
 		return NormalForms.toNF(formula, new DNFTransformer());
 	}
 
-	public static Expression manipulate(Expression node, TreeVisitor<Void, Expression> visitor) {
+	public static Formula manipulate(Formula node, TreeVisitor<Void, Formula> visitor) {
 		final AuxiliaryRoot auxiliaryRoot = new AuxiliaryRoot(Trees.cloneTree(node));
 		Trees.traverse(auxiliaryRoot, visitor);
 		return auxiliaryRoot.getChild();
 	}
 
-	public static int getMaxDepth(Expression expression) {
+	public static int getMaxDepth(Formula expression) {
 		return Trees.traverse(expression, new TreeDepthCounter()).get();
 	}
 
-	public static Stream<Variable<?>> getVariableStream(Expression node) {
-		final Stream<Variable<?>> stream = Trees.preOrderStream(node).filter(n -> n instanceof Variable)
-			.map(n -> (Variable<?>) n);
+	public static Stream<Variable> getVariableStream(Formula node) {
+		final Stream<Variable> stream = Trees.preOrderStream(node).filter(n -> n instanceof Variable)
+			.map(n -> (Variable) n);
 		return stream.distinct();
 	}
 
-	public static List<Variable<?>> getVariables(Expression node) {
+	public static List<Variable> getVariables(Formula node) {
 		return getVariableStream(node).collect(Collectors.toList());
 	}
 
-	public static List<String> getVariableNames(Expression node) {
+	public static List<String> getVariableNames(Formula node) {
 		return getVariableStream(node).map(Variable::getName).collect(Collectors.toList());
 	}
 
-	public static <T extends Expression> T create(Function<VariableMap, T> fn) {
-		return fn.apply(VariableMap.emptyMap());
+	public static <T extends Formula> T create(Function<VariableMap, T> fn) {
+		return fn.apply(new VariableMap());
 	}
 
 	/**
@@ -132,12 +124,12 @@ public final class Formulas {
 	 * composed formula exists independently of its children. This is useful e.g.
 	 * for composing several feature model (interface) formulas.
 	 */
-	public static <T, U extends Expression> T compose(Function<List<U>, T> fn, List<U> expressions) {
+	public static <T, U extends Formula> T compose(Function<List<U>, T> fn, List<U> expressions) {
 		return fn.apply(cloneWithSharedVariableMap(expressions));
 	}
 
 	@SafeVarargs
-	public static <T, U extends Expression> T compose(Function<List<U>, T> fn, U... expressions) {
+	public static <T, U extends Formula> T compose(Function<List<U>, T> fn, U... expressions) {
 		return compose(fn, Arrays.asList(expressions));
 	}
 
@@ -147,15 +139,14 @@ public final class Formulas {
 	 * partly independent, partly dependent (on common variables). Leaves the input
 	 * formulas and their variable maps untouched by returning copies.
 	 */
-	public static <T extends Expression> List<T> cloneWithSharedVariableMap(List<T> children) {
+	public static <T extends Formula> List<T> cloneWithSharedVariableMap(List<T> children) {
 		VariableMap composedMap = VariableMap.merge(
-			children.stream().map(Expression::getVariableMap).collect(Collectors.toList()));
+				children.stream().map(f -> f.getVariableMap().orElseGet(VariableMap::new)).collect(Collectors.toList()));
 		return children.stream()
-			.map(Trees::cloneTree)
-			.peek(formula -> {
-				formula.setVariableMap(composedMap);
-				formula.adaptVariableMap(composedMap);
-			})
-			.collect(Collectors.toList());
+				.map(Trees::cloneTree)
+				.peek(formula -> {
+					formula.setVariableMap(composedMap);
+				})
+				.collect(Collectors.toList());
 	}
 }

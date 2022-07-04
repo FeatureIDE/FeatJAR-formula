@@ -30,9 +30,9 @@ import org.spldev.formula.structure.term.*;
  *
  * @author Sebastian Krieter
  */
-public class LessEqual<D extends Comparable<D>> extends Predicate<D> {
+public class LessEqual extends ComparingPredicate {
 
-	public LessEqual(Term<D> leftArgument, Term<D> rightArgument) {
+	public LessEqual(Term leftArgument, Term rightArgument) {
 		super(leftArgument, rightArgument);
 	}
 
@@ -41,32 +41,23 @@ public class LessEqual<D extends Comparable<D>> extends Predicate<D> {
 	}
 
 	@Override
-	public void setArguments(Term<D> leftArgument, Term<D> rightArgument) {
-		setChildren(Arrays.asList(leftArgument, rightArgument));
-	}
-
-	@Override
 	public String getName() {
 		return "<=";
 	}
 
 	@Override
-	public Optional<Boolean> eval(List<D> values) {
-		if (values.stream().anyMatch(value -> value == null)) {
-			return Optional.empty();
-		}
-		return Optional.of((values.size() == 2) && (values.get(0).compareTo(values.get(1)) <= 0));
+	public LessEqual cloneNode() {
+		return new LessEqual();
+	}	
+
+	@Override
+	public GreaterThan flip() {
+		final List<? extends Term> children = getChildren();
+		return new GreaterThan(children.get(0), children.get(1));
 	}
 
 	@Override
-	public LessEqual<D> cloneNode() {
-		return new LessEqual<>();
+	protected boolean compareDiff(int diff) {
+		return diff <= 0;
 	}
-
-	@Override
-	public GreaterThan<D> flip() {
-		final List<? extends Term<D>> children = getChildren();
-		return new GreaterThan<>(children.get(0), children.get(1));
-	}
-
 }

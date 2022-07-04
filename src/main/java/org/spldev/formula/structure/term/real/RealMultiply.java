@@ -24,12 +24,17 @@ package org.spldev.formula.structure.term.real;
 
 import java.util.*;
 
+import org.spldev.formula.structure.*;
 import org.spldev.formula.structure.term.*;
 
-public class RealMultiply extends Multiply<Double> {
+public class RealMultiply extends Multiply {
 
-	public RealMultiply(Term<Double> leftArgument, Term<Double> rightArgument) {
+	public RealMultiply(Term leftArgument, Term rightArgument) {
 		super(leftArgument, rightArgument);
+	}
+
+	public RealMultiply(List<Term> arguments) {
+		super(arguments);
 	}
 
 	private RealMultiply() {
@@ -47,11 +52,8 @@ public class RealMultiply extends Multiply<Double> {
 	}
 
 	@Override
-	public Optional<Double> eval(List<Double> values) {
-		if (values.stream().anyMatch(value -> value == null)) {
-			return Optional.empty();
-		}
-		return values.stream().reduce((a, b) -> a * b);
+	public Double eval(List<?> values) {
+		return Formula.reduce(values, (a, b) -> a * b);
 	}
 
 }

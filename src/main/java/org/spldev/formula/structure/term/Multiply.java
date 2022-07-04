@@ -22,10 +22,16 @@
  */
 package org.spldev.formula.structure.term;
 
-public abstract class Multiply<T> extends Function<T, T> {
+import java.util.*;
 
-	public Multiply(Term<T> leftArgument, Term<T> rightArgument) {
+public abstract class Multiply extends Function {
+
+	public Multiply(Term leftArgument, Term rightArgument) {
 		super(leftArgument, rightArgument);
+	}
+
+	public Multiply(List<Term> arguments) {
+		super(arguments);
 	}
 
 	protected Multiply() {
@@ -38,6 +44,6 @@ public abstract class Multiply<T> extends Function<T, T> {
 	}
 
 	@Override
-	public abstract Multiply<T> cloneNode();
+	public abstract Multiply cloneNode();
 
 }

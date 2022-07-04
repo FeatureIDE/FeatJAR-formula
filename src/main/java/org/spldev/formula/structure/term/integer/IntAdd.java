@@ -24,12 +24,17 @@ package org.spldev.formula.structure.term.integer;
 
 import java.util.*;
 
+import org.spldev.formula.structure.*;
 import org.spldev.formula.structure.term.*;
 
-public class IntAdd extends Add<Long> {
+public class IntAdd extends Add {
 
-	public IntAdd(Term<Long> leftArgument, Term<Long> rightArgument) {
+	public IntAdd(Term leftArgument, Term rightArgument) {
 		super(leftArgument, rightArgument);
+	}
+
+	public IntAdd(List<Term> arguments) {
+		super(arguments);
 	}
 
 	private IntAdd() {
@@ -47,11 +52,8 @@ public class IntAdd extends Add<Long> {
 	}
 
 	@Override
-	public Optional<Long> eval(List<Long> values) {
-		if (values.stream().anyMatch(value -> value == null)) {
-			return Optional.empty();
-		}
-		return values.stream().reduce(Long::sum);
+	public Long eval(List<?> values) {
+		return Formula.reduce(values, Long::sum);
 	}
 
 }

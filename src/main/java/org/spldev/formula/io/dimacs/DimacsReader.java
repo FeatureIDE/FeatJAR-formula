@@ -30,7 +30,6 @@ import java.util.regex.*;
 import org.spldev.formula.structure.*;
 import org.spldev.formula.structure.atomic.literal.*;
 import org.spldev.formula.structure.compound.*;
-import org.spldev.formula.structure.term.bool.*;
 import org.spldev.util.io.*;
 
 public class DimacsReader {
@@ -90,7 +89,7 @@ public class DimacsReader {
 		clauseCount = -1;
 		readingVariables = readVariableDirectory;
 		if (!readVariableDirectory) {
-			map = VariableMap.emptyMap();
+			map = new VariableMap();
 		}
 		try (final BufferedReader reader = new BufferedReader(in)) {
 			final LineIterator lineIterator = new LineIterator(reader);
@@ -105,7 +104,8 @@ public class DimacsReader {
 				for (int i = 1; i <= variableCount; i++) {
 					indexVariables.putIfAbsent(i, Integer.toString(i));
 				}
-				map = VariableMap.fromNameMap(indexVariables);
+				map = new VariableMap();
+				indexVariables.forEach((i, n) -> map.addBooleanVariable(n, i));
 			}
 
 			final List<Or> clauses = readClauses(lineIterator);
@@ -119,7 +119,7 @@ public class DimacsReader {
 				throw new ParseException(String.format("Found %d instead of %d clauses", actualClauseCount,
 					clauseCount), 1);
 			}
-			return clauses.isEmpty() ? And.empty(map) : new And(clauses);
+			return new And(clauses);
 		}
 	}
 
@@ -216,7 +216,7 @@ public class DimacsReader {
 				if (clauseSize < 0) {
 					throw new ParseException("Invalid clause", lineIterator.getLineCount());
 				} else if (clauseSize == 0) {
-					clauses.add(Or.empty(map));
+					clauses.add(new Or());
 				} else {
 					clauses.add(parseClause(readClausesCount, clauseSize, literalQueue, lineIterator));
 				}
@@ -261,10 +261,10 @@ public class DimacsReader {
 				variableName = String.valueOf(key);
 				indexVariables.put(key, variableName);
 			}
-			if (map.getIndex(variableName).isEmpty()) {
+			if (map.getVariableIndex(variableName).isEmpty()) {
 				map.addBooleanVariable(variableName);
 			}
-			literals[j] = new LiteralPredicate((BoolVariable) map.getVariable(variableName).get(), index > 0);
+			literals[j] = new BooleanLiteral(map.getVariableSignature(variableName).get(), index > 0);
 		}
 		return new Or(literals);
 	}

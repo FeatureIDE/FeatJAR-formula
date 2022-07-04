@@ -1,26 +1,18 @@
 package org.spldev.formula.io.xml;
 
-import org.spldev.formula.structure.Formula;
-import org.spldev.formula.structure.atomic.literal.ErrorLiteral;
-import org.spldev.formula.structure.atomic.literal.Literal;
-import org.spldev.formula.structure.atomic.literal.LiteralPredicate;
-import org.spldev.formula.structure.compound.*;
-import org.spldev.formula.structure.term.Variable;
-import org.spldev.formula.structure.term.bool.BoolVariable;
-import org.spldev.util.data.Problem;
-import org.spldev.util.io.format.ParseException;
-import org.spldev.util.io.xml.XMLFormat;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import java.util.*;
-import java.util.function.Function;
-import java.util.regex.Pattern;
+import java.util.regex.*;
+
+import org.spldev.formula.structure.*;
+import org.spldev.formula.structure.atomic.literal.*;
+import org.spldev.formula.structure.compound.*;
+import org.spldev.util.data.*;
+import org.spldev.util.io.format.*;
+import org.spldev.util.io.xml.*;
+import org.w3c.dom.*;
 
 /**
- * Implements common behaviours for parsing and writing XML feature model files.
+ * Implements common behaviors for parsing and writing XML feature model files.
  *
  * @param <T> type of read/written data
  * @param <U> type of feature labels
@@ -169,15 +161,14 @@ public abstract class AbstractXMLFeatureModelFormat<T, U, V> extends XMLFormat<T
 		return featureLabel;
 	}
 
-	protected void parseConstraints(Element constraintsElement,
-		Function<String, Optional<Variable<?>>> variableFunction) throws ParseException {
+	protected void parseConstraints(Element constraintsElement, VariableMap map) throws ParseException {
 		for (final Element child : getElements(constraintsElement.getChildNodes())) {
 			final String nodeName = child.getNodeName();
 			if (nodeName.equals(RULE)) {
 				try {
 					V constraintLabel = createConstraintLabel();
 					final List<Formula> parsedConstraints = parseConstraints(child.getChildNodes(),
-						constraintLabel, variableFunction);
+						constraintLabel, map);
 					if (parsedConstraints.size() == 1) {
 						addConstraint(constraintLabel, parsedConstraints.get(0));
 						if (child.hasAttributes()) {
@@ -206,7 +197,7 @@ public abstract class AbstractXMLFeatureModelFormat<T, U, V> extends XMLFormat<T
 	}
 
 	protected List<Formula> parseConstraints(NodeList nodeList, V parentConstraintLabel,
-		Function<String, Optional<Variable<?>>> variableFunction) throws ParseException {
+		VariableMap map) throws ParseException {
 		final List<Formula> nodes = new ArrayList<>();
 		List<Formula> children;
 		final List<Element> elements = getElements(nodeList);
@@ -224,13 +215,13 @@ public abstract class AbstractXMLFeatureModelFormat<T, U, V> extends XMLFormat<T
 				}
 				break;
 			case DISJ:
-				nodes.add(new Or(parseConstraints(e.getChildNodes(), null, variableFunction)));
+				nodes.add(new Or(parseConstraints(e.getChildNodes(), null, map)));
 				break;
 			case CONJ:
-				nodes.add(new And(parseConstraints(e.getChildNodes(), null, variableFunction)));
+				nodes.add(new And(parseConstraints(e.getChildNodes(), null, map)));
 				break;
 			case EQ:
-				children = parseConstraints(e.getChildNodes(), null, variableFunction);
+				children = parseConstraints(e.getChildNodes(), null, map);
 				if (children.size() == 2) {
 					nodes.add(biImplies(children.get(0), children.get(1)));
 				} else {
@@ -238,7 +229,7 @@ public abstract class AbstractXMLFeatureModelFormat<T, U, V> extends XMLFormat<T
 				}
 				break;
 			case IMP:
-				children = parseConstraints(e.getChildNodes(), null, variableFunction);
+				children = parseConstraints(e.getChildNodes(), null, map);
 				if (children.size() == 2) {
 					nodes.add(implies(children.get(0), children.get(1)));
 				} else {
@@ -246,7 +237,7 @@ public abstract class AbstractXMLFeatureModelFormat<T, U, V> extends XMLFormat<T
 				}
 				break;
 			case NOT:
-				children = parseConstraints(e.getChildNodes(), null, variableFunction);
+				children = parseConstraints(e.getChildNodes(), null, map);
 				if (children.size() == 1) {
 					nodes.add(new Not(children.get(0)));
 				} else {
@@ -254,12 +245,11 @@ public abstract class AbstractXMLFeatureModelFormat<T, U, V> extends XMLFormat<T
 				}
 				break;
 			case ATMOST1:
-				nodes.add(atMostOne(parseConstraints(e.getChildNodes(), null, variableFunction)));
+				nodes.add(atMostOne(parseConstraints(e.getChildNodes(), null, map)));
 				break;
 			case VAR:
-				nodes.add(variableFunction.apply(e.getTextContent())
-					.map(v -> (Literal) new LiteralPredicate((BoolVariable) v, true))
-					.orElse(new ErrorLiteral(nodeName)));
+				nodes.add(map.getLiteral(e.getTextContent()).map(l -> (Literal) l).orElseGet(() -> new ErrorLiteral(
+					nodeName)));
 				break;
 			default:
 				addParseProblem("Unknown constraint type: " + nodeName, e, Problem.Severity.WARNING);

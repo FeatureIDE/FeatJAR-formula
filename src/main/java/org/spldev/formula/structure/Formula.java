@@ -22,5 +22,57 @@
  */
 package org.spldev.formula.structure;
 
-public interface Formula extends Expression {
+import java.util.*;
+import java.util.function.*;
+
+import org.spldev.formula.structure.atomic.literal.*;
+import org.spldev.formula.structure.atomic.literal.NamedTermMap.*;
+import org.spldev.util.tree.*;
+import org.spldev.util.tree.structure.*;
+
+/**
+ * A propositional node that can be transformed into conjunctive normal form
+ * (cnf).
+ *
+ * @author Sebastian Krieter
+ * @author Elias Kuiter
+ */
+public interface Formula extends Tree<Formula> {
+	String getName();
+
+	Class<?> getType();
+
+	void setVariableMap(VariableMap map);
+
+	default Optional<VariableMap> getVariableMap() {
+		return Trees.preOrderStream(this)
+			.filter(n -> n instanceof ValueTerm)
+			.map(n -> ((ValueTerm) n).getMap())
+			.findAny();
+	}
+
+	@Override
+	List<? extends Formula> getChildren();
+
+	@Override
+	Formula cloneNode();
+
+	Object eval(List<?> values);
+
+	public static boolean checkValues(int size, List<?> values) {
+		return values.size() == size;
+	}
+
+	public static boolean checkValues(Class<?> type, List<?> values) {
+		return values.stream().allMatch(type::isInstance);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> T reduce(List<?> values, final BinaryOperator<T> binaryOperator) {
+		if (values.stream().anyMatch(value -> value == null)) {
+			return null;
+		}
+		return values.stream().map(l -> (T) l).reduce(binaryOperator).orElse(null);
+	}
+
 }

@@ -20,28 +20,36 @@
  * See <https://github.com/skrieter/formula> for further information.
  * -----------------------------------------------------------------------------
  */
-package org.spldev.formula.structure.term.integer;
+package org.spldev.formula.structure.term.real;
 
+import java.util.*;
+
+import org.spldev.formula.structure.*;
 import org.spldev.formula.structure.term.*;
 
-public class IntConstant extends Constant<Long> {
+public class RealDivide extends Divide {
 
-	public IntConstant(Long value) {
-		super(value);
+	public RealDivide(Term leftArgument, Term rightArgument) {
+		super(leftArgument, rightArgument);
 	}
 
-	protected IntConstant(IntConstant oldConstant) {
-		super(oldConstant);
-	}
-
-	@Override
-	public Class<Long> getType() {
-		return Long.class;
+	private RealDivide() {
+		super();
 	}
 
 	@Override
-	public IntConstant cloneNode() {
-		return new IntConstant(this);
+	public Class<Double> getType() {
+		return Double.class;
+	}
+
+	@Override
+	public RealDivide cloneNode() {
+		return new RealDivide();
+	}
+
+	@Override
+	public Double eval(List<?> values) {
+		return Formula.reduce(values, (a, b) -> a / b);
 	}
 
 }

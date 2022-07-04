@@ -22,10 +22,12 @@
  */
 package org.spldev.formula.structure.transform;
 
+import java.util.*;
+
 import org.spldev.formula.structure.*;
 import org.spldev.util.tree.visitor.*;
 
-public class NFTester implements TreeVisitor<Boolean, Expression> {
+public class NFTester implements TreeVisitor<Boolean, Formula> {
 
 	protected boolean isNf;
 	protected boolean isClausalNf;
@@ -37,8 +39,8 @@ public class NFTester implements TreeVisitor<Boolean, Expression> {
 	}
 
 	@Override
-	public Boolean getResult() {
-		return isNf;
+	public Optional<Boolean> getResult() {
+		return Optional.of(isNf);
 	}
 
 	public boolean isNf() {

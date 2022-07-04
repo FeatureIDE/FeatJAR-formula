@@ -32,7 +32,7 @@ import org.spldev.util.job.*;
 import org.spldev.util.tree.*;
 
 /**
- * Several methods concerning {@link Expression} framework.
+ * Several methods concerning {@link Formula} framework.
  *
  * @author Sebastian Krieter
  */
@@ -57,7 +57,7 @@ public final class FormulaToCNF implements MonitorableFunction<Formula, CNF> {
 		if (node == null) {
 			return null;
 		}
-		final VariableMap mapping = variableMapping != null ? variableMapping : VariableMap.fromExpression(node);
+		final VariableMap mapping = variableMapping != null ? variableMapping : node.getVariableMap().orElseGet(VariableMap::new);
 		final ClauseList clauses = new ClauseList();
 		final Optional<Object> formulaValue = Formulas.evaluate(node, new VariableAssignment(mapping));
 		if (formulaValue.isPresent()) {
@@ -88,24 +88,24 @@ public final class FormulaToCNF implements MonitorableFunction<Formula, CNF> {
 		this.variableMapping = variableMapping;
 	}
 
-	private LiteralList getClause(Expression clauseExpression, VariableMap mapping) {
+	private LiteralList getClause(Formula clauseExpression, VariableMap mapping) {
 		if (clauseExpression instanceof Literal) {
 			final Literal literal = (Literal) clauseExpression;
-			final int variable = mapping.getIndex(literal.getName()).orElseThrow(RuntimeException::new);
+			final int variable = mapping.getVariableSignature(literal.getName()).orElseThrow(RuntimeException::new).getIndex();
 			return new LiteralList(new int[] { literal.isPositive() ? variable : -variable }, keepLiteralOrder
 				? Order.UNORDERED
 				: Order.NATURAL);
 		} else {
-			final List<? extends Expression> clauseChildren = clauseExpression.getChildren();
+			final List<? extends Formula> clauseChildren = clauseExpression.getChildren();
 			if (clauseChildren.stream().anyMatch(literal -> literal == Literal.True)) {
 				return null;
 			} else {
 				final int[] literals = clauseChildren.stream()
 					.filter(literal -> literal != Literal.False)
-					.filter(literal -> literal instanceof LiteralPredicate)
+					.filter(literal -> literal instanceof BooleanLiteral)
 					.mapToInt(literal -> {
-						final int variable = mapping.getIndex(
-							((LiteralPredicate) literal).getVariable().getName()).orElseThrow(RuntimeException::new);
+						final int variable = mapping.getVariableSignature(
+							((BooleanLiteral) literal).getVariable().getName()).orElseThrow(RuntimeException::new).getIndex();
 						return ((Literal) literal).isPositive() ? variable : -variable;
 					}).toArray();
 				return new LiteralList(literals, keepLiteralOrder ? Order.UNORDERED : Order.NATURAL);

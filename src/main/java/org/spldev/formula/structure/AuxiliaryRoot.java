@@ -32,7 +32,7 @@ import java.util.*;
  */
 public class AuxiliaryRoot extends NonTerminal {
 
-	public AuxiliaryRoot(Expression node) {
+	public AuxiliaryRoot(Formula node) {
 		super(node);
 	}
 
@@ -45,11 +45,11 @@ public class AuxiliaryRoot extends NonTerminal {
 		return "";
 	}
 
-	public Expression getChild() {
+	public Formula getChild() {
 		return getChildren().iterator().next();
 	}
 
-	public void setChild(Expression node) {
+	public void setChild(Formula node) {
 		Objects.requireNonNull(node);
 		setChildren(Arrays.asList(node));
 	}
@@ -57,6 +57,16 @@ public class AuxiliaryRoot extends NonTerminal {
 	@Override
 	public AuxiliaryRoot cloneNode() {
 		return new AuxiliaryRoot();
+	}
+
+	@Override
+	public Class<?> getType() {
+		return getChild().getType();
+	}
+
+	@Override
+	public Object eval(List<?> values) {
+		return getChild().eval(values);
 	}
 
 }

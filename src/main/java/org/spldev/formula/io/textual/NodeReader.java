@@ -29,7 +29,6 @@ import org.spldev.formula.io.textual.Symbols.*;
 import org.spldev.formula.structure.*;
 import org.spldev.formula.structure.atomic.literal.*;
 import org.spldev.formula.structure.compound.*;
-import org.spldev.formula.structure.term.bool.*;
 import org.spldev.util.data.*;
 import org.spldev.util.data.Problem.*;
 import org.spldev.util.io.format.*;
@@ -103,7 +102,7 @@ public class NodeReader {
 		Collections.sort(Arrays.asList(operators), (o1, o2) -> o2.getPriority() - o1.getPriority());
 	}
 
-	private VariableMap map = VariableMap.emptyMap();
+	private VariableMap map = new VariableMap();
 	private boolean hasVariableNames = false;
 
 	private Symbols symbols = ShortSymbols.INSTANCE;
@@ -125,11 +124,11 @@ public class NodeReader {
 	}
 
 	public void setVariableNames(Collection<String> variableNames) {
+		map = new VariableMap();
 		if (variableNames == null) {
-			map = VariableMap.emptyMap();
 			hasVariableNames = false;
 		} else {
-			map = VariableMap.fromNames(variableNames);
+			variableNames.forEach(map::addBooleanVariable);
 			hasVariableNames = true;
 		}
 	}
@@ -283,14 +282,14 @@ public class NodeReader {
 			}
 			featureName = featureName.replace(replacedFeatureNameMarker, featureNameMarker)
 				.replace(replacedSubExpressionMarker, subExpressionMarker);
-			if (hasVariableNames && map.getIndex(featureName).isEmpty()) {
+			if (hasVariableNames && map.getVariableIndex(featureName).isEmpty()) {
 				return handleInvalidFeatureName(featureName);
 			}
-			if (map.getIndex(featureName).isEmpty()) {
+			if (map.getVariableIndex(featureName).isEmpty()) {
 				map.addBooleanVariable(featureName);
 			}
 
-			return new LiteralPredicate((BoolVariable) map.getVariable(featureName).get(), true);
+			return map.createLiteral(featureName);
 		}
 	}
 
@@ -307,7 +306,7 @@ public class NodeReader {
 		switch (handleError) {
 		case KEEP:
 			problemList.add(new ParseProblem(message.getMessage(), 0, Severity.WARNING));
-			return new ErrorLiteral(element);
+			return new ErrorLiteral(message.getMessage());
 		case REMOVE:
 			problemList.add(new ParseProblem(message.getMessage(), 0, Severity.WARNING));
 			return null;

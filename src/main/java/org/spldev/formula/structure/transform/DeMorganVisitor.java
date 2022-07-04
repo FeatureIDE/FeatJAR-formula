@@ -31,11 +31,11 @@ import org.spldev.formula.structure.atomic.literal.*;
 import org.spldev.formula.structure.compound.*;
 import org.spldev.util.tree.visitor.*;
 
-public class DeMorganVisitor implements TreeVisitor<Void, Expression> {
+public class DeMorganVisitor implements TreeVisitor<Void, Formula> {
 
 	@Override
-	public VisitorResult firstVisit(List<Expression> path) {
-		final Expression node = TreeVisitor.getCurrentNode(path);
+	public VisitorResult firstVisit(List<Formula> path) {
+		final Formula node = TreeVisitor.getCurrentNode(path);
 		if (node instanceof Atomic) {
 			return VisitorResult.SkipChildren;
 		} else if (node instanceof Compound) {
@@ -49,8 +49,8 @@ public class DeMorganVisitor implements TreeVisitor<Void, Expression> {
 		}
 	}
 
-	private Expression replace(Expression node) {
-		Expression newNode = node;
+	private Formula replace(Formula node) {
+		Formula newNode = node;
 		while (newNode instanceof Not) {
 			final Formula notChild = (Formula) newNode.getChildren().iterator().next();
 			if (notChild instanceof Literal) {
