@@ -128,9 +128,9 @@ public final class Formulas {
 	}
 
 	/**
-	 * Child formulas are cloned and their variable maps
-	 * merged. That is, the composed formula exists independently of its children.
-	 * This is useful e.g. for composing several feature model (interface) formulas.
+	 * Child formulas are cloned and their variable maps merged. That is, the
+	 * composed formula exists independently of its children. This is useful e.g.
+	 * for composing several feature model (interface) formulas.
 	 */
 	public static <T, U extends Expression> T compose(Function<List<U>, T> fn, List<U> expressions) {
 		return fn.apply(cloneWithSharedVariableMap(expressions));
@@ -149,13 +149,13 @@ public final class Formulas {
 	 */
 	public static <T extends Expression> List<T> cloneWithSharedVariableMap(List<T> children) {
 		VariableMap composedMap = VariableMap.merge(
-				children.stream().map(Expression::getVariableMap).collect(Collectors.toList()));
+			children.stream().map(Expression::getVariableMap).collect(Collectors.toList()));
 		return children.stream()
-				.map(Trees::cloneTree)
-				.peek(formula -> {
-					formula.setVariableMap(composedMap);
-					formula.adaptVariableMap(composedMap);
-				})
-				.collect(Collectors.toList());
+			.map(Trees::cloneTree)
+			.peek(formula -> {
+				formula.setVariableMap(composedMap);
+				formula.adaptVariableMap(composedMap);
+			})
+			.collect(Collectors.toList());
 	}
 }
