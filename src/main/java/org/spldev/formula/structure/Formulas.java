@@ -139,14 +139,13 @@ public final class Formulas {
 	 * partly independent, partly dependent (on common variables). Leaves the input
 	 * formulas and their variable maps untouched by returning copies.
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T extends Formula> List<T> cloneWithSharedVariableMap(List<T> children) {
-		VariableMap composedMap = VariableMap.merge(
-				children.stream().map(f -> f.getVariableMap().orElseGet(VariableMap::new)).collect(Collectors.toList()));
-		return children.stream()
-				.map(Trees::cloneTree)
-				.peek(formula -> {
-					formula.setVariableMap(composedMap);
-				})
+		final List<VariableMap> maps = children.stream().map(f -> f.getVariableMap().orElseGet(VariableMap::new)).collect(Collectors.toList());
+		VariableMap composedMap = VariableMap.merge(maps);
+		final List<T> collect = children.stream()
+				.map(f -> (T) Formulas.manipulate(f, new VariableMapSetter(composedMap)))
 				.collect(Collectors.toList());
+		return collect;
 	}
 }

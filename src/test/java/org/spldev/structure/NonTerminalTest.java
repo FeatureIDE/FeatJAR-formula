@@ -32,7 +32,7 @@ public class NonTerminalTest {
 	public void ensureSharedVariableMap() {
 		final VariableMap map1 = new VariableMap();
 		final VariableMap map2 = new VariableMap();
-		assertThrows(IllegalArgumentException.class, () -> new And(Literal.True, Literal.False));
+		assertDoesNotThrow(() -> new And(Literal.True, Literal.False));
 		assertDoesNotThrow(() -> new And(map1.createLiteral("a"), map1.createLiteral("a", false)));
 		assertThrows(IllegalArgumentException.class, () -> new And(map1.createLiteral("a"), map2.createLiteral("a", false)));
 		Formula formula1 = Formulas.create(m -> new Implies(m.createLiteral("p"), m.createLiteral("q")));
@@ -60,7 +60,7 @@ public class NonTerminalTest {
 			assertNotEquals(formula1.getVariableMap(), formula);
 			assertNotEquals(formula2.getVariableMap(), formula);
 			assertNotEquals(formula3.getVariableMap(), formula);
-			assertEquals(formula.getVariableMap(), formula.getChildren().get(0).getVariableMap());
+			assertEquals(Optional.empty(), formula.getChildren().get(0).getVariableMap());
 			assertEquals(formula.getVariableMap(), formula.getChildren().get(1).getVariableMap());
 			assertEquals(formula.getVariableMap(), formula.getChildren().get(2).getVariableMap());
 		};

@@ -42,8 +42,6 @@ public interface Formula extends Tree<Formula> {
 
 	Class<?> getType();
 
-	void setVariableMap(VariableMap map);
-
 	default Optional<VariableMap> getVariableMap() {
 		return Trees.preOrderStream(this)
 			.filter(n -> n instanceof ValueTerm)
