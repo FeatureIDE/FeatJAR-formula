@@ -49,7 +49,7 @@ public class NamedTermMap<T extends ValueTerm> implements Cloneable, Iterable<T>
 			this.map = map;
 		}
 
-		protected abstract ValueTerm copy();
+		protected abstract ValueTerm copy(VariableMap newMap);
 
 		void setIndex(int index) {
 			this.index = index;
@@ -75,9 +75,8 @@ public class NamedTermMap<T extends ValueTerm> implements Cloneable, Iterable<T>
 			return type;
 		}
 
-		@Override
 		public void setVariableMap(VariableMap map) {
-			super.setVariableMap(map);
+			this.map = map;
 		}
 
 		@Override
@@ -124,13 +123,13 @@ public class NamedTermMap<T extends ValueTerm> implements Cloneable, Iterable<T>
 	private final LinkedHashMap<String, T> fromName = new LinkedHashMap<>();
 
 	@SuppressWarnings("unchecked")
-	private NamedTermMap(NamedTermMap<T> otherMap) {
+	protected NamedTermMap(NamedTermMap<T> otherMap, VariableMap newVariableMap) {
 		fromIndex = new ArrayList<>(otherMap.fromIndex.size());
 		for (T term : otherMap.fromIndex) {
 			if (term == null) {
 				fromIndex.add(null);
 			} else {
-				term = (T) term.copy();
+				term = (T) term.copy(newVariableMap);
 				fromIndex.add(term);
 				fromName.put(term.getName(), term);
 			}
@@ -138,19 +137,22 @@ public class NamedTermMap<T extends ValueTerm> implements Cloneable, Iterable<T>
 	}
 
 	@SuppressWarnings("unchecked")
-	public NamedTermMap(NamedTermMap<T> map1, NamedTermMap<T> map2) {
+	protected NamedTermMap(NamedTermMap<T> map1, NamedTermMap<T> map2, VariableMap newVariableMap) {
 		for (T term : map1.fromIndex) {
 			if (term != null) {
-				term = (T) term.copy();
+				term = (T) term.copy(newVariableMap);
 				fromName.put(term.getName(), term);
 			}
 		}
 		for (T term : map2.fromIndex) {
 			if (term != null) {
-				if (fromName.get(term.name).type != term.type) {
-					throw new IllegalArgumentException("Merged maps have incompatible types for term " + term.name);
+				final T t = fromName.get(term.name);
+				if (t != null && t.type != term.type) {
+					if (t.type != term.type) {
+						throw new IllegalArgumentException("Merged maps have incompatible types for term " + term.name);
+					}
 				} else {
-					term = (T) term.copy();
+					term = (T) term.copy(newVariableMap);
 					fromName.put(term.getName(), term);
 				}
 			}
@@ -320,11 +322,6 @@ public class NamedTermMap<T extends ValueTerm> implements Cloneable, Iterable<T>
 
 	public Optional<T> get(String name) {
 		return Optional.ofNullable(fromName.get(name));
-	}
-
-	@Override
-	protected NamedTermMap<T> clone() {
-		return new NamedTermMap<>(this);
 	}
 
 	public void normalize() {

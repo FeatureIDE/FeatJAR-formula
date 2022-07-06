@@ -85,7 +85,7 @@ public class CNFTransformer implements Transformer {
 
 		formula = new And(getTransformedClauses());
 		formula = NormalForms.toClausalNF(formula, NormalForm.CNF);
-		formula.setVariableMap(variableMap);
+		formula = Formulas.manipulate(formula, new VariableMapSetter(variableMap));
 		return formula;
 	}
 
@@ -114,8 +114,7 @@ public class CNFTransformer implements Transformer {
 			}
 			for (final Substitute tseytinClause : combinedTseytinClauses.keySet()) {
 				for (final Formula formula : tseytinClause.getClauses()) {
-					formula.setVariableMap(variableMap);
-					transformedClauses.add(formula);
+					transformedClauses.add(Formulas.manipulate(formula, new VariableMapSetter(variableMap)));
 				}
 			}
 		}

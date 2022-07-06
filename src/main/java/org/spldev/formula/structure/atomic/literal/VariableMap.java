@@ -43,8 +43,8 @@ public class VariableMap implements Cloneable {
 		}
 
 		@Override
-		protected Variable copy() {
-			return new Variable(name, index, type, map);
+		protected Variable copy(VariableMap newMap) {
+			return new Variable(name, index, type, newMap);
 		}
 
 		@Override
@@ -70,8 +70,8 @@ public class VariableMap implements Cloneable {
 		}
 
 		@Override
-		public Constant copy() {
-			return new Constant(name, index, type, value, map);
+		public Constant copy(VariableMap newMap) {
+			return new Constant(name, index, type, value, newMap);
 		}
 
 		@Override
@@ -112,13 +112,13 @@ public class VariableMap implements Cloneable {
 	private final NamedTermMap<Constant> constants;
 
 	public VariableMap(VariableMap map) {
-		variables = map.variables.clone();
-		constants = map.constants.clone();
+		variables = new NamedTermMap<>(map.variables, this);
+		constants = new NamedTermMap<>(map.constants, this);
 	}
 
 	private VariableMap(VariableMap map1, VariableMap map2) {
-		variables = new NamedTermMap<>(map1.variables, map2.variables);
-		constants = new NamedTermMap<>(map1.constants, map2.constants);
+		variables = new NamedTermMap<>(map1.variables, map2.variables, this);
+		constants = new NamedTermMap<>(map1.constants, map2.constants, this);
 	}
 
 	public VariableMap(String... variableNames) {

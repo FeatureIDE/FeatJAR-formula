@@ -25,7 +25,6 @@ package org.spldev.formula.structure;
 import java.util.*;
 
 import org.spldev.formula.structure.atomic.literal.*;
-import org.spldev.formula.structure.atomic.literal.VariableMap.*;
 import org.spldev.util.tree.*;
 import org.spldev.util.tree.structure.*;
 
@@ -54,43 +53,49 @@ public abstract class NonTerminal extends AbstractNonTerminal<Formula> implement
 	}
 
 	protected void ensureSharedVariableMap(List<? extends Formula> children) {
-		children.stream().map(Formula::getVariableMap).reduce((acc, val) -> {
-			if (acc != val)
-				throw new IllegalArgumentException(
-					"tried to instantiate formula with different variable maps. perhaps you meant to use Formulas.compose(...)?");
-			return val;
-		});
+		VariableMap firstElement = null;
+		for (Formula element : children) {
+			if (firstElement == null) {
+				firstElement = element.getVariableMap().orElse(null);
+			} else {
+				if (firstElement != element.getVariableMap().orElse(firstElement)) {
+					throw new IllegalArgumentException(
+						"tried to instantiate formula with different variable maps. perhaps you meant to use Formulas.compose(...)?");
+				}
+			}
+		}
 	}
 
 	protected void ensureSharedVariableMap(Formula newChild) {
-		if (getVariableMap() != newChild.getVariableMap())
+		if (getVariableMap().orElse(null) != newChild.getVariableMap().orElse(null))
 			throw new IllegalArgumentException(
 				"tried to add formula with different variable map. perhaps you meant to use Formulas.compose(...)?");
 	}
 
-	@Override
-	public void setVariableMap(VariableMap map) {
-		for (ListIterator<Formula> it = children.listIterator(); it.hasNext();) {
-			final Formula child = it.next();
-			if (child instanceof Variable) {
-				final Variable replacement = map.getVariable(child.getName()).orElseThrow(
-					() -> new IllegalArgumentException(
-						"Map does not contain variable with name " + child.getName()));
-				if (replacement != child) {
-					it.set(replacement);
-				}
-			} else if (child instanceof Constant) {
-				final Constant replacement = map.getConstant(child.getName()).orElseThrow(
-					() -> new IllegalArgumentException(
-						"Map does not contain constant with name " + child.getName()));
-				if (replacement != child) {
-					it.set(replacement);
-				}
-			} else {
-				child.setVariableMap(map);
-			}
-		}
-	}
+//	@Override
+//	public void setVariableMap(VariableMap map) {
+////		Formulas.manipulate(this, new VariableMapSetter(map));
+////		for (ListIterator<Formula> it = children.listIterator(); it.hasNext();) {
+////			final Formula child = it.next();
+////			if (child instanceof Variable) {
+////				final Variable replacement = map.getVariable(child.getName()).orElseThrow(
+////					() -> new IllegalArgumentException(
+////						"Map does not contain variable with name " + child.getName()));
+////				if (replacement != child) {
+////					it.set(replacement);
+////				}
+////			} else if (child instanceof Constant) {
+////				final Constant replacement = map.getConstant(child.getName()).orElseThrow(
+////					() -> new IllegalArgumentException(
+////						"Map does not contain constant with name " + child.getName()));
+////				if (replacement != child) {
+////					it.set(replacement);
+////				}
+////			} else {
+////				child.setVariableMap(map);
+////			}
+////		}
+//	}
 
 	@Override
 	public void setChildren(List<? extends Formula> children) {

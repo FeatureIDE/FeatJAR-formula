@@ -24,7 +24,6 @@ package org.spldev.formula.structure;
 
 import java.util.*;
 
-import org.spldev.formula.structure.atomic.literal.*;
 import org.spldev.formula.structure.term.*;
 import org.spldev.util.tree.structure.*;
 
@@ -35,10 +34,6 @@ import org.spldev.util.tree.structure.*;
  * @author Sebastian Krieter
  */
 public abstract class Terminal extends AbstractTerminal<Formula> implements Formula {
-
-	@Override
-	public void setVariableMap(VariableMap map) {
-	}
 
 	@Override
 	public int hashCode() {
