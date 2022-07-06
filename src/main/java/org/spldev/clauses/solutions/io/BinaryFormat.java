@@ -30,7 +30,8 @@ import org.spldev.clauses.LiteralList.*;
 import org.spldev.clauses.solutions.*;
 import org.spldev.formula.structure.atomic.literal.*;
 import org.spldev.util.data.*;
-import org.spldev.util.io.format.*;
+import org.spldev.util.io.file.InputFileMapper;
+import org.spldev.util.io.file.OutputFileMapper;
 
 // TODO implement saving/loading constants
 /**
@@ -43,8 +44,8 @@ public class BinaryFormat extends org.spldev.util.io.binary.BinaryFormat<Solutio
 	public static final String ID = BinaryFormat.class.getCanonicalName();
 
 	@Override
-	public void write(SolutionList configurationList, SourceMapper sourceMapper) throws IOException {
-		final OutputStream outputStream = sourceMapper.getMainSource().getOutputStream();
+	public void write(SolutionList configurationList, OutputFileMapper outputFileMapper) throws IOException {
+		final OutputStream outputStream = outputFileMapper.getMainFile().getOutputStream();
 		final List<String> names = configurationList.getVariableMap().getVariableNames();
 		writeInt(outputStream, names.size());
 		for (final String name : names) {
@@ -67,8 +68,8 @@ public class BinaryFormat extends org.spldev.util.io.binary.BinaryFormat<Solutio
 	}
 
 	@Override
-	public Result<SolutionList> parse(SourceMapper sourceMapper) {
-		final InputStream inputStream = sourceMapper.getMainSource().getInputStream();
+	public Result<SolutionList> parse(InputFileMapper inputFileMapper) {
+		final InputStream inputStream = inputFileMapper.getMainFile().getInputStream();
 		try {
 			final int numberOfVariables = readInt(inputStream);
 			final List<String> variableNames = new ArrayList<>(numberOfVariables);

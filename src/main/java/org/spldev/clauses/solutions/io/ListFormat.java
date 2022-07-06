@@ -30,6 +30,7 @@ import org.spldev.clauses.solutions.*;
 import org.spldev.formula.structure.atomic.literal.*;
 import org.spldev.util.data.*;
 import org.spldev.util.data.Problem.*;
+import org.spldev.util.io.file.InputFileMapper;
 import org.spldev.util.io.format.*;
 
 /**
@@ -65,10 +66,10 @@ public class ListFormat implements Format<SolutionList> {
 	}
 
 	@Override
-	public Result<SolutionList> parse(SourceMapper sourceMapper) {
+	public Result<SolutionList> parse(InputFileMapper inputFileMapper) {
 		int lineNumber = 0;
 		final SolutionList configurationList = new SolutionList();
-		final Iterator<String> iterator = sourceMapper.getMainSource().getLines().iterator();
+		final Iterator<String> iterator = inputFileMapper.getMainFile().getLines().iterator();
 		try {
 			{
 				if (!iterator.hasNext()) {

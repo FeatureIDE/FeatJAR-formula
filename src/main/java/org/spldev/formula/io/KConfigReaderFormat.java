@@ -29,6 +29,7 @@ import org.spldev.formula.io.textual.*;
 import org.spldev.formula.structure.*;
 import org.spldev.formula.structure.compound.*;
 import org.spldev.util.data.*;
+import org.spldev.util.io.file.InputFileMapper;
 import org.spldev.util.io.format.*;
 
 public class KConfigReaderFormat implements Format<Formula> {
@@ -36,11 +37,11 @@ public class KConfigReaderFormat implements Format<Formula> {
 	public static final String ID = KConfigReaderFormat.class.getCanonicalName();
 
 	@Override
-	public Result<Formula> parse(SourceMapper sourceMapper) {
+	public Result<Formula> parse(InputFileMapper inputFileMapper) {
 		final ArrayList<Problem> problems = new ArrayList<>();
 		final NodeReader nodeReader = new NodeReader();
 		nodeReader.setSymbols(PropositionalModelSymbols.INSTANCE);
-		return Result.of(new And(sourceMapper.getMainSource().getLines() //
+		return Result.of(new And(inputFileMapper.getMainFile().getLines() //
 			.map(String::trim) //
 			.filter(l -> !l.isEmpty()) //
 			.filter(l -> !l.startsWith("#")) //
