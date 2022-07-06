@@ -59,7 +59,7 @@ public class Not extends Compound {
 
 	@Override
 	public Boolean eval(List<?> values) {
-		return !(boolean)values.get(0);
+		return !(boolean) values.get(0);
 	}
 
 }

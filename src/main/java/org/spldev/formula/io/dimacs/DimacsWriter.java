@@ -140,7 +140,8 @@ public class DimacsWriter {
 	private void writeClause(StringBuilder sb, Or clause) {
 		for (final Formula child : clause.getChildren()) {
 			final Literal l = (Literal) child;
-			final Integer index = variables.getVariableIndex(l.getName()).orElseThrow(() -> new IllegalArgumentException(l.getName()));
+			final Integer index = variables.getVariableIndex(l.getName()).orElseThrow(
+				() -> new IllegalArgumentException(l.getName()));
 			sb.append(l.isPositive() ? index : -index);
 			sb.append(' ');
 		}

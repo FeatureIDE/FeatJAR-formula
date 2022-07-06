@@ -117,10 +117,10 @@ public class CNF implements Serializable {
 	public CNF randomize(Random random) {
 		final VariableMap newVariableMap = variables.clone();
 		newVariableMap.randomize(random);
-		
+
 		final ClauseList adaptedClauseList = clauses.adapt(variables, newVariableMap).get();
 		Collections.shuffle(adaptedClauseList, random);
-		
+
 		return new CNF(newVariableMap, adaptedClauseList);
 	}
 

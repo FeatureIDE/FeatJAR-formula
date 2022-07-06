@@ -57,7 +57,8 @@ public final class FormulaToCNF implements MonitorableFunction<Formula, CNF> {
 		if (node == null) {
 			return null;
 		}
-		final VariableMap mapping = variableMapping != null ? variableMapping : node.getVariableMap().orElseGet(VariableMap::new);
+		final VariableMap mapping = variableMapping != null ? variableMapping
+			: node.getVariableMap().orElseGet(VariableMap::new);
 		final ClauseList clauses = new ClauseList();
 		final Optional<Object> formulaValue = Formulas.evaluate(node, new VariableAssignment(mapping));
 		if (formulaValue.isPresent()) {
@@ -91,7 +92,8 @@ public final class FormulaToCNF implements MonitorableFunction<Formula, CNF> {
 	private LiteralList getClause(Formula clauseExpression, VariableMap mapping) {
 		if (clauseExpression instanceof Literal) {
 			final Literal literal = (Literal) clauseExpression;
-			final int variable = mapping.getVariableSignature(literal.getName()).orElseThrow(RuntimeException::new).getIndex();
+			final int variable = mapping.getVariableSignature(literal.getName()).orElseThrow(RuntimeException::new)
+				.getIndex();
 			return new LiteralList(new int[] { literal.isPositive() ? variable : -variable }, keepLiteralOrder
 				? Order.UNORDERED
 				: Order.NATURAL);
@@ -105,7 +107,8 @@ public final class FormulaToCNF implements MonitorableFunction<Formula, CNF> {
 					.filter(literal -> literal instanceof BooleanLiteral)
 					.mapToInt(literal -> {
 						final int variable = mapping.getVariableSignature(
-							((BooleanLiteral) literal).getVariable().getName()).orElseThrow(RuntimeException::new).getIndex();
+							((BooleanLiteral) literal).getVariable().getName()).orElseThrow(RuntimeException::new)
+							.getIndex();
 						return ((Literal) literal).isPositive() ? variable : -variable;
 					}).toArray();
 				return new LiteralList(literals, keepLiteralOrder ? Order.UNORDERED : Order.NATURAL);

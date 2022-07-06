@@ -45,7 +45,7 @@ public class ListFormat implements Format<SolutionList> {
 	public String serialize(SolutionList configurationList) {
 		final StringBuilder csv = new StringBuilder();
 		csv.append("Configuration");
- 		final List<String> names = configurationList.getVariableMap().getVariableNames();
+		final List<String> names = configurationList.getVariableMap().getVariableNames();
 		for (final String name : names) {
 			csv.append(';');
 			csv.append(name);
@@ -65,10 +65,10 @@ public class ListFormat implements Format<SolutionList> {
 	}
 
 	@Override
-	public Result<SolutionList> parse(Input source) {
+	public Result<SolutionList> parse(SourceMapper sourceMapper) {
 		int lineNumber = 0;
 		final SolutionList configurationList = new SolutionList();
-		final Iterator<String> iterator = source.getLines().iterator();
+		final Iterator<String> iterator = sourceMapper.getMainSource().getLines().iterator();
 		try {
 			{
 				if (!iterator.hasNext()) {

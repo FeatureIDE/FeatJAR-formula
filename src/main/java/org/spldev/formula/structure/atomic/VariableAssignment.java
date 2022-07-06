@@ -44,7 +44,8 @@ public class VariableAssignment implements Assignment {
 
 	@Override
 	public void set(int index, Object assignment) {
-		final Variable sig = variables.getVariableSignature(index).orElseThrow(() -> new NoSuchElementException(String.valueOf(index)));
+		final Variable sig = variables.getVariableSignature(index).orElseThrow(() -> new NoSuchElementException(String
+			.valueOf(index)));
 		if (assignment == null) {
 			assignments.remove(index);
 		} else {
@@ -84,7 +85,8 @@ public class VariableAssignment implements Assignment {
 	}
 
 	public List<Pair<Integer, Object>> getAll() {
-		return assignments.entrySet().stream().map(e -> new Pair<>(e.getKey(), e.getValue())).collect(Collectors.toList());
+		return assignments.entrySet().stream().map(e -> new Pair<>(e.getKey(), e.getValue())).collect(Collectors
+			.toList());
 	}
 
 	public VariableMap getVariables() {

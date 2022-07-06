@@ -60,10 +60,10 @@ public class ExpressionGroupFormat implements Format<List<List<ClauseList>>> {
 	}
 
 	@Override
-	public Result<List<List<ClauseList>>> parse(Input source) {
+	public Result<List<List<ClauseList>>> parse(SourceMapper sourceMapper) {
 		final ArrayList<List<ClauseList>> expressionGroups = new ArrayList<>();
 		ArrayList<ClauseList> expressionGroup = null;
-		final Iterator<String> lineIterator = source.getLines().iterator();
+		final Iterator<String> lineIterator = sourceMapper.getMainSource().getLines().iterator();
 		int lineCount = 0;
 		try {
 			while (lineIterator.hasNext()) {

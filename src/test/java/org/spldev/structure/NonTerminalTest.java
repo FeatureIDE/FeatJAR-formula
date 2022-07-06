@@ -23,9 +23,12 @@ public class NonTerminalTest {
 		assertEquals(new And(p1, q), new And(p2, q));
 		assertNotEquals(new And(p1, q), new And(q, p2));
 		assertDoesNotThrow(() -> Formulas.create(m -> new Implies(m.createLiteral("p"), m.createLiteral("q"))));
-		assertEquals(Formulas.create(m -> m.createLiteral("1")), Formulas.create(m -> m.createLiteral("1")));
-		assertEquals(Formulas.create(m -> m.createLiteral("1", false)), Formulas.create(m -> m.createLiteral("1", false)));
-		assertNotEquals(Formulas.create(m -> m.createLiteral("1", false)), Formulas.create(m -> m.createLiteral("1")));
+		assertEquals((BooleanLiteral) Formulas.create(m -> m.createLiteral("1")), Formulas.create(m -> m.createLiteral(
+			"1")));
+		assertEquals((BooleanLiteral) Formulas.create(m -> m.createLiteral("1", false)), Formulas.create(m -> m
+			.createLiteral("1", false)));
+		assertNotEquals((BooleanLiteral) Formulas.create(m -> m.createLiteral("1", false)), Formulas.create(m -> m
+			.createLiteral("1")));
 	}
 
 	@Test
@@ -34,7 +37,8 @@ public class NonTerminalTest {
 		final VariableMap map2 = new VariableMap();
 		assertDoesNotThrow(() -> new And(Literal.True, Literal.False));
 		assertDoesNotThrow(() -> new And(map1.createLiteral("a"), map1.createLiteral("a", false)));
-		assertThrows(IllegalArgumentException.class, () -> new And(map1.createLiteral("a"), map2.createLiteral("a", false)));
+		assertThrows(IllegalArgumentException.class, () -> new And(map1.createLiteral("a"), map2.createLiteral("a",
+			false)));
 		Formula formula1 = Formulas.create(m -> new Implies(m.createLiteral("p"), m.createLiteral("q")));
 		Formula formula2 = Formulas.create(m -> new Implies(m.createLiteral("q"), m.createLiteral("r")));
 		assertThrows(IllegalArgumentException.class, () -> new And(formula1, formula2));

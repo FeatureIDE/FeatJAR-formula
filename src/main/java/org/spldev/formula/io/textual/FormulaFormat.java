@@ -31,8 +31,8 @@ public class FormulaFormat implements Format<Formula> {
 	public static final String ID = FormulaFormat.class.getCanonicalName();
 
 	@Override
-	public Result<Formula> parse(Input source) {
-		return new NodeReader().read(source.getCompleteText().get());
+	public Result<Formula> parse(SourceMapper sourceMapper) {
+		return new NodeReader().read(sourceMapper.getMainSource().readText().get());
 	}
 
 	@Override
