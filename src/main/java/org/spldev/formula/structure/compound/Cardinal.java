@@ -98,7 +98,7 @@ public abstract class Cardinal extends Compound {
 		final Cardinal otherCardinal = (Cardinal) other;
 		return (min == otherCardinal.min) && (max == otherCardinal.max);
 	}
-	
+
 	@Override
 	public Object eval(List<?> values) {
 		final int trueCount = (int) values.stream().filter(v -> v == Boolean.TRUE).count();

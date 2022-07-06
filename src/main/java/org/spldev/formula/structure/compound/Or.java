@@ -55,7 +55,7 @@ public class Or extends Compound {
 	public String getName() {
 		return "or";
 	}
-	
+
 	@Override
 	public Object eval(List<?> values) {
 		if (values.stream().anyMatch(v -> v == Boolean.TRUE)) {

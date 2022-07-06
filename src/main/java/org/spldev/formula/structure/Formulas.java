@@ -141,12 +141,12 @@ public final class Formulas {
 	 */
 	public static <T extends Formula> List<T> cloneWithSharedVariableMap(List<T> children) {
 		VariableMap composedMap = VariableMap.merge(
-				children.stream().map(f -> f.getVariableMap().orElseGet(VariableMap::new)).collect(Collectors.toList()));
+			children.stream().map(f -> f.getVariableMap().orElseGet(VariableMap::new)).collect(Collectors.toList()));
 		return children.stream()
-				.map(Trees::cloneTree)
-				.peek(formula -> {
-					formula.setVariableMap(composedMap);
-				})
-				.collect(Collectors.toList());
+			.map(Trees::cloneTree)
+			.peek(formula -> {
+				formula.setVariableMap(composedMap);
+			})
+			.collect(Collectors.toList());
 	}
 }

@@ -47,12 +47,12 @@ public class DIMACSFormat implements Format<Formula> {
 	}
 
 	@Override
-	public Result<Formula> parse(Input source) {
+	public Result<Formula> parse(SourceMapper sourceMapper) {
 		final DimacsReader r = new DimacsReader();
 		r.setReadingVariableDirectory(true);
 		try {
 			// TODO use getLines() instead
-			return Result.of(r.read(source.getCompleteText().get()));
+			return Result.of(r.read(sourceMapper.getMainSource().readText().get()));
 		} catch (final ParseException e) {
 			return Result.empty(new ParseProblem(e, e.getErrorOffset()));
 		} catch (final Exception e) {

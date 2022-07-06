@@ -94,7 +94,7 @@ public abstract class NonTerminal extends AbstractNonTerminal<Formula> implement
 
 	@Override
 	public void setChildren(List<? extends Formula> children) {
-		ensureSharedVariableMap(children); // TODO 
+		ensureSharedVariableMap(children); // TODO
 		super.setChildren(children);
 		hasHashCode = false;
 	}

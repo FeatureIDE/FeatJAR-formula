@@ -43,8 +43,8 @@ public class BinaryFormat extends org.spldev.util.io.binary.BinaryFormat<Solutio
 	public static final String ID = BinaryFormat.class.getCanonicalName();
 
 	@Override
-	public void write(SolutionList configurationList, Output out) throws IOException {
-		final OutputStream outputStream = out.getOutputStream();
+	public void write(SolutionList configurationList, SourceMapper sourceMapper) throws IOException {
+		final OutputStream outputStream = sourceMapper.getMainSource().getOutputStream();
 		final List<String> names = configurationList.getVariableMap().getVariableNames();
 		writeInt(outputStream, names.size());
 		for (final String name : names) {
@@ -67,8 +67,8 @@ public class BinaryFormat extends org.spldev.util.io.binary.BinaryFormat<Solutio
 	}
 
 	@Override
-	public Result<SolutionList> parse(Input source) {
-		final InputStream inputStream = source.getInputStream();
+	public Result<SolutionList> parse(SourceMapper sourceMapper) {
+		final InputStream inputStream = sourceMapper.getMainSource().getInputStream();
 		try {
 			final int numberOfVariables = readInt(inputStream);
 			final List<String> variableNames = new ArrayList<>(numberOfVariables);

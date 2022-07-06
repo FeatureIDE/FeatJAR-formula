@@ -27,7 +27,8 @@ import java.util.*;
 import org.spldev.formula.structure.*;
 
 /**
- * A positive or negative literal that results from a parsing or other error in the formula.
+ * A positive or negative literal that results from a parsing or other error in
+ * the formula.
  *
  * @author Sebastian Krieter
  */

@@ -36,11 +36,11 @@ public class KConfigReaderFormat implements Format<Formula> {
 	public static final String ID = KConfigReaderFormat.class.getCanonicalName();
 
 	@Override
-	public Result<Formula> parse(Input source) {
+	public Result<Formula> parse(SourceMapper sourceMapper) {
 		final ArrayList<Problem> problems = new ArrayList<>();
 		final NodeReader nodeReader = new NodeReader();
 		nodeReader.setSymbols(PropositionalModelSymbols.INSTANCE);
-		return Result.of(new And(source.getLines() //
+		return Result.of(new And(sourceMapper.getMainSource().getLines() //
 			.map(String::trim) //
 			.filter(l -> !l.isEmpty()) //
 			.filter(l -> !l.startsWith("#")) //

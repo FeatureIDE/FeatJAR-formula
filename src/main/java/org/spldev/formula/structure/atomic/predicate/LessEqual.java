@@ -48,7 +48,7 @@ public class LessEqual extends ComparingPredicate {
 	@Override
 	public LessEqual cloneNode() {
 		return new LessEqual();
-	}	
+	}
 
 	@Override
 	public GreaterThan flip() {
