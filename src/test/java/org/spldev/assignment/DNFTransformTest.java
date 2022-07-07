@@ -57,7 +57,7 @@ public class DNFTransformTest {
 		});
 		assertTrue(Trees.equals(formulaOrg, formulaClone));
 		assertEquals(mapClone, map);
-		assertEquals(mapClone, formulaOrg.getVariableMap());
+		assertEquals(mapClone, formulaOrg.getVariableMap().get());
 	}
 
 }

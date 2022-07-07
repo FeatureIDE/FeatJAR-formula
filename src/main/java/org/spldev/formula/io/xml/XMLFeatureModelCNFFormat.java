@@ -65,8 +65,15 @@ public class XMLFeatureModelCNFFormat extends XMLFeatureModelFormat {
 
 	@Override
 	protected void addConstraint(Boolean constraintLabel, Formula formula) throws ParseException {
-		super.addConstraint(constraintLabel, Executor.run(new CNFTransformer(), formula)
-			.orElseThrow(p -> new ParseException("failed to transform " + formula)));
+		Formula transformedFormula = Executor.run(new CNFTransformer(), formula)
+			.orElseThrow(p -> new ParseException("failed to transform " + formula));
+		transformedFormula = Formulas.manipulate(transformedFormula, new VariableMapSetter(variableMap)); // todo: this
+																											// is a
+																											// workaround
+																											// for weird
+																											// variableMap
+																											// shenanigans
+		super.addConstraint(constraintLabel, transformedFormula);
 	}
 
 	@Override

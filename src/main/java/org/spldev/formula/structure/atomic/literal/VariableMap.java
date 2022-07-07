@@ -25,6 +25,7 @@ package org.spldev.formula.structure.atomic.literal;
 import java.util.*;
 import java.util.stream.*;
 
+import jdk.jfr.StackTrace;
 import org.spldev.formula.structure.*;
 import org.spldev.formula.structure.atomic.literal.NamedTermMap.*;
 

@@ -64,14 +64,14 @@ public class CNFTransformTest {
 		});
 		assertTrue(Trees.equals(formulaOrg, formulaClone));
 		assertEquals(mapClone, map);
-		assertEquals(mapClone, formulaOrg.getVariableMap());
+		assertEquals(mapClone, formulaOrg.getVariableMap().get());
 	}
 
 	@Test
 	public void testKConfigReader() throws IOException {
 		final Path modelFile = Paths.get("src/test/resources/kconfigreader/min-example.model");
 		final Path dimacsFile = Paths.get("src/test/resources/kconfigreader/min-example.dimacs");
-		final Formula formula = IO.load(modelFile, FormatSupplier.of(new KConfigReaderFormat())).orElseThrow();
+		final Formula formula = IO.load(modelFile, new KConfigReaderFormat()).orElseThrow();
 
 		ModelRepresentation rep = new ModelRepresentation(formula);
 		IO.save(rep.get(FormulaProvider.CNF.fromFormula()), dimacsFile, new DIMACSFormat());

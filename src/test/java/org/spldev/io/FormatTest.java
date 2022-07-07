@@ -51,7 +51,6 @@ public class FormatTest {
 		assertFalse(format.supportsSerialize());
 
 		for (final Path file : getFileList(name, format)) {
-			System.out.println(file);
 			final Formula formula2 = load(format, file);
 			compareFormulas(formula1, formula2);
 		}
@@ -63,7 +62,6 @@ public class FormatTest {
 		assertTrue(format.supportsSerialize());
 		final Formula formula3 = saveAndLoad(formula1, format);
 		for (final Path file : getFileList(name, format)) {
-			System.out.println(file);
 			final Formula formula2 = load(format, file);
 			final Formula formula4 = saveAndLoad(formula2, format);
 			compareFormulas(formula1, formula2);
@@ -76,9 +74,7 @@ public class FormatTest {
 	}
 
 	private static <T> T load(Format<T> format, Path path) {
-		Result<T> result = IO.load(path, format);
-		System.out.println(result.getProblems());
-		return result.get();
+		return IO.load(path, format).get();
 	}
 
 	private static List<Path> getFileList(String name, Format<Formula> format) {
