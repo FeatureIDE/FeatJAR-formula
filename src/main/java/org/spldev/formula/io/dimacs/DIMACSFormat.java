@@ -26,7 +26,7 @@ import java.text.ParseException;
 
 import org.spldev.formula.structure.*;
 import org.spldev.util.data.*;
-import org.spldev.util.io.file.InputFileMapper;
+import org.spldev.util.io.InputMapper;
 import org.spldev.util.io.format.*;
 import org.spldev.util.io.format.Format;
 
@@ -48,12 +48,12 @@ public class DIMACSFormat implements Format<Formula> {
 	}
 
 	@Override
-	public Result<Formula> parse(InputFileMapper inputFileMapper) {
+	public Result<Formula> parse(InputMapper inputMapper) {
 		final DimacsReader r = new DimacsReader();
 		r.setReadingVariableDirectory(true);
 		try {
 			// TODO use getLines() instead
-			return Result.of(r.read(inputFileMapper.getMainFile().readText().get()));
+			return Result.of(r.read(inputMapper.get().readText().get()));
 		} catch (final ParseException e) {
 			return Result.empty(new ParseProblem(e, e.getErrorOffset()));
 		} catch (final Exception e) {

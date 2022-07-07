@@ -71,18 +71,18 @@ public class CNFTransformTest {
 	public void testKConfigReader() throws IOException {
 		final Path modelFile = Paths.get("src/test/resources/kconfigreader/min-example.model");
 		final Path dimacsFile = Paths.get("src/test/resources/kconfigreader/min-example.dimacs");
-		final Formula formula = FileHandler.load(modelFile, FormatSupplier.of(new KConfigReaderFormat())).orElseThrow();
+		final Formula formula = IO.load(modelFile, FormatSupplier.of(new KConfigReaderFormat())).orElseThrow();
 
 		ModelRepresentation rep = new ModelRepresentation(formula);
-		FileHandler.save(rep.get(FormulaProvider.CNF.fromFormula()), dimacsFile, new DIMACSFormat());
+		IO.save(rep.get(FormulaProvider.CNF.fromFormula()), dimacsFile, new DIMACSFormat());
 		Files.deleteIfExists(dimacsFile);
 
 		rep = new ModelRepresentation(formula);
-		FileHandler.save(rep.get(FormulaProvider.CNF.fromFormula(0)), dimacsFile, new DIMACSFormat());
+		IO.save(rep.get(FormulaProvider.CNF.fromFormula(0)), dimacsFile, new DIMACSFormat());
 		Files.deleteIfExists(dimacsFile);
 
 		rep = new ModelRepresentation(formula);
-		FileHandler.save(rep.get(FormulaProvider.CNF.fromFormula(100)), dimacsFile, new DIMACSFormat());
+		IO.save(rep.get(FormulaProvider.CNF.fromFormula(100)), dimacsFile, new DIMACSFormat());
 		Files.deleteIfExists(dimacsFile);
 	}
 

@@ -43,7 +43,7 @@ public class ModelRepresentation {
 	private final VariableMap variables;
 
 	public static Result<ModelRepresentation> load(final Path modelFile) {
-		return FileHandler.load(modelFile, FormulaFormatManager.getInstance()) //
+		return IO.load(modelFile, FormulaFormatManager.getInstance()) //
 			.map(ModelRepresentation::new);
 	}
 

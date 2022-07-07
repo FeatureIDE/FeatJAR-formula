@@ -24,7 +24,7 @@ package org.spldev.formula.io.textual;
 
 import org.spldev.formula.structure.*;
 import org.spldev.util.data.*;
-import org.spldev.util.io.file.InputFileMapper;
+import org.spldev.util.io.InputMapper;
 import org.spldev.util.io.format.*;
 
 public class FormulaFormat implements Format<Formula> {
@@ -32,8 +32,8 @@ public class FormulaFormat implements Format<Formula> {
 	public static final String ID = FormulaFormat.class.getCanonicalName();
 
 	@Override
-	public Result<Formula> parse(InputFileMapper inputFileMapper) {
-		return new NodeReader().read(inputFileMapper.getMainFile().readText().get());
+	public Result<Formula> parse(InputMapper inputMapper) {
+		return new NodeReader().read(inputMapper.get().readText().get());
 	}
 
 	@Override

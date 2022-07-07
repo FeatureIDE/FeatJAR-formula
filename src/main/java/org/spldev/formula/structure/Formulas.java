@@ -52,7 +52,7 @@ public final class Formulas {
 
 	public static String printFormula(Formula formula) {
 		try (final ByteArrayOutputStream s = new ByteArrayOutputStream()) {
-			FileHandler.save(formula, s, new FormulaFormat());
+			IO.save(formula, s, new FormulaFormat());
 			return s.toString();
 		} catch (IOException e) {
 			return "";

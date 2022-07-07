@@ -26,7 +26,7 @@ import java.util.*;
 
 import org.spldev.clauses.*;
 import org.spldev.util.data.*;
-import org.spldev.util.io.file.InputFileMapper;
+import org.spldev.util.io.InputMapper;
 import org.spldev.util.io.format.*;
 
 /**
@@ -61,10 +61,10 @@ public class ExpressionGroupFormat implements Format<List<List<ClauseList>>> {
 	}
 
 	@Override
-	public Result<List<List<ClauseList>>> parse(InputFileMapper inputFileMapper) {
+	public Result<List<List<ClauseList>>> parse(InputMapper inputMapper) {
 		final ArrayList<List<ClauseList>> expressionGroups = new ArrayList<>();
 		ArrayList<ClauseList> expressionGroup = null;
-		final Iterator<String> lineIterator = inputFileMapper.getMainFile().getLines().iterator();
+		final Iterator<String> lineIterator = inputMapper.get().getLineStream().iterator();
 		int lineCount = 0;
 		try {
 			while (lineIterator.hasNext()) {

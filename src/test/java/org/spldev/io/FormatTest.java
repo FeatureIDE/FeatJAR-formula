@@ -76,7 +76,7 @@ public class FormatTest {
 	}
 
 	private static <T> T load(Format<T> format, Path path) {
-		Result<T> result = FileHandler.load(path, format);
+		Result<T> result = IO.load(path, format);
 		System.out.println(result.getProblems());
 		return result.get();
 	}
@@ -112,7 +112,7 @@ public class FormatTest {
 		}
 		final ByteArrayOutputStream out = new ByteArrayOutputStream();
 		try {
-			FileHandler.save(object, out, format);
+			IO.save(object, out, format);
 			out.flush();
 		} catch (final IOException e) {
 			e.printStackTrace();
@@ -122,7 +122,7 @@ public class FormatTest {
 		assertNotNull(memory);
 		assertTrue(memory.length > 0, "Saved object is empty");
 
-		final Result<T> result = FileHandler.load(new ByteArrayInputStream(memory), format);
+		final Result<T> result = IO.load(new ByteArrayInputStream(memory), format);
 		assertTrue(result.isPresent(), "Failed loading saved object");
 		return result.get();
 	}
