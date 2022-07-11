@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <extensions>
-	<point id="org.spldev.formula.io.FormulaFormatManager">
-	    <extension id="org.spldev.formula.io.dimacs.DIMACSFormat" />
-	    <extension id="org.spldev.formula.io.xml.XMLFeatureModelCNFFormat" />
-	    <extension id="org.spldev.formula.io.textual.FormulaFormat" />
-	    <extension id="org.spldev.formula.io.KConfigReaderFormat" />
+	<point id="de.featjar.formula.io.FormulaFormatManager">
+	    <extension id="de.featjar.formula.io.dimacs.DIMACSFormat" />
+	    <extension id="de.featjar.formula.io.xml.XMLFeatureModelCNFFormat" />
+	    <extension id="de.featjar.formula.io.textual.FormulaFormat" />
+	    <extension id="de.featjar.formula.io.KConfigReaderFormat" />
 	</point>
 </extensions>
