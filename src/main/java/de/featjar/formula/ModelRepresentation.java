@@ -22,7 +22,7 @@
  */
 package de.featjar.formula;
 
-import java.nio.file.*;
+import java.nio.file.Path;
 
 import de.featjar.formula.io.FormulaFormatManager;
 import de.featjar.formula.structure.Formula;
@@ -33,12 +33,6 @@ import de.featjar.util.data.Provider;
 import de.featjar.util.data.Result;
 import de.featjar.util.io.IO;
 import de.featjar.util.logging.Logger;
-import de.featjar.formula.io.*;
-import de.featjar.formula.structure.*;
-import de.featjar.formula.structure.atomic.literal.*;
-import de.featjar.util.data.*;
-import de.featjar.util.io.*;
-import de.featjar.util.logging.*;
 
 /**
  * Representation of a feature model as a formula {@link #formula}, where

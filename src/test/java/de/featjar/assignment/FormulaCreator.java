@@ -22,8 +22,8 @@
  */
 package de.featjar.assignment;
 
-import java.util.*;
-import java.util.function.*;
+import java.util.Arrays;
+import java.util.function.Consumer;
 
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.atomic.Assignment;
@@ -33,10 +33,6 @@ import de.featjar.formula.structure.atomic.literal.VariableMap;
 import de.featjar.formula.structure.compound.And;
 import de.featjar.formula.structure.compound.Implies;
 import de.featjar.formula.structure.compound.Or;
-import de.featjar.formula.structure.*;
-import de.featjar.formula.structure.atomic.*;
-import de.featjar.formula.structure.atomic.literal.*;
-import de.featjar.formula.structure.compound.*;
 
 public class FormulaCreator {
 

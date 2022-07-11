@@ -22,7 +22,7 @@
  */
 package de.featjar.clauses;
 
-import java.util.*;
+import java.util.Comparator;
 
 /**
  * Compares clauses by he number of literals.

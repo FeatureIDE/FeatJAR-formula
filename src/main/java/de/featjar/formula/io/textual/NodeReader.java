@@ -22,24 +22,29 @@
  */
 package de.featjar.formula.io.textual;
 
-import java.util.*;
-import java.util.regex.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import de.featjar.formula.io.textual.Symbols.Operator;
 import de.featjar.formula.structure.Formula;
-import de.featjar.formula.io.textual.Symbols.*;
 import de.featjar.formula.structure.atomic.literal.ErrorLiteral;
 import de.featjar.formula.structure.atomic.literal.VariableMap;
-import de.featjar.formula.structure.compound.*;
+import de.featjar.formula.structure.compound.And;
+import de.featjar.formula.structure.compound.Biimplies;
+import de.featjar.formula.structure.compound.Implies;
+import de.featjar.formula.structure.compound.Not;
+import de.featjar.formula.structure.compound.Or;
 import de.featjar.util.data.Problem;
+import de.featjar.util.data.Problem.Severity;
 import de.featjar.util.data.Result;
 import de.featjar.util.io.format.ParseException;
 import de.featjar.util.io.format.ParseProblem;
-import de.featjar.formula.structure.*;
-import de.featjar.formula.structure.atomic.literal.*;
-import de.featjar.formula.structure.compound.*;
-import de.featjar.util.data.*;
-import de.featjar.util.data.Problem.*;
-import de.featjar.util.io.format.*;
 
 /**
  * This class can be used to parse propositional formulas.

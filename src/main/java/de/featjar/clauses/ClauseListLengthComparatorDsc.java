@@ -22,7 +22,8 @@
  */
 package de.featjar.clauses;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * Compares list of clauses by he number of literals.

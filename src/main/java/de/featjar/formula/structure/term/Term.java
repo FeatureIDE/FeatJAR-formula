@@ -22,10 +22,9 @@
  */
 package de.featjar.formula.structure.term;
 
-import java.util.*;
+import java.util.List;
 
 import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.*;
 
 public interface Term extends Formula {
 

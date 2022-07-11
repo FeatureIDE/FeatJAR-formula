@@ -22,9 +22,15 @@
  */
 package de.featjar.clauses;
 
-import java.nio.file.*;
-import java.util.*;
-import java.util.stream.*;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import de.featjar.formula.io.FormulaFormatManager;
 import de.featjar.formula.structure.Formula;
@@ -37,13 +43,6 @@ import de.featjar.util.data.Provider;
 import de.featjar.util.data.Result;
 import de.featjar.util.job.Executor;
 import de.featjar.util.logging.Logger;
-import de.featjar.formula.io.*;
-import de.featjar.formula.structure.*;
-import de.featjar.formula.structure.atomic.literal.*;
-import de.featjar.formula.structure.compound.*;
-import de.featjar.util.data.*;
-import de.featjar.util.job.*;
-import de.featjar.util.logging.*;
 
 /**
  * Represents an instance of a satisfiability problem in CNF.

@@ -22,7 +22,8 @@
  */
 package de.featjar.clauses.solutions.combinations;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * An iterator for combinations.

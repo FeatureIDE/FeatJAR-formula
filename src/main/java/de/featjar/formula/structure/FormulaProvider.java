@@ -22,7 +22,7 @@
  */
 package de.featjar.formula.structure;
 
-import java.nio.file.*;
+import java.nio.file.Path;
 
 import de.featjar.formula.io.FormulaFormatManager;
 import de.featjar.formula.structure.transform.CNFTransformer;
@@ -32,10 +32,6 @@ import de.featjar.util.data.Identifier;
 import de.featjar.util.data.Provider;
 import de.featjar.util.data.Result;
 import de.featjar.util.job.InternalMonitor;
-import de.featjar.formula.io.*;
-import de.featjar.formula.structure.transform.*;
-import de.featjar.util.data.*;
-import de.featjar.util.job.*;
 
 /**
  * Provides formulas in different forms (as loaded from a file or transformed

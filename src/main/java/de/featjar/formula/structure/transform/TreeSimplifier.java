@@ -22,7 +22,8 @@
  */
 package de.featjar.formula.structure.transform;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 
 import de.featjar.formula.structure.AuxiliaryRoot;
 import de.featjar.formula.structure.Formula;
@@ -32,11 +33,6 @@ import de.featjar.formula.structure.compound.And;
 import de.featjar.formula.structure.compound.Compound;
 import de.featjar.formula.structure.compound.Or;
 import de.featjar.util.tree.visitor.TreeVisitor;
-import de.featjar.formula.structure.*;
-import de.featjar.formula.structure.atomic.*;
-import de.featjar.formula.structure.atomic.literal.*;
-import de.featjar.formula.structure.compound.*;
-import de.featjar.util.tree.visitor.*;
 
 public class TreeSimplifier implements TreeVisitor<Void, Formula> {
 

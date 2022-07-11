@@ -22,11 +22,12 @@
  */
 package de.featjar.formula.structure.compound;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.*;
-import de.featjar.formula.structure.atomic.literal.VariableMap.*;
+import de.featjar.formula.structure.atomic.literal.VariableMap.Variable;
 
 public abstract class Quantifier extends Compound {
 

@@ -22,12 +22,12 @@
  */
 package de.featjar.analysis.solver;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.atomic.literal.VariableMap;
-import de.featjar.formula.structure.*;
-import de.featjar.formula.structure.atomic.literal.*;
 
 /**
  * Modifiable formula for solvers.

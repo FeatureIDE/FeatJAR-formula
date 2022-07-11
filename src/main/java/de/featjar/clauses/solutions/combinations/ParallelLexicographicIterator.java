@@ -22,9 +22,11 @@
  */
 package de.featjar.clauses.solutions.combinations;
 
-import java.util.*;
-import java.util.function.*;
-import java.util.stream.*;
+import java.util.Arrays;
+import java.util.Spliterator;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * Combination iterator that uses the combinatorial number system to process

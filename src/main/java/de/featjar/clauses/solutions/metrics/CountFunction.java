@@ -23,7 +23,6 @@
 package de.featjar.clauses.solutions.metrics;
 
 import de.featjar.clauses.LiteralList;
-import de.featjar.clauses.*;
 
 /**
  * Computes the count of some property within a literal array (e.g., number of

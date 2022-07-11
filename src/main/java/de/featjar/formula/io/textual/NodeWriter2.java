@@ -22,19 +22,25 @@
  */
 package de.featjar.formula.io.textual;
 
-import java.util.*;
+import java.util.List;
 
+import de.featjar.formula.io.textual.Symbols.Operator;
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.Terminal;
-import de.featjar.formula.io.textual.Symbols.*;
 import de.featjar.formula.structure.atomic.literal.Literal;
-import de.featjar.formula.structure.compound.*;
+import de.featjar.formula.structure.compound.And;
+import de.featjar.formula.structure.compound.AtLeast;
+import de.featjar.formula.structure.compound.AtMost;
+import de.featjar.formula.structure.compound.Between;
+import de.featjar.formula.structure.compound.Biimplies;
+import de.featjar.formula.structure.compound.Choose;
+import de.featjar.formula.structure.compound.Exists;
+import de.featjar.formula.structure.compound.ForAll;
+import de.featjar.formula.structure.compound.Implies;
+import de.featjar.formula.structure.compound.Not;
+import de.featjar.formula.structure.compound.Or;
 import de.featjar.util.tree.visitor.DfsVisitor;
 import de.featjar.util.tree.visitor.TreeVisitor;
-import de.featjar.formula.structure.*;
-import de.featjar.formula.structure.atomic.literal.*;
-import de.featjar.formula.structure.compound.*;
-import de.featjar.util.tree.visitor.*;
 
 /**
  * Converts a propositional node to a String object.

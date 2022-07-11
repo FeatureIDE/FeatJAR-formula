@@ -22,21 +22,18 @@
  */
 package de.featjar.clauses.solutions.io;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 import de.featjar.clauses.LiteralList;
 import de.featjar.clauses.solutions.SolutionList;
 import de.featjar.formula.structure.atomic.literal.VariableMap;
+import de.featjar.util.data.Problem.Severity;
 import de.featjar.util.data.Result;
+import de.featjar.util.io.InputMapper;
 import de.featjar.util.io.format.Format;
 import de.featjar.util.io.format.ParseProblem;
-import de.featjar.clauses.*;
-import de.featjar.clauses.solutions.*;
-import de.featjar.formula.structure.atomic.literal.*;
-import de.featjar.util.data.*;
-import de.featjar.util.data.Problem.*;
-import de.featjar.util.io.InputMapper;
-import de.featjar.util.io.format.*;
 
 /**
  * Reads / Writes a list of configuration.

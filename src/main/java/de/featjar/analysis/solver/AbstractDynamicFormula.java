@@ -22,10 +22,10 @@
  */
 package de.featjar.analysis.solver;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import de.featjar.formula.structure.atomic.literal.VariableMap;
-import de.featjar.formula.structure.atomic.literal.*;
 
 /**
  * Base class for modifiable formulas.

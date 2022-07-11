@@ -23,7 +23,6 @@
 package de.featjar.clauses.solutions.metrics;
 
 import de.featjar.clauses.LiteralList;
-import de.featjar.clauses.*;
 
 /**
  * Computes the number of negative literals in a solution.

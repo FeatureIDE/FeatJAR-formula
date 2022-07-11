@@ -22,13 +22,13 @@
  */
 package de.featjar.formula.structure.atomic.literal;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
 
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.NonTerminal;
-import de.featjar.formula.structure.*;
-import de.featjar.formula.structure.atomic.literal.NamedTermMap.*;
-import de.featjar.formula.structure.atomic.literal.VariableMap.*;
+import de.featjar.formula.structure.atomic.literal.NamedTermMap.ValueTerm;
+import de.featjar.formula.structure.atomic.literal.VariableMap.Variable;
 
 /**
  * A positive or negative literal. Is associated with a {@link Variable

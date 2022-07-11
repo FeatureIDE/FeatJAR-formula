@@ -22,11 +22,12 @@
  */
 package de.featjar.clauses.solutions.metrics;
 
-import java.util.*;
-import java.util.function.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.DoubleSupplier;
 
 import de.featjar.clauses.solutions.SolutionList;
-import de.featjar.clauses.solutions.*;
 
 public abstract class AggregatableMetrics {
 

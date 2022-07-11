@@ -22,14 +22,13 @@
  */
 package de.featjar.clauses;
 
-import java.io.*;
-import java.util.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 
-import de.featjar.clauses.LiteralList.*;
+import de.featjar.clauses.LiteralList.Order;
 import de.featjar.formula.structure.atomic.literal.VariableMap;
 import de.featjar.util.data.Result;
-import de.featjar.formula.structure.atomic.literal.*;
-import de.featjar.util.data.*;
 
 /**
  * Represents an instance of a satisfiability problem in CNF.

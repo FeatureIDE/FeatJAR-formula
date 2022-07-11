@@ -22,17 +22,24 @@
  */
 package de.featjar.formula.structure;
 
-import java.io.*;
-import java.util.*;
-import java.util.function.*;
-import java.util.stream.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import de.featjar.formula.io.textual.FormulaFormat;
+import de.featjar.formula.structure.ValueVisitor.UnknownVariableHandling;
 import de.featjar.formula.structure.atomic.Assignment;
 import de.featjar.formula.structure.atomic.literal.VariableMap;
+import de.featjar.formula.structure.atomic.literal.VariableMap.Variable;
 import de.featjar.formula.structure.transform.CNFTransformer;
 import de.featjar.formula.structure.transform.DNFTransformer;
 import de.featjar.formula.structure.transform.NormalForms;
+import de.featjar.formula.structure.transform.NormalForms.NormalForm;
 import de.featjar.formula.structure.transform.VariableMapSetter;
 import de.featjar.util.data.Result;
 import de.featjar.util.io.IO;
@@ -40,17 +47,6 @@ import de.featjar.util.tree.Trees;
 import de.featjar.util.tree.visitor.TreeDepthCounter;
 import de.featjar.util.tree.visitor.TreePrinter;
 import de.featjar.util.tree.visitor.TreeVisitor;
-import de.featjar.formula.io.textual.*;
-import de.featjar.formula.structure.ValueVisitor.*;
-import de.featjar.formula.structure.atomic.*;
-import de.featjar.formula.structure.atomic.literal.*;
-import de.featjar.formula.structure.atomic.literal.VariableMap.*;
-import de.featjar.formula.structure.transform.*;
-import de.featjar.formula.structure.transform.NormalForms.*;
-import de.featjar.util.data.*;
-import de.featjar.util.io.*;
-import de.featjar.util.tree.*;
-import de.featjar.util.tree.visitor.*;
 
 public final class Formulas {
 

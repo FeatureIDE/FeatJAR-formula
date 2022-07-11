@@ -22,7 +22,7 @@
  */
 package de.featjar.clauses.solutions.combinations;
 
-import java.util.*;
+import java.util.Iterator;
 
 /**
  * Abstract iterator that implements parts of {@link CombinationIterator}.

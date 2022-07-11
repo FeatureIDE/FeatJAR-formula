@@ -22,7 +22,8 @@
  */
 package de.featjar.formula.structure.term;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 
 public abstract class Average extends Function {
 

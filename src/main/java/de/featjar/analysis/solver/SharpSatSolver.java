@@ -22,7 +22,7 @@
  */
 package de.featjar.analysis.solver;
 
-import java.math.*;
+import java.math.BigInteger;
 
 /**
  * Sharp-Sat solver interface.

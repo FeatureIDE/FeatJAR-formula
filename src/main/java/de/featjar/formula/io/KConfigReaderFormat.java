@@ -22,8 +22,8 @@
  */
 package de.featjar.formula.io;
 
-import java.util.*;
-import java.util.stream.*;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 import de.featjar.formula.io.textual.NodeReader;
 import de.featjar.formula.io.textual.PropositionalModelSymbols;
@@ -31,13 +31,8 @@ import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.compound.And;
 import de.featjar.util.data.Problem;
 import de.featjar.util.data.Result;
-import de.featjar.util.io.format.Format;
-import de.featjar.formula.io.textual.*;
-import de.featjar.formula.structure.*;
-import de.featjar.formula.structure.compound.*;
-import de.featjar.util.data.*;
 import de.featjar.util.io.InputMapper;
-import de.featjar.util.io.format.*;
+import de.featjar.util.io.format.Format;
 
 public class KConfigReaderFormat implements Format<Formula> {
 

@@ -22,10 +22,17 @@
  */
 package de.featjar.structure;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.*;
-import java.util.function.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
+
+import org.junit.jupiter.api.Test;
 
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.Formulas;
@@ -34,10 +41,6 @@ import de.featjar.formula.structure.atomic.literal.Literal;
 import de.featjar.formula.structure.atomic.literal.VariableMap;
 import de.featjar.formula.structure.compound.And;
 import de.featjar.formula.structure.compound.Implies;
-import org.junit.jupiter.api.*;
-import de.featjar.formula.structure.*;
-import de.featjar.formula.structure.atomic.literal.*;
-import de.featjar.formula.structure.compound.*;
 
 public class NonTerminalTest {
 	@Test

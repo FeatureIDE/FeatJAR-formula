@@ -22,10 +22,9 @@
  */
 package de.featjar.formula.io.textual;
 
-import java.util.*;
+import java.util.Arrays;
 
 import de.featjar.util.data.Pair;
-import de.featjar.util.data.*;
 
 /**
  * Symbols for a short textual representation. Best used for serialization since

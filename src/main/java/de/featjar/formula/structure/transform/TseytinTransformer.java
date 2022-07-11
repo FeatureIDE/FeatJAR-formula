@@ -22,7 +22,10 @@
  */
 package de.featjar.formula.structure.transform;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 import de.featjar.formula.structure.AuxiliaryRoot;
 import de.featjar.formula.structure.Formula;
@@ -30,6 +33,7 @@ import de.featjar.formula.structure.atomic.Atomic;
 import de.featjar.formula.structure.atomic.literal.BooleanLiteral;
 import de.featjar.formula.structure.atomic.literal.Literal;
 import de.featjar.formula.structure.atomic.literal.VariableMap;
+import de.featjar.formula.structure.atomic.literal.VariableMap.Variable;
 import de.featjar.formula.structure.compound.And;
 import de.featjar.formula.structure.compound.Compound;
 import de.featjar.formula.structure.compound.Or;
@@ -37,14 +41,6 @@ import de.featjar.util.job.InternalMonitor;
 import de.featjar.util.job.MonitorableFunction;
 import de.featjar.util.tree.Trees;
 import de.featjar.util.tree.visitor.TreeVisitor;
-import de.featjar.formula.structure.*;
-import de.featjar.formula.structure.atomic.*;
-import de.featjar.formula.structure.atomic.literal.*;
-import de.featjar.formula.structure.atomic.literal.VariableMap.*;
-import de.featjar.formula.structure.compound.*;
-import de.featjar.util.job.*;
-import de.featjar.util.tree.*;
-import de.featjar.util.tree.visitor.*;
 
 public class TseytinTransformer implements MonitorableFunction<Formula, List<TseytinTransformer.Substitute>>,
 	TreeVisitor<Formula, Formula> {

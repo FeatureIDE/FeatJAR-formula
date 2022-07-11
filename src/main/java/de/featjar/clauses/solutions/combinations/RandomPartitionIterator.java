@@ -22,7 +22,7 @@
  */
 package de.featjar.clauses.solutions.combinations;
 
-import java.util.*;
+import java.util.Random;
 
 /**
  * Combination iterator that uses the combinatorial number system to enumerate

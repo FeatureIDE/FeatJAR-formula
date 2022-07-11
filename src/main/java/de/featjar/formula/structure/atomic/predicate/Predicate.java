@@ -22,14 +22,12 @@
  */
 package de.featjar.formula.structure.atomic.predicate;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 
 import de.featjar.formula.structure.NonTerminal;
 import de.featjar.formula.structure.atomic.Atomic;
 import de.featjar.formula.structure.term.Term;
-import de.featjar.formula.structure.*;
-import de.featjar.formula.structure.atomic.*;
-import de.featjar.formula.structure.term.*;
 
 public abstract class Predicate extends NonTerminal implements Atomic {
 

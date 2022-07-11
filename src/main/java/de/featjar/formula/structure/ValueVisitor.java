@@ -22,13 +22,14 @@
  */
 package de.featjar.formula.structure;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 
 import de.featjar.formula.structure.atomic.Assignment;
+import de.featjar.formula.structure.atomic.literal.VariableMap.Variable;
 import de.featjar.util.tree.visitor.TreeVisitor;
-import de.featjar.formula.structure.atomic.*;
-import de.featjar.formula.structure.atomic.literal.VariableMap.*;
-import de.featjar.util.tree.visitor.*;
 
 public class ValueVisitor implements TreeVisitor<Object, Formula> {
 

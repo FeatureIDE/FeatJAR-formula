@@ -22,7 +22,7 @@
  */
 package de.featjar.formula.structure.atomic.literal;
 
-import java.util.*;
+import java.util.Comparator;
 
 /**
  * Compares two literals based on their {@code var} object and {@code positive}

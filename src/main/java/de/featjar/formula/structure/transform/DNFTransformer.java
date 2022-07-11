@@ -25,13 +25,9 @@ package de.featjar.formula.structure.transform;
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.compound.And;
 import de.featjar.formula.structure.compound.Or;
+import de.featjar.formula.structure.transform.NormalForms.NormalForm;
 import de.featjar.util.job.InternalMonitor;
 import de.featjar.util.tree.Trees;
-import de.featjar.formula.structure.*;
-import de.featjar.formula.structure.compound.*;
-import de.featjar.formula.structure.transform.NormalForms.*;
-import de.featjar.util.job.*;
-import de.featjar.util.tree.*;
 
 /**
  * Transforms propositional formulas into DNF.

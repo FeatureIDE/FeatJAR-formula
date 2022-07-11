@@ -22,7 +22,9 @@
  */
 package de.featjar.clauses;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.Formulas;
@@ -34,11 +36,6 @@ import de.featjar.util.job.Executor;
 import de.featjar.util.job.InternalMonitor;
 import de.featjar.util.job.MonitorableFunction;
 import de.featjar.util.tree.Trees;
-import de.featjar.formula.structure.*;
-import de.featjar.formula.structure.atomic.*;
-import de.featjar.formula.structure.atomic.literal.*;
-import de.featjar.util.job.*;
-import de.featjar.util.tree.*;
 
 /**
  * Several methods concerning {@link Formula} framework.

@@ -27,9 +27,6 @@ import de.featjar.formula.structure.compound.And;
 import de.featjar.formula.structure.compound.Compound;
 import de.featjar.formula.structure.compound.Or;
 import de.featjar.util.job.InternalMonitor;
-import de.featjar.formula.structure.*;
-import de.featjar.formula.structure.compound.*;
-import de.featjar.util.job.*;
 
 /**
  * Transforms propositional formulas into CNF.

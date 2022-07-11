@@ -22,17 +22,18 @@
  */
 package de.featjar.clauses;
 
-import java.io.*;
-import java.util.*;
-import java.util.stream.*;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Optional;
+import java.util.stream.IntStream;
 
+import de.featjar.formula.structure.atomic.literal.NamedTermMap.ValueTerm;
 import de.featjar.formula.structure.atomic.literal.VariableMap;
 import de.featjar.util.data.Problem;
+import de.featjar.util.data.Problem.Severity;
 import de.featjar.util.data.Result;
-import de.featjar.formula.structure.atomic.literal.*;
-import de.featjar.formula.structure.atomic.literal.NamedTermMap.*;
-import de.featjar.util.data.*;
-import de.featjar.util.data.Problem.*;
 
 // TODO add methods for adding literals (e.g. addAll, union, ...)
 /**

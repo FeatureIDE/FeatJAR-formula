@@ -23,7 +23,6 @@
 package de.featjar.io;
 
 import de.featjar.formula.io.KConfigReaderFormat;
-import de.featjar.formula.io.*;
 
 /**
  * Tests {@link KConfigReaderFormat KConfigReader} format.

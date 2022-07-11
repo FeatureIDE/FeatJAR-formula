@@ -22,10 +22,9 @@
  */
 package de.featjar.formula.structure.term;
 
-import java.util.*;
+import java.util.List;
 
 import de.featjar.formula.structure.NonTerminal;
-import de.featjar.formula.structure.*;
 
 public abstract class Function extends NonTerminal implements Term {
 

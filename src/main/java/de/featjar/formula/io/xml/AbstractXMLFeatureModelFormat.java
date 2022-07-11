@@ -22,24 +22,28 @@
  */
 package de.featjar.formula.io.xml;
 
-import java.util.*;
-import java.util.regex.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
+
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.atomic.literal.ErrorLiteral;
 import de.featjar.formula.structure.atomic.literal.Literal;
 import de.featjar.formula.structure.atomic.literal.VariableMap;
-import de.featjar.formula.structure.compound.*;
+import de.featjar.formula.structure.compound.And;
+import de.featjar.formula.structure.compound.AtMost;
+import de.featjar.formula.structure.compound.Biimplies;
+import de.featjar.formula.structure.compound.Implies;
+import de.featjar.formula.structure.compound.Not;
+import de.featjar.formula.structure.compound.Or;
 import de.featjar.util.data.Problem;
 import de.featjar.util.io.format.ParseException;
 import de.featjar.util.io.xml.XMLFormat;
-import de.featjar.formula.structure.*;
-import de.featjar.formula.structure.atomic.literal.*;
-import de.featjar.formula.structure.compound.*;
-import de.featjar.util.data.*;
-import de.featjar.util.io.format.*;
-import de.featjar.util.io.xml.*;
-import org.w3c.dom.*;
 
 /**
  * Implements common behaviors for parsing and writing XML feature model files.

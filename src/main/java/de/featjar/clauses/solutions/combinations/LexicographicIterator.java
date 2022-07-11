@@ -22,7 +22,8 @@
  */
 package de.featjar.clauses.solutions.combinations;
 
-import java.util.stream.*;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * Combination iterator that iterates of the combinations in lexicographical

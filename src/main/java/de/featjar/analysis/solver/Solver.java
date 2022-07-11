@@ -24,8 +24,6 @@ package de.featjar.analysis.solver;
 
 import de.featjar.formula.structure.atomic.Assignment;
 import de.featjar.formula.structure.atomic.literal.VariableMap;
-import de.featjar.formula.structure.atomic.*;
-import de.featjar.formula.structure.atomic.literal.*;
 
 /**
  * Solver interface.

@@ -22,7 +22,7 @@
  */
 package de.featjar.clauses;
 
-import java.nio.file.*;
+import java.nio.file.Path;
 
 import de.featjar.formula.io.FormulaFormatManager;
 import de.featjar.formula.structure.FormulaProvider;
@@ -30,9 +30,6 @@ import de.featjar.util.data.Cache;
 import de.featjar.util.data.Identifier;
 import de.featjar.util.data.Provider;
 import de.featjar.util.data.Result;
-import de.featjar.formula.io.*;
-import de.featjar.formula.structure.*;
-import de.featjar.util.data.*;
 
 /**
  * Abstract creator to derive an element from a {@link Cache}.

@@ -22,12 +22,10 @@
  */
 package de.featjar.formula.structure.atomic;
 
-import java.util.*;
+import java.util.List;
 
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.term.Term;
-import de.featjar.formula.structure.*;
-import de.featjar.formula.structure.term.*;
 
 /**
  * An atomic formula.

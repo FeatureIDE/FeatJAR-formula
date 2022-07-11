@@ -22,10 +22,11 @@
  */
 package de.featjar.formula.structure.atomic;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 import de.featjar.util.data.Pair;
-import de.featjar.util.data.*;
 
 public interface Assignment {
 

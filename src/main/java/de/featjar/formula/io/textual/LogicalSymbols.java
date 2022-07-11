@@ -22,10 +22,9 @@
  */
 package de.featjar.formula.io.textual;
 
-import java.util.*;
+import java.util.Arrays;
 
 import de.featjar.util.data.Pair;
-import de.featjar.util.data.*;
 
 /**
  * Symbols for a logical representation. These are best used for displaying to

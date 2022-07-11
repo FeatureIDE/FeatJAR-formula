@@ -22,12 +22,17 @@
  */
 package de.featjar.formula.structure.atomic.literal;
 
-import java.util.*;
-import java.util.stream.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Random;
+import java.util.stream.Collectors;
 
 import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.*;
-import de.featjar.formula.structure.atomic.literal.NamedTermMap.*;
+import de.featjar.formula.structure.atomic.literal.NamedTermMap.ValueTerm;
 
 /**
  * Variables of a formula.

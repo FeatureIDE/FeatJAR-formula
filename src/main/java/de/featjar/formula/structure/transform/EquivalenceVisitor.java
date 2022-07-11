@@ -22,21 +22,28 @@
  */
 package de.featjar.formula.structure.transform;
 
-import java.util.*;
-import java.util.stream.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import de.featjar.formula.structure.AuxiliaryRoot;
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.atomic.Atomic;
 import de.featjar.formula.structure.atomic.literal.Literal;
-import de.featjar.formula.structure.compound.*;
+import de.featjar.formula.structure.atomic.literal.VariableMap.Variable;
+import de.featjar.formula.structure.compound.And;
+import de.featjar.formula.structure.compound.AtLeast;
+import de.featjar.formula.structure.compound.AtMost;
+import de.featjar.formula.structure.compound.Between;
+import de.featjar.formula.structure.compound.Biimplies;
+import de.featjar.formula.structure.compound.Choose;
+import de.featjar.formula.structure.compound.Compound;
+import de.featjar.formula.structure.compound.Implies;
+import de.featjar.formula.structure.compound.Not;
+import de.featjar.formula.structure.compound.Or;
+import de.featjar.formula.structure.compound.Quantifier;
 import de.featjar.util.tree.visitor.TreeVisitor;
-import de.featjar.formula.structure.*;
-import de.featjar.formula.structure.atomic.*;
-import de.featjar.formula.structure.atomic.literal.*;
-import de.featjar.formula.structure.atomic.literal.VariableMap.*;
-import de.featjar.formula.structure.compound.*;
-import de.featjar.util.tree.visitor.*;
 
 public class EquivalenceVisitor implements TreeVisitor<Void, Formula> {
 

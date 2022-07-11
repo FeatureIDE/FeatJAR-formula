@@ -22,7 +22,9 @@
  */
 package de.featjar.analysis;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import de.featjar.analysis.solver.RuntimeContradictionException;
 import de.featjar.analysis.solver.Solver;
@@ -34,11 +36,6 @@ import de.featjar.util.data.Provider;
 import de.featjar.util.data.Result;
 import de.featjar.util.job.Executor;
 import de.featjar.util.job.InternalMonitor;
-import de.featjar.analysis.solver.*;
-import de.featjar.formula.structure.*;
-import de.featjar.formula.structure.atomic.*;
-import de.featjar.util.data.*;
-import de.featjar.util.job.*;
 
 /**
  * Base class for an analysis using any {@link Solver solver}.

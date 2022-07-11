@@ -24,8 +24,6 @@ package de.featjar.formula.io;
 
 import de.featjar.formula.structure.Formula;
 import de.featjar.util.io.format.FormatManager;
-import de.featjar.formula.structure.*;
-import de.featjar.util.io.format.*;
 
 public final class FormulaFormatManager extends FormatManager<Formula> {
 

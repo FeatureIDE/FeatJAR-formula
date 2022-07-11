@@ -22,10 +22,9 @@
  */
 package de.featjar.formula.structure.atomic.predicate;
 
-import java.util.*;
+import java.util.List;
 
 import de.featjar.formula.structure.term.Term;
-import de.featjar.formula.structure.term.*;
 
 /**
  *

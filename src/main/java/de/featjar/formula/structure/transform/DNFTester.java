@@ -22,17 +22,13 @@
  */
 package de.featjar.formula.structure.transform;
 
-import java.util.*;
+import java.util.List;
 
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.atomic.Atomic;
 import de.featjar.formula.structure.compound.And;
 import de.featjar.formula.structure.compound.Or;
 import de.featjar.util.tree.visitor.TreeVisitor;
-import de.featjar.formula.structure.*;
-import de.featjar.formula.structure.atomic.*;
-import de.featjar.formula.structure.compound.*;
-import de.featjar.util.tree.visitor.*;
 
 public class DNFTester extends NFTester {
 

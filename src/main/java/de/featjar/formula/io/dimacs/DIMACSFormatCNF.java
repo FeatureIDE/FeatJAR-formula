@@ -22,13 +22,11 @@
  */
 package de.featjar.formula.io.dimacs;
 
-import java.util.*;
+import java.util.Objects;
 
 import de.featjar.clauses.CNF;
 import de.featjar.clauses.LiteralList;
 import de.featjar.util.io.format.Format;
-import de.featjar.clauses.*;
-import de.featjar.util.io.format.*;
 
 /**
  * Serializes a {@link CNF} to a String in DIMACS format.

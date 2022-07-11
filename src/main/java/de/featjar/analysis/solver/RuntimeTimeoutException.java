@@ -23,7 +23,6 @@
 package de.featjar.analysis.solver;
 
 import de.featjar.analysis.Analysis;
-import de.featjar.analysis.*;
 
 /**
  * Exception thrown when an {@link Analysis analysis} experiences a solver

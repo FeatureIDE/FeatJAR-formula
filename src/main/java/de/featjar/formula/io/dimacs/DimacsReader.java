@@ -22,10 +22,19 @@
  */
 package de.featjar.formula.io.dimacs;
 
-import java.io.*;
-import java.text.*;
-import java.util.*;
-import java.util.regex.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.atomic.literal.BooleanLiteral;
@@ -34,10 +43,6 @@ import de.featjar.formula.structure.atomic.literal.VariableMap;
 import de.featjar.formula.structure.compound.And;
 import de.featjar.formula.structure.compound.Or;
 import de.featjar.util.io.NonEmptyLineIterator;
-import de.featjar.formula.structure.*;
-import de.featjar.formula.structure.atomic.literal.*;
-import de.featjar.formula.structure.compound.*;
-import de.featjar.util.io.*;
 
 public class DimacsReader {
 

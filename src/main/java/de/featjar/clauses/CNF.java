@@ -22,13 +22,15 @@
  */
 package de.featjar.clauses;
 
-import java.io.*;
-import java.util.*;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Random;
 
 import de.featjar.formula.structure.atomic.literal.VariableMap;
 import de.featjar.util.data.Result;
-import de.featjar.formula.structure.atomic.literal.*;
-import de.featjar.util.data.*;
 
 // TODO rename, as it can represent both CNF and DNF
 /**

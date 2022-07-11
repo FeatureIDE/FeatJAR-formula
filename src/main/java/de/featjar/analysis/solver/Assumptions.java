@@ -22,7 +22,7 @@
  */
 package de.featjar.analysis.solver;
 
-import java.util.*;
+import java.util.Collection;
 
 /**
  * Handles assumptions for solvers.

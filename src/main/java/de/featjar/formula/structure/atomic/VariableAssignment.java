@@ -22,16 +22,18 @@
  */
 package de.featjar.formula.structure.atomic;
 
-import java.util.*;
-import java.util.Map.*;
-import java.util.stream.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
+import de.featjar.formula.structure.atomic.literal.NamedTermMap.ValueTerm;
 import de.featjar.formula.structure.atomic.literal.VariableMap;
+import de.featjar.formula.structure.atomic.literal.VariableMap.Variable;
 import de.featjar.util.data.Pair;
-import de.featjar.formula.structure.atomic.literal.*;
-import de.featjar.formula.structure.atomic.literal.NamedTermMap.*;
-import de.featjar.formula.structure.atomic.literal.VariableMap.*;
-import de.featjar.util.data.*;
 
 public class VariableAssignment implements Assignment {
 

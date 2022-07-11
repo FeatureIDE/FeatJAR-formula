@@ -22,13 +22,11 @@
  */
 package de.featjar.formula.structure.term.real;
 
-import java.util.*;
+import java.util.List;
 
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.term.Add;
 import de.featjar.formula.structure.term.Term;
-import de.featjar.formula.structure.*;
-import de.featjar.formula.structure.term.*;
 
 public class RealAdd extends Add {
 

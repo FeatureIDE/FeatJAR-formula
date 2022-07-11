@@ -22,11 +22,11 @@
  */
 package de.featjar.formula.structure.atomic.literal;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
 
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.Terminal;
-import de.featjar.formula.structure.*;
 
 /**
  * A positive or negative literal that results from a parsing or other error in

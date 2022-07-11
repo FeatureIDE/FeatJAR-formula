@@ -23,8 +23,7 @@
 package de.featjar.formula.structure.compound;
 
 import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.*;
-import de.featjar.formula.structure.atomic.literal.VariableMap.*;
+import de.featjar.formula.structure.atomic.literal.VariableMap.Variable;
 
 public class Exists extends Quantifier {
 

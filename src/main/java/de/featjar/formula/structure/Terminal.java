@@ -22,12 +22,12 @@
  */
 package de.featjar.formula.structure;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 import de.featjar.formula.structure.term.Term;
 import de.featjar.util.tree.structure.AbstractTerminal;
-import de.featjar.formula.structure.term.*;
-import de.featjar.util.tree.structure.*;
 
 /**
  * A propositional node that can be transformed into conjunctive normal form

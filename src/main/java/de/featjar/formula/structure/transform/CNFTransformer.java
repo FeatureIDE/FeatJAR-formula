@@ -22,25 +22,23 @@
  */
 package de.featjar.formula.structure.transform;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.Formulas;
 import de.featjar.formula.structure.atomic.literal.VariableMap;
+import de.featjar.formula.structure.atomic.literal.VariableMap.Variable;
 import de.featjar.formula.structure.compound.And;
 import de.featjar.formula.structure.compound.Compound;
+import de.featjar.formula.structure.transform.DistributiveLawTransformer.MaximumNumberOfLiteralsExceededException;
+import de.featjar.formula.structure.transform.NormalForms.NormalForm;
+import de.featjar.formula.structure.transform.TseytinTransformer.Substitute;
 import de.featjar.util.job.InternalMonitor;
 import de.featjar.util.job.NullMonitor;
 import de.featjar.util.tree.Trees;
-import de.featjar.formula.structure.*;
-import de.featjar.formula.structure.atomic.literal.*;
-import de.featjar.formula.structure.atomic.literal.VariableMap.*;
-import de.featjar.formula.structure.compound.*;
-import de.featjar.formula.structure.transform.DistributiveLawTransformer.*;
-import de.featjar.formula.structure.transform.NormalForms.*;
-import de.featjar.formula.structure.transform.TseytinTransformer.*;
-import de.featjar.util.job.*;
-import de.featjar.util.tree.*;
 
 public class CNFTransformer implements Transformer {
 

@@ -22,7 +22,8 @@
  */
 package de.featjar.analysis.solver;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 /**
  * Arbitrary assumptions organized in a stack.

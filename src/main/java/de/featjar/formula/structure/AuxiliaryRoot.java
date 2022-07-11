@@ -22,7 +22,9 @@
  */
 package de.featjar.formula.structure;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * A propositional node that can be transformed into conjunctive normal form

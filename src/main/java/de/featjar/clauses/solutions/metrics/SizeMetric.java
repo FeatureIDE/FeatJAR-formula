@@ -23,7 +23,6 @@
 package de.featjar.clauses.solutions.metrics;
 
 import de.featjar.clauses.solutions.SolutionList;
-import de.featjar.clauses.solutions.*;
 
 /**
  * Computes the size of a sample.

@@ -22,17 +22,17 @@
  */
 package de.featjar.clauses.solutions.io;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.List;
 
 import de.featjar.clauses.LiteralList;
 import de.featjar.clauses.solutions.SolutionList;
 import de.featjar.formula.structure.atomic.literal.VariableMap;
 import de.featjar.util.data.Result;
-import de.featjar.clauses.*;
-import de.featjar.clauses.solutions.*;
-import de.featjar.formula.structure.atomic.literal.*;
-import de.featjar.util.data.*;
 import de.featjar.util.io.InputMapper;
 import de.featjar.util.io.OutputMapper;
 

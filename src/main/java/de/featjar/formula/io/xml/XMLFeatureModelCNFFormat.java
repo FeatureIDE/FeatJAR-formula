@@ -22,8 +22,14 @@
  */
 package de.featjar.formula.io.xml;
 
-import java.util.*;
-import java.util.stream.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import de.featjar.formula.structure.AuxiliaryRoot;
 import de.featjar.formula.structure.Formula;
@@ -37,15 +43,8 @@ import de.featjar.formula.structure.transform.DeMorganVisitor;
 import de.featjar.formula.structure.transform.TreeSimplifier;
 import de.featjar.formula.structure.transform.VariableMapSetter;
 import de.featjar.util.io.format.ParseException;
-import de.featjar.util.tree.Trees;
-import de.featjar.formula.structure.*;
-import de.featjar.formula.structure.atomic.literal.*;
-import de.featjar.formula.structure.compound.*;
-import de.featjar.formula.structure.transform.*;
-import de.featjar.util.io.format.*;
 import de.featjar.util.job.Executor;
-import de.featjar.util.tree.*;
-import org.w3c.dom.*;
+import de.featjar.util.tree.Trees;
 
 /**
  * Parses feature model CNF formulas from FeatureIDE XML files. Returns a

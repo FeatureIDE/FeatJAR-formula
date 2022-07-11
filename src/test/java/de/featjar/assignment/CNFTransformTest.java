@@ -22,10 +22,15 @@
  */
 package de.featjar.assignment;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.*;
-import java.nio.file.*;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import org.junit.jupiter.api.Test;
 
 import de.featjar.formula.ModelRepresentation;
 import de.featjar.formula.io.KConfigReaderFormat;
@@ -36,15 +41,6 @@ import de.featjar.formula.structure.Formulas;
 import de.featjar.formula.structure.atomic.literal.VariableMap;
 import de.featjar.util.io.IO;
 import de.featjar.util.tree.Trees;
-import org.junit.jupiter.api.*;
-import de.featjar.formula.*;
-import de.featjar.formula.io.*;
-import de.featjar.formula.io.dimacs.*;
-import de.featjar.formula.structure.*;
-import de.featjar.formula.structure.atomic.literal.*;
-import de.featjar.util.io.*;
-import de.featjar.util.io.format.*;
-import de.featjar.util.tree.*;
 
 public class CNFTransformTest {
 

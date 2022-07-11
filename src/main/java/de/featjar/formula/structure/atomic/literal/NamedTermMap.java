@@ -22,14 +22,20 @@
  */
 package de.featjar.formula.structure.atomic.literal;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Random;
 
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.Terminal;
+import de.featjar.formula.structure.atomic.literal.NamedTermMap.ValueTerm;
 import de.featjar.formula.structure.term.Term;
-import de.featjar.formula.structure.*;
-import de.featjar.formula.structure.atomic.literal.NamedTermMap.*;
-import de.featjar.formula.structure.term.*;
 
 /**
  * Map containing named terms (e.g., variables and constants).

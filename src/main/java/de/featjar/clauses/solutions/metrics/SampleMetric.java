@@ -22,10 +22,9 @@
  */
 package de.featjar.clauses.solutions.metrics;
 
-import java.util.*;
+import java.util.List;
 
 import de.featjar.clauses.solutions.SolutionList;
-import de.featjar.clauses.solutions.*;
 
 /**
  * Calculates a certain coverage for a given sample.

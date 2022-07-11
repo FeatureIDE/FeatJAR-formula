@@ -22,8 +22,10 @@
  */
 package de.featjar.io;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static de.featjar.io.FormatTest.*;
+import static de.featjar.io.FormatTest.testLoadAndSave;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import org.junit.jupiter.api.Test;
 
 import de.featjar.formula.io.textual.FormulaFormat;
 import de.featjar.formula.structure.Formula;
@@ -32,11 +34,6 @@ import de.featjar.formula.structure.atomic.literal.VariableMap;
 import de.featjar.formula.structure.compound.And;
 import de.featjar.formula.structure.compound.Not;
 import de.featjar.formula.structure.compound.Or;
-import org.junit.jupiter.api.*;
-import de.featjar.formula.io.textual.*;
-import de.featjar.formula.structure.*;
-import de.featjar.formula.structure.atomic.literal.*;
-import de.featjar.formula.structure.compound.*;
 
 /**
  * Tests {@link FormulaFormat Formula} format.

@@ -22,10 +22,9 @@
  */
 package de.featjar.formula.structure.compound;
 
-import java.util.*;
+import java.util.List;
 
 import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.*;
 
 /**
  * A logical connector that is {@code true} iff at least a given number of its

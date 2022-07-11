@@ -22,14 +22,12 @@
  */
 package de.featjar.formula.structure.atomic.literal;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
 
 import de.featjar.formula.structure.Terminal;
 import de.featjar.formula.structure.atomic.Atomic;
 import de.featjar.formula.structure.term.Term;
-import de.featjar.formula.structure.*;
-import de.featjar.formula.structure.atomic.*;
-import de.featjar.formula.structure.term.*;
 
 /**
  * A special {@link Atomic} that is always {@code false}.

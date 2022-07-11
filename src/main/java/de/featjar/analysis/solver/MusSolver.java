@@ -22,7 +22,7 @@
  */
 package de.featjar.analysis.solver;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * A solver capable of extracting a minimal unsatisfiable subset (MUS) from a

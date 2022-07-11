@@ -23,7 +23,6 @@
 package de.featjar.formula.structure.atomic.literal;
 
 import de.featjar.formula.structure.atomic.Atomic;
-import de.featjar.formula.structure.atomic.*;
 
 /**
  * A variable or negated variable.

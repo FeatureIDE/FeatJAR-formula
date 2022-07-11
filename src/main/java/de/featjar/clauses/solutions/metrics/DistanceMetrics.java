@@ -22,11 +22,10 @@
  */
 package de.featjar.clauses.solutions.metrics;
 
-import java.util.*;
-import java.util.function.*;
+import java.util.List;
+import java.util.function.DoubleSupplier;
 
 import de.featjar.clauses.LiteralList;
-import de.featjar.clauses.*;
 
 public class DistanceMetrics extends AggregatableMetrics {
 

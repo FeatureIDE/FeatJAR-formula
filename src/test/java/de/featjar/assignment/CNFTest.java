@@ -22,9 +22,14 @@
  */
 package de.featjar.assignment;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+
+import org.junit.jupiter.api.Test;
 
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.Formulas;
@@ -35,11 +40,6 @@ import de.featjar.formula.structure.compound.Biimplies;
 import de.featjar.formula.structure.compound.Implies;
 import de.featjar.formula.structure.compound.Or;
 import de.featjar.util.tree.Trees;
-import org.junit.jupiter.api.*;
-import de.featjar.formula.structure.*;
-import de.featjar.formula.structure.atomic.literal.*;
-import de.featjar.formula.structure.compound.*;
-import de.featjar.util.tree.*;
 
 public class CNFTest {
 

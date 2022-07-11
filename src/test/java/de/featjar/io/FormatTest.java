@@ -22,22 +22,26 @@
  */
 package de.featjar.io;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import java.io.*;
-import java.nio.file.*;
-import java.util.*;
-import java.util.regex.*;
-import java.util.stream.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import de.featjar.formula.structure.Formula;
 import de.featjar.util.data.Result;
 import de.featjar.util.io.IO;
 import de.featjar.util.io.format.Format;
-import de.featjar.formula.structure.*;
-import de.featjar.util.data.*;
-import de.featjar.util.io.*;
-import de.featjar.util.io.format.*;
 
 /**
  * Tests formats.

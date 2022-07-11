@@ -22,10 +22,9 @@
  */
 package de.featjar.analysis;
 
-import java.util.*;
+import java.util.Arrays;
 
 import de.featjar.clauses.LiteralList;
-import de.featjar.clauses.*;
 
 /**
  * Wrapper class for an analysis result containing additional information about

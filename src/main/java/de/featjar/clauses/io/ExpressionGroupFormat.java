@@ -22,17 +22,17 @@
  */
 package de.featjar.clauses.io;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 import de.featjar.clauses.ClauseList;
 import de.featjar.clauses.LiteralList;
 import de.featjar.util.data.Result;
+import de.featjar.util.io.InputMapper;
 import de.featjar.util.io.format.Format;
 import de.featjar.util.io.format.ParseProblem;
-import de.featjar.clauses.*;
-import de.featjar.util.data.*;
-import de.featjar.util.io.InputMapper;
-import de.featjar.util.io.format.*;
 
 /**
  * Reads and writes grouped propositional expressions in CNF.

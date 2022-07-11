@@ -22,14 +22,24 @@
  */
 package de.featjar.formula.io.textual;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.compound.*;
+import de.featjar.formula.structure.compound.And;
+import de.featjar.formula.structure.compound.AtLeast;
+import de.featjar.formula.structure.compound.AtMost;
+import de.featjar.formula.structure.compound.Between;
+import de.featjar.formula.structure.compound.Biimplies;
+import de.featjar.formula.structure.compound.Choose;
+import de.featjar.formula.structure.compound.Compound;
+import de.featjar.formula.structure.compound.Exists;
+import de.featjar.formula.structure.compound.ForAll;
+import de.featjar.formula.structure.compound.Implies;
+import de.featjar.formula.structure.compound.Not;
+import de.featjar.formula.structure.compound.Or;
 import de.featjar.util.data.Pair;
-import de.featjar.formula.structure.*;
-import de.featjar.formula.structure.compound.*;
-import de.featjar.util.data.*;
 
 public class Symbols {
 
