@@ -51,12 +51,8 @@ public class ModelRepresentation {
 	}
 
 	public ModelRepresentation(Formula formula) {
-		this(formula, formula.getVariableMap().orElseThrow());
-	}
-
-	public ModelRepresentation(Formula formula, VariableMap variables) {
 		this.formula = formula;
-		this.variables = variables;
+		this.variables = formula.getVariableMap().orElseThrow();
 		cache.set(FormulaProvider.of(formula));
 	}
 

@@ -63,7 +63,7 @@ public interface Formula extends Tree<Formula> {
 	}
 
 	public static boolean checkValues(Class<?> type, List<?> values) {
-		return values.stream().allMatch(type::isInstance);
+		return values.stream().allMatch(v -> v == null || type.isInstance(v));
 	}
 
 	@SuppressWarnings("unchecked")
