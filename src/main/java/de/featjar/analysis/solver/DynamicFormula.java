@@ -52,8 +52,7 @@ public interface DynamicFormula<O> {
 	 *
 	 * @see #push(Collection)
 	 * @see #pop()
-	 * @see #pop(count)
-	 * @see #remove(O)
+	 * @see #pop(int)
 	 */
 	List<O> push(Formula clause);
 
@@ -65,10 +64,9 @@ public interface DynamicFormula<O> {
 	 * @return A list of the identifying constraint objects of the added clauses
 	 *         that can be used to remove them from the solver.
 	 *
-	 * @see #push(I)
+	 * @see #push(Formula)
 	 * @see #pop()
-	 * @see #pop(count)
-	 * @see #remove(O)
+	 * @see #pop(int)
 	 */
 	default List<O> push(Collection<Formula> clauses) {
 		int addCount = 0;
@@ -89,19 +87,19 @@ public interface DynamicFormula<O> {
 
 	/**
 	 * Removes the last clause added to the solver. This method should be preferred
-	 * over {@link #remove(O)}, if possible.<br>
+	 * over remove, if possible.<br>
 	 * <b>Note:</b> This method may not be supported by all solvers.
 	 */
 	O pop();
 
 	/**
 	 * Removes the last clauses added to the solver. This method should be preferred
-	 * over {@link #remove(O)}, if possible.<br>
+	 * over remove, if possible.<br>
 	 * <b>Note:</b> This method may not be supported by all solvers.
 	 *
 	 * @param count The number of clauses to be removed.
 	 *
-	 * @see #push(I)
+	 * @see #push(Formula)
 	 */
 	default void pop(int count) {
 		if (count > size()) {
