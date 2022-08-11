@@ -1,0 +1,7 @@
+plugins {
+    id 'de.featjar.java-library'
+}
+
+dependencies {
+    implementation 'de.featjar:util'
+}
