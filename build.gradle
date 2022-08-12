@@ -3,5 +3,5 @@ plugins {
 }
 
 dependencies {
-    implementation 'de.featjar:util'
+    api 'de.featjar:util'
 }
