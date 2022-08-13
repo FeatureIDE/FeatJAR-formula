@@ -27,22 +27,23 @@ package de.featjar.analysis.solver;
  */
 public interface SatSolver extends Solver {
 
-	/**
-	 * Possible outcomes of a satisfiability solver call.<br>
-	 * One of {@code TRUE}, {@code FALSE}, or {@code TIMEOUT}.
-	 *
-	 * @author Sebastian Krieter
-	 */
-	enum SatResult {
-		FALSE, TIMEOUT, TRUE
-	}
+    /**
+     * Possible outcomes of a satisfiability solver call.<br>
+     * One of {@code TRUE}, {@code FALSE}, or {@code TIMEOUT}.
+     *
+     * @author Sebastian Krieter
+     */
+    enum SatResult {
+        FALSE,
+        TIMEOUT,
+        TRUE
+    }
 
-	/**
-	 * Checks whether there is a satisfying solution considering the clauses of the
-	 * solver.
-	 *
-	 * @return A {@link SatResult}.
-	 */
-	SatResult hasSolution();
-
+    /**
+     * Checks whether there is a satisfying solution considering the clauses of the
+     * solver.
+     *
+     * @return A {@link SatResult}.
+     */
+    SatResult hasSolution();
 }

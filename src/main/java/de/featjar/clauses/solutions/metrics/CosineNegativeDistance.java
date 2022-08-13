@@ -28,19 +28,18 @@ package de.featjar.clauses.solutions.metrics;
  */
 public class CosineNegativeDistance implements DistanceFunction {
 
-	@Override
-	public double computeDistance(final int[] literals1, final int[] literals2) {
-		double sum = 0;
-		for (int k = 0; k < literals1.length; k++) {
-			sum += literals1[k] == literals2[k] ? 1 : -1;
-		}
-		final double cosineSimilarity = sum / literals1.length;
-		return (1 - cosineSimilarity) / 2.0;
-	}
+    @Override
+    public double computeDistance(final int[] literals1, final int[] literals2) {
+        double sum = 0;
+        for (int k = 0; k < literals1.length; k++) {
+            sum += literals1[k] == literals2[k] ? 1 : -1;
+        }
+        final double cosineSimilarity = sum / literals1.length;
+        return (1 - cosineSimilarity) / 2.0;
+    }
 
-	@Override
-	public String getName() {
-		return "CosineNegative";
-	}
-
+    @Override
+    public String getName() {
+        return "CosineNegative";
+    }
 }

@@ -33,29 +33,28 @@ import java.util.List;
  */
 public interface MusSolver<T> extends SatSolver {
 
-	/**
-	 * <p>
-	 * Returns any minimal unsatisfiable subset (MUS) of the problem. A MUS is any
-	 * unsatisfiable subset of the formula which cannot be reduced any further
-	 * without becoming satisfiable.
-	 * </p>
-	 *
-	 * <p>
-	 * A MUS can act as an explanation for why a formula is unsatisfiable. As such,
-	 * the problem must be unsatisfiable for a MUS to be found.
-	 * </p>
-	 *
-	 * @return any minimal unsatisfiable subset; not null
-	 * @throws IllegalStateException if the formula in this solver is satisfiable
-	 */
-	List<T> getMinimalUnsatisfiableSubset() throws IllegalStateException;
+    /**
+     * <p>
+     * Returns any minimal unsatisfiable subset (MUS) of the problem. A MUS is any
+     * unsatisfiable subset of the formula which cannot be reduced any further
+     * without becoming satisfiable.
+     * </p>
+     *
+     * <p>
+     * A MUS can act as an explanation for why a formula is unsatisfiable. As such,
+     * the problem must be unsatisfiable for a MUS to be found.
+     * </p>
+     *
+     * @return any minimal unsatisfiable subset; not null
+     * @throws IllegalStateException if the formula in this solver is satisfiable
+     */
+    List<T> getMinimalUnsatisfiableSubset() throws IllegalStateException;
 
-	/**
-	 * Returns all minimal unsatisfiable subsets of the problem.
-	 *
-	 * @return all minimal unsatisfiable subsets of the problem
-	 * @throws IllegalStateException if the formula in this solver is satisfiable
-	 */
-	List<List<T>> getAllMinimalUnsatisfiableSubsets() throws IllegalStateException;
-
+    /**
+     * Returns all minimal unsatisfiable subsets of the problem.
+     *
+     * @return all minimal unsatisfiable subsets of the problem
+     * @throws IllegalStateException if the formula in this solver is satisfiable
+     */
+    List<List<T>> getAllMinimalUnsatisfiableSubsets() throws IllegalStateException;
 }

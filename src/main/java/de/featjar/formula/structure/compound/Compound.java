@@ -20,10 +20,9 @@
  */
 package de.featjar.formula.structure.compound;
 
-import java.util.List;
-
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.NonTerminal;
+import java.util.List;
 
 /**
  * A logical connector that is {@code true} iff all of its children are
@@ -32,27 +31,26 @@ import de.featjar.formula.structure.NonTerminal;
  * @author Sebastian Krieter
  */
 public abstract class Compound extends NonTerminal implements Formula {
-	public Compound(List<? extends Formula> nodes) {
-		super(nodes);
-	}
+    public Compound(List<? extends Formula> nodes) {
+        super(nodes);
+    }
 
-	public Compound(Formula... nodes) {
-		super(nodes);
-	}
+    public Compound(Formula... nodes) {
+        super(nodes);
+    }
 
-	protected Compound() {
-		super();
-	}
+    protected Compound() {
+        super();
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<Formula> getChildren() {
-		return (List<Formula>) super.getChildren();
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Formula> getChildren() {
+        return (List<Formula>) super.getChildren();
+    }
 
-	@Override
-	public Class<Boolean> getType() {
-		return Boolean.class;
-	}
-
+    @Override
+    public Class<Boolean> getType() {
+        return Boolean.class;
+    }
 }

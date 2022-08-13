@@ -27,13 +27,12 @@ package de.featjar.clauses.solutions.combinations;
  */
 public class InverseDefaultIterator extends ACombinationIterator {
 
-	public InverseDefaultIterator(int t, int size) {
-		super(t, size);
-	}
+    public InverseDefaultIterator(int t, int size) {
+        super(t, size);
+    }
 
-	@Override
-	protected long nextIndex() {
-		return numCombinations - counter;
-	}
-
+    @Override
+    protected long nextIndex() {
+        return numCombinations - counter;
+    }
 }

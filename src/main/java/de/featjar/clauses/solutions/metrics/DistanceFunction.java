@@ -27,8 +27,7 @@ package de.featjar.clauses.solutions.metrics;
  */
 public interface DistanceFunction {
 
-	double computeDistance(final int[] literals1, final int[] literals2);
+    double computeDistance(final int[] literals1, final int[] literals2);
 
-	String getName();
-
+    String getName();
 }

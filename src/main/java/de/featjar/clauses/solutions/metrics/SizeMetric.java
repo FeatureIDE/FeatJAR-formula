@@ -29,14 +29,13 @@ import de.featjar.clauses.solutions.SolutionList;
  */
 public class SizeMetric implements SampleMetric {
 
-	@Override
-	public double get(SolutionList sample) {
-		return sample.getSolutions().size();
-	}
+    @Override
+    public double get(SolutionList sample) {
+        return sample.getSolutions().size();
+    }
 
-	@Override
-	public String getName() {
-		return "Size";
-	}
-
+    @Override
+    public String getName() {
+        return "Size";
+    }
 }

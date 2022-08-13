@@ -29,14 +29,13 @@ import de.featjar.clauses.LiteralList;
  */
 public class NegativeCount implements CountFunction {
 
-	@Override
-	public double compute(LiteralList literals) {
-		return (double) literals.countNegative() / literals.size();
-	}
+    @Override
+    public double compute(LiteralList literals) {
+        return (double) literals.countNegative() / literals.size();
+    }
 
-	@Override
-	public String getName() {
-		return "Negative";
-	}
-
+    @Override
+    public String getName() {
+        return "Negative";
+    }
 }

@@ -22,8 +22,6 @@ package de.featjar.io;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.jupiter.api.Test;
-
 import de.featjar.formula.io.xml.XMLFeatureModelFormat;
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.atomic.literal.Literal;
@@ -32,6 +30,7 @@ import de.featjar.formula.structure.compound.And;
 import de.featjar.formula.structure.compound.Implies;
 import de.featjar.formula.structure.compound.Not;
 import de.featjar.formula.structure.compound.Or;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests {@link XMLFeatureModelFormat FeatureIDE} format.
@@ -40,76 +39,75 @@ import de.featjar.formula.structure.compound.Or;
  */
 public class XMLFeatureModelFormatTest {
 
-	@Test
-	public void FeatureIDE_ABC_nAnBnC() {
-		test("ABC-nAnBnC");
-	}
+    @Test
+    public void FeatureIDE_ABC_nAnBnC() {
+        test("ABC-nAnBnC");
+    }
 
-	@Test
-	public void FeatureIDE_A() {
-		test("A");
-	}
+    @Test
+    public void FeatureIDE_A() {
+        test("A");
+    }
 
-	@Test
-	public void FeatureIDE_CNF_SingleGroups() {
-		test("SingleGroups");
-	}
+    @Test
+    public void FeatureIDE_CNF_SingleGroups() {
+        test("SingleGroups");
+    }
 
-	@Test
-	public void FeatureIDE_faulty() {
-		test("faulty");
-	}
+    @Test
+    public void FeatureIDE_faulty() {
+        test("faulty");
+    }
 
-	private static void test(String name) {
-		FormatTest.testLoad(getFormula(name), name, new XMLFeatureModelFormat());
-	}
+    private static void test(String name) {
+        FormatTest.testLoad(getFormula(name), name, new XMLFeatureModelFormat());
+    }
 
-	private static Formula getFormula(String name) {
-		switch (name) {
-		case "faulty": {
-			return null;
-		}
-		case "ABC-nAnBnC": {
-			final VariableMap map = new VariableMap();
-			final Literal root = map.createLiteral("Root");
-			final Literal a = map.createLiteral("A");
-			final Literal b = map.createLiteral("B");
-			final Literal c = map.createLiteral("C");
-			return new And(
-				root.cloneNode(),
-				new Implies(a.cloneNode(), root.cloneNode()),
-				new Implies(b.cloneNode(), root.cloneNode()),
-				new Implies(c.cloneNode(), root.cloneNode()),
-				new Implies(root.cloneNode(), new Or(a.cloneNode(), b.cloneNode(), c.cloneNode())),
-				new Or(new Not(a.cloneNode()), new Not(b.cloneNode()), new Not(c.cloneNode())));
-		}
-		case "SingleGroups": {
-			final VariableMap map = new VariableMap();
-			final Literal root = map.createLiteral("Root");
-			final Literal a = map.createLiteral("A");
-			final Literal a1 = map.createLiteral("A1");
-			final Literal b = map.createLiteral("B");
-			final Literal b1 = map.createLiteral("B1");
-			return new And(
-				root.cloneNode(),
-				new Implies(a.cloneNode(), root.cloneNode()),
-				new Implies(root.cloneNode(), a.cloneNode()),
-				new Implies(a1.cloneNode(), a.cloneNode()),
-				new Implies(a.cloneNode(), a1.cloneNode()),
-				new Implies(b.cloneNode(), root.cloneNode()),
-				new Implies(root.cloneNode(), b.cloneNode()),
-				new Implies(b1.cloneNode(), b.cloneNode()),
-				new Implies(b.cloneNode(), b1.cloneNode()));
-		}
-		case "A": {
-			final VariableMap map = new VariableMap();
-			final Literal a = map.createLiteral("A");
-			return new And(a.cloneNode());
-		}
-		default:
-			fail(name);
-			return null;
-		}
-	}
-
+    private static Formula getFormula(String name) {
+        switch (name) {
+            case "faulty": {
+                return null;
+            }
+            case "ABC-nAnBnC": {
+                final VariableMap map = new VariableMap();
+                final Literal root = map.createLiteral("Root");
+                final Literal a = map.createLiteral("A");
+                final Literal b = map.createLiteral("B");
+                final Literal c = map.createLiteral("C");
+                return new And(
+                        root.cloneNode(),
+                        new Implies(a.cloneNode(), root.cloneNode()),
+                        new Implies(b.cloneNode(), root.cloneNode()),
+                        new Implies(c.cloneNode(), root.cloneNode()),
+                        new Implies(root.cloneNode(), new Or(a.cloneNode(), b.cloneNode(), c.cloneNode())),
+                        new Or(new Not(a.cloneNode()), new Not(b.cloneNode()), new Not(c.cloneNode())));
+            }
+            case "SingleGroups": {
+                final VariableMap map = new VariableMap();
+                final Literal root = map.createLiteral("Root");
+                final Literal a = map.createLiteral("A");
+                final Literal a1 = map.createLiteral("A1");
+                final Literal b = map.createLiteral("B");
+                final Literal b1 = map.createLiteral("B1");
+                return new And(
+                        root.cloneNode(),
+                        new Implies(a.cloneNode(), root.cloneNode()),
+                        new Implies(root.cloneNode(), a.cloneNode()),
+                        new Implies(a1.cloneNode(), a.cloneNode()),
+                        new Implies(a.cloneNode(), a1.cloneNode()),
+                        new Implies(b.cloneNode(), root.cloneNode()),
+                        new Implies(root.cloneNode(), b.cloneNode()),
+                        new Implies(b1.cloneNode(), b.cloneNode()),
+                        new Implies(b.cloneNode(), b1.cloneNode()));
+            }
+            case "A": {
+                final VariableMap map = new VariableMap();
+                final Literal a = map.createLiteral("A");
+                return new And(a.cloneNode());
+            }
+            default:
+                fail(name);
+                return null;
+        }
+    }
 }

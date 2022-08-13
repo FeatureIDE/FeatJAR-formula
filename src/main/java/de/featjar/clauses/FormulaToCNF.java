@@ -20,10 +20,6 @@
  */
 package de.featjar.clauses;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.Formulas;
 import de.featjar.formula.structure.atomic.VariableAssignment;
@@ -34,6 +30,9 @@ import de.featjar.util.job.Executor;
 import de.featjar.util.job.InternalMonitor;
 import de.featjar.util.job.MonitorableFunction;
 import de.featjar.util.tree.Trees;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Several methods concerning {@link Formula} framework.
@@ -42,83 +41,89 @@ import de.featjar.util.tree.Trees;
  */
 public final class FormulaToCNF implements MonitorableFunction<Formula, CNF> {
 
-	private boolean keepLiteralOrder;
-	private VariableMap variableMapping;
+    private boolean keepLiteralOrder;
+    private VariableMap variableMapping;
 
-	public static CNF convert(Formula formula) {
-		return Executor.run(new FormulaToCNF(), formula).get();
-	}
+    public static CNF convert(Formula formula) {
+        return Executor.run(new FormulaToCNF(), formula).get();
+    }
 
-	public static CNF convert(Formula formula, VariableMap variableMapping) {
-		final FormulaToCNF function = new FormulaToCNF();
-		function.setVariableMapping(variableMapping);
-		function.setKeepLiteralOrder(true);
-		return Executor.run(function, formula).get();
-	}
+    public static CNF convert(Formula formula, VariableMap variableMapping) {
+        final FormulaToCNF function = new FormulaToCNF();
+        function.setVariableMapping(variableMapping);
+        function.setKeepLiteralOrder(true);
+        return Executor.run(function, formula).get();
+    }
 
-	@Override
-	public CNF execute(Formula node, InternalMonitor monitor) {
-		if (node == null) {
-			return null;
-		}
-		final VariableMap mapping = variableMapping != null ? variableMapping
-			: node.getVariableMap().orElseGet(VariableMap::new);
-		final ClauseList clauses = new ClauseList();
-		final Optional<Object> formulaValue = Formulas.evaluate(node, new VariableAssignment(mapping));
-		if (formulaValue.isPresent()) {
-			if (formulaValue.get() == Boolean.FALSE) {
-				clauses.add(new LiteralList());
-			}
-		} else {
-			final Formula cnf = Formulas.toCNF(Trees.cloneTree(node)).get();
-			cnf.getChildren().stream().map(exp -> getClause(exp, mapping)).filter(Objects::nonNull).forEach(
-				clauses::add);
-		}
-		return new CNF(mapping, clauses);
-	}
+    @Override
+    public CNF execute(Formula node, InternalMonitor monitor) {
+        if (node == null) {
+            return null;
+        }
+        final VariableMap mapping = variableMapping != null
+                ? variableMapping
+                : node.getVariableMap().orElseGet(VariableMap::new);
+        final ClauseList clauses = new ClauseList();
+        final Optional<Object> formulaValue = Formulas.evaluate(node, new VariableAssignment(mapping));
+        if (formulaValue.isPresent()) {
+            if (formulaValue.get() == Boolean.FALSE) {
+                clauses.add(new LiteralList());
+            }
+        } else {
+            final Formula cnf = Formulas.toCNF(Trees.cloneTree(node)).get();
+            cnf.getChildren().stream()
+                    .map(exp -> getClause(exp, mapping))
+                    .filter(Objects::nonNull)
+                    .forEach(clauses::add);
+        }
+        return new CNF(mapping, clauses);
+    }
 
-	public boolean isKeepLiteralOrder() {
-		return keepLiteralOrder;
-	}
+    public boolean isKeepLiteralOrder() {
+        return keepLiteralOrder;
+    }
 
-	public void setKeepLiteralOrder(boolean keepLiteralOrder) {
-		this.keepLiteralOrder = keepLiteralOrder;
-	}
+    public void setKeepLiteralOrder(boolean keepLiteralOrder) {
+        this.keepLiteralOrder = keepLiteralOrder;
+    }
 
-	public VariableMap getVariableMapping() {
-		return variableMapping;
-	}
+    public VariableMap getVariableMapping() {
+        return variableMapping;
+    }
 
-	public void setVariableMapping(VariableMap variableMapping) {
-		this.variableMapping = variableMapping;
-	}
+    public void setVariableMapping(VariableMap variableMapping) {
+        this.variableMapping = variableMapping;
+    }
 
-	private LiteralList getClause(Formula clauseExpression, VariableMap mapping) {
-		if (clauseExpression instanceof Literal) {
-			final Literal literal = (Literal) clauseExpression;
-			final int variable = mapping.getVariableSignature(literal.getName()).orElseThrow(RuntimeException::new)
-				.getIndex();
-			return new LiteralList(new int[] { literal.isPositive() ? variable : -variable }, keepLiteralOrder
-				? LiteralList.Order.UNORDERED
-				: LiteralList.Order.NATURAL);
-		} else {
-			final List<? extends Formula> clauseChildren = clauseExpression.getChildren();
-			if (clauseChildren.stream().anyMatch(literal -> literal == Literal.True)) {
-				return null;
-			} else {
-				final int[] literals = clauseChildren.stream()
-					.filter(literal -> literal != Literal.False)
-					.filter(literal -> literal instanceof BooleanLiteral)
-					.mapToInt(literal -> {
-						final int variable = mapping.getVariableSignature(
-							((BooleanLiteral) literal).getVariable().getName()).orElseThrow(RuntimeException::new)
-							.getIndex();
-						return ((Literal) literal).isPositive() ? variable : -variable;
-					}).toArray();
-				return new LiteralList(literals, keepLiteralOrder ? LiteralList.Order.UNORDERED
-					: LiteralList.Order.NATURAL);
-			}
-		}
-	}
-
+    private LiteralList getClause(Formula clauseExpression, VariableMap mapping) {
+        if (clauseExpression instanceof Literal) {
+            final Literal literal = (Literal) clauseExpression;
+            final int variable = mapping.getVariableSignature(literal.getName())
+                    .orElseThrow(RuntimeException::new)
+                    .getIndex();
+            return new LiteralList(
+                    new int[] {literal.isPositive() ? variable : -variable},
+                    keepLiteralOrder ? LiteralList.Order.UNORDERED : LiteralList.Order.NATURAL);
+        } else {
+            final List<? extends Formula> clauseChildren = clauseExpression.getChildren();
+            if (clauseChildren.stream().anyMatch(literal -> literal == Literal.True)) {
+                return null;
+            } else {
+                final int[] literals = clauseChildren.stream()
+                        .filter(literal -> literal != Literal.False)
+                        .filter(literal -> literal instanceof BooleanLiteral)
+                        .mapToInt(literal -> {
+                            final int variable = mapping.getVariableSignature(((BooleanLiteral) literal)
+                                            .getVariable()
+                                            .getName())
+                                    .orElseThrow(RuntimeException::new)
+                                    .getIndex();
+                            return ((Literal) literal).isPositive() ? variable : -variable;
+                        })
+                        .toArray();
+                return new LiteralList(
+                        literals, keepLiteralOrder ? LiteralList.Order.UNORDERED : LiteralList.Order.NATURAL);
+            }
+        }
+    }
 }

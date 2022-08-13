@@ -20,15 +20,13 @@
  */
 package de.featjar.formula.structure.term;
 
-import java.util.List;
-
 import de.featjar.formula.structure.Formula;
+import java.util.List;
 
 public interface Term extends Formula {
 
-	@Override
-	List<? extends Term> getChildren();
+    @Override
+    List<? extends Term> getChildren();
 
-	Class<?> getType();
-
+    Class<?> getType();
 }

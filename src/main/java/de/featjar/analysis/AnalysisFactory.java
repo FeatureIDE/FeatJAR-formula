@@ -22,6 +22,5 @@ package de.featjar.analysis;
 
 public interface AnalysisFactory {
 
-	Analysis<?> getHasSolutionAnalysis();
-
+    Analysis<?> getHasSolutionAnalysis();
 }

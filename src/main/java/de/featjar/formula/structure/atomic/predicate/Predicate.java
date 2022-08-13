@@ -20,44 +20,42 @@
  */
 package de.featjar.formula.structure.atomic.predicate;
 
-import java.util.Arrays;
-import java.util.List;
-
 import de.featjar.formula.structure.NonTerminal;
 import de.featjar.formula.structure.atomic.Atomic;
 import de.featjar.formula.structure.term.Term;
+import java.util.Arrays;
+import java.util.List;
 
 public abstract class Predicate extends NonTerminal implements Atomic {
 
-	protected Predicate(List<Term> nodes) {
-		super(nodes);
-	}
+    protected Predicate(List<Term> nodes) {
+        super(nodes);
+    }
 
-	@SafeVarargs
-	protected Predicate(Term... nodes) {
-		super(nodes);
-	}
+    @SafeVarargs
+    protected Predicate(Term... nodes) {
+        super(nodes);
+    }
 
-	protected Predicate() {
-		super();
-	}
+    protected Predicate() {
+        super();
+    }
 
-	public void setArguments(Term leftArgument, Term rightArgument) {
-		setChildren(Arrays.asList(leftArgument, rightArgument));
-	}
+    public void setArguments(Term leftArgument, Term rightArgument) {
+        setChildren(Arrays.asList(leftArgument, rightArgument));
+    }
 
-	@Override
-	public String getName() {
-		return "=";
-	}
+    @Override
+    public String getName() {
+        return "=";
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<? extends Term> getChildren() {
-		return (List<? extends Term>) super.getChildren();
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<? extends Term> getChildren() {
+        return (List<? extends Term>) super.getChildren();
+    }
 
-	@Override
-	public abstract Predicate flip();
-
+    @Override
+    public abstract Predicate flip();
 }

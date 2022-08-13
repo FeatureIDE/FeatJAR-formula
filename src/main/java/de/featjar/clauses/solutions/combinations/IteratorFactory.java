@@ -27,26 +27,31 @@ package de.featjar.clauses.solutions.combinations;
  */
 public class IteratorFactory {
 
-	public enum IteratorID {
-		InverseDefault, Default, Lexicographic, InverseLexicographic, RandomPartition, Partition
-	}
+    public enum IteratorID {
+        InverseDefault,
+        Default,
+        Lexicographic,
+        InverseLexicographic,
+        RandomPartition,
+        Partition
+    }
 
-	public static CombinationIterator getIterator(IteratorID id, int size, int t) {
-		switch (id) {
-		case Default:
-			return new InverseDefaultIterator(t, size);
-		case InverseDefault:
-			return new DefaultIterator(t, size);
-		case InverseLexicographic:
-			return new InverseLexicographicIterator(t, size);
-		case Lexicographic:
-			return new LexicographicIterator(t, size);
-		case Partition:
-			return new PartitionIterator(t, size);
-		case RandomPartition:
-			return new RandomPartitionIterator(t, size);
-		default:
-			return null;
-		}
-	}
+    public static CombinationIterator getIterator(IteratorID id, int size, int t) {
+        switch (id) {
+            case Default:
+                return new InverseDefaultIterator(t, size);
+            case InverseDefault:
+                return new DefaultIterator(t, size);
+            case InverseLexicographic:
+                return new InverseLexicographicIterator(t, size);
+            case Lexicographic:
+                return new LexicographicIterator(t, size);
+            case Partition:
+                return new PartitionIterator(t, size);
+            case RandomPartition:
+                return new RandomPartitionIterator(t, size);
+            default:
+                return null;
+        }
+    }
 }

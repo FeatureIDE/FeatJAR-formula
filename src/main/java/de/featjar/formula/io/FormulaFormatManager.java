@@ -25,13 +25,11 @@ import de.featjar.util.io.format.FormatManager;
 
 public final class FormulaFormatManager extends FormatManager<Formula> {
 
-	private static FormulaFormatManager INSTANCE = new FormulaFormatManager();
+    private static FormulaFormatManager INSTANCE = new FormulaFormatManager();
 
-	public static FormulaFormatManager getInstance() {
-		return INSTANCE;
-	}
+    public static FormulaFormatManager getInstance() {
+        return INSTANCE;
+    }
 
-	private FormulaFormatManager() {
-	}
-
+    private FormulaFormatManager() {}
 }

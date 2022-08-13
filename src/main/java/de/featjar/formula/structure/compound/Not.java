@@ -20,9 +20,8 @@
  */
 package de.featjar.formula.structure.compound;
 
-import java.util.List;
-
 import de.featjar.formula.structure.Formula;
+import java.util.List;
 
 /**
  * A logical connector that is {@code true} iff its child is {@code false}.
@@ -31,33 +30,31 @@ import de.featjar.formula.structure.Formula;
  */
 public class Not extends Compound {
 
-	public Not(Formula node) {
-		super(node);
-	}
+    public Not(Formula node) {
+        super(node);
+    }
 
-	private Not() {
-		super();
-	}
+    private Not() {
+        super();
+    }
 
-	public Not(List<? extends Formula> nodes) {
-		super(nodes);
-		if (nodes.size() != 1)
-			throw new IllegalArgumentException("not requires one argument");
-	}
+    public Not(List<? extends Formula> nodes) {
+        super(nodes);
+        if (nodes.size() != 1) throw new IllegalArgumentException("not requires one argument");
+    }
 
-	@Override
-	public Not cloneNode() {
-		return new Not();
-	}
+    @Override
+    public Not cloneNode() {
+        return new Not();
+    }
 
-	@Override
-	public String getName() {
-		return "not";
-	}
+    @Override
+    public String getName() {
+        return "not";
+    }
 
-	@Override
-	public Boolean eval(List<?> values) {
-		return !(boolean) values.get(0);
-	}
-
+    @Override
+    public Boolean eval(List<?> values) {
+        return !(boolean) values.get(0);
+    }
 }

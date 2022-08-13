@@ -28,25 +28,24 @@ package de.featjar.clauses.solutions.metrics;
  */
 public class OverlapSelectedDistance implements DistanceFunction {
 
-	@Override
-	public double computeDistance(final int[] literals1, final int[] literals2) {
-		double sum = 0;
-		double sumA = 0;
-		double sumB = 0;
-		for (int k = 0; k < literals1.length; k++) {
-			final int a = ~literals1[k] >>> (Integer.SIZE - 1);
-			final int b = ~literals2[k] >>> (Integer.SIZE - 1);
-			sumA += a;
-			sumB += b;
-			sum += a & b;
-		}
-		final double similarity = sum / Math.min(sumA, sumB);
-		return 1 - similarity;
-	}
+    @Override
+    public double computeDistance(final int[] literals1, final int[] literals2) {
+        double sum = 0;
+        double sumA = 0;
+        double sumB = 0;
+        for (int k = 0; k < literals1.length; k++) {
+            final int a = ~literals1[k] >>> (Integer.SIZE - 1);
+            final int b = ~literals2[k] >>> (Integer.SIZE - 1);
+            sumA += a;
+            sumB += b;
+            sum += a & b;
+        }
+        final double similarity = sum / Math.min(sumA, sumB);
+        return 1 - similarity;
+    }
 
-	@Override
-	public String getName() {
-		return "OverlapSelected";
-	}
-
+    @Override
+    public String getName() {
+        return "OverlapSelected";
+    }
 }

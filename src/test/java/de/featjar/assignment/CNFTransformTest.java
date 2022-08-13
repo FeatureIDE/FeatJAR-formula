@@ -23,13 +23,6 @@ package de.featjar.assignment;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import org.junit.jupiter.api.Test;
-
 import de.featjar.formula.ModelRepresentation;
 import de.featjar.formula.io.KConfigReaderFormat;
 import de.featjar.formula.io.dimacs.DIMACSFormat;
@@ -39,54 +32,60 @@ import de.featjar.formula.structure.Formulas;
 import de.featjar.formula.structure.atomic.literal.VariableMap;
 import de.featjar.util.io.IO;
 import de.featjar.util.tree.Trees;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import org.junit.jupiter.api.Test;
 
 public class CNFTransformTest {
 
-	@Test
-	public void testImplies() {
-		testTransform(FormulaCreator.getFormula01());
-	}
+    @Test
+    public void testImplies() {
+        testTransform(FormulaCreator.getFormula01());
+    }
 
-	@Test
-	public void testComplex() {
-		testTransform(FormulaCreator.getFormula02());
-	}
+    @Test
+    public void testComplex() {
+        testTransform(FormulaCreator.getFormula02());
+    }
 
-	private void testTransform(final Formula formulaOrg) {
-		final Formula formulaClone = Trees.cloneTree(formulaOrg);
-		final VariableMap map = formulaOrg.getVariableMap().orElseThrow();
-		final VariableMap mapClone = map.clone();
+    private void testTransform(final Formula formulaOrg) {
+        final Formula formulaClone = Trees.cloneTree(formulaOrg);
+        final VariableMap map = formulaOrg.getVariableMap().orElseThrow();
+        final VariableMap mapClone = map.clone();
 
-		final ModelRepresentation rep = new ModelRepresentation(formulaOrg);
-		final Formula formulaCNF = rep.get(FormulaProvider.CNF.fromFormula());
+        final ModelRepresentation rep = new ModelRepresentation(formulaOrg);
+        final Formula formulaCNF = rep.get(FormulaProvider.CNF.fromFormula());
 
-		FormulaCreator.testAllAssignments(map, assignment -> {
-			final Boolean orgEval = (Boolean) Formulas.evaluate(formulaOrg, assignment).orElseThrow();
-			final Boolean cnfEval = (Boolean) Formulas.evaluate(formulaCNF, assignment).orElseThrow();
-			assertEquals(orgEval, cnfEval, assignment.toString());
-		});
-		assertTrue(Trees.equals(formulaOrg, formulaClone));
-		assertEquals(mapClone, map);
-		assertEquals(mapClone, formulaOrg.getVariableMap().get());
-	}
+        FormulaCreator.testAllAssignments(map, assignment -> {
+            final Boolean orgEval =
+                    (Boolean) Formulas.evaluate(formulaOrg, assignment).orElseThrow();
+            final Boolean cnfEval =
+                    (Boolean) Formulas.evaluate(formulaCNF, assignment).orElseThrow();
+            assertEquals(orgEval, cnfEval, assignment.toString());
+        });
+        assertTrue(Trees.equals(formulaOrg, formulaClone));
+        assertEquals(mapClone, map);
+        assertEquals(mapClone, formulaOrg.getVariableMap().get());
+    }
 
-	@Test
-	public void testKConfigReader() throws IOException {
-		final Path modelFile = Paths.get("src/test/resources/kconfigreader/min-example.model");
-		final Path dimacsFile = Paths.get("src/test/resources/kconfigreader/min-example.dimacs");
-		final Formula formula = IO.load(modelFile, new KConfigReaderFormat()).orElseThrow();
+    @Test
+    public void testKConfigReader() throws IOException {
+        final Path modelFile = Paths.get("src/test/resources/kconfigreader/min-example.model");
+        final Path dimacsFile = Paths.get("src/test/resources/kconfigreader/min-example.dimacs");
+        final Formula formula = IO.load(modelFile, new KConfigReaderFormat()).orElseThrow();
 
-		ModelRepresentation rep = new ModelRepresentation(formula);
-		IO.save(rep.get(FormulaProvider.CNF.fromFormula()), dimacsFile, new DIMACSFormat());
-		Files.deleteIfExists(dimacsFile);
+        ModelRepresentation rep = new ModelRepresentation(formula);
+        IO.save(rep.get(FormulaProvider.CNF.fromFormula()), dimacsFile, new DIMACSFormat());
+        Files.deleteIfExists(dimacsFile);
 
-		rep = new ModelRepresentation(formula);
-		IO.save(rep.get(FormulaProvider.CNF.fromFormula(0)), dimacsFile, new DIMACSFormat());
-		Files.deleteIfExists(dimacsFile);
+        rep = new ModelRepresentation(formula);
+        IO.save(rep.get(FormulaProvider.CNF.fromFormula(0)), dimacsFile, new DIMACSFormat());
+        Files.deleteIfExists(dimacsFile);
 
-		rep = new ModelRepresentation(formula);
-		IO.save(rep.get(FormulaProvider.CNF.fromFormula(100)), dimacsFile, new DIMACSFormat());
-		Files.deleteIfExists(dimacsFile);
-	}
-
+        rep = new ModelRepresentation(formula);
+        IO.save(rep.get(FormulaProvider.CNF.fromFormula(100)), dimacsFile, new DIMACSFormat());
+        Files.deleteIfExists(dimacsFile);
+    }
 }

@@ -27,29 +27,28 @@ package de.featjar.analysis.solver;
  */
 public interface SolutionSolver<T> extends SatSolver {
 
-	/**
-	 * Returns the last solution found by satisfiability solver. Can only be called
-	 * after a successful call of {@link #hasSolution()}.
-	 *
-	 * @return A representation of a satisfying assignment.
-	 *
-	 * @see #hasSolution()
-	 * @see #findSolution()
-	 */
-	T getSolution();
+    /**
+     * Returns the last solution found by satisfiability solver. Can only be called
+     * after a successful call of {@link #hasSolution()}.
+     *
+     * @return A representation of a satisfying assignment.
+     *
+     * @see #hasSolution()
+     * @see #findSolution()
+     */
+    T getSolution();
 
-	/**
-	 * Computes and returns a solution. This is a convenience method that is
-	 * equivalent to calling {@link #hasSolution()} and {@link #getSolution()} in
-	 * succession.
-	 *
-	 * @return A representation of a satisfying assignment.
-	 *
-	 * @see #hasSolution()
-	 * @see #findSolution()
-	 */
-	default T findSolution() {
-		return hasSolution() == SatResult.TRUE ? getSolution() : null;
-	}
-
+    /**
+     * Computes and returns a solution. This is a convenience method that is
+     * equivalent to calling {@link #hasSolution()} and {@link #getSolution()} in
+     * succession.
+     *
+     * @return A representation of a satisfying assignment.
+     *
+     * @see #hasSolution()
+     * @see #findSolution()
+     */
+    default T findSolution() {
+        return hasSolution() == SatResult.TRUE ? getSolution() : null;
+    }
 }

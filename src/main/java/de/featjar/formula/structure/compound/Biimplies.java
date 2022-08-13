@@ -20,9 +20,8 @@
  */
 package de.featjar.formula.structure.compound;
 
-import java.util.List;
-
 import de.featjar.formula.structure.Formula;
+import java.util.List;
 
 /**
  * A logical connector that is {@code true} iff the left child has the same
@@ -32,33 +31,31 @@ import de.featjar.formula.structure.Formula;
  */
 public class Biimplies extends Compound {
 
-	public Biimplies(Formula leftNode, Formula rightNode) {
-		super(leftNode, rightNode);
-	}
+    public Biimplies(Formula leftNode, Formula rightNode) {
+        super(leftNode, rightNode);
+    }
 
-	private Biimplies() {
-		super();
-	}
+    private Biimplies() {
+        super();
+    }
 
-	public Biimplies(List<? extends Formula> nodes) {
-		super(nodes);
-		if (nodes.size() != 2)
-			throw new IllegalArgumentException("biimplies requires two arguments");
-	}
+    public Biimplies(List<? extends Formula> nodes) {
+        super(nodes);
+        if (nodes.size() != 2) throw new IllegalArgumentException("biimplies requires two arguments");
+    }
 
-	@Override
-	public Biimplies cloneNode() {
-		return new Biimplies();
-	}
+    @Override
+    public Biimplies cloneNode() {
+        return new Biimplies();
+    }
 
-	@Override
-	public String getName() {
-		return "biimplies";
-	}
+    @Override
+    public String getName() {
+        return "biimplies";
+    }
 
-	@Override
-	public Object eval(List<?> values) {
-		return (boolean) values.get(1) == (boolean) values.get(0);
-	}
-
+    @Override
+    public Object eval(List<?> values) {
+        return (boolean) values.get(1) == (boolean) values.get(0);
+    }
 }

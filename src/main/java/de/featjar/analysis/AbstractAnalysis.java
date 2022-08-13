@@ -20,10 +20,6 @@
  */
 package de.featjar.analysis;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import de.featjar.analysis.solver.RuntimeContradictionException;
 import de.featjar.analysis.solver.Solver;
 import de.featjar.formula.structure.Formula;
@@ -34,6 +30,9 @@ import de.featjar.util.data.Provider;
 import de.featjar.util.data.Result;
 import de.featjar.util.job.Executor;
 import de.featjar.util.job.InternalMonitor;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Base class for an analysis using any {@link Solver solver}.
@@ -46,95 +45,94 @@ import de.featjar.util.job.InternalMonitor;
  */
 public abstract class AbstractAnalysis<T, S extends Solver, I> implements Analysis<T>, Provider<T> {
 
-	protected static Object defaultParameters = new Object();
+    protected static Object defaultParameters = new Object();
 
-	// TODO fix caching / improve handling of many results with different parameters
-	@Override
-	public boolean storeInCache() {
-		return false;
-	}
+    // TODO fix caching / improve handling of many results with different parameters
+    @Override
+    public boolean storeInCache() {
+        return false;
+    }
 
-	@Override
-	public Result<T> apply(Cache c, InternalMonitor m) {
-		return Executor.run(this::execute, c, m);
-	}
+    @Override
+    public Result<T> apply(Cache c, InternalMonitor m) {
+        return Executor.run(this::execute, c, m);
+    }
 
-	protected final Assignment assumptions = new IndexAssignment();
-	protected final List<Formula> assumedConstraints = new ArrayList<>();
-	protected Provider<I> solverInputProvider;
-	protected S solver;
+    protected final Assignment assumptions = new IndexAssignment();
+    protected final List<Formula> assumedConstraints = new ArrayList<>();
+    protected Provider<I> solverInputProvider;
+    protected S solver;
 
-	public void setSolver(S solver) {
-		this.solver = solver;
-	}
+    public void setSolver(S solver) {
+        this.solver = solver;
+    }
 
-	public void setSolverInputProvider(Provider<I> solverInputProvider) {
-		this.solverInputProvider = solverInputProvider;
-	}
+    public void setSolverInputProvider(Provider<I> solverInputProvider) {
+        this.solverInputProvider = solverInputProvider;
+    }
 
-	public Assignment getAssumptions() {
-		return assumptions;
-	}
+    public Assignment getAssumptions() {
+        return assumptions;
+    }
 
-	public List<Formula> getAssumedConstraints() {
-		return assumedConstraints;
-	}
+    public List<Formula> getAssumedConstraints() {
+        return assumedConstraints;
+    }
 
-	public void updateAssumptions() {
-		updateAssumptions(this.solver);
-	}
+    public void updateAssumptions() {
+        updateAssumptions(this.solver);
+    }
 
-	public Object getParameters() {
-		return Arrays.asList(assumptions, assumedConstraints);
-	}
+    public Object getParameters() {
+        return Arrays.asList(assumptions, assumedConstraints);
+    }
 
-	@Override
-	public final T execute(Cache c, InternalMonitor monitor) {
-		if (solver == null) {
-			solver = createSolver(c.get(solverInputProvider).get());
-		}
-		return execute(solver, monitor);
-	}
+    @Override
+    public final T execute(Cache c, InternalMonitor monitor) {
+        if (solver == null) {
+            solver = createSolver(c.get(solverInputProvider).get());
+        }
+        return execute(solver, monitor);
+    }
 
-	public T execute(S solver, InternalMonitor monitor) {
-		if (this.solver == null) {
-			this.solver = solver;
-		}
-		monitor.checkCancel();
-		prepareSolver(solver);
-		try {
-			return analyze(solver, monitor);
-		} catch (final Exception e) {
-			throw new RuntimeException(e);
-		} finally {
-			resetSolver(solver);
-		}
-	}
+    public T execute(S solver, InternalMonitor monitor) {
+        if (this.solver == null) {
+            this.solver = solver;
+        }
+        monitor.checkCancel();
+        prepareSolver(solver);
+        try {
+            return analyze(solver, monitor);
+        } catch (final Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            resetSolver(solver);
+        }
+    }
 
-	/*
-	 * 1. Create analysis with MR Create analysis with MR and params
-	 * 
-	 * 2. Create Sub-analysis within other analysis Create Sub-analysis within other
-	 * analysis and params
-	 * 
-	 */
+    /*
+     * 1. Create analysis with MR Create analysis with MR and params
+     *
+     * 2. Create Sub-analysis within other analysis Create Sub-analysis within other
+     * analysis and params
+     *
+     */
 
-	protected abstract S createSolver(I input) throws RuntimeContradictionException;
+    protected abstract S createSolver(I input) throws RuntimeContradictionException;
 
-	protected void prepareSolver(S solver) {
-		updateAssumptions();
-	}
+    protected void prepareSolver(S solver) {
+        updateAssumptions();
+    }
 
-	private void updateAssumptions(S solver) {
-		solver.getAssumptions().setAll(assumptions.getAll());
-		solver.getDynamicFormula().push(assumedConstraints);
-	}
+    private void updateAssumptions(S solver) {
+        solver.getAssumptions().setAll(assumptions.getAll());
+        solver.getDynamicFormula().push(assumedConstraints);
+    }
 
-	protected abstract T analyze(S solver, InternalMonitor monitor) throws Exception;
+    protected abstract T analyze(S solver, InternalMonitor monitor) throws Exception;
 
-	protected void resetSolver(S solver) {
-		solver.getAssumptions().unsetAll(assumptions.getAll());
-		solver.getDynamicFormula().pop(assumedConstraints.size());
-	}
-
+    protected void resetSolver(S solver) {
+        solver.getAssumptions().unsetAll(assumptions.getAll());
+        solver.getDynamicFormula().pop(assumedConstraints.size());
+    }
 }

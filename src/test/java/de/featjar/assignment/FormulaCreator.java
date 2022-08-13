@@ -20,9 +20,6 @@
  */
 package de.featjar.assignment;
 
-import java.util.Arrays;
-import java.util.function.Consumer;
-
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.atomic.Assignment;
 import de.featjar.formula.structure.atomic.VariableAssignment;
@@ -31,48 +28,43 @@ import de.featjar.formula.structure.atomic.literal.VariableMap;
 import de.featjar.formula.structure.compound.And;
 import de.featjar.formula.structure.compound.Implies;
 import de.featjar.formula.structure.compound.Or;
+import java.util.Arrays;
+import java.util.function.Consumer;
 
 public class FormulaCreator {
 
-	public static Formula getFormula01() {
-		final VariableMap map = new VariableMap(Arrays.asList("p", "q", "r", "s"));
-		final Literal p = map.createLiteral("p");
-		final Literal q = map.createLiteral("q");
-		final Literal r = map.createLiteral("r");
-		final Literal s = map.createLiteral("s");
+    public static Formula getFormula01() {
+        final VariableMap map = new VariableMap(Arrays.asList("p", "q", "r", "s"));
+        final Literal p = map.createLiteral("p");
+        final Literal q = map.createLiteral("q");
+        final Literal r = map.createLiteral("r");
+        final Literal s = map.createLiteral("s");
 
-		return new Implies(new And(new Or(p, q), r), s.flip());
-	}
+        return new Implies(new And(new Or(p, q), r), s.flip());
+    }
 
-	public static Formula getFormula02() {
-		final VariableMap map = new VariableMap(Arrays.asList("p", "q", "r", "s"));
-		final Literal p = map.createLiteral("p");
-		final Literal q = map.createLiteral("q");
-		final Literal r = map.createLiteral("r");
-		final Literal s = map.createLiteral("s");
+    public static Formula getFormula02() {
+        final VariableMap map = new VariableMap(Arrays.asList("p", "q", "r", "s"));
+        final Literal p = map.createLiteral("p");
+        final Literal q = map.createLiteral("q");
+        final Literal r = map.createLiteral("r");
+        final Literal s = map.createLiteral("s");
 
-		return new And(
-			new Implies(
-				r,
-				new And(p, q)),
-			new Implies(
-				s,
-				new And(q, p)),
-			new Or(
-				new And(s.flip(), r),
-				new And(s, r.flip())));
-	}
+        return new And(
+                new Implies(r, new And(p, q)),
+                new Implies(s, new And(q, p)),
+                new Or(new And(s.flip(), r), new And(s, r.flip())));
+    }
 
-	public static void testAllAssignments(VariableMap map, Consumer<Assignment> testFunction) {
-		final Assignment assignment = new VariableAssignment(map);
-		final int numVariables = map.getVariableCount();
-		final int numAssignments = (int) Math.pow(2, numVariables);
-		for (int i = 0; i < numAssignments; i++) {
-			for (int j = 0; j < numVariables; j++) {
-				assignment.set(j + 1, ((i >> j) & 1) == 1);
-			}
-			testFunction.accept(assignment);
-		}
-	}
-
+    public static void testAllAssignments(VariableMap map, Consumer<Assignment> testFunction) {
+        final Assignment assignment = new VariableAssignment(map);
+        final int numVariables = map.getVariableCount();
+        final int numAssignments = (int) Math.pow(2, numVariables);
+        for (int i = 0; i < numAssignments; i++) {
+            for (int j = 0; j < numVariables; j++) {
+                assignment.set(j + 1, ((i >> j) & 1) == 1);
+            }
+            testFunction.accept(assignment);
+        }
+    }
 }

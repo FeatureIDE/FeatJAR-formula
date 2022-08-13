@@ -20,29 +20,28 @@
  */
 package de.featjar.formula.io.textual;
 
-import java.util.Arrays;
-
 import de.featjar.util.data.Pair;
+import java.util.Arrays;
 
 /**
  * Symbols for a long textual representation. These are best used for editing by
  * the user due to simplicity and ease of handling.
- * 
+ *
  * @author Timo Günther
  * @author Sebastian Krieter
  */
 public class TextualSymbols extends Symbols {
 
-	public static final Symbols INSTANCE = new TextualSymbols();
+    public static final Symbols INSTANCE = new TextualSymbols();
 
-	private TextualSymbols() {
-		super(Arrays.asList(
-			new Pair<>(Operator.NOT, "not"),
-			new Pair<>(Operator.AND, "and"),
-			new Pair<>(Operator.OR, "or"),
-			new Pair<>(Operator.IMPLIES, "implies"),
-			new Pair<>(Operator.EQUALS, "iff")),
-			true);
-	}
-
+    private TextualSymbols() {
+        super(
+                Arrays.asList(
+                        new Pair<>(Operator.NOT, "not"),
+                        new Pair<>(Operator.AND, "and"),
+                        new Pair<>(Operator.OR, "or"),
+                        new Pair<>(Operator.IMPLIES, "implies"),
+                        new Pair<>(Operator.EQUALS, "iff")),
+                true);
+    }
 }

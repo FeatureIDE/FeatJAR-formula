@@ -24,42 +24,41 @@ import java.util.Collection;
 
 /**
  * Handles assumptions for solvers.
- * 
+ *
  * @param <T> the type of the assumptions
  *
  * @author Sebastian Krieter
  */
 public interface Assumptions<T> {
 
-	void push(T assumption);
+    void push(T assumption);
 
-	default void pushAll(Collection<? extends T> assumptions) {
-		for (final T assumption : assumptions) {
-			push(assumption);
-		}
-	}
+    default void pushAll(Collection<? extends T> assumptions) {
+        for (final T assumption : assumptions) {
+            push(assumption);
+        }
+    }
 
-	default void replaceLast(T assumption) {
-		pop();
-		push(assumption);
-	}
+    default void replaceLast(T assumption) {
+        pop();
+        push(assumption);
+    }
 
-	T peek();
+    T peek();
 
-	T pop();
+    T pop();
 
-	default void pop(int size) {
-		for (int i = 0; i < size; i++) {
-			pop();
-		}
-	}
+    default void pop(int size) {
+        for (int i = 0; i < size; i++) {
+            pop();
+        }
+    }
 
-	void clear();
+    void clear();
 
-	default void clear(int newSize) {
-		pop(size() - newSize);
-	}
+    default void clear(int newSize) {
+        pop(size() - newSize);
+    }
 
-	int size();
-
+    int size();
 }

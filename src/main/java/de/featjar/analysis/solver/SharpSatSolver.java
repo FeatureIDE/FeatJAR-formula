@@ -29,11 +29,10 @@ import java.math.BigInteger;
  */
 public interface SharpSatSolver extends SatSolver {
 
-	/**
-	 * Returns the number of possible solutions.
-	 *
-	 * @return The number of possible solutions.
-	 */
-	BigInteger countSolutions();
-
+    /**
+     * Returns the number of possible solutions.
+     *
+     * @return The number of possible solutions.
+     */
+    BigInteger countSolutions();
 }

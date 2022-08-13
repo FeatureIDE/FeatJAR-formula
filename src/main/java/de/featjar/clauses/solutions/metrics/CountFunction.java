@@ -30,8 +30,7 @@ import de.featjar.clauses.LiteralList;
  */
 public interface CountFunction {
 
-	double compute(final LiteralList literals);
+    double compute(final LiteralList literals);
 
-	String getName();
-
+    String getName();
 }

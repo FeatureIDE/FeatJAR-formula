@@ -20,9 +20,8 @@
  */
 package de.featjar.formula.structure.compound;
 
-import java.util.List;
-
 import de.featjar.formula.structure.Formula;
+import java.util.List;
 
 /**
  * A logical connector that is {@code true} iff the left child is {@code false}
@@ -32,32 +31,31 @@ import de.featjar.formula.structure.Formula;
  */
 public class Implies extends Compound {
 
-	public Implies(Formula leftNode, Formula rightNode) {
-		super(leftNode, rightNode);
-	}
+    public Implies(Formula leftNode, Formula rightNode) {
+        super(leftNode, rightNode);
+    }
 
-	private Implies() {
-		super();
-	}
+    private Implies() {
+        super();
+    }
 
-	public Implies(List<? extends Formula> nodes) {
-		super(nodes);
-		if (nodes.size() != 2)
-			throw new IllegalArgumentException("implies requires two arguments");
-	}
+    public Implies(List<? extends Formula> nodes) {
+        super(nodes);
+        if (nodes.size() != 2) throw new IllegalArgumentException("implies requires two arguments");
+    }
 
-	@Override
-	public Implies cloneNode() {
-		return new Implies();
-	}
+    @Override
+    public Implies cloneNode() {
+        return new Implies();
+    }
 
-	@Override
-	public String getName() {
-		return "implies";
-	}
+    @Override
+    public String getName() {
+        return "implies";
+    }
 
-	@Override
-	public Object eval(List<?> values) {
-		return (boolean) values.get(1) || !(boolean) values.get(0);
-	}
+    @Override
+    public Object eval(List<?> values) {
+        return (boolean) values.get(1) || !(boolean) values.get(0);
+    }
 }

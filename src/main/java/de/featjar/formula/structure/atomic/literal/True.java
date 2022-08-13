@@ -20,12 +20,11 @@
  */
 package de.featjar.formula.structure.atomic.literal;
 
-import java.util.Collections;
-import java.util.List;
-
 import de.featjar.formula.structure.Terminal;
 import de.featjar.formula.structure.atomic.Atomic;
 import de.featjar.formula.structure.term.Term;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * A special {@link Atomic} that is always {@code true}.
@@ -34,54 +33,53 @@ import de.featjar.formula.structure.term.Term;
  */
 public final class True extends Terminal implements Literal {
 
-	private static final True INSTANCE = new True();
+    private static final True INSTANCE = new True();
 
-	private True() {
-		super();
-	}
+    private True() {
+        super();
+    }
 
-	public static True getInstance() {
-		return INSTANCE;
-	}
+    public static True getInstance() {
+        return INSTANCE;
+    }
 
-	@Override
-	public List<? extends Term> getChildren() {
-		return Collections.emptyList();
-	}
+    @Override
+    public List<? extends Term> getChildren() {
+        return Collections.emptyList();
+    }
 
-	@Override
-	public False flip() {
-		return Literal.False;
-	}
+    @Override
+    public False flip() {
+        return Literal.False;
+    }
 
-	@Override
-	public True cloneNode() {
-		return this;
-	}
+    @Override
+    public True cloneNode() {
+        return this;
+    }
 
-	@Override
-	public String getName() {
-		return "true";
-	}
+    @Override
+    public String getName() {
+        return "true";
+    }
 
-	@Override
-	public int hashCode() {
-		return 91;
-	}
+    @Override
+    public int hashCode() {
+        return 91;
+    }
 
-	@Override
-	public boolean equals(Object other) {
-		return other == INSTANCE;
-	}
+    @Override
+    public boolean equals(Object other) {
+        return other == INSTANCE;
+    }
 
-	@Override
-	public boolean equalsNode(Object other) {
-		return other == INSTANCE;
-	}
+    @Override
+    public boolean equalsNode(Object other) {
+        return other == INSTANCE;
+    }
 
-	@Override
-	public Boolean eval(List<?> values) {
-		return Boolean.TRUE;
-	}
-
+    @Override
+    public Boolean eval(List<?> values) {
+        return Boolean.TRUE;
+    }
 }

@@ -20,8 +20,6 @@
  */
 package de.featjar.formula.structure;
 
-import java.nio.file.Path;
-
 import de.featjar.formula.io.FormulaFormatManager;
 import de.featjar.formula.structure.transform.CNFTransformer;
 import de.featjar.formula.structure.transform.DNFTransformer;
@@ -30,6 +28,7 @@ import de.featjar.util.data.Identifier;
 import de.featjar.util.data.Provider;
 import de.featjar.util.data.Result;
 import de.featjar.util.job.InternalMonitor;
+import java.nio.file.Path;
 
 /**
  * Provides formulas in different forms (as loaded from a file or transformed
@@ -40,80 +39,78 @@ import de.featjar.util.job.InternalMonitor;
 @FunctionalInterface
 public interface FormulaProvider extends Provider<Formula> {
 
-	Identifier<Formula> identifier = new Identifier<>();
+    Identifier<Formula> identifier = new Identifier<>();
 
-	@Override
-	default Identifier<Formula> getIdentifier() {
-		return identifier;
-	}
+    @Override
+    default Identifier<Formula> getIdentifier() {
+        return identifier;
+    }
 
-	static FormulaProvider empty() {
-		return (c, m) -> Result.empty();
-	}
+    static FormulaProvider empty() {
+        return (c, m) -> Result.empty();
+    }
 
-	static FormulaProvider of(Formula formula) {
-		return (c, m) -> Result.of(formula);
-	}
+    static FormulaProvider of(Formula formula) {
+        return (c, m) -> Result.of(formula);
+    }
 
-	static FormulaProvider in(Cache cache) {
-		return (c, m) -> cache.get(identifier);
-	}
+    static FormulaProvider in(Cache cache) {
+        return (c, m) -> cache.get(identifier);
+    }
 
-	static FormulaProvider loader(Path path) {
-		return (c, m) -> Provider.load(path, FormulaFormatManager.getInstance());
-	}
+    static FormulaProvider loader(Path path) {
+        return (c, m) -> Provider.load(path, FormulaFormatManager.getInstance());
+    }
 
-	public static class CNF implements FormulaProvider {
-		public static final Identifier<Formula> identifier = new Identifier<>();
-		private final int maximumNumberOfLiterals;
+    public static class CNF implements FormulaProvider {
+        public static final Identifier<Formula> identifier = new Identifier<>();
+        private final int maximumNumberOfLiterals;
 
-		private CNF() {
-			this(Integer.MAX_VALUE);
-		}
+        private CNF() {
+            this(Integer.MAX_VALUE);
+        }
 
-		private CNF(int maximumNumberOfLiterals) {
-			this.maximumNumberOfLiterals = maximumNumberOfLiterals;
-		}
+        private CNF(int maximumNumberOfLiterals) {
+            this.maximumNumberOfLiterals = maximumNumberOfLiterals;
+        }
 
-		@Override
-		public Object getParameters() {
-			return maximumNumberOfLiterals;
-		}
+        @Override
+        public Object getParameters() {
+            return maximumNumberOfLiterals;
+        }
 
-		@Override
-		public Identifier<Formula> getIdentifier() {
-			return identifier;
-		}
+        @Override
+        public Identifier<Formula> getIdentifier() {
+            return identifier;
+        }
 
-		@Override
-		public Result<Formula> apply(Cache c, InternalMonitor m) {
-			final CNFTransformer cnfTransformer = new CNFTransformer();
-			cnfTransformer.setMaximumNumberOfLiterals(maximumNumberOfLiterals);
-			return Provider.convert(c, FormulaProvider.identifier, cnfTransformer, m);
-		}
+        @Override
+        public Result<Formula> apply(Cache c, InternalMonitor m) {
+            final CNFTransformer cnfTransformer = new CNFTransformer();
+            cnfTransformer.setMaximumNumberOfLiterals(maximumNumberOfLiterals);
+            return Provider.convert(c, FormulaProvider.identifier, cnfTransformer, m);
+        }
 
-		public static CNF fromFormula() {
-			return new CNF();
-		}
+        public static CNF fromFormula() {
+            return new CNF();
+        }
 
-		public static CNF fromFormula(int maximumNumberOfLiterals) {
-			return new CNF(maximumNumberOfLiterals);
-		}
+        public static CNF fromFormula(int maximumNumberOfLiterals) {
+            return new CNF(maximumNumberOfLiterals);
+        }
+    }
 
-	}
+    @FunctionalInterface
+    interface DNF extends FormulaProvider {
+        Identifier<Formula> identifier = new Identifier<>();
 
-	@FunctionalInterface
-	interface DNF extends FormulaProvider {
-		Identifier<Formula> identifier = new Identifier<>();
+        @Override
+        default Identifier<Formula> getIdentifier() {
+            return identifier;
+        }
 
-		@Override
-		default Identifier<Formula> getIdentifier() {
-			return identifier;
-		}
-
-		static DNF fromFormula() {
-			return (c, m) -> Provider.convert(c, FormulaProvider.identifier, new DNFTransformer(), m);
-		}
-	}
-
+        static DNF fromFormula() {
+            return (c, m) -> Provider.convert(c, FormulaProvider.identifier, new DNFTransformer(), m);
+        }
+    }
 }

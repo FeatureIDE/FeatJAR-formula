@@ -20,8 +20,6 @@
  */
 package de.featjar.formula;
 
-import java.nio.file.Path;
-
 import de.featjar.formula.io.FormulaFormatManager;
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.FormulaProvider;
@@ -31,6 +29,7 @@ import de.featjar.util.data.Provider;
 import de.featjar.util.data.Result;
 import de.featjar.util.io.IO;
 import de.featjar.util.logging.Logger;
+import java.nio.file.Path;
 
 /**
  * Representation of a feature model as a formula {@link #formula}, where
@@ -39,40 +38,39 @@ import de.featjar.util.logging.Logger;
  */
 public class ModelRepresentation {
 
-	private final Cache cache = new Cache();
-	private final Formula formula;
-	private final VariableMap variables;
+    private final Cache cache = new Cache();
+    private final Formula formula;
+    private final VariableMap variables;
 
-	public static Result<ModelRepresentation> load(final Path modelFile) {
-		return IO.load(modelFile, FormulaFormatManager.getInstance()) //
-			.map(ModelRepresentation::new);
-	}
+    public static Result<ModelRepresentation> load(final Path modelFile) {
+        return IO.load(modelFile, FormulaFormatManager.getInstance()) //
+                .map(ModelRepresentation::new);
+    }
 
-	public ModelRepresentation(Formula formula) {
-		this.formula = formula;
-		this.variables = formula.getVariableMap().orElseThrow();
-		cache.set(FormulaProvider.of(formula));
-	}
+    public ModelRepresentation(Formula formula) {
+        this.formula = formula;
+        this.variables = formula.getVariableMap().orElseThrow();
+        cache.set(FormulaProvider.of(formula));
+    }
 
-	public <T> Result<T> getResult(Provider<T> provider) {
-		return cache.get(provider, null);
-	}
+    public <T> Result<T> getResult(Provider<T> provider) {
+        return cache.get(provider, null);
+    }
 
-	// todo: also allow to use extensions
-	public <T> T get(Provider<T> provider) {
-		return cache.get(provider).orElse(Logger::logProblems);
-	}
+    // todo: also allow to use extensions
+    public <T> T get(Provider<T> provider) {
+        return cache.get(provider).orElse(Logger::logProblems);
+    }
 
-	public Cache getCache() {
-		return cache;
-	}
+    public Cache getCache() {
+        return cache;
+    }
 
-	public Formula getFormula() {
-		return formula;
-	}
+    public Formula getFormula() {
+        return formula;
+    }
 
-	public VariableMap getVariables() {
-		return variables;
-	}
-
+    public VariableMap getVariables() {
+        return variables;
+    }
 }

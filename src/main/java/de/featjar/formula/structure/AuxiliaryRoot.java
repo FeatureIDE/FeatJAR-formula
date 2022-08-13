@@ -32,41 +32,40 @@ import java.util.Objects;
  */
 public class AuxiliaryRoot extends NonTerminal {
 
-	public AuxiliaryRoot(Formula node) {
-		super(node);
-	}
+    public AuxiliaryRoot(Formula node) {
+        super(node);
+    }
 
-	private AuxiliaryRoot() {
-		super();
-	}
+    private AuxiliaryRoot() {
+        super();
+    }
 
-	@Override
-	public String getName() {
-		return "";
-	}
+    @Override
+    public String getName() {
+        return "";
+    }
 
-	public Formula getChild() {
-		return getChildren().iterator().next();
-	}
+    public Formula getChild() {
+        return getChildren().iterator().next();
+    }
 
-	public void setChild(Formula node) {
-		Objects.requireNonNull(node);
-		setChildren(Arrays.asList(node));
-	}
+    public void setChild(Formula node) {
+        Objects.requireNonNull(node);
+        setChildren(Arrays.asList(node));
+    }
 
-	@Override
-	public AuxiliaryRoot cloneNode() {
-		return new AuxiliaryRoot();
-	}
+    @Override
+    public AuxiliaryRoot cloneNode() {
+        return new AuxiliaryRoot();
+    }
 
-	@Override
-	public Class<?> getType() {
-		return getChild().getType();
-	}
+    @Override
+    public Class<?> getType() {
+        return getChild().getType();
+    }
 
-	@Override
-	public Object eval(List<?> values) {
-		return getChild().eval(values);
-	}
-
+    @Override
+    public Object eval(List<?> values) {
+        return getChild().eval(values);
+    }
 }

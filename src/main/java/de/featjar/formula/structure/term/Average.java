@@ -25,32 +25,31 @@ import java.util.List;
 
 public abstract class Average extends Function {
 
-	public Average(Term leftArgument, Term rightArgument) {
-		super(leftArgument, rightArgument);
-	}
+    public Average(Term leftArgument, Term rightArgument) {
+        super(leftArgument, rightArgument);
+    }
 
-	public Average(List<Term> arguments) {
-		super(arguments);
-	}
+    public Average(List<Term> arguments) {
+        super(arguments);
+    }
 
-	protected Average() {
-		super();
-	}
+    protected Average() {
+        super();
+    }
 
-	public void setArguments(List<Term> arguments) {
-		setChildren(arguments);
-	}
+    public void setArguments(List<Term> arguments) {
+        setChildren(arguments);
+    }
 
-	public void setArguments(Term leftArgument, Term rightArgument) {
-		setChildren(Arrays.asList(leftArgument, rightArgument));
-	}
+    public void setArguments(Term leftArgument, Term rightArgument) {
+        setChildren(Arrays.asList(leftArgument, rightArgument));
+    }
 
-	@Override
-	public String getName() {
-		return "add";
-	}
+    @Override
+    public String getName() {
+        return "add";
+    }
 
-	@Override
-	public abstract Average cloneNode();
-
+    @Override
+    public abstract Average cloneNode();
 }

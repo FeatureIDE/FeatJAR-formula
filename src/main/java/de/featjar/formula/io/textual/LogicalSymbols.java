@@ -20,30 +20,29 @@
  */
 package de.featjar.formula.io.textual;
 
-import java.util.Arrays;
-
 import de.featjar.util.data.Pair;
+import java.util.Arrays;
 
 /**
  * Symbols for a logical representation. These are best used for displaying to
  * the user due to brevity and beauty. Since they consist of unwieldy Unicode
  * characters, do not use them for editing or serialization.
- * 
+ *
  * @author Timo Günther
  * @author Sebastian Krieter
  */
 public class LogicalSymbols extends Symbols {
 
-	public static final Symbols INSTANCE = new LogicalSymbols();
+    public static final Symbols INSTANCE = new LogicalSymbols();
 
-	private LogicalSymbols() {
-		super(Arrays.asList(
-			new Pair<>(Operator.NOT, "\u00AC"),
-			new Pair<>(Operator.AND, "\u2227"),
-			new Pair<>(Operator.OR, "\u2228"),
-			new Pair<>(Operator.IMPLIES, "\u21D2"),
-			new Pair<>(Operator.EQUALS, "\u21D4")),
-			false);
-	}
-
+    private LogicalSymbols() {
+        super(
+                Arrays.asList(
+                        new Pair<>(Operator.NOT, "\u00AC"),
+                        new Pair<>(Operator.AND, "\u2227"),
+                        new Pair<>(Operator.OR, "\u2228"),
+                        new Pair<>(Operator.IMPLIES, "\u21D2"),
+                        new Pair<>(Operator.EQUALS, "\u21D4")),
+                false);
+    }
 }

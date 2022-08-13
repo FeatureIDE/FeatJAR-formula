@@ -20,65 +20,63 @@
  */
 package de.featjar.analysis.solver;
 
+import de.featjar.formula.structure.atomic.literal.VariableMap;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.featjar.formula.structure.atomic.literal.VariableMap;
-
 /**
  * Base class for modifiable formulas.
- * 
+ *
  * @param <O> type of the constraint object used within a solver
  *
  * @author Sebastian Krieter
  */
 public abstract class AbstractDynamicFormula<O> implements DynamicFormula<O> {
 
-	protected final ArrayList<O> constraints;
-	protected final VariableMap variableMap;
+    protected final ArrayList<O> constraints;
+    protected final VariableMap variableMap;
 
-	public AbstractDynamicFormula(VariableMap variableMap) {
-		this.variableMap = variableMap;
-		constraints = new ArrayList<>();
-	}
+    public AbstractDynamicFormula(VariableMap variableMap) {
+        this.variableMap = variableMap;
+        constraints = new ArrayList<>();
+    }
 
-	protected AbstractDynamicFormula(AbstractDynamicFormula<O> oldFormula) {
-		variableMap = oldFormula.variableMap;
-		constraints = new ArrayList<>(oldFormula.constraints);
-	}
+    protected AbstractDynamicFormula(AbstractDynamicFormula<O> oldFormula) {
+        variableMap = oldFormula.variableMap;
+        constraints = new ArrayList<>(oldFormula.constraints);
+    }
 
-	@Override
-	public List<O> getConstraints() {
-		return constraints;
-	}
+    @Override
+    public List<O> getConstraints() {
+        return constraints;
+    }
 
-	@Override
-	public VariableMap getVariableMap() {
-		return variableMap;
-	}
+    @Override
+    public VariableMap getVariableMap() {
+        return variableMap;
+    }
 
-	@Override
-	public O pop() {
-		return removeConstraint(constraints.size() - 1);
-	}
+    @Override
+    public O pop() {
+        return removeConstraint(constraints.size() - 1);
+    }
 
-	@Override
-	public void remove(O constraint) {
-		removeConstraint(constraints.indexOf(constraint));
-	}
+    @Override
+    public void remove(O constraint) {
+        removeConstraint(constraints.indexOf(constraint));
+    }
 
-	protected O removeConstraint(final int index) {
-		return constraints.remove(index);
-	}
+    protected O removeConstraint(final int index) {
+        return constraints.remove(index);
+    }
 
-	@Override
-	public int size() {
-		return constraints.size();
-	}
+    @Override
+    public int size() {
+        return constraints.size();
+    }
 
-	@Override
-	public O peek() {
-		return constraints.get(constraints.size() - 1);
-	}
-
+    @Override
+    public O peek() {
+        return constraints.get(constraints.size() - 1);
+    }
 }

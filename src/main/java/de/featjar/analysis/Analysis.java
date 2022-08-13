@@ -20,13 +20,12 @@
  */
 package de.featjar.analysis;
 
-import java.util.List;
-
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.atomic.Assignment;
 import de.featjar.util.data.Cache;
 import de.featjar.util.data.Provider;
 import de.featjar.util.job.MonitorableFunction;
+import java.util.List;
 
 /**
  * Basic analysis interface.
@@ -37,10 +36,9 @@ import de.featjar.util.job.MonitorableFunction;
  */
 public interface Analysis<T> extends MonitorableFunction<Cache, T>, Provider<T> {
 
-	Assignment getAssumptions();
+    Assignment getAssumptions();
 
-	List<Formula> getAssumedConstraints();
+    List<Formula> getAssumedConstraints();
 
-	void updateAssumptions();
-
+    void updateAssumptions();
 }

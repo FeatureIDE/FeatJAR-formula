@@ -20,28 +20,27 @@
  */
 package de.featjar.formula.io.textual;
 
-import java.util.Arrays;
-
 import de.featjar.util.data.Pair;
+import java.util.Arrays;
 
 /**
  * Symbols for a representation like in Java. These are inherently incomplete
  * and should only be used if absolutely necessary.
- * 
+ *
  * @author Sebastian Krieter
  */
 public class PropositionalModelSymbols extends Symbols {
 
-	public static final Symbols INSTANCE = new PropositionalModelSymbols();
+    public static final Symbols INSTANCE = new PropositionalModelSymbols();
 
-	private PropositionalModelSymbols() {
-		super(Arrays.asList(
-			new Pair<>(Operator.NOT, "!"),
-			new Pair<>(Operator.AND, "&"),
-			new Pair<>(Operator.OR, "|"),
-			new Pair<>(Operator.EQUALS, "=="),
-			new Pair<>(Operator.IMPLIES, "=>")),
-			false);
-	}
-
+    private PropositionalModelSymbols() {
+        super(
+                Arrays.asList(
+                        new Pair<>(Operator.NOT, "!"),
+                        new Pair<>(Operator.AND, "&"),
+                        new Pair<>(Operator.OR, "|"),
+                        new Pair<>(Operator.EQUALS, "=="),
+                        new Pair<>(Operator.IMPLIES, "=>")),
+                false);
+    }
 }

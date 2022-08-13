@@ -23,43 +23,43 @@ package de.featjar.assignment;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Test;
-
 import de.featjar.formula.ModelRepresentation;
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.FormulaProvider;
 import de.featjar.formula.structure.Formulas;
 import de.featjar.formula.structure.atomic.literal.VariableMap;
 import de.featjar.util.tree.Trees;
+import org.junit.jupiter.api.Test;
 
 public class DNFTransformTest {
 
-	@Test
-	public void testImplies() {
-		testTransform(FormulaCreator.getFormula01());
-	}
+    @Test
+    public void testImplies() {
+        testTransform(FormulaCreator.getFormula01());
+    }
 
-	@Test
-	public void testComplex() {
-		testTransform(FormulaCreator.getFormula02());
-	}
+    @Test
+    public void testComplex() {
+        testTransform(FormulaCreator.getFormula02());
+    }
 
-	private void testTransform(final Formula formulaOrg) {
-		final Formula formulaClone = Trees.cloneTree(formulaOrg);
-		final VariableMap map = formulaOrg.getVariableMap().orElseThrow();
-		final VariableMap mapClone = map.clone();
+    private void testTransform(final Formula formulaOrg) {
+        final Formula formulaClone = Trees.cloneTree(formulaOrg);
+        final VariableMap map = formulaOrg.getVariableMap().orElseThrow();
+        final VariableMap mapClone = map.clone();
 
-		final ModelRepresentation rep = new ModelRepresentation(formulaOrg);
-		final Formula formulaDNF = rep.get(FormulaProvider.DNF.fromFormula());
+        final ModelRepresentation rep = new ModelRepresentation(formulaOrg);
+        final Formula formulaDNF = rep.get(FormulaProvider.DNF.fromFormula());
 
-		FormulaCreator.testAllAssignments(map, assignment -> {
-			final Boolean orgEval = (Boolean) Formulas.evaluate(formulaOrg, assignment).orElseThrow();
-			final Boolean dnfEval = (Boolean) Formulas.evaluate(formulaDNF, assignment).orElseThrow();
-			assertEquals(orgEval, dnfEval, assignment.toString());
-		});
-		assertTrue(Trees.equals(formulaOrg, formulaClone));
-		assertEquals(mapClone, map);
-		assertEquals(mapClone, formulaOrg.getVariableMap().get());
-	}
-
+        FormulaCreator.testAllAssignments(map, assignment -> {
+            final Boolean orgEval =
+                    (Boolean) Formulas.evaluate(formulaOrg, assignment).orElseThrow();
+            final Boolean dnfEval =
+                    (Boolean) Formulas.evaluate(formulaDNF, assignment).orElseThrow();
+            assertEquals(orgEval, dnfEval, assignment.toString());
+        });
+        assertTrue(Trees.equals(formulaOrg, formulaClone));
+        assertEquals(mapClone, map);
+        assertEquals(mapClone, formulaOrg.getVariableMap().get());
+    }
 }

@@ -20,10 +20,9 @@
  */
 package de.featjar.formula.structure.atomic;
 
-import java.util.List;
-
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.term.Term;
+import java.util.List;
 
 /**
  * An atomic formula.
@@ -32,13 +31,12 @@ import de.featjar.formula.structure.term.Term;
  */
 public interface Atomic extends Formula {
 
-	@Override
-	List<? extends Term> getChildren();
+    @Override
+    List<? extends Term> getChildren();
 
-	Atomic flip();
+    Atomic flip();
 
-	default Class<?> getType() {
-		return Boolean.class;
-	}
-
+    default Class<?> getType() {
+        return Boolean.class;
+    }
 }

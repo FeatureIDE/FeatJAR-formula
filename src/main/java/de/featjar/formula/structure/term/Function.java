@@ -20,28 +20,26 @@
  */
 package de.featjar.formula.structure.term;
 
-import java.util.List;
-
 import de.featjar.formula.structure.NonTerminal;
+import java.util.List;
 
 public abstract class Function extends NonTerminal implements Term {
 
-	public Function(List<Term> nodes) {
-		super(nodes);
-	}
+    public Function(List<Term> nodes) {
+        super(nodes);
+    }
 
-	public Function(Term... nodes) {
-		super(nodes);
-	}
+    public Function(Term... nodes) {
+        super(nodes);
+    }
 
-	public Function() {
-		super();
-	}
+    public Function() {
+        super();
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<Term> getChildren() {
-		return (List<Term>) super.getChildren();
-	}
-
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Term> getChildren() {
+        return (List<Term>) super.getChildren();
+    }
 }

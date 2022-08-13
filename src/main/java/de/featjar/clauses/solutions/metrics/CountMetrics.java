@@ -20,37 +20,35 @@
  */
 package de.featjar.clauses.solutions.metrics;
 
+import de.featjar.clauses.LiteralList;
 import java.util.List;
 import java.util.function.DoubleSupplier;
 
-import de.featjar.clauses.LiteralList;
-
 public class CountMetrics extends AggregatableMetrics {
 
-	private final CountFunction function;
+    private final CountFunction function;
 
-	public CountMetrics(CountFunction function) {
-		this.function = function;
-	}
+    public CountMetrics(CountFunction function) {
+        this.function = function;
+    }
 
-	public static List<SampleMetric> getAllAggregates(CountFunction function) {
-		return new CountMetrics(function).getAllAggregates();
-	}
+    public static List<SampleMetric> getAllAggregates(CountFunction function) {
+        return new CountMetrics(function).getAllAggregates();
+    }
 
-	@Override
-	protected double[] computeValues() {
-		final List<LiteralList> solutions = sample.getSolutions();
-		final int size = solutions.size();
-		final double[] values = new double[size];
-		for (int i = 0; i < (size - 1); i++) {
-			values[i] = function.compute(solutions.get(i));
-		}
-		return values;
-	}
+    @Override
+    protected double[] computeValues() {
+        final List<LiteralList> solutions = sample.getSolutions();
+        final int size = solutions.size();
+        final double[] values = new double[size];
+        for (int i = 0; i < (size - 1); i++) {
+            values[i] = function.compute(solutions.get(i));
+        }
+        return values;
+    }
 
-	@Override
-	public SampleMetric getAggregate(String name, DoubleSupplier aggregate) {
-		return new DoubleMetric(function.getName() + "_count_" + name, aggregate);
-	}
-
+    @Override
+    public SampleMetric getAggregate(String name, DoubleSupplier aggregate) {
+        return new DoubleMetric(function.getName() + "_count_" + name, aggregate);
+    }
 }

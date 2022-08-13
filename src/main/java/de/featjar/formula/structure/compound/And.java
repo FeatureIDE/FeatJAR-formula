@@ -20,9 +20,8 @@
  */
 package de.featjar.formula.structure.compound;
 
-import java.util.List;
-
 import de.featjar.formula.structure.Formula;
+import java.util.List;
 
 /**
  * A logical connector that is {@code true} iff all of its children are
@@ -32,34 +31,33 @@ import de.featjar.formula.structure.Formula;
  */
 public class And extends Compound {
 
-	public And(List<? extends Formula> nodes) {
-		super(nodes);
-	}
+    public And(List<? extends Formula> nodes) {
+        super(nodes);
+    }
 
-	public And(Formula... nodes) {
-		super(nodes);
-	}
+    public And(Formula... nodes) {
+        super(nodes);
+    }
 
-	private And() {
-		super();
-	}
+    private And() {
+        super();
+    }
 
-	@Override
-	public And cloneNode() {
-		return new And();
-	}
+    @Override
+    public And cloneNode() {
+        return new And();
+    }
 
-	@Override
-	public String getName() {
-		return "and";
-	}
+    @Override
+    public String getName() {
+        return "and";
+    }
 
-	@Override
-	public Object eval(List<?> values) {
-		if (values.stream().anyMatch(v -> v == Boolean.FALSE)) {
-			return Boolean.FALSE;
-		}
-		return values.stream().filter(v -> v == Boolean.TRUE).count() == children.size() ? Boolean.TRUE : null;
-	}
-
+    @Override
+    public Object eval(List<?> values) {
+        if (values.stream().anyMatch(v -> v == Boolean.FALSE)) {
+            return Boolean.FALSE;
+        }
+        return values.stream().filter(v -> v == Boolean.TRUE).count() == children.size() ? Boolean.TRUE : null;
+    }
 }

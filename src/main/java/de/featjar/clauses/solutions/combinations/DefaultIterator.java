@@ -28,13 +28,12 @@ package de.featjar.clauses.solutions.combinations;
  */
 public class DefaultIterator extends ACombinationIterator {
 
-	public DefaultIterator(int t, int size) {
-		super(t, size);
-	}
+    public DefaultIterator(int t, int size) {
+        super(t, size);
+    }
 
-	@Override
-	protected long nextIndex() {
-		return counter - 1;
-	}
-
+    @Override
+    protected long nextIndex() {
+        return counter - 1;
+    }
 }

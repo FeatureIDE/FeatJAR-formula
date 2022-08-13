@@ -22,13 +22,6 @@ package de.featjar.assignment;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-
-import org.junit.jupiter.api.Test;
-
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.Formulas;
 import de.featjar.formula.structure.atomic.literal.Literal;
@@ -38,42 +31,47 @@ import de.featjar.formula.structure.compound.Biimplies;
 import de.featjar.formula.structure.compound.Implies;
 import de.featjar.formula.structure.compound.Or;
 import de.featjar.util.tree.Trees;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import org.junit.jupiter.api.Test;
 
 public class CNFTest {
 
-	@Test
-	public void convert() {
-		final VariableMap variables = new VariableMap(Arrays.asList("a", "b", "c"));
-		final Literal a = variables.createLiteral("a");
-		final Literal b = variables.createLiteral("b");
-		final Literal c = variables.createLiteral("c");
+    @Test
+    public void convert() {
+        final VariableMap variables = new VariableMap(Arrays.asList("a", "b", "c"));
+        final Literal a = variables.createLiteral("a");
+        final Literal b = variables.createLiteral("b");
+        final Literal c = variables.createLiteral("c");
 
-		final Implies implies1 = new Implies(a, b);
-		final Or or = new Or(implies1, c);
-		final Biimplies equals = new Biimplies(a, b);
-		final And and = new And(equals, c);
-		final Implies formula = new Implies(or, and);
+        final Implies implies1 = new Implies(a, b);
+        final Or or = new Or(implies1, c);
+        final Biimplies equals = new Biimplies(a, b);
+        final And and = new And(equals, c);
+        final Implies formula = new Implies(or, and);
 
-		final Formula cnfFormula = Formulas.toCNF(formula).get();
+        final Formula cnfFormula = Formulas.toCNF(formula).get();
 
-		final Or or2 = new Or(a, c);
-		final Or or3 = new Or(a, b.flip());
-		final Or or4 = new Or(c, b.flip());
-		final Or or5 = new Or(b, a.flip(), c.flip());
-		final And and2 = new And(or2, or3, or4, or5);
+        final Or or2 = new Or(a, c);
+        final Or or3 = new Or(a, b.flip());
+        final Or or4 = new Or(c, b.flip());
+        final Or or5 = new Or(b, a.flip(), c.flip());
+        final And and2 = new And(or2, or3, or4, or5);
 
-		sortChildren(cnfFormula);
-		sortChildren(and2);
-		assertEquals(Trees.getPreOrderList(cnfFormula), Trees.getPreOrderList(and2));
-		assertEquals(Trees.getPostOrderList(cnfFormula), Trees.getPostOrderList(and2));
-	}
+        sortChildren(cnfFormula);
+        sortChildren(and2);
+        assertEquals(Trees.getPreOrderList(cnfFormula), Trees.getPreOrderList(and2));
+        assertEquals(Trees.getPostOrderList(cnfFormula), Trees.getPostOrderList(and2));
+    }
 
-	private void sortChildren(final Formula root) {
-		Trees.postOrderStream(root).forEach(node -> {
-			final ArrayList<Formula> sortedChildren = new ArrayList<>(node.getChildren());
-			Collections.sort(sortedChildren, Comparator.comparing(e -> Trees.getPreOrderList(e).toString()));
-			node.setChildren(sortedChildren);
-		});
-	}
-
+    private void sortChildren(final Formula root) {
+        Trees.postOrderStream(root).forEach(node -> {
+            final ArrayList<Formula> sortedChildren = new ArrayList<>(node.getChildren());
+            Collections.sort(sortedChildren, Comparator.comparing(e -> Trees.getPreOrderList(e)
+                    .toString()));
+            node.setChildren(sortedChildren);
+        });
+    }
 }

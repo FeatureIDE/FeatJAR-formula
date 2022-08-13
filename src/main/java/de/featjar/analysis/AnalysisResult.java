@@ -20,9 +20,8 @@
  */
 package de.featjar.analysis;
 
-import java.util.Arrays;
-
 import de.featjar.clauses.LiteralList;
+import java.util.Arrays;
 
 /**
  * Wrapper class for an analysis result containing additional information about
@@ -34,45 +33,44 @@ import de.featjar.clauses.LiteralList;
  */
 public class AnalysisResult<T> {
 
-	private final String id;
-	private final LiteralList assumptions;
-	private final int hashCode;
-	private final T result;
+    private final String id;
+    private final LiteralList assumptions;
+    private final int hashCode;
+    private final T result;
 
-	public AnalysisResult(String id, LiteralList assumptions, T result) {
-		this.id = id;
-		this.assumptions = assumptions;
-		this.result = result;
-		this.hashCode = (31 * id.hashCode()) + Arrays.hashCode(assumptions.getLiterals());
-	}
+    public AnalysisResult(String id, LiteralList assumptions, T result) {
+        this.id = id;
+        this.assumptions = assumptions;
+        this.result = result;
+        this.hashCode = (31 * id.hashCode()) + Arrays.hashCode(assumptions.getLiterals());
+    }
 
-	public String getId() {
-		return id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public LiteralList getAssumptions() {
-		return assumptions;
-	}
+    public LiteralList getAssumptions() {
+        return assumptions;
+    }
 
-	public T getResult() {
-		return result;
-	}
+    public T getResult() {
+        return result;
+    }
 
-	@Override
-	public int hashCode() {
-		return hashCode;
-	}
+    @Override
+    public int hashCode() {
+        return hashCode;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if ((obj == null) || (getClass() != obj.getClass())) {
-			return false;
-		}
-		final AnalysisResult<?> other = (AnalysisResult<?>) obj;
-		return id.equals(other.id) && Arrays.equals(assumptions.getLiterals(), other.assumptions.getLiterals());
-	}
-
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if ((obj == null) || (getClass() != obj.getClass())) {
+            return false;
+        }
+        final AnalysisResult<?> other = (AnalysisResult<?>) obj;
+        return id.equals(other.id) && Arrays.equals(assumptions.getLiterals(), other.assumptions.getLiterals());
+    }
 }

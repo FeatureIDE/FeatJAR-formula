@@ -33,16 +33,13 @@ import de.featjar.util.job.InternalMonitor;
  */
 public class DNFDistributiveLawTransformer extends DistributiveLawTransformer {
 
-	public DNFDistributiveLawTransformer() {
-		super(And.class, And::new);
-	}
+    public DNFDistributiveLawTransformer() {
+        super(And.class, And::new);
+    }
 
-	@Override
-	public Compound execute(Formula formula, InternalMonitor monitor) throws MaximumNumberOfLiteralsExceededException {
-		final Compound compound = (formula instanceof Or)
-			? (Or) formula
-			: new Or(formula);
-		return super.execute(compound, monitor);
-	}
-
+    @Override
+    public Compound execute(Formula formula, InternalMonitor monitor) throws MaximumNumberOfLiteralsExceededException {
+        final Compound compound = (formula instanceof Or) ? (Or) formula : new Or(formula);
+        return super.execute(compound, monitor);
+    }
 }

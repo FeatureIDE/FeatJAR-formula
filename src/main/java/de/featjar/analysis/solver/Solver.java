@@ -30,13 +30,11 @@ import de.featjar.formula.structure.atomic.literal.VariableMap;
  */
 public interface Solver extends Cloneable {
 
-	Assignment getAssumptions();
+    Assignment getAssumptions();
 
-	DynamicFormula<?> getDynamicFormula();
+    DynamicFormula<?> getDynamicFormula();
 
-	VariableMap getVariables();
+    VariableMap getVariables();
 
-	default void reset() {
-	}
-
+    default void reset() {}
 }

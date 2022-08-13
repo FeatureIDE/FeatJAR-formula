@@ -20,14 +20,13 @@
  */
 package de.featjar.formula.structure;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.function.BinaryOperator;
-
 import de.featjar.formula.structure.atomic.literal.NamedTermMap.ValueTerm;
 import de.featjar.formula.structure.atomic.literal.VariableMap;
 import de.featjar.util.tree.Trees;
 import de.featjar.util.tree.structure.Tree;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.BinaryOperator;
 
 /**
  * A propositional node that can be transformed into conjunctive normal form
@@ -37,39 +36,38 @@ import de.featjar.util.tree.structure.Tree;
  * @author Elias Kuiter
  */
 public interface Formula extends Tree<Formula> {
-	String getName();
+    String getName();
 
-	Class<?> getType();
+    Class<?> getType();
 
-	default Optional<VariableMap> getVariableMap() {
-		return Trees.preOrderStream(this)
-			.filter(n -> n instanceof ValueTerm)
-			.map(n -> ((ValueTerm) n).getMap())
-			.findAny();
-	}
+    default Optional<VariableMap> getVariableMap() {
+        return Trees.preOrderStream(this)
+                .filter(n -> n instanceof ValueTerm)
+                .map(n -> ((ValueTerm) n).getMap())
+                .findAny();
+    }
 
-	@Override
-	List<? extends Formula> getChildren();
+    @Override
+    List<? extends Formula> getChildren();
 
-	@Override
-	Formula cloneNode();
+    @Override
+    Formula cloneNode();
 
-	Object eval(List<?> values);
+    Object eval(List<?> values);
 
-	public static boolean checkValues(int size, List<?> values) {
-		return values.size() == size;
-	}
+    public static boolean checkValues(int size, List<?> values) {
+        return values.size() == size;
+    }
 
-	public static boolean checkValues(Class<?> type, List<?> values) {
-		return values.stream().allMatch(v -> v == null || type.isInstance(v));
-	}
+    public static boolean checkValues(Class<?> type, List<?> values) {
+        return values.stream().allMatch(v -> v == null || type.isInstance(v));
+    }
 
-	@SuppressWarnings("unchecked")
-	public static <T> T reduce(List<?> values, final BinaryOperator<T> binaryOperator) {
-		if (values.stream().anyMatch(value -> value == null)) {
-			return null;
-		}
-		return values.stream().map(l -> (T) l).reduce(binaryOperator).orElse(null);
-	}
-
+    @SuppressWarnings("unchecked")
+    public static <T> T reduce(List<?> values, final BinaryOperator<T> binaryOperator) {
+        if (values.stream().anyMatch(value -> value == null)) {
+            return null;
+        }
+        return values.stream().map(l -> (T) l).reduce(binaryOperator).orElse(null);
+    }
 }

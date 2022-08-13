@@ -29,22 +29,21 @@ package de.featjar.analysis.solver;
  */
 public class RuntimeContradictionException extends RuntimeException {
 
-	private static final long serialVersionUID = -4951752949650801254L;
+    private static final long serialVersionUID = -4951752949650801254L;
 
-	public RuntimeContradictionException() {
-		super();
-	}
+    public RuntimeContradictionException() {
+        super();
+    }
 
-	public RuntimeContradictionException(String message) {
-		super(message);
-	}
+    public RuntimeContradictionException(String message) {
+        super(message);
+    }
 
-	public RuntimeContradictionException(Throwable cause) {
-		super(cause);
-	}
+    public RuntimeContradictionException(Throwable cause) {
+        super(cause);
+    }
 
-	public RuntimeContradictionException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
+    public RuntimeContradictionException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

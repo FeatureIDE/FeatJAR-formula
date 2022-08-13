@@ -20,35 +20,33 @@
  */
 package de.featjar.formula.structure.term.integer;
 
-import java.util.List;
-
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.term.Divide;
 import de.featjar.formula.structure.term.Term;
+import java.util.List;
 
 public class IntDivide extends Divide {
 
-	public IntDivide(Term leftArgument, Term rightArgument) {
-		super(leftArgument, rightArgument);
-	}
+    public IntDivide(Term leftArgument, Term rightArgument) {
+        super(leftArgument, rightArgument);
+    }
 
-	private IntDivide() {
-		super();
-	}
+    private IntDivide() {
+        super();
+    }
 
-	@Override
-	public Class<Long> getType() {
-		return Long.class;
-	}
+    @Override
+    public Class<Long> getType() {
+        return Long.class;
+    }
 
-	@Override
-	public IntDivide cloneNode() {
-		return new IntDivide();
-	}
+    @Override
+    public IntDivide cloneNode() {
+        return new IntDivide();
+    }
 
-	@Override
-	public Long eval(List<?> values) {
-		return Formula.reduce(values, (a, b) -> a / b);
-	}
-
+    @Override
+    public Long eval(List<?> values) {
+        return Formula.reduce(values, (a, b) -> a / b);
+    }
 }

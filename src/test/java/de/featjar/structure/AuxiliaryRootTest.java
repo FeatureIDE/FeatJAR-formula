@@ -22,38 +22,35 @@ package de.featjar.structure;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Arrays;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import de.featjar.formula.structure.AuxiliaryRoot;
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.atomic.literal.VariableMap;
+import java.util.Arrays;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class AuxiliaryRootTest {
 
-	private Formula expression1, expression2;
+    private Formula expression1, expression2;
 
-	@BeforeEach
-	public void setUp() {
-		final VariableMap map = new VariableMap(Arrays.asList("L1", "L2"));
-		expression1 = map.createLiteral("L1");
-		expression2 = map.createLiteral("L2");
-	}
+    @BeforeEach
+    public void setUp() {
+        final VariableMap map = new VariableMap(Arrays.asList("L1", "L2"));
+        expression1 = map.createLiteral("L1");
+        expression2 = map.createLiteral("L2");
+    }
 
-	@Test
-	public void createAuxiliaryRoot() {
-		final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
-		assertEquals(expression1, newRoot.getChild());
-		assertEquals("", newRoot.getName());
-	}
+    @Test
+    public void createAuxiliaryRoot() {
+        final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
+        assertEquals(expression1, newRoot.getChild());
+        assertEquals("", newRoot.getName());
+    }
 
-	@Test
-	public void replaceChild() {
-		final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
-		newRoot.setChild(expression2);
-		assertEquals(expression2, newRoot.getChild());
-	}
-
+    @Test
+    public void replaceChild() {
+        final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
+        newRoot.setChild(expression2);
+        assertEquals(expression2, newRoot.getChild());
+    }
 }

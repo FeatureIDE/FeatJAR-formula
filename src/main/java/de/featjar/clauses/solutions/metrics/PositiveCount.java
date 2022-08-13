@@ -29,14 +29,13 @@ import de.featjar.clauses.LiteralList;
  */
 public class PositiveCount implements CountFunction {
 
-	@Override
-	public double compute(LiteralList literals) {
-		return (double) literals.countPositive() / literals.size();
-	}
+    @Override
+    public double compute(LiteralList literals) {
+        return (double) literals.countPositive() / literals.size();
+    }
 
-	@Override
-	public String getName() {
-		return "Positive";
-	}
-
+    @Override
+    public String getName() {
+        return "Positive";
+    }
 }

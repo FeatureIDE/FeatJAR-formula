@@ -25,14 +25,13 @@ package de.featjar.analysis.solver;
  *
  * @param <T> the type of the return value for minimum/maximum
  * @param <V> the type of the variable to minimize
- * 
+ *
  * @author Joshua Sprey
  * @author Sebastian Krieter
  */
 public interface OptSolver<T, V> extends Solver {
 
-	T minimum(V formula);
+    T minimum(V formula);
 
-	T maximum(V formula);
-
+    T maximum(V formula);
 }

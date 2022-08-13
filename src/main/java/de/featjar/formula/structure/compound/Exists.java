@@ -25,22 +25,21 @@ import de.featjar.formula.structure.atomic.literal.VariableMap.Variable;
 
 public class Exists extends Quantifier {
 
-	public Exists(Variable boundVariable, Formula formula) {
-		super(boundVariable, formula);
-	}
+    public Exists(Variable boundVariable, Formula formula) {
+        super(boundVariable, formula);
+    }
 
-	private Exists(Exists oldNode) {
-		super(oldNode);
-	}
+    private Exists(Exists oldNode) {
+        super(oldNode);
+    }
 
-	@Override
-	public String getName() {
-		return "exists";
-	}
+    @Override
+    public String getName() {
+        return "exists";
+    }
 
-	@Override
-	public Exists cloneNode() {
-		return new Exists(this);
-	}
-
+    @Override
+    public Exists cloneNode() {
+        return new Exists(this);
+    }
 }

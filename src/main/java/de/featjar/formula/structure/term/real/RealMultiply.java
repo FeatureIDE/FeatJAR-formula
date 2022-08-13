@@ -20,39 +20,37 @@
  */
 package de.featjar.formula.structure.term.real;
 
-import java.util.List;
-
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.term.Multiply;
 import de.featjar.formula.structure.term.Term;
+import java.util.List;
 
 public class RealMultiply extends Multiply {
 
-	public RealMultiply(Term leftArgument, Term rightArgument) {
-		super(leftArgument, rightArgument);
-	}
+    public RealMultiply(Term leftArgument, Term rightArgument) {
+        super(leftArgument, rightArgument);
+    }
 
-	public RealMultiply(List<Term> arguments) {
-		super(arguments);
-	}
+    public RealMultiply(List<Term> arguments) {
+        super(arguments);
+    }
 
-	private RealMultiply() {
-		super();
-	}
+    private RealMultiply() {
+        super();
+    }
 
-	@Override
-	public Class<Double> getType() {
-		return Double.class;
-	}
+    @Override
+    public Class<Double> getType() {
+        return Double.class;
+    }
 
-	@Override
-	public RealMultiply cloneNode() {
-		return new RealMultiply();
-	}
+    @Override
+    public RealMultiply cloneNode() {
+        return new RealMultiply();
+    }
 
-	@Override
-	public Double eval(List<?> values) {
-		return Formula.reduce(values, (a, b) -> a * b);
-	}
-
+    @Override
+    public Double eval(List<?> values) {
+        return Formula.reduce(values, (a, b) -> a * b);
+    }
 }

@@ -20,9 +20,8 @@
  */
 package de.featjar.formula.structure.compound;
 
-import java.util.List;
-
 import de.featjar.formula.structure.Formula;
+import java.util.List;
 
 /**
  * A logical connector that is {@code true} iff the number of its children that
@@ -32,32 +31,31 @@ import de.featjar.formula.structure.Formula;
  */
 public class Between extends Cardinal {
 
-	public Between(List<Formula> nodes, int min, int max) {
-		super(nodes, min, max);
-	}
+    public Between(List<Formula> nodes, int min, int max) {
+        super(nodes, min, max);
+    }
 
-	private Between(Between oldNode) {
-		super(oldNode);
-	}
+    private Between(Between oldNode) {
+        super(oldNode);
+    }
 
-	@Override
-	public Between cloneNode() {
-		return new Between(this);
-	}
+    @Override
+    public Between cloneNode() {
+        return new Between(this);
+    }
 
-	@Override
-	public String getName() {
-		return "between-" + min + "-" + max;
-	}
+    @Override
+    public String getName() {
+        return "between-" + min + "-" + max;
+    }
 
-	@Override
-	public void setMin(int min) {
-		super.setMin(min);
-	}
+    @Override
+    public void setMin(int min) {
+        super.setMin(min);
+    }
 
-	@Override
-	public void setMax(int max) {
-		super.setMax(max);
-	}
-
+    @Override
+    public void setMax(int max) {
+        super.setMax(max);
+    }
 }

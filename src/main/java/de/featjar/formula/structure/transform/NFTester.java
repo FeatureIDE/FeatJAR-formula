@@ -20,33 +20,31 @@
  */
 package de.featjar.formula.structure.transform;
 
-import java.util.Optional;
-
 import de.featjar.formula.structure.Formula;
 import de.featjar.util.tree.visitor.TreeVisitor;
+import java.util.Optional;
 
 public class NFTester implements TreeVisitor<Boolean, Formula> {
 
-	protected boolean isNf;
-	protected boolean isClausalNf;
+    protected boolean isNf;
+    protected boolean isClausalNf;
 
-	@Override
-	public void reset() {
-		isNf = true;
-		isClausalNf = true;
-	}
+    @Override
+    public void reset() {
+        isNf = true;
+        isClausalNf = true;
+    }
 
-	@Override
-	public Optional<Boolean> getResult() {
-		return Optional.of(isNf);
-	}
+    @Override
+    public Optional<Boolean> getResult() {
+        return Optional.of(isNf);
+    }
 
-	public boolean isNf() {
-		return isNf;
-	}
+    public boolean isNf() {
+        return isNf;
+    }
 
-	public boolean isClausalNf() {
-		return isClausalNf;
-	}
-
+    public boolean isClausalNf() {
+        return isClausalNf;
+    }
 }

@@ -20,29 +20,28 @@
  */
 package de.featjar.formula.io.textual;
 
-import java.util.Arrays;
-
 import de.featjar.util.data.Pair;
+import java.util.Arrays;
 
 /**
  * Symbols for a short textual representation. Best used for serialization since
  * they fall in the ASCII range but are still relatively short.
- * 
+ *
  * @author Timo Günther
  * @author Sebastian Krieter
  */
 public class ShortSymbols extends Symbols {
 
-	public static final Symbols INSTANCE = new ShortSymbols();
+    public static final Symbols INSTANCE = new ShortSymbols();
 
-	private ShortSymbols() {
-		super(Arrays.asList(
-			new Pair<>(Operator.NOT, "-"),
-			new Pair<>(Operator.AND, "&"),
-			new Pair<>(Operator.OR, "|"),
-			new Pair<>(Operator.IMPLIES, "=>"),
-			new Pair<>(Operator.EQUALS, "<=>")),
-			false);
-	}
-
+    private ShortSymbols() {
+        super(
+                Arrays.asList(
+                        new Pair<>(Operator.NOT, "-"),
+                        new Pair<>(Operator.AND, "&"),
+                        new Pair<>(Operator.OR, "|"),
+                        new Pair<>(Operator.IMPLIES, "=>"),
+                        new Pair<>(Operator.EQUALS, "<=>")),
+                false);
+    }
 }

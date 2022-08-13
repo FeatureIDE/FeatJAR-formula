@@ -20,9 +20,8 @@
  */
 package de.featjar.formula.structure.compound;
 
-import java.util.List;
-
 import de.featjar.formula.structure.Formula;
+import java.util.List;
 
 /**
  * A logical connector that is {@code true} iff at most a given number of its
@@ -32,27 +31,26 @@ import de.featjar.formula.structure.Formula;
  */
 public class AtMost extends Cardinal {
 
-	public AtMost(List<? extends Formula> nodes, int max) {
-		super(nodes, 0, max);
-	}
+    public AtMost(List<? extends Formula> nodes, int max) {
+        super(nodes, 0, max);
+    }
 
-	private AtMost(AtMost oldNode) {
-		super(oldNode);
-	}
+    private AtMost(AtMost oldNode) {
+        super(oldNode);
+    }
 
-	@Override
-	public AtMost cloneNode() {
-		return new AtMost(this);
-	}
+    @Override
+    public AtMost cloneNode() {
+        return new AtMost(this);
+    }
 
-	@Override
-	public String getName() {
-		return "atMost-" + max;
-	}
+    @Override
+    public String getName() {
+        return "atMost-" + max;
+    }
 
-	@Override
-	public void setMax(int max) {
-		super.setMax(max);
-	}
-
+    @Override
+    public void setMax(int max) {
+        super.setMax(max);
+    }
 }

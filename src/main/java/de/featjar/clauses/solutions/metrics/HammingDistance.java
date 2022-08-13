@@ -27,18 +27,17 @@ package de.featjar.clauses.solutions.metrics;
  */
 public class HammingDistance implements DistanceFunction {
 
-	@Override
-	public double computeDistance(final int[] literals1, final int[] literals2) {
-		double conflicts = 0;
-		for (int k = 0; k < literals1.length; k++) {
-			conflicts += (literals1[k] != literals2[k]) ? 1 : 0;
-		}
-		return conflicts / literals1.length;
-	}
+    @Override
+    public double computeDistance(final int[] literals1, final int[] literals2) {
+        double conflicts = 0;
+        for (int k = 0; k < literals1.length; k++) {
+            conflicts += (literals1[k] != literals2[k]) ? 1 : 0;
+        }
+        return conflicts / literals1.length;
+    }
 
-	@Override
-	public String getName() {
-		return "Hamming";
-	}
-
+    @Override
+    public String getName() {
+        return "Hamming";
+    }
 }

@@ -20,39 +20,37 @@
  */
 package de.featjar.formula.structure.term.real;
 
-import java.util.List;
-
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.term.Add;
 import de.featjar.formula.structure.term.Term;
+import java.util.List;
 
 public class RealAdd extends Add {
 
-	public RealAdd(Term leftArgument, Term rightArgument) {
-		super(leftArgument, rightArgument);
-	}
+    public RealAdd(Term leftArgument, Term rightArgument) {
+        super(leftArgument, rightArgument);
+    }
 
-	public RealAdd(List<Term> arguments) {
-		super(arguments);
-	}
+    public RealAdd(List<Term> arguments) {
+        super(arguments);
+    }
 
-	private RealAdd() {
-		super();
-	}
+    private RealAdd() {
+        super();
+    }
 
-	@Override
-	public Class<Double> getType() {
-		return Double.class;
-	}
+    @Override
+    public Class<Double> getType() {
+        return Double.class;
+    }
 
-	@Override
-	public RealAdd cloneNode() {
-		return new RealAdd();
-	}
+    @Override
+    public RealAdd cloneNode() {
+        return new RealAdd();
+    }
 
-	@Override
-	public Double eval(List<?> values) {
-		return Formula.reduce(values, Double::sum);
-	}
-
+    @Override
+    public Double eval(List<?> values) {
+        return Formula.reduce(values, Double::sum);
+    }
 }

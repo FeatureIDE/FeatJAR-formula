@@ -20,28 +20,27 @@
  */
 package de.featjar.formula.io.textual;
 
-import java.util.Arrays;
-
 import de.featjar.util.data.Pair;
+import java.util.Arrays;
 
 /**
  * Symbols for a representation like in Java. These are inherently incomplete
  * and should only be used if absolutely necessary.
- * 
+ *
  * @author Timo Günther
  * @author Sebastian Krieter
  */
 public class JavaSymbols extends Symbols {
 
-	public static final Symbols INSTANCE = new JavaSymbols();
+    public static final Symbols INSTANCE = new JavaSymbols();
 
-	private JavaSymbols() {
-		super(Arrays.asList(
-			new Pair<>(Operator.NOT, "!"),
-			new Pair<>(Operator.AND, "&&"),
-			new Pair<>(Operator.OR, "||"),
-			new Pair<>(Operator.EQUALS, "==")),
-			false);
-	}
-
+    private JavaSymbols() {
+        super(
+                Arrays.asList(
+                        new Pair<>(Operator.NOT, "!"),
+                        new Pair<>(Operator.AND, "&&"),
+                        new Pair<>(Operator.OR, "||"),
+                        new Pair<>(Operator.EQUALS, "==")),
+                false);
+    }
 }
