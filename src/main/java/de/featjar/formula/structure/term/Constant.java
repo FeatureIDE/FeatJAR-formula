@@ -16,5 +16,5 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with formula. If not, see <https://www.gnu.org/licenses/>.
  *
- * See <https://github.com/FeatJAR/formula> for further information.
+ * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
