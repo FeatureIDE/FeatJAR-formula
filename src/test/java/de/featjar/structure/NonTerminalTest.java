@@ -36,6 +36,8 @@ import de.featjar.formula.structure.compound.Implies;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+
+import de.featjar.util.tree.Trees;
 import org.junit.jupiter.api.Test;
 
 public class NonTerminalTest {

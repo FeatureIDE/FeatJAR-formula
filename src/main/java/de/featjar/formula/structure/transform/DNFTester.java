@@ -30,30 +30,30 @@ import java.util.List;
 public class DNFTester extends NFTester {
 
     @Override
-    public VisitorResult firstVisit(List<Formula> path) {
+    public TraversalAction firstVisit(List<Formula> path) {
         final Formula node = TreeVisitor.getCurrentNode(path);
         if (node instanceof Or) {
             if (path.size() > 1) {
                 isNf = false;
                 isClausalNf = false;
-                return VisitorResult.SkipAll;
+                return TraversalAction.SKIP_ALL;
             }
             for (final Formula child : node.getChildren()) {
                 if (!(child instanceof And)) {
                     if (!(child instanceof Atomic)) {
                         isNf = false;
                         isClausalNf = false;
-                        return VisitorResult.SkipAll;
+                        return TraversalAction.SKIP_ALL;
                     }
                     isClausalNf = false;
                 }
             }
-            return VisitorResult.Continue;
+            return TraversalAction.CONTINUE;
         } else if (node instanceof And) {
             if (path.size() > 2) {
                 isNf = false;
                 isClausalNf = false;
-                return VisitorResult.SkipAll;
+                return TraversalAction.SKIP_ALL;
             }
             if (path.size() < 2) {
                 isClausalNf = false;
@@ -62,24 +62,24 @@ public class DNFTester extends NFTester {
                 if (!(child instanceof Atomic)) {
                     isNf = false;
                     isClausalNf = false;
-                    return VisitorResult.SkipAll;
+                    return TraversalAction.SKIP_ALL;
                 }
             }
-            return VisitorResult.Continue;
+            return TraversalAction.CONTINUE;
         } else if (node instanceof Atomic) {
             if (path.size() > 3) {
                 isNf = false;
                 isClausalNf = false;
-                return VisitorResult.SkipAll;
+                return TraversalAction.SKIP_ALL;
             }
             if (path.size() < 3) {
                 isClausalNf = false;
             }
-            return VisitorResult.SkipChildren;
+            return TraversalAction.SKIP_CHILDREN;
         } else {
             isNf = false;
             isClausalNf = false;
-            return VisitorResult.SkipAll;
+            return TraversalAction.SKIP_ALL;
         }
     }
 }

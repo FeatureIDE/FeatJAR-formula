@@ -35,18 +35,18 @@ import java.util.stream.Collectors;
 public class DeMorganVisitor implements TreeVisitor<Void, Formula> {
 
     @Override
-    public VisitorResult firstVisit(List<Formula> path) {
+    public TraversalAction firstVisit(List<Formula> path) {
         final Formula node = TreeVisitor.getCurrentNode(path);
         if (node instanceof Atomic) {
-            return VisitorResult.SkipChildren;
+            return TraversalAction.SKIP_CHILDREN;
         } else if (node instanceof Compound) {
-            node.mapChildren(this::replace);
-            return VisitorResult.Continue;
+            node.replaceChildren(this::replace);
+            return TraversalAction.CONTINUE;
         } else if (node instanceof AuxiliaryRoot) {
-            node.mapChildren(this::replace);
-            return VisitorResult.Continue;
+            node.replaceChildren(this::replace);
+            return TraversalAction.CONTINUE;
         } else {
-            return VisitorResult.Fail;
+            return TraversalAction.FAIL;
         }
     }
 

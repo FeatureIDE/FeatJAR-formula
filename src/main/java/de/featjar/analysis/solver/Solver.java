@@ -28,7 +28,7 @@ import de.featjar.formula.structure.atomic.literal.VariableMap;
  *
  * @author Sebastian Krieter
  */
-public interface Solver extends Cloneable {
+public interface Solver {
 
     Assignment getAssumptions();
 

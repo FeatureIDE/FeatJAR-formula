@@ -50,12 +50,12 @@ public class DNFTransformer implements Transformer {
         final NFTester nfTester = NormalForms.getNFTester(formula, NormalForm.DNF);
         if (nfTester.isNf) {
             if (!nfTester.isClausalNf()) {
-                return NormalForms.toClausalNF(Trees.cloneTree(formula), NormalForm.DNF);
+                return NormalForms.toClausalNF(Trees.clone(formula), NormalForm.DNF);
             } else {
-                return Trees.cloneTree(formula);
+                return Trees.clone(formula);
             }
         } else {
-            formula = NormalForms.simplifyForNF(Trees.cloneTree(formula));
+            formula = NormalForms.simplifyForNF(Trees.clone(formula));
             formula = distributiveLawTransformer.execute(
                     (formula instanceof Or) ? (Or) formula : new Or(formula), monitor);
             formula = NormalForms.toClausalNF(formula, NormalForm.DNF);

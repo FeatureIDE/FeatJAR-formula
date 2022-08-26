@@ -71,7 +71,7 @@ public class ErrorLiteral extends Terminal implements Literal {
     }
 
     @Override
-    public boolean equalsNode(Object other) {
+    public boolean equalsNode(Formula other) {
         if (getClass() != other.getClass()) {
             return false;
         }

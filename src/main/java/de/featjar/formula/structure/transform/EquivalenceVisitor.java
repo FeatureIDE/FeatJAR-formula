@@ -52,30 +52,30 @@ public class EquivalenceVisitor implements TreeVisitor<Void, Formula> {
     }
 
     @Override
-    public VisitorResult firstVisit(List<Formula> path) {
+    public TraversalAction firstVisit(List<Formula> path) {
         final Formula node = TreeVisitor.getCurrentNode(path);
         if (node instanceof Atomic) {
-            return VisitorResult.SkipChildren;
+            return TraversalAction.SKIP_CHILDREN;
         } else if (node instanceof Compound) {
             if (node instanceof Quantifier) {
-                return VisitorResult.Fail;
+                return TraversalAction.FAIL;
             }
-            return VisitorResult.Continue;
+            return TraversalAction.CONTINUE;
         } else if (node instanceof AuxiliaryRoot) {
-            return VisitorResult.Continue;
+            return TraversalAction.CONTINUE;
         } else {
-            return VisitorResult.Fail;
+            return TraversalAction.FAIL;
         }
     }
 
     @Override
-    public VisitorResult lastVisit(List<Formula> path) {
+    public TraversalAction lastVisit(List<Formula> path) {
         final Formula node = TreeVisitor.getCurrentNode(path);
-        node.mapChildren(this::replace);
+        node.replaceChildren(this::replace);
         if (fail) {
-            return VisitorResult.Fail;
+            return TraversalAction.FAIL;
         }
-        return VisitorResult.Continue;
+        return TraversalAction.CONTINUE;
     }
 
     @SuppressWarnings("unchecked")

@@ -35,7 +35,7 @@ import de.featjar.formula.structure.compound.ForAll;
 import de.featjar.formula.structure.compound.Implies;
 import de.featjar.formula.structure.compound.Not;
 import de.featjar.formula.structure.compound.Or;
-import de.featjar.util.tree.visitor.DfsVisitor;
+import de.featjar.util.tree.visitor.InOrderTreeVisitor;
 import de.featjar.util.tree.visitor.TreeVisitor;
 import java.util.List;
 
@@ -46,12 +46,12 @@ import java.util.List;
  * @author Timo Günther
  * @author Sebastian Krieter
  */
-public class NodeWriter2 implements DfsVisitor<Void, Formula> {
+public class NodeWriter2 implements InOrderTreeVisitor<Void, Formula> {
 
     private final StringBuilder sb = new StringBuilder();
 
     @Override
-    public VisitorResult firstVisit(List<Formula> path) {
+    public TraversalAction firstVisit(List<Formula> path) {
         final Notation notation = getNotation();
         switch (notation) {
             case INFIX:
@@ -82,11 +82,11 @@ public class NodeWriter2 implements DfsVisitor<Void, Formula> {
             default:
                 throw new IllegalStateException("Unknown notation: " + notation);
         }
-        return VisitorResult.Continue;
+        return TraversalAction.CONTINUE;
     }
 
     @Override
-    public VisitorResult visit(List<Formula> path) {
+    public TraversalAction visit(List<Formula> path) {
         final Notation notation = getNotation();
         switch (notation) {
             case INFIX:
@@ -106,11 +106,11 @@ public class NodeWriter2 implements DfsVisitor<Void, Formula> {
             default:
                 throw new IllegalStateException("Unknown notation: " + notation);
         }
-        return VisitorResult.Continue;
+        return TraversalAction.CONTINUE;
     }
 
     @Override
-    public VisitorResult lastVisit(List<Formula> path) {
+    public TraversalAction lastVisit(List<Formula> path) {
         final Notation notation = getNotation();
         switch (notation) {
             case INFIX:
@@ -125,7 +125,7 @@ public class NodeWriter2 implements DfsVisitor<Void, Formula> {
             default:
                 throw new IllegalStateException("Unknown notation: " + notation);
         }
-        return VisitorResult.Continue;
+        return TraversalAction.CONTINUE;
     }
 
     /**

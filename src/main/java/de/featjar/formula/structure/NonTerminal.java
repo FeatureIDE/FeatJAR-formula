@@ -22,7 +22,7 @@ package de.featjar.formula.structure;
 
 import de.featjar.formula.structure.atomic.literal.VariableMap;
 import de.featjar.util.tree.Trees;
-import de.featjar.util.tree.structure.AbstractNonTerminal;
+import de.featjar.util.tree.structure.Tree;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -33,7 +33,7 @@ import java.util.Objects;
  *
  * @author Sebastian Krieter
  */
-public abstract class NonTerminal extends AbstractNonTerminal<Formula> implements Formula {
+public abstract class NonTerminal extends Tree<Formula> implements Formula {
     private int hashCode = 0;
     private boolean hasHashCode = false;
 
@@ -155,12 +155,17 @@ public abstract class NonTerminal extends AbstractNonTerminal<Formula> implement
     }
 
     @Override
-    public boolean equals(Object other) {
+    public boolean equals(Object obj) {
+        return (obj instanceof NonTerminal) && equalsTree((NonTerminal) obj);
+    }
+
+    @Override
+    public boolean equalsTree(Formula other) {
         return (other instanceof NonTerminal) && Trees.equals(this, (NonTerminal) other);
     }
 
     @Override
-    public boolean equalsNode(Object other) {
+    public boolean equalsNode(Formula other) {
         return (getClass() == other.getClass()) && (children.size() == ((NonTerminal) other).children.size());
     }
 

@@ -39,7 +39,7 @@ import java.util.Random;
  *
  * @author Sebastian Krieter
  */
-public class NamedTermMap<T extends ValueTerm> implements Cloneable, Iterable<T> {
+public class NamedTermMap<T extends ValueTerm> implements Iterable<T> {
 
     public abstract static class ValueTerm extends Terminal implements Term {
 
@@ -96,14 +96,14 @@ public class NamedTermMap<T extends ValueTerm> implements Cloneable, Iterable<T>
         }
 
         @Override
-        public boolean equalsNode(Object other) {
+        public boolean equalsNode(Formula other) {
             if (this == other) return true;
             if (getClass() != other.getClass()) return false;
             return Objects.equals(name, ((ValueTerm) other).name);
         }
 
         @Override
-        public boolean equals(Object obj) {
+        public boolean equalsTree(Formula obj) {
             return equalsNode(obj);
         }
 

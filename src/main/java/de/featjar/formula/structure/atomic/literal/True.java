@@ -20,6 +20,7 @@
  */
 package de.featjar.formula.structure.atomic.literal;
 
+import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.Terminal;
 import de.featjar.formula.structure.atomic.Atomic;
 import de.featjar.formula.structure.term.Term;
@@ -69,12 +70,12 @@ public final class True extends Terminal implements Literal {
     }
 
     @Override
-    public boolean equals(Object other) {
+    public boolean equalsTree(Formula other) {
         return other == INSTANCE;
     }
 
     @Override
-    public boolean equalsNode(Object other) {
+    public boolean equalsNode(Formula other) {
         return other == INSTANCE;
     }
 

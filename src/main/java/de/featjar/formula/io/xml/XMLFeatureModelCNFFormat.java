@@ -68,7 +68,7 @@ public class XMLFeatureModelCNFFormat extends XMLFeatureModelFormat {
         if (constraintsElement.isPresent()) {
             parseConstraints(constraintsElement.get(), variableMap);
         }
-        return Trees.cloneTree(simplify(new And(constraints)));
+        return Trees.clone(simplify(new And(constraints)));
     }
 
     @Override

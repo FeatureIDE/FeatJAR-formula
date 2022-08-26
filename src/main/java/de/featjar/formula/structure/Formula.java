@@ -23,7 +23,7 @@ package de.featjar.formula.structure;
 import de.featjar.formula.structure.atomic.literal.NamedTermMap.ValueTerm;
 import de.featjar.formula.structure.atomic.literal.VariableMap;
 import de.featjar.util.tree.Trees;
-import de.featjar.util.tree.structure.Tree;
+import de.featjar.util.tree.structure.Traversable;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BinaryOperator;
@@ -35,7 +35,7 @@ import java.util.function.BinaryOperator;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public interface Formula extends Tree<Formula> {
+public interface Formula extends Traversable<Formula> {
     String getName();
 
     Class<?> getType();

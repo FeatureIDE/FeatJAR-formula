@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
  *
  * @author Sebastian Krieter
  */
-public class VariableMap implements Cloneable {
+public class VariableMap {
 
     public static final class Variable extends ValueTerm {
         // todo inv: all subtrees have the same variablemap

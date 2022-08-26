@@ -34,36 +34,36 @@ import java.util.List;
 public class TreeSimplifier implements TreeVisitor<Void, Formula> {
 
     @Override
-    public VisitorResult firstVisit(List<Formula> path) {
+    public TraversalAction firstVisit(List<Formula> path) {
         final Formula node = TreeVisitor.getCurrentNode(path);
         if (node instanceof Atomic) {
-            return VisitorResult.SkipChildren;
+            return TraversalAction.SKIP_CHILDREN;
         } else if ((node instanceof AuxiliaryRoot) || (node instanceof Compound)) {
-            return VisitorResult.Continue;
+            return TraversalAction.CONTINUE;
         } else {
-            return VisitorResult.Fail;
+            return TraversalAction.FAIL;
         }
     }
 
     @Override
-    public VisitorResult lastVisit(List<Formula> path) {
+    public TraversalAction lastVisit(List<Formula> path) {
         final Formula node = TreeVisitor.getCurrentNode(path);
         if ((node instanceof AuxiliaryRoot) || (node instanceof Compound)) {
             if (node instanceof And) {
                 if (node.getChildren().stream().anyMatch(c -> c == Literal.False)) {
                     node.setChildren(Arrays.asList(Literal.False));
                 } else {
-                    node.flatMapChildren(this::mergeAnd);
+                    node.flatReplaceChildren(this::mergeAnd);
                 }
             } else if (node instanceof Or) {
                 if (node.getChildren().stream().anyMatch(c -> c == Literal.True)) {
                     node.setChildren(Arrays.asList(Literal.True));
                 } else {
-                    node.flatMapChildren(this::mergeOr);
+                    node.flatReplaceChildren(this::mergeOr);
                 }
             }
         }
-        return VisitorResult.Continue;
+        return TraversalAction.CONTINUE;
     }
 
     private List<? extends Formula> mergeAnd(final Formula child) {

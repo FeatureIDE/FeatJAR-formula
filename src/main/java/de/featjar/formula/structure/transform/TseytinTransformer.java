@@ -147,20 +147,20 @@ public class TseytinTransformer
     }
 
     @Override
-    public VisitorResult firstVisit(List<Formula> path) {
+    public TraversalAction firstVisit(List<Formula> path) {
         final Formula node = TreeVisitor.getCurrentNode(path);
         if (node instanceof Atomic) {
-            return VisitorResult.SkipChildren;
+            return TraversalAction.SKIP_CHILDREN;
         } else if ((node instanceof Compound) || (node instanceof AuxiliaryRoot)) {
             stack.push((Formula) node);
-            return VisitorResult.Continue;
+            return TraversalAction.CONTINUE;
         } else {
-            return VisitorResult.Fail;
+            return TraversalAction.FAIL;
         }
     }
 
     @Override
-    public VisitorResult lastVisit(List<Formula> path) {
+    public TraversalAction lastVisit(List<Formula> path) {
         final Formula node = TreeVisitor.getCurrentNode(path);
         if (node instanceof Atomic) {
             final Formula clonedNode = node;

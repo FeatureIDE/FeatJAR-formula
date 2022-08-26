@@ -68,13 +68,13 @@ public class CNFTransformer implements Transformer {
         final NFTester nfTester = NormalForms.getNFTester(orgFormula, NormalForm.CNF);
         if (nfTester.isNf) {
             if (!nfTester.isClausalNf()) {
-                return NormalForms.toClausalNF(Trees.cloneTree(orgFormula), NormalForm.CNF);
+                return NormalForms.toClausalNF(Trees.clone(orgFormula), NormalForm.CNF);
             } else {
-                return Trees.cloneTree(orgFormula);
+                return Trees.clone(orgFormula);
             }
         }
         variableMap = orgFormula.getVariableMap().map(VariableMap::clone).orElseGet(VariableMap::new);
-        Formula formula = NormalForms.simplifyForNF(Trees.cloneTree(orgFormula));
+        Formula formula = NormalForms.simplifyForNF(Trees.clone(orgFormula));
         if (formula instanceof And) {
             final List<Formula> children = ((And) formula).getChildren();
             if (useMultipleThreads) {
@@ -125,7 +125,7 @@ public class CNFTransformer implements Transformer {
     }
 
     private void transform(Formula child) {
-        final Formula clonedChild = Trees.cloneTree(child);
+        final Formula clonedChild = Trees.clone(child);
         if (Formulas.isCNF(clonedChild)) {
             if (clonedChild instanceof And) {
                 distributiveClauses.addAll(((And) clonedChild).getChildren());

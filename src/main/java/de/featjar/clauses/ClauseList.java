@@ -32,7 +32,7 @@ import java.util.Collection;
  *
  * @author Sebastian Krieter
  */
-public class ClauseList extends ArrayList<LiteralList> implements Cloneable, Serializable {
+public class ClauseList extends ArrayList<LiteralList> implements Serializable {
 
     private static final long serialVersionUID = -4298323253677967328L;
 

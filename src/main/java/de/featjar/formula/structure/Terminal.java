@@ -21,7 +21,7 @@
 package de.featjar.formula.structure;
 
 import de.featjar.formula.structure.term.Term;
-import de.featjar.util.tree.structure.AbstractTerminal;
+import de.featjar.util.tree.structure.LeafNode;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -32,7 +32,7 @@ import java.util.Objects;
  *
  * @author Sebastian Krieter
  */
-public abstract class Terminal extends AbstractTerminal<Formula> implements Formula {
+public abstract class Terminal extends LeafNode<Formula> implements Formula {
 
     @Override
     public int hashCode() {
@@ -40,7 +40,7 @@ public abstract class Terminal extends AbstractTerminal<Formula> implements Form
     }
 
     @Override
-    public boolean equals(Object other) {
+    public boolean equalsTree(Formula other) {
         if (this == other) {
             return true;
         }
@@ -51,7 +51,7 @@ public abstract class Terminal extends AbstractTerminal<Formula> implements Form
     }
 
     @Override
-    public boolean equalsNode(Object other) {
+    public boolean equalsNode(Formula other) {
         return (getClass() == other.getClass()) && Objects.equals(getName(), ((Terminal) other).getName());
     }
 

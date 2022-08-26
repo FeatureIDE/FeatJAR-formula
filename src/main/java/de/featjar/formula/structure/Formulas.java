@@ -97,7 +97,7 @@ public final class Formulas {
     }
 
     public static Formula manipulate(Formula node, TreeVisitor<Void, Formula> visitor) {
-        final AuxiliaryRoot auxiliaryRoot = new AuxiliaryRoot(Trees.cloneTree(node));
+        final AuxiliaryRoot auxiliaryRoot = new AuxiliaryRoot(Trees.clone(node));
         Trees.traverse(auxiliaryRoot, visitor);
         return auxiliaryRoot.getChild();
     }

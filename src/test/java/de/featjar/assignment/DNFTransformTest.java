@@ -44,7 +44,7 @@ public class DNFTransformTest {
     }
 
     private void testTransform(final Formula formulaOrg) {
-        final Formula formulaClone = Trees.cloneTree(formulaOrg);
+        final Formula formulaClone = Trees.clone(formulaOrg);
         final VariableMap map = formulaOrg.getVariableMap().orElseThrow();
         final VariableMap mapClone = map.clone();
 

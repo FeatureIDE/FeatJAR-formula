@@ -70,7 +70,7 @@ public final class FormulaToCNF implements MonitorableFunction<Formula, CNF> {
                 clauses.add(new LiteralList());
             }
         } else {
-            final Formula cnf = Formulas.toCNF(Trees.cloneTree(node)).get();
+            final Formula cnf = Formulas.toCNF(Trees.clone(node)).get();
             cnf.getChildren().stream()
                     .map(exp -> getClause(exp, mapping))
                     .filter(Objects::nonNull)

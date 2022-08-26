@@ -88,7 +88,7 @@ public abstract class Cardinal extends Compound {
     }
 
     @Override
-    public boolean equalsNode(Object other) {
+    public boolean equalsNode(Formula other) {
         if (!super.equalsNode(other)) {
             return false;
         }

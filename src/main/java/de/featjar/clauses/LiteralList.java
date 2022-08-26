@@ -38,7 +38,7 @@ import java.util.stream.IntStream;
  *
  * @author Sebastian Krieter
  */
-public class LiteralList implements Cloneable, Comparable<LiteralList>, Serializable {
+public class LiteralList implements Comparable<LiteralList>, Serializable {
 
     private static final long serialVersionUID = 8360925003112707082L;
 

@@ -75,7 +75,7 @@ public class ValueVisitor implements TreeVisitor<Object, Formula> {
     }
 
     @Override
-    public VisitorResult lastVisit(List<Formula> path) {
+    public TraversalAction lastVisit(List<Formula> path) {
         final Formula node = TreeVisitor.getCurrentNode(path);
         if (node instanceof Variable) {
             final Variable variable = (Variable) node;
@@ -119,6 +119,6 @@ public class ValueVisitor implements TreeVisitor<Object, Formula> {
             arguments.clear();
             values.push(value);
         }
-        return VisitorResult.Continue;
+        return TraversalAction.CONTINUE;
     }
 }
