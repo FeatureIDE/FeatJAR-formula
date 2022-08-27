@@ -56,7 +56,7 @@ public class NodeWriter2 implements InOrderTreeVisitor<Void, Formula> {
         switch (notation) {
             case INFIX:
                 // if literal or not infixable or != 2 children
-                final Formula currentNode = TreeVisitor.getCurrentNode(path);
+                final Formula currentNode = getCurrentNode(path);
 
                 alignLine(path.size());
                 if (currentNode instanceof Terminal) {
@@ -91,7 +91,7 @@ public class NodeWriter2 implements InOrderTreeVisitor<Void, Formula> {
         switch (notation) {
             case INFIX:
                 // if not literal and infixable and == 2 children
-                final Formula currentNode = TreeVisitor.getCurrentNode(path);
+                final Formula currentNode = getCurrentNode(path);
                 if (currentNode.getChildren().size() == 2) {
                     alignLine(path.size());
                     Symbols.getOperator((Formula) currentNode);

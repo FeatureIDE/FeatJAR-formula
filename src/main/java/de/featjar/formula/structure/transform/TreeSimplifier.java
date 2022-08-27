@@ -35,7 +35,7 @@ public class TreeSimplifier implements TreeVisitor<Void, Formula> {
 
     @Override
     public TraversalAction firstVisit(List<Formula> path) {
-        final Formula node = TreeVisitor.getCurrentNode(path);
+        final Formula node = getCurrentNode(path);
         if (node instanceof Atomic) {
             return TraversalAction.SKIP_CHILDREN;
         } else if ((node instanceof AuxiliaryRoot) || (node instanceof Compound)) {
@@ -47,7 +47,7 @@ public class TreeSimplifier implements TreeVisitor<Void, Formula> {
 
     @Override
     public TraversalAction lastVisit(List<Formula> path) {
-        final Formula node = TreeVisitor.getCurrentNode(path);
+        final Formula node = getCurrentNode(path);
         if ((node instanceof AuxiliaryRoot) || (node instanceof Compound)) {
             if (node instanceof And) {
                 if (node.getChildren().stream().anyMatch(c -> c == Literal.False)) {

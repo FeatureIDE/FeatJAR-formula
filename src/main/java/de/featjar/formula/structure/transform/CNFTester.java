@@ -31,7 +31,7 @@ public class CNFTester extends NFTester {
 
     @Override
     public TraversalAction firstVisit(List<Formula> path) {
-        final Formula node = TreeVisitor.getCurrentNode(path);
+        final Formula node = getCurrentNode(path);
         if (node instanceof And) {
             if (path.size() > 1) {
                 isNf = false;

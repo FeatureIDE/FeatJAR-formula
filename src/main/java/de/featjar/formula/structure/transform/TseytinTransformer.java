@@ -134,13 +134,13 @@ public class TseytinTransformer
         substitutes.clear();
         stack.clear();
 
-        Trees.sortTree(child);
+        Trees.sort(child);
         if (variableMap == null) {
             variableMap = child.getVariableMap().map(VariableMap::clone).orElseGet(VariableMap::new);
         }
 
         try {
-            Trees.dfsPrePost(child, this);
+            child.traverse(this);
         } catch (final Exception ignored) {
         }
         return substitutes;
@@ -148,7 +148,7 @@ public class TseytinTransformer
 
     @Override
     public TraversalAction firstVisit(List<Formula> path) {
-        final Formula node = TreeVisitor.getCurrentNode(path);
+        final Formula node = getCurrentNode(path);
         if (node instanceof Atomic) {
             return TraversalAction.SKIP_CHILDREN;
         } else if ((node instanceof Compound) || (node instanceof AuxiliaryRoot)) {
@@ -161,7 +161,7 @@ public class TseytinTransformer
 
     @Override
     public TraversalAction lastVisit(List<Formula> path) {
-        final Formula node = TreeVisitor.getCurrentNode(path);
+        final Formula node = getCurrentNode(path);
         if (node instanceof Atomic) {
             final Formula clonedNode = node;
             if (path.isEmpty()) {

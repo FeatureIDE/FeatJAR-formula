@@ -53,7 +53,7 @@ public class EquivalenceVisitor implements TreeVisitor<Void, Formula> {
 
     @Override
     public TraversalAction firstVisit(List<Formula> path) {
-        final Formula node = TreeVisitor.getCurrentNode(path);
+        final Formula node = getCurrentNode(path);
         if (node instanceof Atomic) {
             return TraversalAction.SKIP_CHILDREN;
         } else if (node instanceof Compound) {
@@ -70,7 +70,7 @@ public class EquivalenceVisitor implements TreeVisitor<Void, Formula> {
 
     @Override
     public TraversalAction lastVisit(List<Formula> path) {
-        final Formula node = TreeVisitor.getCurrentNode(path);
+        final Formula node = getCurrentNode(path);
         node.replaceChildren(this::replace);
         if (fail) {
             return TraversalAction.FAIL;

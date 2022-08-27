@@ -153,6 +153,6 @@ public class XMLFeatureModelCNFFormat extends XMLFeatureModelFormat {
         final AuxiliaryRoot auxiliaryRoot = new AuxiliaryRoot(formula);
         Trees.traverse(auxiliaryRoot, new DeMorganVisitor());
         Trees.traverse(auxiliaryRoot, new TreeSimplifier());
-        return (Formula) auxiliaryRoot.getChild();
+        return auxiliaryRoot.getChild();
     }
 }

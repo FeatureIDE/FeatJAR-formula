@@ -54,7 +54,7 @@ public class VariableMapSetter implements TreeVisitor<Void, Formula> {
 
     @Override
     public TraversalAction lastVisit(List<Formula> path) {
-        final Formula node = TreeVisitor.getCurrentNode(path);
+        final Formula node = getCurrentNode(path);
         node.replaceChildren(this::replaceValueTerms);
         return TreeVisitor.super.lastVisit(path);
     }
