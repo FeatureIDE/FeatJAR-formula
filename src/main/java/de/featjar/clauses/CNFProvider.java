@@ -20,7 +20,7 @@
  */
 package de.featjar.clauses;
 
-import de.featjar.formula.io.FormulaFormatManager;
+import de.featjar.formula.io.FormulaFormats;
 import de.featjar.formula.structure.FormulaProvider;
 import de.featjar.util.data.Cache;
 import de.featjar.util.data.Identifier;
@@ -56,7 +56,7 @@ public interface CNFProvider extends Provider<CNF> {
     }
 
     static CNFProvider loader(Path path) {
-        return (c, m) -> Provider.load(path, FormulaFormatManager.getInstance()).map(Clauses::convertToCNF);
+        return (c, m) -> Provider.load(path, FormulaFormats.getInstance()).map(Clauses::convertToCNF);
     }
 
     static <T> CNFProvider fromFormula() {

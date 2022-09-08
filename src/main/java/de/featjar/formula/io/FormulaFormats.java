@@ -21,15 +21,22 @@
 package de.featjar.formula.io;
 
 import de.featjar.formula.structure.Formula;
-import de.featjar.util.io.format.FormatManager;
+import de.featjar.util.extension.ExtensionPoint;
+import de.featjar.util.io.format.Format;
+import de.featjar.util.io.format.Formats;
 
-public final class FormulaFormatManager extends FormatManager<Formula> {
+public final class FormulaFormats extends Formats<Formula> {
 
-    private static FormulaFormatManager INSTANCE = new FormulaFormatManager();
+    private static final FormulaFormats INSTANCE = new FormulaFormats();
 
-    public static FormulaFormatManager getInstance() {
+    public static FormulaFormats getInstance() {
         return INSTANCE;
     }
 
-    private FormulaFormatManager() {}
+    private FormulaFormats() {}
+
+    @Override
+    public ExtensionPoint<Format<Formula>> getExtensionPointInstance() {
+        return INSTANCE;
+    }
 }

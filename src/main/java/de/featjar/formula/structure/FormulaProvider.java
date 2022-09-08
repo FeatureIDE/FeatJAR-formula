@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.structure;
 
-import de.featjar.formula.io.FormulaFormatManager;
+import de.featjar.formula.io.FormulaFormats;
 import de.featjar.formula.structure.transform.CNFTransformer;
 import de.featjar.formula.structure.transform.DNFTransformer;
 import de.featjar.util.data.Cache;
@@ -59,7 +59,7 @@ public interface FormulaProvider extends Provider<Formula> {
     }
 
     static FormulaProvider loader(Path path) {
-        return (c, m) -> Provider.load(path, FormulaFormatManager.getInstance());
+        return (c, m) -> Provider.load(path, FormulaFormats.getInstance());
     }
 
     public static class CNF implements FormulaProvider {

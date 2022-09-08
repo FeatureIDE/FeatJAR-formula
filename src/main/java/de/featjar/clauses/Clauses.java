@@ -20,7 +20,7 @@
  */
 package de.featjar.clauses;
 
-import de.featjar.formula.io.FormulaFormatManager;
+import de.featjar.formula.io.FormulaFormats;
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.atomic.literal.Literal;
 import de.featjar.formula.structure.atomic.literal.VariableMap;
@@ -156,13 +156,13 @@ public final class Clauses {
     }
 
     public static CNF open(Path path) {
-        return Provider.load(path, FormulaFormatManager.getInstance())
+        return Provider.load(path, FormulaFormats.getInstance())
                 .map(Clauses::convertToCNF)
                 .orElse(Logger::logProblems);
     }
 
     public static Result<CNF> load(Path path) {
-        return Provider.load(path, FormulaFormatManager.getInstance()).map(Clauses::convertToCNF);
+        return Provider.load(path, FormulaFormats.getInstance()).map(Clauses::convertToCNF);
     }
 
     public static Result<CNF> load(Path path, Cache cache) {

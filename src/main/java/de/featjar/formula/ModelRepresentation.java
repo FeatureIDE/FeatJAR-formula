@@ -20,7 +20,7 @@
  */
 package de.featjar.formula;
 
-import de.featjar.formula.io.FormulaFormatManager;
+import de.featjar.formula.io.FormulaFormats;
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.FormulaProvider;
 import de.featjar.formula.structure.atomic.literal.VariableMap;
@@ -43,7 +43,7 @@ public class ModelRepresentation {
     private final VariableMap variables;
 
     public static Result<ModelRepresentation> load(final Path modelFile) {
-        return IO.load(modelFile, FormulaFormatManager.getInstance()) //
+        return IO.load(modelFile, FormulaFormats.getInstance()) //
                 .map(ModelRepresentation::new);
     }
 
