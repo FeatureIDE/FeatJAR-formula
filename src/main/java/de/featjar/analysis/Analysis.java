@@ -24,7 +24,7 @@ import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.atomic.Assignment;
 import de.featjar.util.data.Cache;
 import de.featjar.util.data.Provider;
-import de.featjar.util.job.MonitorableFunction;
+import de.featjar.util.task.MonitorableFunction;
 import java.util.List;
 
 /**

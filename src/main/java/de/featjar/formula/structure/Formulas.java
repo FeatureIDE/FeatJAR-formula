@@ -45,7 +45,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public final class Formulas {
+public class Formulas {
 
     private Formulas() {}
 

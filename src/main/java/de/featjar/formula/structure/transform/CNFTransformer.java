@@ -29,8 +29,8 @@ import de.featjar.formula.structure.compound.Compound;
 import de.featjar.formula.structure.transform.DistributiveLawTransformer.MaximumNumberOfLiteralsExceededException;
 import de.featjar.formula.structure.transform.NormalForms.NormalForm;
 import de.featjar.formula.structure.transform.TseytinTransformer.Substitute;
-import de.featjar.util.job.InternalMonitor;
-import de.featjar.util.job.NullMonitor;
+import de.featjar.util.task.Monitor;
+import de.featjar.util.task.CancelableMonitor;
 import de.featjar.util.tree.Trees;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -63,7 +63,7 @@ public class CNFTransformer implements Transformer {
     }
 
     @Override
-    public Formula execute(Formula orgFormula, InternalMonitor monitor) {
+    public Formula execute(Formula orgFormula, Monitor monitor) {
         useDistributive = (maximumNumberOfLiterals > 0);
         final NFTester nfTester = NormalForms.getNFTester(orgFormula, NormalForm.CNF);
         if (nfTester.isNf) {
@@ -136,23 +136,23 @@ public class CNFTransformer implements Transformer {
             if (useDistributive) {
                 try {
                     distributiveClauses.addAll(
-                            distributive(clonedChild, new NullMonitor()).getChildren());
+                            distributive(clonedChild, new CancelableMonitor()).getChildren());
                     return;
                 } catch (final MaximumNumberOfLiteralsExceededException e) {
                 }
             }
-            tseytinClauses.addAll(tseytin(clonedChild, new NullMonitor()));
+            tseytinClauses.addAll(tseytin(clonedChild, new CancelableMonitor()));
         }
     }
 
-    protected Compound distributive(Formula child, InternalMonitor monitor)
+    protected Compound distributive(Formula child, Monitor monitor)
             throws MaximumNumberOfLiteralsExceededException {
         final CNFDistributiveLawTransformer cnfDistributiveLawTransformer = new CNFDistributiveLawTransformer();
         cnfDistributiveLawTransformer.setMaximumNumberOfLiterals(maximumNumberOfLiterals);
         return cnfDistributiveLawTransformer.execute(child, monitor);
     }
 
-    protected List<Substitute> tseytin(Formula child, InternalMonitor monitor) {
+    protected List<Substitute> tseytin(Formula child, Monitor monitor) {
         final TseytinTransformer tseytinTransformer = new TseytinTransformer();
         tseytinTransformer.setVariableMap(new VariableMap());
         return tseytinTransformer.execute(child, monitor);

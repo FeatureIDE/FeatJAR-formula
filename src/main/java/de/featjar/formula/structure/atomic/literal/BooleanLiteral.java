@@ -35,7 +35,7 @@ import java.util.Objects;
  *
  * @author Sebastian Krieter
  */
-public final class BooleanLiteral extends NonTerminal implements Literal {
+public class BooleanLiteral extends NonTerminal implements Literal {
 
     private final boolean positive;
 

@@ -24,7 +24,7 @@ import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.compound.And;
 import de.featjar.formula.structure.compound.Compound;
 import de.featjar.formula.structure.compound.Or;
-import de.featjar.util.job.InternalMonitor;
+import de.featjar.util.task.Monitor;
 
 /**
  * Transforms propositional formulas into CNF.
@@ -38,7 +38,7 @@ public class DNFDistributiveLawTransformer extends DistributiveLawTransformer {
     }
 
     @Override
-    public Compound execute(Formula formula, InternalMonitor monitor) throws MaximumNumberOfLiteralsExceededException {
+    public Compound execute(Formula formula, Monitor monitor) throws MaximumNumberOfLiteralsExceededException {
         final Compound compound = (formula instanceof Or) ? (Or) formula : new Or(formula);
         return super.execute(compound, monitor);
     }

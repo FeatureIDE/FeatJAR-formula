@@ -28,7 +28,7 @@ import java.util.function.DoubleSupplier;
 
 public abstract class AggregatableMetrics {
 
-    public final class DoubleMetric implements SampleMetric {
+    public class DoubleMetric implements SampleMetric {
         private final String name;
         private final DoubleSupplier aggregate;
 

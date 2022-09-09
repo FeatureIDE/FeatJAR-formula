@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
  */
 public class VariableMap {
 
-    public static final class Variable extends ValueTerm {
+    public static class Variable extends ValueTerm {
         // todo inv: all subtrees have the same variablemap
 
         public Variable(String name, int index, Class<?> type, VariableMap variableMap) {
@@ -58,7 +58,7 @@ public class VariableMap {
         }
     }
 
-    public static final class Constant extends ValueTerm {
+    public static class Constant extends ValueTerm {
 
         private final Object value;
 

@@ -25,7 +25,7 @@ import de.featjar.util.extension.ExtensionPoint;
 import de.featjar.util.io.format.Format;
 import de.featjar.util.io.format.Formats;
 
-public final class FormulaFormats extends Formats<Formula> {
+public class FormulaFormats extends Formats<Formula> {
 
     private static final FormulaFormats INSTANCE = new FormulaFormats();
 

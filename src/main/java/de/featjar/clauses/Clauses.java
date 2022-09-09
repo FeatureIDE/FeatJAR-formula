@@ -29,7 +29,7 @@ import de.featjar.formula.structure.compound.Or;
 import de.featjar.util.data.Cache;
 import de.featjar.util.data.Provider;
 import de.featjar.util.data.Result;
-import de.featjar.util.job.Executor;
+import de.featjar.util.task.Executor;
 import de.featjar.util.logging.Logger;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -46,7 +46,7 @@ import java.util.stream.Stream;
  *
  * @author Sebastian Krieter
  */
-public final class Clauses {
+public class Clauses {
 
     private Clauses() {}
 
@@ -84,24 +84,24 @@ public final class Clauses {
     }
 
     public static CNF convertToCNF(Formula formula) {
-        return Executor.run(new FormulaToCNF(), formula).get();
+        return Executor.apply(new FormulaToCNF(), formula).get();
     }
 
     public static CNF convertToCNF(Formula formula, VariableMap variableMap) {
         final FormulaToCNF function = new FormulaToCNF();
         function.setVariableMapping(variableMap);
-        return Executor.run(function, formula).get();
+        return Executor.apply(function, formula).get();
     }
 
     public static CNF convertToDNF(Formula formula) {
-        final CNF cnf = Executor.run(new FormulaToCNF(), formula).get();
+        final CNF cnf = Executor.apply(new FormulaToCNF(), formula).get();
         return new CNF(cnf.getVariableMap(), convertNF(cnf.getClauses()));
     }
 
     public static CNF convertToDNF(Formula formula, VariableMap variableMap) {
         final FormulaToCNF function = new FormulaToCNF();
         function.setVariableMapping(variableMap);
-        final CNF cnf = Executor.run(function, formula).get();
+        final CNF cnf = Executor.apply(function, formula).get();
         return new CNF(variableMap, convertNF(cnf.getClauses()));
     }
 

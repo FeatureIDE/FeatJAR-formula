@@ -23,8 +23,8 @@ package de.featjar.formula.structure.transform;
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.atomic.literal.Literal;
 import de.featjar.formula.structure.compound.Compound;
-import de.featjar.util.job.InternalMonitor;
-import de.featjar.util.job.MonitorableFunction;
+import de.featjar.util.task.Monitor;
+import de.featjar.util.task.MonitorableFunction;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -76,7 +76,7 @@ public class DistributiveLawTransformer implements MonitorableFunction<Formula, 
     }
 
     @Override
-    public Compound execute(Formula node, InternalMonitor monitor) throws MaximumNumberOfLiteralsExceededException {
+    public Compound execute(Formula node, Monitor monitor) throws MaximumNumberOfLiteralsExceededException {
         final ArrayList<PathElement> path = new ArrayList<>();
         final ArrayDeque<Formula> stack = new ArrayDeque<>();
         stack.addLast(node);

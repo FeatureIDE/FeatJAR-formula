@@ -26,7 +26,7 @@ import de.featjar.formula.structure.atomic.literal.Literal;
 import de.featjar.formula.structure.compound.And;
 import de.featjar.formula.structure.compound.Or;
 import de.featjar.util.data.Result;
-import de.featjar.util.job.Executor;
+import de.featjar.util.task.Executor;
 import de.featjar.util.tree.Trees;
 
 /**
@@ -34,7 +34,7 @@ import de.featjar.util.tree.Trees;
  *
  * @author Sebastian Krieter
  */
-public final class NormalForms {
+public class NormalForms {
 
     private NormalForms() {}
 
@@ -52,7 +52,7 @@ public final class NormalForms {
     }
 
     public static Result<Formula> toNF(Formula root, Transformer transformer) {
-        return Executor.run(transformer, root);
+        return Executor.apply(transformer, root);
     }
 
     public static boolean isNF(Formula formula, NormalForm normalForm, boolean clausal) {

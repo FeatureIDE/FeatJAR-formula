@@ -30,8 +30,8 @@ import de.featjar.formula.structure.atomic.literal.VariableMap.Variable;
 import de.featjar.formula.structure.compound.And;
 import de.featjar.formula.structure.compound.Compound;
 import de.featjar.formula.structure.compound.Or;
-import de.featjar.util.job.InternalMonitor;
-import de.featjar.util.job.MonitorableFunction;
+import de.featjar.util.task.Monitor;
+import de.featjar.util.task.MonitorableFunction;
 import de.featjar.util.tree.Trees;
 import de.featjar.util.tree.visitor.TreeVisitor;
 import java.util.ArrayDeque;
@@ -42,7 +42,7 @@ import java.util.Objects;
 public class TseytinTransformer
         implements MonitorableFunction<Formula, List<TseytinTransformer.Substitute>>, TreeVisitor<Formula, Formula> {
 
-    public static final class Substitute {
+    public static class Substitute {
         private Formula orgFormula;
         private Variable variable;
         private List<Formula> clauses = new ArrayList<>();
@@ -130,7 +130,7 @@ public class TseytinTransformer
     private final ArrayDeque<Formula> stack = new ArrayDeque<>();
 
     @Override
-    public List<Substitute> execute(Formula child, InternalMonitor monitor) {
+    public List<Substitute> execute(Formula child, Monitor monitor) {
         substitutes.clear();
         stack.clear();
 

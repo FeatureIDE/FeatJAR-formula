@@ -28,8 +28,8 @@ import de.featjar.formula.structure.atomic.IndexAssignment;
 import de.featjar.util.data.Cache;
 import de.featjar.util.data.Provider;
 import de.featjar.util.data.Result;
-import de.featjar.util.job.Executor;
-import de.featjar.util.job.InternalMonitor;
+import de.featjar.util.task.Executor;
+import de.featjar.util.task.Monitor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -54,8 +54,8 @@ public abstract class AbstractAnalysis<T, S extends Solver, I> implements Analys
     }
 
     @Override
-    public Result<T> apply(Cache c, InternalMonitor m) {
-        return Executor.run(this::execute, c, m);
+    public Result<T> apply(Cache c, Monitor m) {
+        return Executor.apply(this::execute, c, m);
     }
 
     protected final Assignment assumptions = new IndexAssignment();
@@ -88,14 +88,14 @@ public abstract class AbstractAnalysis<T, S extends Solver, I> implements Analys
     }
 
     @Override
-    public final T execute(Cache c, InternalMonitor monitor) {
+    public final T execute(Cache c, Monitor monitor) {
         if (solver == null) {
             solver = createSolver(c.get(solverInputProvider).get());
         }
         return execute(solver, monitor);
     }
 
-    public T execute(S solver, InternalMonitor monitor) {
+    public T execute(S solver, Monitor monitor) {
         if (this.solver == null) {
             this.solver = solver;
         }
@@ -129,7 +129,7 @@ public abstract class AbstractAnalysis<T, S extends Solver, I> implements Analys
         solver.getDynamicFormula().push(assumedConstraints);
     }
 
-    protected abstract T analyze(S solver, InternalMonitor monitor) throws Exception;
+    protected abstract T analyze(S solver, Monitor monitor) throws Exception;
 
     protected void resetSolver(S solver) {
         solver.getAssumptions().unsetAll(assumptions.getAll());

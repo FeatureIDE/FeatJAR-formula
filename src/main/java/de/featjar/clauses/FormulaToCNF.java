@@ -26,9 +26,9 @@ import de.featjar.formula.structure.atomic.VariableAssignment;
 import de.featjar.formula.structure.atomic.literal.BooleanLiteral;
 import de.featjar.formula.structure.atomic.literal.Literal;
 import de.featjar.formula.structure.atomic.literal.VariableMap;
-import de.featjar.util.job.Executor;
-import de.featjar.util.job.InternalMonitor;
-import de.featjar.util.job.MonitorableFunction;
+import de.featjar.util.task.Executor;
+import de.featjar.util.task.Monitor;
+import de.featjar.util.task.MonitorableFunction;
 import de.featjar.util.tree.Trees;
 import java.util.List;
 import java.util.Objects;
@@ -39,24 +39,24 @@ import java.util.Optional;
  *
  * @author Sebastian Krieter
  */
-public final class FormulaToCNF implements MonitorableFunction<Formula, CNF> {
+public class FormulaToCNF implements MonitorableFunction<Formula, CNF> {
 
     private boolean keepLiteralOrder;
     private VariableMap variableMapping;
 
     public static CNF convert(Formula formula) {
-        return Executor.run(new FormulaToCNF(), formula).get();
+        return Executor.apply(new FormulaToCNF(), formula).get();
     }
 
     public static CNF convert(Formula formula, VariableMap variableMapping) {
         final FormulaToCNF function = new FormulaToCNF();
         function.setVariableMapping(variableMapping);
         function.setKeepLiteralOrder(true);
-        return Executor.run(function, formula).get();
+        return Executor.apply(function, formula).get();
     }
 
     @Override
-    public CNF execute(Formula node, InternalMonitor monitor) {
+    public CNF execute(Formula node, Monitor monitor) {
         if (node == null) {
             return null;
         }

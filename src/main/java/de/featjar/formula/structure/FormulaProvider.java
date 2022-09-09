@@ -27,7 +27,7 @@ import de.featjar.util.data.Cache;
 import de.featjar.util.data.Identifier;
 import de.featjar.util.data.Provider;
 import de.featjar.util.data.Result;
-import de.featjar.util.job.InternalMonitor;
+import de.featjar.util.task.Monitor;
 import java.nio.file.Path;
 
 /**
@@ -85,7 +85,7 @@ public interface FormulaProvider extends Provider<Formula> {
         }
 
         @Override
-        public Result<Formula> apply(Cache c, InternalMonitor m) {
+        public Result<Formula> apply(Cache c, Monitor m) {
             final CNFTransformer cnfTransformer = new CNFTransformer();
             cnfTransformer.setMaximumNumberOfLiterals(maximumNumberOfLiterals);
             return Provider.convert(c, FormulaProvider.identifier, cnfTransformer, m);

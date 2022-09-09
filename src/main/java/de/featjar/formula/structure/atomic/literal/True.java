@@ -32,7 +32,7 @@ import java.util.List;
  *
  * @author Sebastian Krieter
  */
-public final class True extends Terminal implements Literal {
+public class True extends Terminal implements Literal {
 
     private static final True INSTANCE = new True();
 

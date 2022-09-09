@@ -32,7 +32,7 @@ import de.featjar.formula.structure.transform.DeMorganVisitor;
 import de.featjar.formula.structure.transform.TreeSimplifier;
 import de.featjar.formula.structure.transform.VariableMapSetter;
 import de.featjar.util.io.format.ParseException;
-import de.featjar.util.job.Executor;
+import de.featjar.util.task.Executor;
 import de.featjar.util.tree.Trees;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -73,7 +73,7 @@ public class XMLFeatureModelCNFFormat extends XMLFeatureModelFormat {
 
     @Override
     protected void addConstraint(Boolean constraintLabel, Formula formula) throws ParseException {
-        Formula transformedFormula = Executor.run(new CNFTransformer(), formula)
+        Formula transformedFormula = Executor.apply(new CNFTransformer(), formula)
                 .orElseThrow(p -> new ParseException("failed to transform " + formula));
         transformedFormula = Formulas.manipulate(transformedFormula, new VariableMapSetter(variableMap)); // todo: this
         // is a
