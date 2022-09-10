@@ -29,7 +29,7 @@ import java.util.List;
 /**
  * Modifiable formula for solvers.
  *
- * @param <O> type of the constraint object used within a solver
+ * @param <O> the type of the constraint object used within a solver
  *
  * @author Sebastian Krieter
  */

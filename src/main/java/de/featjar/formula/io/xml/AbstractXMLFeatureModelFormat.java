@@ -44,9 +44,9 @@ import org.w3c.dom.NodeList;
 /**
  * Implements common behaviors for parsing and writing XML feature model files.
  *
- * @param <T> type of read/written data
- * @param <U> type of feature labels
- * @param <V> type of constraint labels
+ * @param <T> the type of read/written data
+ * @param <U> the type of feature labels
+ * @param <V> the type of constraint labels
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */

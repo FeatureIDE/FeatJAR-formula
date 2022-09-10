@@ -32,6 +32,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
+import java.util.Optional;
 
 // TODO implement saving/loading constants
 /**
@@ -92,8 +93,8 @@ public class BinaryFormat extends de.featjar.util.io.binary.BinaryFormat<Solutio
     }
 
     @Override
-    public String getFileExtension() {
-        return "sample";
+    public Optional<String> getFileExtension() {
+        return Optional.empty();
     }
 
     @Override

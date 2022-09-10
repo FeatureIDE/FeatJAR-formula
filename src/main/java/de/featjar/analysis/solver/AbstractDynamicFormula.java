@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * Base class for modifiable formulas.
  *
- * @param <O> type of the constraint object used within a solver
+ * @param <O> the type of the constraint object used within a solver
  *
  * @author Sebastian Krieter
  */

@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * Basic analysis interface.
  *
- * @param <T> Type of the analysis result.
+ * @param <T> the type of the analysis result.
  *
  * @author Sebastian Krieter
  */

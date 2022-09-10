@@ -27,7 +27,7 @@ import java.util.Arrays;
  * Wrapper class for an analysis result containing additional information about
  * the performed analysis.
  *
- * @param <T> Type of the analysis result.
+ * @param <T> the type of the analysis result.
  *
  * @author Sebastian Krieter
  */

@@ -50,7 +50,7 @@ public class DIMACSFormat implements Format<Formula> {
         r.setReadingVariableDirectory(true);
         try {
             // TODO use getLines() instead
-            return Result.of(r.read(inputMapper.get().readText().get()));
+            return Result.of(r.read(inputMapper.get().read().get()));
         } catch (final ParseException e) {
             return Result.empty(new ParseProblem(e, e.getErrorOffset()));
         } catch (final Exception e) {

@@ -37,9 +37,9 @@ import java.util.List;
 /**
  * Base class for an analysis using any {@link Solver solver}.
  *
- * @param <T> Type of the analysis result.
- * @param <S> Type of the solver for this analysis.
- * @param <I> Type of the solver input.
+ * @param <T> the type of the analysis result.
+ * @param <S> the type of the solver for this analysis.
+ * @param <I> the type of the solver input.
  *
  * @author Sebastian Krieter
  */

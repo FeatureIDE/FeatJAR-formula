@@ -31,7 +31,7 @@ public class FormulaFormat implements Format<Formula> {
 
     @Override
     public Result<Formula> parse(InputMapper inputMapper) {
-        return new NodeReader().read(inputMapper.get().readText().get());
+        return new NodeReader().read(inputMapper.get().read().get());
     }
 
     @Override
