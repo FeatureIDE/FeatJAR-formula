@@ -26,11 +26,11 @@ import de.featjar.formula.structure.atomic.literal.Literal;
 import de.featjar.formula.structure.atomic.literal.VariableMap;
 import de.featjar.formula.structure.compound.And;
 import de.featjar.formula.structure.compound.Or;
-import de.featjar.util.data.Cache;
-import de.featjar.util.data.Provider;
+import de.featjar.util.data.Store;
 import de.featjar.util.data.Result;
+import de.featjar.util.io.IO;
 import de.featjar.util.task.Executor;
-import de.featjar.util.logging.Logger;
+import de.featjar.util.log.Logger;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -156,29 +156,29 @@ public class Clauses {
     }
 
     public static CNF open(Path path) {
-        return Provider.load(path, FormulaFormats.getInstance())
+        return IO.load(path, FormulaFormats.getInstance())
                 .map(Clauses::convertToCNF)
                 .orElse(Logger::logProblems);
     }
 
     public static Result<CNF> load(Path path) {
-        return Provider.load(path, FormulaFormats.getInstance()).map(Clauses::convertToCNF);
+        return IO.load(path, FormulaFormats.getInstance()).map(Clauses::convertToCNF);
     }
 
-    public static Result<CNF> load(Path path, Cache cache) {
-        return cache.get(CNFProvider.loader(path));
+    public static Result<CNF> load(Path path, Store store) {
+        return store.get(CNFComputation.loader(path));
     }
 
-    public static Cache createCache(Path path) {
-        final Cache cache = new Cache();
-        cache.set(CNFProvider.loader(path));
-        return cache;
+    public static Store createCache(Path path) {
+        final Store store = new Store();
+        store.set(CNFComputation.loader(path));
+        return store;
     }
 
-    public static Cache createCache(CNF cnf) {
-        final Cache cache = new Cache();
-        cache.set(CNFProvider.of(cnf));
-        return cache;
+    public static Store createCache(CNF cnf) {
+        final Store store = new Store();
+        store.set(CNFComputation.of(cnf));
+        return store;
     }
 
     public static Or toOrClause(LiteralList clause, VariableMap variableMap) {

@@ -25,8 +25,8 @@ import de.featjar.analysis.solver.Solver;
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.atomic.Assignment;
 import de.featjar.formula.structure.atomic.IndexAssignment;
-import de.featjar.util.data.Cache;
-import de.featjar.util.data.Provider;
+import de.featjar.util.data.Store;
+import de.featjar.util.data.Computation;
 import de.featjar.util.data.Result;
 import de.featjar.util.task.Executor;
 import de.featjar.util.task.Monitor;
@@ -43,32 +43,26 @@ import java.util.List;
  *
  * @author Sebastian Krieter
  */
-public abstract class AbstractAnalysis<T, S extends Solver, I> implements Analysis<T>, Provider<T> {
+public abstract class AbstractAnalysis<T, S extends Solver, I> implements Analysis<T>, Computation<T> {
 
     protected static Object defaultParameters = new Object();
 
-    // TODO fix caching / improve handling of many results with different parameters
     @Override
-    public boolean storeInCache() {
-        return false;
-    }
-
-    @Override
-    public Result<T> apply(Cache c, Monitor m) {
+    public Result<T> execute(Store c, Monitor m) {
         return Executor.apply(this::execute, c, m);
     }
 
     protected final Assignment assumptions = new IndexAssignment();
     protected final List<Formula> assumedConstraints = new ArrayList<>();
-    protected Provider<I> solverInputProvider;
+    protected Computation<I> solverInputComputation;
     protected S solver;
 
     public void setSolver(S solver) {
         this.solver = solver;
     }
 
-    public void setSolverInputProvider(Provider<I> solverInputProvider) {
-        this.solverInputProvider = solverInputProvider;
+    public void setSolverInputProvider(Computation<I> solverInputComputation) {
+        this.solverInputComputation = solverInputComputation;
     }
 
     public Assignment getAssumptions() {
@@ -88,9 +82,9 @@ public abstract class AbstractAnalysis<T, S extends Solver, I> implements Analys
     }
 
     @Override
-    public final T execute(Cache c, Monitor monitor) {
+    public final T execute(Store c, Monitor monitor) {
         if (solver == null) {
-            solver = createSolver(c.get(solverInputProvider).get());
+            solver = createSolver(c.get(solverInputComputation).get());
         }
         return execute(solver, monitor);
     }

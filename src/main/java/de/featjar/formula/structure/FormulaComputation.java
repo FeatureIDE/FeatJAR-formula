@@ -23,10 +23,10 @@ package de.featjar.formula.structure;
 import de.featjar.formula.io.FormulaFormats;
 import de.featjar.formula.structure.transform.CNFTransformer;
 import de.featjar.formula.structure.transform.DNFTransformer;
-import de.featjar.util.data.Cache;
-import de.featjar.util.data.Identifier;
-import de.featjar.util.data.Provider;
+import de.featjar.util.data.Store;
+import de.featjar.util.data.Computation;
 import de.featjar.util.data.Result;
+import de.featjar.util.io.IO;
 import de.featjar.util.task.Monitor;
 import java.nio.file.Path;
 
@@ -36,34 +36,21 @@ import java.nio.file.Path;
  *
  * @author Sebastian Krieter
  */
-@FunctionalInterface
-public interface FormulaProvider extends Provider<Formula> {
+public interface FormulaComputation {
 
-    Identifier<Formula> identifier = new Identifier<>();
-
-    @Override
-    default Identifier<Formula> getIdentifier() {
-        return identifier;
+    static Computation<Formula> empty() {
+        return Computation.empty();
     }
 
-    static FormulaProvider empty() {
-        return (c, m) -> Result.empty();
+    static Computation<Formula> of(Formula formula) {
+        return Computation.of(formula);
     }
 
-    static FormulaProvider of(Formula formula) {
-        return (c, m) -> Result.of(formula);
+    static Computation<Formula> of(Path path) {
+        return Computation.of(IO.load(path, FormulaFormats.getInstance()));
     }
 
-    static FormulaProvider in(Cache cache) {
-        return (c, m) -> cache.get(identifier);
-    }
-
-    static FormulaProvider loader(Path path) {
-        return (c, m) -> Provider.load(path, FormulaFormats.getInstance());
-    }
-
-    public static class CNF implements FormulaProvider {
-        public static final Identifier<Formula> identifier = new Identifier<>();
+    class CNF implements Computation<Formula> {
         private final int maximumNumberOfLiterals;
 
         private CNF() {
@@ -80,15 +67,10 @@ public interface FormulaProvider extends Provider<Formula> {
         }
 
         @Override
-        public Identifier<Formula> getIdentifier() {
-            return identifier;
-        }
-
-        @Override
-        public Result<Formula> apply(Cache c, Monitor m) {
+        public Result<Formula> apply(Store c, Monitor m) {
             final CNFTransformer cnfTransformer = new CNFTransformer();
             cnfTransformer.setMaximumNumberOfLiterals(maximumNumberOfLiterals);
-            return Provider.convert(c, FormulaProvider.identifier, cnfTransformer, m);
+            return Computation.convert(c, FormulaComputation.identifier, cnfTransformer, m);
         }
 
         public static CNF fromFormula() {
@@ -101,16 +83,9 @@ public interface FormulaProvider extends Provider<Formula> {
     }
 
     @FunctionalInterface
-    interface DNF extends FormulaProvider {
-        Identifier<Formula> identifier = new Identifier<>();
-
-        @Override
-        default Identifier<Formula> getIdentifier() {
-            return identifier;
-        }
-
+    interface DNF extends FormulaComputation {
         static DNF fromFormula() {
-            return (c, m) -> Provider.convert(c, FormulaProvider.identifier, new DNFTransformer(), m);
+            return (c, m) -> Computation.convert(c, FormulaComputation.identifier, new DNFTransformer(), m);
         }
     }
 }

@@ -40,9 +40,6 @@ import java.util.List;
  * @author Sebastian Krieter
  */
 public class BinaryFormat extends de.featjar.util.io.binary.BinaryFormat<SolutionList> {
-
-    public static final String ID = BinaryFormat.class.getCanonicalName();
-
     @Override
     public void write(SolutionList configurationList, OutputMapper outputMapper) throws IOException {
         final OutputStream outputStream = outputMapper.get().getOutputStream();
@@ -102,11 +99,6 @@ public class BinaryFormat extends de.featjar.util.io.binary.BinaryFormat<Solutio
     @Override
     public BinaryFormat getInstance() {
         return this;
-    }
-
-    @Override
-    public String getIdentifier() {
-        return ID;
     }
 
     @Override

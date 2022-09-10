@@ -22,23 +22,23 @@ package de.featjar.formula;
 
 import de.featjar.formula.io.FormulaFormats;
 import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.FormulaProvider;
+import de.featjar.formula.structure.FormulaComputation;
 import de.featjar.formula.structure.atomic.literal.VariableMap;
-import de.featjar.util.data.Cache;
-import de.featjar.util.data.Provider;
+import de.featjar.util.data.Store;
+import de.featjar.util.data.Computation;
 import de.featjar.util.data.Result;
 import de.featjar.util.io.IO;
-import de.featjar.util.logging.Logger;
+import de.featjar.util.log.Logger;
 import java.nio.file.Path;
 
 /**
  * Representation of a feature model as a formula {@link #formula}, where
  * features are mapped to {@link #variables}. Analysis results are stored in a
- * {@link #cache} for later reuse.
+ * {@link #store} for later reuse.
  */
 public class ModelRepresentation {
 
-    private final Cache cache = new Cache();
+    private final Store store = new Store();
     private final Formula formula;
     private final VariableMap variables;
 
@@ -50,20 +50,20 @@ public class ModelRepresentation {
     public ModelRepresentation(Formula formula) {
         this.formula = formula;
         this.variables = formula.getVariableMap().orElseThrow();
-        cache.set(FormulaProvider.of(formula));
+        store.set(FormulaComputation.of(formula));
     }
 
-    public <T> Result<T> getResult(Provider<T> provider) {
-        return cache.get(provider, null);
+    public <T> Result<T> getResult(Computation<T> computation) {
+        return store.get(computation, null);
     }
 
     // todo: also allow to use extensions
-    public <T> T get(Provider<T> provider) {
-        return cache.get(provider).orElse(Logger::logProblems);
+    public <T> T get(Computation<T> computation) {
+        return store.get(computation).orElse(Logger::logProblems);
     }
 
-    public Cache getCache() {
-        return cache;
+    public Store getCache() {
+        return store;
     }
 
     public Formula getFormula() {

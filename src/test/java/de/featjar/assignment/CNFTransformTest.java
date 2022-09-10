@@ -27,7 +27,7 @@ import de.featjar.formula.ModelRepresentation;
 import de.featjar.formula.io.KConfigReaderFormat;
 import de.featjar.formula.io.dimacs.DIMACSFormat;
 import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.FormulaProvider;
+import de.featjar.formula.structure.FormulaComputation;
 import de.featjar.formula.structure.Formulas;
 import de.featjar.formula.structure.atomic.literal.VariableMap;
 import de.featjar.util.io.IO;
@@ -56,7 +56,7 @@ public class CNFTransformTest {
         final VariableMap mapClone = map.clone();
 
         final ModelRepresentation rep = new ModelRepresentation(formulaOrg);
-        final Formula formulaCNF = rep.get(FormulaProvider.CNF.fromFormula());
+        final Formula formulaCNF = rep.get(FormulaComputation.CNF.fromFormula());
 
         FormulaCreator.testAllAssignments(map, assignment -> {
             final Boolean orgEval =
@@ -77,15 +77,15 @@ public class CNFTransformTest {
         final Formula formula = IO.load(modelFile, new KConfigReaderFormat()).orElseThrow();
 
         ModelRepresentation rep = new ModelRepresentation(formula);
-        IO.save(rep.get(FormulaProvider.CNF.fromFormula()), dimacsFile, new DIMACSFormat());
+        IO.save(rep.get(FormulaComputation.CNF.fromFormula()), dimacsFile, new DIMACSFormat());
         Files.deleteIfExists(dimacsFile);
 
         rep = new ModelRepresentation(formula);
-        IO.save(rep.get(FormulaProvider.CNF.fromFormula(0)), dimacsFile, new DIMACSFormat());
+        IO.save(rep.get(FormulaComputation.CNF.fromFormula(0)), dimacsFile, new DIMACSFormat());
         Files.deleteIfExists(dimacsFile);
 
         rep = new ModelRepresentation(formula);
-        IO.save(rep.get(FormulaProvider.CNF.fromFormula(100)), dimacsFile, new DIMACSFormat());
+        IO.save(rep.get(FormulaComputation.CNF.fromFormula(100)), dimacsFile, new DIMACSFormat());
         Files.deleteIfExists(dimacsFile);
     }
 }

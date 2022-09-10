@@ -21,49 +21,42 @@
 package de.featjar.clauses;
 
 import de.featjar.formula.io.FormulaFormats;
-import de.featjar.formula.structure.FormulaProvider;
-import de.featjar.util.data.Cache;
-import de.featjar.util.data.Identifier;
-import de.featjar.util.data.Provider;
+import de.featjar.formula.structure.FormulaComputation;
+import de.featjar.util.data.Store;
+import de.featjar.util.data.Computation;
 import de.featjar.util.data.Result;
+import de.featjar.util.io.IO;
+
 import java.nio.file.Path;
 
 /**
- * Abstract creator to derive an element from a {@link Cache}.
+ * Abstract creator to derive an element from a {@link Store}.
  *
  * @author Sebastian Krieter
  */
 @FunctionalInterface
-public interface CNFProvider extends Provider<CNF> {
-
-    Identifier<CNF> identifier = new Identifier<>();
-
-    @Override
-    default Identifier<CNF> getIdentifier() {
-        return identifier;
-    }
-
-    static CNFProvider empty() {
+public interface CNFComputation extends Computation<CNF> {
+    static CNFComputation empty() {
         return (c, m) -> Result.empty();
     }
 
-    static CNFProvider of(CNF cnf) {
+    static CNFComputation of(CNF cnf) {
         return (c, m) -> Result.of(cnf);
     }
 
-    static CNFProvider in(Cache cache) {
-        return (c, m) -> cache.get(identifier);
+    static CNFComputation in(Store store) {
+        return (c, m) -> store.get(identifier);
     }
 
-    static CNFProvider loader(Path path) {
-        return (c, m) -> Provider.load(path, FormulaFormats.getInstance()).map(Clauses::convertToCNF);
+    static CNFComputation loader(Path path) {
+        return (c, m) -> IO.load(path, FormulaFormats.getInstance()).map(Clauses::convertToCNF);
     }
 
-    static <T> CNFProvider fromFormula() {
-        return (c, m) -> Provider.convert(c, FormulaProvider.CNF.fromFormula(), new FormulaToCNF(), m);
+    static <T> CNFComputation fromFormula() {
+        return (c, m) -> Computation.convert(c, FormulaComputation.CNF.fromFormula(), new FormulaToCNF(), m);
     }
 
-    static <T> CNFProvider fromTseytinFormula() {
-        return (c, m) -> Provider.convert(c, FormulaProvider.CNF.fromFormula(0), new FormulaToCNF(), m);
+    static <T> CNFComputation fromTseytinFormula() {
+        return (c, m) -> Computation.convert(c, FormulaComputation.CNF.fromFormula(0), new FormulaToCNF(), m);
     }
 }

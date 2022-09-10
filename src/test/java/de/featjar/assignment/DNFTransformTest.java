@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.featjar.formula.ModelRepresentation;
 import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.FormulaProvider;
+import de.featjar.formula.structure.FormulaComputation;
 import de.featjar.formula.structure.Formulas;
 import de.featjar.formula.structure.atomic.literal.VariableMap;
 import de.featjar.util.tree.Trees;
@@ -49,7 +49,7 @@ public class DNFTransformTest {
         final VariableMap mapClone = map.clone();
 
         final ModelRepresentation rep = new ModelRepresentation(formulaOrg);
-        final Formula formulaDNF = rep.get(FormulaProvider.DNF.fromFormula());
+        final Formula formulaDNF = rep.get(FormulaComputation.DNF.fromFormula());
 
         FormulaCreator.testAllAssignments(map, assignment -> {
             final Boolean orgEval =
