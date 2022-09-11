@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.io.textual;
 
-import de.featjar.util.data.Pair;
+import de.featjar.base.data.Pair;
 import java.util.Arrays;
 
 /**

@@ -30,7 +30,7 @@ import de.featjar.formula.structure.compound.And;
 import de.featjar.formula.structure.compound.Biimplies;
 import de.featjar.formula.structure.compound.Implies;
 import de.featjar.formula.structure.compound.Or;
-import de.featjar.util.tree.Trees;
+import de.featjar.base.tree.Trees;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;

@@ -23,9 +23,9 @@ package de.featjar.clauses.solutions.io;
 import de.featjar.clauses.LiteralList;
 import de.featjar.clauses.solutions.SolutionList;
 import de.featjar.formula.structure.atomic.literal.VariableMap;
-import de.featjar.util.data.Result;
-import de.featjar.util.io.InputMapper;
-import de.featjar.util.io.OutputMapper;
+import de.featjar.base.data.Result;
+import de.featjar.base.io.InputMapper;
+import de.featjar.base.io.OutputMapper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -40,7 +40,7 @@ import java.util.Optional;
  *
  * @author Sebastian Krieter
  */
-public class BinaryFormat extends de.featjar.util.io.binary.BinaryFormat<SolutionList> {
+public class BinaryFormat extends de.featjar.base.io.binary.BinaryFormat<SolutionList> {
     @Override
     public void write(SolutionList configurationList, OutputMapper outputMapper) throws IOException {
         final OutputStream outputStream = outputMapper.get().getOutputStream();

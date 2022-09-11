@@ -35,8 +35,8 @@ import de.featjar.formula.structure.compound.ForAll;
 import de.featjar.formula.structure.compound.Implies;
 import de.featjar.formula.structure.compound.Not;
 import de.featjar.formula.structure.compound.Or;
-import de.featjar.util.tree.visitor.InOrderTreeVisitor;
-import de.featjar.util.tree.visitor.TreeVisitor;
+import de.featjar.base.tree.visitor.InOrderTreeVisitor;
+
 import java.util.List;
 
 /**

@@ -23,11 +23,11 @@ package de.featjar.formula.structure;
 import de.featjar.formula.io.FormulaFormats;
 import de.featjar.formula.structure.transform.CNFTransformer;
 import de.featjar.formula.structure.transform.DNFTransformer;
-import de.featjar.util.data.Store;
-import de.featjar.util.data.Computation;
-import de.featjar.util.data.Result;
-import de.featjar.util.io.IO;
-import de.featjar.util.task.Monitor;
+import de.featjar.base.data.Store;
+import de.featjar.base.data.Computation;
+import de.featjar.base.data.Result;
+import de.featjar.base.io.IO;
+import de.featjar.base.task.Monitor;
 import java.nio.file.Path;
 
 /**

@@ -28,7 +28,7 @@ import de.featjar.formula.structure.compound.And;
 import de.featjar.formula.structure.compound.Compound;
 import de.featjar.formula.structure.compound.Not;
 import de.featjar.formula.structure.compound.Or;
-import de.featjar.util.tree.visitor.TreeVisitor;
+import de.featjar.base.tree.visitor.TreeVisitor;
 import java.util.List;
 import java.util.stream.Collectors;
 

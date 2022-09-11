@@ -22,10 +22,10 @@ package de.featjar.clauses.io;
 
 import de.featjar.clauses.ClauseList;
 import de.featjar.clauses.LiteralList;
-import de.featjar.util.data.Result;
-import de.featjar.util.io.InputMapper;
-import de.featjar.util.io.format.Format;
-import de.featjar.util.io.format.ParseProblem;
+import de.featjar.base.data.Result;
+import de.featjar.base.io.InputMapper;
+import de.featjar.base.io.format.Format;
+import de.featjar.base.io.format.ParseProblem;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;

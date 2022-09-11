@@ -21,6 +21,6 @@
 package de.featjar.formula.structure.transform;
 
 import de.featjar.formula.structure.Formula;
-import de.featjar.util.task.MonitorableFunction;
+import de.featjar.base.task.MonitorableFunction;
 
 public interface Transformer extends MonitorableFunction<Formula, Formula> {}

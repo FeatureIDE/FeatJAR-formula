@@ -27,9 +27,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import de.featjar.formula.structure.Formula;
-import de.featjar.util.data.Result;
-import de.featjar.util.io.IO;
-import de.featjar.util.io.format.Format;
+import de.featjar.base.data.Result;
+import de.featjar.base.io.IO;
+import de.featjar.base.io.format.Format;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

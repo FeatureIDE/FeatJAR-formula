@@ -22,7 +22,7 @@ package de.featjar.formula.io.dimacs;
 
 import de.featjar.clauses.CNF;
 import de.featjar.clauses.LiteralList;
-import de.featjar.util.io.format.Format;
+import de.featjar.base.io.format.Format;
 import java.util.Objects;
 
 /**

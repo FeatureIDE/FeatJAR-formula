@@ -21,9 +21,9 @@
 package de.featjar.formula.io.textual;
 
 import de.featjar.formula.structure.Formula;
-import de.featjar.util.data.Result;
-import de.featjar.util.io.InputMapper;
-import de.featjar.util.io.format.Format;
+import de.featjar.base.data.Result;
+import de.featjar.base.io.InputMapper;
+import de.featjar.base.io.format.Format;
 
 public class FormulaFormat implements Format<Formula> {
 

@@ -21,9 +21,9 @@
 package de.featjar.formula.io;
 
 import de.featjar.formula.structure.Formula;
-import de.featjar.util.extension.ExtensionPoint;
-import de.featjar.util.io.format.Format;
-import de.featjar.util.io.format.Formats;
+import de.featjar.base.extension.ExtensionPoint;
+import de.featjar.base.io.format.Format;
+import de.featjar.base.io.format.Formats;
 
 public class FormulaFormats extends Formats<Formula> {
 

@@ -21,7 +21,7 @@
 package de.featjar.formula.structure.transform;
 
 import de.featjar.formula.structure.Formula;
-import de.featjar.util.tree.visitor.TreeVisitor;
+import de.featjar.base.tree.visitor.TreeVisitor;
 import java.util.Optional;
 
 public class NFTester implements TreeVisitor<Boolean, Formula> {

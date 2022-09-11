@@ -24,7 +24,7 @@ import de.featjar.formula.structure.AuxiliaryRoot;
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.atomic.Atomic;
 import de.featjar.formula.structure.compound.Compound;
-import de.featjar.util.tree.visitor.TreeVisitor;
+import de.featjar.base.tree.visitor.TreeVisitor;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;

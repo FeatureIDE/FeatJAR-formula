@@ -33,7 +33,7 @@ import de.featjar.formula.structure.compound.ForAll;
 import de.featjar.formula.structure.compound.Implies;
 import de.featjar.formula.structure.compound.Not;
 import de.featjar.formula.structure.compound.Or;
-import de.featjar.util.data.Pair;
+import de.featjar.base.data.Pair;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;

@@ -2,4 +2,4 @@ pluginManagement {
     includeBuild '../gradle-plugins'
 }
 
-includeBuild '../util'
+includeBuild '../base'

@@ -22,9 +22,9 @@ package de.featjar.analysis;
 
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.atomic.Assignment;
-import de.featjar.util.data.Store;
-import de.featjar.util.data.Computation;
-import de.featjar.util.task.MonitorableFunction;
+import de.featjar.base.data.Store;
+import de.featjar.base.data.Computation;
+import de.featjar.base.task.MonitorableFunction;
 import java.util.List;
 
 /**

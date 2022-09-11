@@ -25,9 +25,9 @@ import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.atomic.literal.Literal;
 import de.featjar.formula.structure.compound.And;
 import de.featjar.formula.structure.compound.Or;
-import de.featjar.util.data.Result;
-import de.featjar.util.task.Executor;
-import de.featjar.util.tree.Trees;
+import de.featjar.base.data.Result;
+import de.featjar.base.task.Executor;
+import de.featjar.base.tree.Trees;
 
 /**
  * Transforms propositional formulas into (clausal) CNF or DNF.

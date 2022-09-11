@@ -28,7 +28,7 @@ import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.FormulaComputation;
 import de.featjar.formula.structure.Formulas;
 import de.featjar.formula.structure.atomic.literal.VariableMap;
-import de.featjar.util.tree.Trees;
+import de.featjar.base.tree.Trees;
 import org.junit.jupiter.api.Test;
 
 public class DNFTransformTest {

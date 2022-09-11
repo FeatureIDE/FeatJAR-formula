@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.structure.atomic;
 
-import de.featjar.util.data.Pair;
+import de.featjar.base.data.Pair;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;

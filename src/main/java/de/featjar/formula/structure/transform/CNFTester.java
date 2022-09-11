@@ -24,7 +24,7 @@ import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.atomic.Atomic;
 import de.featjar.formula.structure.compound.And;
 import de.featjar.formula.structure.compound.Or;
-import de.featjar.util.tree.visitor.TreeVisitor;
+
 import java.util.List;
 
 public class CNFTester extends NFTester {

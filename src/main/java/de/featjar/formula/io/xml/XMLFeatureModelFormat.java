@@ -25,7 +25,7 @@ import de.featjar.formula.structure.atomic.literal.Literal;
 import de.featjar.formula.structure.atomic.literal.VariableMap;
 import de.featjar.formula.structure.compound.And;
 import de.featjar.formula.structure.compound.Or;
-import de.featjar.util.io.format.ParseException;
+import de.featjar.base.io.format.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

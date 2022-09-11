@@ -23,7 +23,7 @@ package de.featjar.formula.structure.atomic;
 import de.featjar.formula.structure.atomic.literal.NamedTermMap.ValueTerm;
 import de.featjar.formula.structure.atomic.literal.VariableMap;
 import de.featjar.formula.structure.atomic.literal.VariableMap.Variable;
-import de.featjar.util.data.Pair;
+import de.featjar.base.data.Pair;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;

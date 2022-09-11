@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    api 'de.featjar:util'
+    api 'de.featjar:base'
 }
 
 license {

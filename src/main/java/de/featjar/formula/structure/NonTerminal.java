@@ -21,8 +21,8 @@
 package de.featjar.formula.structure;
 
 import de.featjar.formula.structure.atomic.literal.VariableMap;
-import de.featjar.util.tree.Trees;
-import de.featjar.util.tree.structure.Tree;
+import de.featjar.base.tree.Trees;
+import de.featjar.base.tree.structure.Tree;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;

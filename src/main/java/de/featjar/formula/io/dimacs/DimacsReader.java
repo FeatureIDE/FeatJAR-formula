@@ -26,7 +26,7 @@ import de.featjar.formula.structure.atomic.literal.Literal;
 import de.featjar.formula.structure.atomic.literal.VariableMap;
 import de.featjar.formula.structure.compound.And;
 import de.featjar.formula.structure.compound.Or;
-import de.featjar.util.io.NonEmptyLineIterator;
+import de.featjar.base.io.NonEmptyLineIterator;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;

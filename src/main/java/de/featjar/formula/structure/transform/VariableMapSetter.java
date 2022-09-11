@@ -24,7 +24,7 @@ import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.atomic.literal.VariableMap;
 import de.featjar.formula.structure.atomic.literal.VariableMap.Constant;
 import de.featjar.formula.structure.atomic.literal.VariableMap.Variable;
-import de.featjar.util.tree.visitor.TreeVisitor;
+import de.featjar.base.tree.visitor.TreeVisitor;
 import java.util.List;
 
 public class VariableMapSetter implements TreeVisitor<Void, Formula> {

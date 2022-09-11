@@ -22,8 +22,8 @@ package de.featjar.formula.structure;
 
 import de.featjar.formula.structure.atomic.literal.NamedTermMap.ValueTerm;
 import de.featjar.formula.structure.atomic.literal.VariableMap;
-import de.featjar.util.tree.Trees;
-import de.featjar.util.tree.structure.Traversable;
+import de.featjar.base.tree.Trees;
+import de.featjar.base.tree.structure.Traversable;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BinaryOperator;

@@ -21,7 +21,7 @@
 package de.featjar.formula.structure;
 
 import de.featjar.formula.structure.term.Term;
-import de.featjar.util.tree.structure.LeafNode;
+import de.featjar.base.tree.structure.LeafNode;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;

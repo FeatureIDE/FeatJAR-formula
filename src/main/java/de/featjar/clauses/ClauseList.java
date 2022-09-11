@@ -22,7 +22,7 @@ package de.featjar.clauses;
 
 import de.featjar.clauses.LiteralList.Order;
 import de.featjar.formula.structure.atomic.literal.VariableMap;
-import de.featjar.util.data.Result;
+import de.featjar.base.data.Result;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
