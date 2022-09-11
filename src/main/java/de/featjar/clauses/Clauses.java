@@ -30,7 +30,7 @@ import de.featjar.util.data.Store;
 import de.featjar.util.data.Result;
 import de.featjar.util.io.IO;
 import de.featjar.util.task.Executor;
-import de.featjar.util.log.Logger;
+import de.featjar.util.log.Log;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -158,7 +158,7 @@ public class Clauses {
     public static CNF open(Path path) {
         return IO.load(path, FormulaFormats.getInstance())
                 .map(Clauses::convertToCNF)
-                .orElse(Logger::logProblems);
+                .orElse(Log::problems);
     }
 
     public static Result<CNF> load(Path path) {

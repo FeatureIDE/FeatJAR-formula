@@ -28,7 +28,7 @@ import de.featjar.util.data.Store;
 import de.featjar.util.data.Computation;
 import de.featjar.util.data.Result;
 import de.featjar.util.io.IO;
-import de.featjar.util.log.Logger;
+import de.featjar.util.log.Log;
 import java.nio.file.Path;
 
 /**
@@ -59,7 +59,7 @@ public class ModelRepresentation {
 
     // todo: also allow to use extensions
     public <T> T get(Computation<T> computation) {
-        return store.get(computation).orElse(Logger::logProblems);
+        return store.get(computation).orElse(Log::problems);
     }
 
     public Store getCache() {

@@ -36,7 +36,7 @@ public class FormulaFormats extends Formats<Formula> {
     private FormulaFormats() {}
 
     @Override
-    public ExtensionPoint<Format<Formula>> getExtensionPointInstance() {
+    public ExtensionPoint<Format<Formula>> getInstanceAsExtensionPoint() {
         return INSTANCE;
     }
 }
