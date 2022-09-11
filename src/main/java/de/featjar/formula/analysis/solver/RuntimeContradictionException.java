@@ -18,29 +18,32 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.structure.transform;
-
-import de.featjar.base.data.Result;
-import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.compound.And;
-import de.featjar.formula.structure.compound.Compound;
-import de.featjar.formula.structure.compound.Or;
-import de.featjar.base.task.Monitor;
+package de.featjar.formula.analysis.solver;
 
 /**
- * Transforms propositional formulas into CNF.
+ * Exception thrown when a {@link SATSolver solver} detects an obvious
+ * contradiction when adding new clauses.<br>
+ * Doesn't need to be caught explicitly.
  *
  * @author Sebastian Krieter
  */
-public class DNFDistributiveLawTransformer extends DistributiveLawTransformer {
+public class RuntimeContradictionException extends RuntimeException {
 
-    public DNFDistributiveLawTransformer() {
-        super(And.class, And::new);
+    private static final long serialVersionUID = -4951752949650801254L;
+
+    public RuntimeContradictionException() {
+        super();
     }
 
-    @Override
-    public Result<Compound> execute(Formula formula, Monitor monitor) {
-        final Compound compound = (formula instanceof Or) ? (Or) formula : new Or(formula);
-        return super.execute(compound, monitor);
+    public RuntimeContradictionException(String message) {
+        super(message);
+    }
+
+    public RuntimeContradictionException(Throwable cause) {
+        super(cause);
+    }
+
+    public RuntimeContradictionException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

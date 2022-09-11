@@ -25,6 +25,8 @@ import de.featjar.base.data.Result;
 import de.featjar.base.io.InputMapper;
 import de.featjar.base.io.format.Format;
 
+import java.util.Optional;
+
 public class FormulaFormat implements Format<Formula> {
 
     public static final String ID = FormulaFormat.class.getCanonicalName();
@@ -55,8 +57,8 @@ public class FormulaFormat implements Format<Formula> {
     }
 
     @Override
-    public String getFileExtension() {
-        return "formula";
+    public Optional<String> getFileExtension() {
+        return Optional.of("formula");
     }
 
     @Override

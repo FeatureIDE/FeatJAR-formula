@@ -20,6 +20,7 @@
  */
 package de.featjar.formula.structure.transform;
 
+import de.featjar.base.data.Result;
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.compound.And;
 import de.featjar.formula.structure.compound.Or;
@@ -45,21 +46,18 @@ public class DNFTransformer implements Transformer {
     }
 
     @Override
-    public Formula execute(Formula formula, Monitor monitor)
-            throws DistributiveLawTransformer.MaximumNumberOfLiteralsExceededException {
+    public Result<Formula> execute(Formula formula, Monitor monitor) {
         final NFTester nfTester = NormalForms.getNFTester(formula, NormalForm.DNF);
         if (nfTester.isNf) {
             if (!nfTester.isClausalNf()) {
-                return NormalForms.toClausalNF(Trees.clone(formula), NormalForm.DNF);
+                return Result.of(NormalForms.toClausalNF(Trees.clone(formula), NormalForm.DNF));
             } else {
-                return Trees.clone(formula);
+                return Result.of(Trees.clone(formula));
             }
         } else {
             formula = NormalForms.simplifyForNF(Trees.clone(formula));
-            formula = distributiveLawTransformer.execute(
-                    (formula instanceof Or) ? (Or) formula : new Or(formula), monitor);
-            formula = NormalForms.toClausalNF(formula, NormalForm.DNF);
-            return formula;
+            return distributiveLawTransformer.execute((formula instanceof Or) ? formula : new Or(formula), monitor)
+                    .map(f -> NormalForms.toClausalNF(f, NormalForm.DNF));
         }
     }
 }

@@ -18,29 +18,34 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.structure.transform;
-
-import de.featjar.base.data.Result;
-import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.compound.And;
-import de.featjar.formula.structure.compound.Compound;
-import de.featjar.formula.structure.compound.Or;
-import de.featjar.base.task.Monitor;
+package de.featjar.formula.clauses.solutions.metrics;
 
 /**
- * Transforms propositional formulas into CNF.
+ * Computes the Jaccard distance between two literal arrays. Considers only
+ * positive literals.
  *
  * @author Sebastian Krieter
  */
-public class DNFDistributiveLawTransformer extends DistributiveLawTransformer {
+public class JaccardSelectedDistance implements DistanceFunction {
 
-    public DNFDistributiveLawTransformer() {
-        super(And.class, And::new);
+    @Override
+    public double computeDistance(final int[] literals1, final int[] literals2) {
+        double sum = 0;
+        double sumA = 0;
+        double sumB = 0;
+        for (int k = 0; k < literals1.length; k++) {
+            final int a = ~literals1[k] >>> (Integer.SIZE - 1);
+            final int b = ~literals2[k] >>> (Integer.SIZE - 1);
+            sumA += a;
+            sumB += b;
+            sum += a & b;
+        }
+        final double similarity = sum / ((sumA + sumB) - sum);
+        return 1 - similarity;
     }
 
     @Override
-    public Result<Compound> execute(Formula formula, Monitor monitor) {
-        final Compound compound = (formula instanceof Or) ? (Or) formula : new Or(formula);
-        return super.execute(compound, monitor);
+    public String getName() {
+        return "JaccardSelected";
     }
 }

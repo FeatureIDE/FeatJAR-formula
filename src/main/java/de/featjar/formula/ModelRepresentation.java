@@ -22,7 +22,6 @@ package de.featjar.formula;
 
 import de.featjar.formula.io.FormulaFormats;
 import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.FormulaComputation;
 import de.featjar.formula.structure.atomic.literal.VariableMap;
 import de.featjar.base.data.Store;
 import de.featjar.base.data.Computation;

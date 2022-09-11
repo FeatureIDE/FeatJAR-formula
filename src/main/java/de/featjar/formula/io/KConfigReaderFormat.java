@@ -29,6 +29,7 @@ import de.featjar.base.data.Result;
 import de.featjar.base.io.InputMapper;
 import de.featjar.base.io.format.Format;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class KConfigReaderFormat implements Format<Formula> {
@@ -81,8 +82,8 @@ public class KConfigReaderFormat implements Format<Formula> {
     }
 
     @Override
-    public String getFileExtension() {
-        return "model";
+    public Optional<String> getFileExtension() {
+        return Optional.of("model");
     }
 
     @Override

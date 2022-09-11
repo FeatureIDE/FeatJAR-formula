@@ -18,29 +18,28 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.structure.transform;
-
-import de.featjar.base.data.Result;
-import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.compound.And;
-import de.featjar.formula.structure.compound.Compound;
-import de.featjar.formula.structure.compound.Or;
-import de.featjar.base.task.Monitor;
+package de.featjar.formula.clauses.solutions.metrics;
 
 /**
- * Transforms propositional formulas into CNF.
+ * Computes the Cosine distance between two literal arrays. Negative literals
+ * are treated as negative one, positive literals as one.
  *
  * @author Sebastian Krieter
  */
-public class DNFDistributiveLawTransformer extends DistributiveLawTransformer {
+public class CosineNegativeDistance implements DistanceFunction {
 
-    public DNFDistributiveLawTransformer() {
-        super(And.class, And::new);
+    @Override
+    public double computeDistance(final int[] literals1, final int[] literals2) {
+        double sum = 0;
+        for (int k = 0; k < literals1.length; k++) {
+            sum += literals1[k] == literals2[k] ? 1 : -1;
+        }
+        final double cosineSimilarity = sum / literals1.length;
+        return (1 - cosineSimilarity) / 2.0;
     }
 
     @Override
-    public Result<Compound> execute(Formula formula, Monitor monitor) {
-        final Compound compound = (formula instanceof Or) ? (Or) formula : new Or(formula);
-        return super.execute(compound, monitor);
+    public String getName() {
+        return "CosineNegative";
     }
 }

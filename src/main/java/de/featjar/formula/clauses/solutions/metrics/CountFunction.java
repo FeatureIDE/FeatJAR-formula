@@ -18,29 +18,19 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.structure.transform;
+package de.featjar.formula.clauses.solutions.metrics;
 
-import de.featjar.base.data.Result;
-import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.compound.And;
-import de.featjar.formula.structure.compound.Compound;
-import de.featjar.formula.structure.compound.Or;
-import de.featjar.base.task.Monitor;
+import de.featjar.formula.clauses.LiteralList;
 
 /**
- * Transforms propositional formulas into CNF.
+ * Computes the count of some property within a literal array (e.g., number of
+ * positive literals).
  *
  * @author Sebastian Krieter
  */
-public class DNFDistributiveLawTransformer extends DistributiveLawTransformer {
+public interface CountFunction {
 
-    public DNFDistributiveLawTransformer() {
-        super(And.class, And::new);
-    }
+    double compute(final LiteralList literals);
 
-    @Override
-    public Result<Compound> execute(Formula formula, Monitor monitor) {
-        final Compound compound = (formula instanceof Or) ? (Or) formula : new Or(formula);
-        return super.execute(compound, monitor);
-    }
+    String getName();
 }

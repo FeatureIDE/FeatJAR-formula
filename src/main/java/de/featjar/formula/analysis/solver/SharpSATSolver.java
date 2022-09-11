@@ -18,29 +18,21 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.structure.transform;
+package de.featjar.formula.analysis.solver;
 
-import de.featjar.base.data.Result;
-import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.compound.And;
-import de.featjar.formula.structure.compound.Compound;
-import de.featjar.formula.structure.compound.Or;
-import de.featjar.base.task.Monitor;
+import java.math.BigInteger;
 
 /**
- * Transforms propositional formulas into CNF.
+ * Sharp-Sat solver interface.
  *
  * @author Sebastian Krieter
  */
-public class DNFDistributiveLawTransformer extends DistributiveLawTransformer {
+public interface SharpSATSolver extends SATSolver {
 
-    public DNFDistributiveLawTransformer() {
-        super(And.class, And::new);
-    }
-
-    @Override
-    public Result<Compound> execute(Formula formula, Monitor monitor) {
-        final Compound compound = (formula instanceof Or) ? (Or) formula : new Or(formula);
-        return super.execute(compound, monitor);
-    }
+    /**
+     * Returns the number of possible solutions.
+     *
+     * @return The number of possible solutions.
+     */
+    BigInteger countSolutions();
 }

@@ -20,6 +20,7 @@
  */
 package de.featjar.formula.structure.transform;
 
+import de.featjar.base.data.Result;
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.atomic.literal.Literal;
 import de.featjar.formula.structure.compound.Compound;
@@ -76,7 +77,7 @@ public class DistributiveLawTransformer implements MonitorableFunction<Formula, 
     }
 
     @Override
-    public Compound execute(Formula node, Monitor monitor) throws MaximumNumberOfLiteralsExceededException {
+    public Result<Compound> execute(Formula node, Monitor monitor) {
         final ArrayList<PathElement> path = new ArrayList<>();
         final ArrayDeque<Formula> stack = new ArrayDeque<>();
         stack.addLast(node);
@@ -103,7 +104,11 @@ public class DistributiveLawTransformer implements MonitorableFunction<Formula, 
 
                 if ((clauseClass == curNode.getClass()) && (currentElement.maxDepth > 0)) {
                     final PathElement parentElement = path.get(path.size() - 1);
-                    parentElement.newChildren.addAll(convert(curNode));
+                    try {
+                        parentElement.newChildren.addAll(convert(curNode));
+                    } catch (MaximumNumberOfLiteralsExceededException e) {
+                        return Result.empty(e);
+                    }
                     parentElement.maxDepth = 1;
                 } else {
                     if (!path.isEmpty()) {
@@ -114,7 +119,7 @@ public class DistributiveLawTransformer implements MonitorableFunction<Formula, 
                 stack.removeLast();
             }
         }
-        return (Compound) node;
+        return Result.of((Compound) node);
     }
 
     @SuppressWarnings("unchecked")
@@ -124,7 +129,7 @@ public class DistributiveLawTransformer implements MonitorableFunction<Formula, 
         } else {
             numberOfLiterals = 0;
             final ArrayList<Set<Literal>> newClauseList = new ArrayList<>();
-            children = new ArrayList<>((List<Formula>) child.getChildren());
+            children = new ArrayList<>(child.getChildren());
             children.sort(Comparator.comparingInt(c -> c.getChildren().size()));
             convertNF(newClauseList, new LinkedHashSet<>(children.size() << 1), 0);
 

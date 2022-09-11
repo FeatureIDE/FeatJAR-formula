@@ -18,29 +18,20 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.structure.transform;
-
-import de.featjar.base.data.Result;
-import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.compound.And;
-import de.featjar.formula.structure.compound.Compound;
-import de.featjar.formula.structure.compound.Or;
-import de.featjar.base.task.Monitor;
+package de.featjar.formula.analysis.solver;
 
 /**
- * Transforms propositional formulas into CNF.
+ * Solver used to solve SMT queries.
  *
+ * @param <T> the type of the return value for minimum/maximum
+ * @param <V> the type of the variable to minimize
+ *
+ * @author Joshua Sprey
  * @author Sebastian Krieter
  */
-public class DNFDistributiveLawTransformer extends DistributiveLawTransformer {
+public interface OptSolver<T, V> extends Solver {
 
-    public DNFDistributiveLawTransformer() {
-        super(And.class, And::new);
-    }
+    T minimum(V formula);
 
-    @Override
-    public Result<Compound> execute(Formula formula, Monitor monitor) {
-        final Compound compound = (formula instanceof Or) ? (Or) formula : new Or(formula);
-        return super.execute(compound, monitor);
-    }
+    T maximum(V formula);
 }

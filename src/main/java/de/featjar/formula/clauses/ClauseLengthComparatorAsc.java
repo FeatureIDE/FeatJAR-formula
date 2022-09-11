@@ -18,29 +18,19 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.structure.transform;
+package de.featjar.formula.clauses;
 
-import de.featjar.base.data.Result;
-import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.compound.And;
-import de.featjar.formula.structure.compound.Compound;
-import de.featjar.formula.structure.compound.Or;
-import de.featjar.base.task.Monitor;
+import java.util.Comparator;
 
 /**
- * Transforms propositional formulas into CNF.
+ * Compares clauses by he number of literals.
  *
  * @author Sebastian Krieter
  */
-public class DNFDistributiveLawTransformer extends DistributiveLawTransformer {
-
-    public DNFDistributiveLawTransformer() {
-        super(And.class, And::new);
-    }
+public class ClauseLengthComparatorAsc implements Comparator<LiteralList> {
 
     @Override
-    public Result<Compound> execute(Formula formula, Monitor monitor) {
-        final Compound compound = (formula instanceof Or) ? (Or) formula : new Or(formula);
-        return super.execute(compound, monitor);
+    public int compare(LiteralList o1, LiteralList o2) {
+        return o1.getLiterals().length - o2.getLiterals().length;
     }
 }

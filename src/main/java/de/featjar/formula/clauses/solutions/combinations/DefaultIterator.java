@@ -18,29 +18,22 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.structure.transform;
-
-import de.featjar.base.data.Result;
-import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.compound.And;
-import de.featjar.formula.structure.compound.Compound;
-import de.featjar.formula.structure.compound.Or;
-import de.featjar.base.task.Monitor;
+package de.featjar.formula.clauses.solutions.combinations;
 
 /**
- * Transforms propositional formulas into CNF.
+ * Combination iterator that uses the combinatorial number system to enumerate
+ * all combinations and then iterates from first to last combination.
  *
  * @author Sebastian Krieter
  */
-public class DNFDistributiveLawTransformer extends DistributiveLawTransformer {
+public class DefaultIterator extends ACombinationIterator {
 
-    public DNFDistributiveLawTransformer() {
-        super(And.class, And::new);
+    public DefaultIterator(int t, int size) {
+        super(t, size);
     }
 
     @Override
-    public Result<Compound> execute(Formula formula, Monitor monitor) {
-        final Compound compound = (formula instanceof Or) ? (Or) formula : new Or(formula);
-        return super.execute(compound, monitor);
+    protected long nextIndex() {
+        return counter - 1;
     }
 }

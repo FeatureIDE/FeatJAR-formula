@@ -20,6 +20,7 @@
  */
 package de.featjar.formula.structure.transform;
 
+import de.featjar.base.data.Result;
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.compound.And;
 import de.featjar.formula.structure.compound.Compound;
@@ -38,7 +39,7 @@ public class CNFDistributiveLawTransformer extends DistributiveLawTransformer {
     }
 
     @Override
-    public Compound execute(Formula formula, Monitor monitor) throws MaximumNumberOfLiteralsExceededException {
+    public Result<Compound> execute(Formula formula, Monitor monitor) {
         final Compound compound = (formula instanceof And) ? (And) formula : new And(formula);
         return super.execute(compound, monitor);
     }

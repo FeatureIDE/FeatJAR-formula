@@ -18,29 +18,35 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.structure.transform;
+package de.featjar.formula.clauses.solutions.combinations;
 
-import de.featjar.base.data.Result;
-import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.compound.And;
-import de.featjar.formula.structure.compound.Compound;
-import de.featjar.formula.structure.compound.Or;
-import de.featjar.base.task.Monitor;
+import java.util.Iterator;
+import java.util.List;
 
 /**
- * Transforms propositional formulas into CNF.
+ * An iterator for combinations.
  *
  * @author Sebastian Krieter
  */
-public class DNFDistributiveLawTransformer extends DistributiveLawTransformer {
+public interface CombinationIterator extends Iterator<int[]>, Iterable<int[]> {
 
-    public DNFDistributiveLawTransformer() {
-        super(And.class, And::new);
+    public static <T> T[] select(List<T> items, int[] indices, T[] selection) {
+        for (int i = 0; i < indices.length; i++) {
+            selection[i] = items.get(indices[i]);
+        }
+        return selection;
     }
 
-    @Override
-    public Result<Compound> execute(Formula formula, Monitor monitor) {
-        final Compound compound = (formula instanceof Or) ? (Or) formula : new Or(formula);
-        return super.execute(compound, monitor);
+    public static <T> T[] select(T[] items, int[] indices, T[] selection) {
+        for (int i = 0; i < indices.length; i++) {
+            selection[i] = items[indices[i]];
+        }
+        return selection;
     }
+
+    long getIndex();
+
+    void reset();
+
+    long size();
 }

@@ -25,7 +25,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.featjar.formula.ModelRepresentation;
 import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.FormulaComputation;
 import de.featjar.formula.structure.Formulas;
 import de.featjar.formula.structure.atomic.literal.VariableMap;
 import de.featjar.base.tree.Trees;

@@ -20,6 +20,7 @@
  */
 package de.featjar.formula.structure.transform;
 
+import de.featjar.base.data.Result;
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.Formulas;
 import de.featjar.formula.structure.atomic.literal.VariableMap;
@@ -28,7 +29,7 @@ import de.featjar.formula.structure.compound.And;
 import de.featjar.formula.structure.compound.Compound;
 import de.featjar.formula.structure.transform.DistributiveLawTransformer.MaximumNumberOfLiteralsExceededException;
 import de.featjar.formula.structure.transform.NormalForms.NormalForm;
-import de.featjar.formula.structure.transform.TseytinTransformer.Substitute;
+import de.featjar.formula.structure.transform.TseitinTransformer.Substitute;
 import de.featjar.base.task.Monitor;
 import de.featjar.base.task.CancelableMonitor;
 import de.featjar.base.tree.Trees;
@@ -42,7 +43,7 @@ public class CNFTransformer implements Transformer {
     public final boolean useMultipleThreads = false;
 
     protected final List<Formula> distributiveClauses;
-    protected final List<Substitute> tseytinClauses;
+    protected final List<Substitute> tseitinClauses;
     protected boolean useDistributive;
     protected int maximumNumberOfLiterals = Integer.MAX_VALUE;
 
@@ -51,10 +52,10 @@ public class CNFTransformer implements Transformer {
     public CNFTransformer() {
         if (useMultipleThreads) {
             distributiveClauses = Collections.synchronizedList(new ArrayList<>());
-            tseytinClauses = Collections.synchronizedList(new ArrayList<>());
+            tseitinClauses = Collections.synchronizedList(new ArrayList<>());
         } else {
             distributiveClauses = new ArrayList<>();
-            tseytinClauses = new ArrayList<>();
+            tseitinClauses = new ArrayList<>();
         }
     }
 
@@ -63,14 +64,14 @@ public class CNFTransformer implements Transformer {
     }
 
     @Override
-    public Formula execute(Formula orgFormula, Monitor monitor) {
+    public Result<Formula> execute(Formula orgFormula, Monitor monitor) {
         useDistributive = (maximumNumberOfLiterals > 0);
         final NFTester nfTester = NormalForms.getNFTester(orgFormula, NormalForm.CNF);
         if (nfTester.isNf) {
             if (!nfTester.isClausalNf()) {
-                return NormalForms.toClausalNF(Trees.clone(orgFormula), NormalForm.CNF);
+                return Result.of(NormalForms.toClausalNF(Trees.clone(orgFormula), NormalForm.CNF));
             } else {
-                return Trees.clone(orgFormula);
+                return Result.of(Trees.clone(orgFormula));
             }
         }
         variableMap = orgFormula.getVariableMap().map(VariableMap::clone).orElseGet(VariableMap::new);
@@ -89,7 +90,7 @@ public class CNFTransformer implements Transformer {
         formula = new And(getTransformedClauses());
         formula = NormalForms.toClausalNF(formula, NormalForm.CNF);
         formula = Formulas.manipulate(formula, new VariableMapSetter(variableMap));
-        return formula;
+        return Result.of(formula);
     }
 
     protected List<? extends Formula> getTransformedClauses() {
@@ -97,26 +98,26 @@ public class CNFTransformer implements Transformer {
 
         transformedClauses.addAll(distributiveClauses);
 
-        if (!tseytinClauses.isEmpty()) {
+        if (!tseitinClauses.isEmpty()) {
             variableMap = variableMap.clone();
-            final HashMap<Substitute, Substitute> combinedTseytinClauses = new HashMap<>();
-            for (final Substitute tseytinClause : tseytinClauses) {
-                Substitute substitute = combinedTseytinClauses.get(tseytinClause);
+            final HashMap<Substitute, Substitute> combinedTseitinClauses = new HashMap<>();
+            for (final Substitute tseitinClause : tseitinClauses) {
+                Substitute substitute = combinedTseitinClauses.get(tseitinClause);
                 if (substitute == null) {
-                    combinedTseytinClauses.put(tseytinClause, tseytinClause);
-                    final Variable variable = tseytinClause.getVariable();
+                    combinedTseitinClauses.put(tseitinClause, tseitinClause);
+                    final Variable variable = tseitinClause.getVariable();
                     if (variable != null) {
                         variable.rename(variableMap.addBooleanVariable().getName());
                     }
                 } else {
                     final Variable variable = substitute.getVariable();
                     if (variable != null) {
-                        tseytinClause.getVariable().rename(variable.getName());
+                        tseitinClause.getVariable().rename(variable.getName());
                     }
                 }
             }
-            for (final Substitute tseytinClause : combinedTseytinClauses.keySet()) {
-                for (final Formula formula : tseytinClause.getClauses()) {
+            for (final Substitute tseitinClause : combinedTseitinClauses.keySet()) {
+                for (final Formula formula : tseitinClause.getClauses()) {
                     transformedClauses.add(Formulas.manipulate(formula, new VariableMapSetter(variableMap)));
                 }
             }
@@ -136,25 +137,25 @@ public class CNFTransformer implements Transformer {
             if (useDistributive) {
                 try {
                     distributiveClauses.addAll(
-                            distributive(clonedChild, new CancelableMonitor()).getChildren());
+                            distributive(clonedChild, new CancelableMonitor()).get().getChildren()); // todo .get?
                     return;
                 } catch (final MaximumNumberOfLiteralsExceededException e) {
                 }
             }
-            tseytinClauses.addAll(tseytin(clonedChild, new CancelableMonitor()));
+            tseitinClauses.addAll(tseitin(clonedChild, new CancelableMonitor()).get()); // todo: .get?
         }
     }
 
-    protected Compound distributive(Formula child, Monitor monitor)
+    protected Result<Compound> distributive(Formula child, Monitor monitor)
             throws MaximumNumberOfLiteralsExceededException {
         final CNFDistributiveLawTransformer cnfDistributiveLawTransformer = new CNFDistributiveLawTransformer();
         cnfDistributiveLawTransformer.setMaximumNumberOfLiterals(maximumNumberOfLiterals);
         return cnfDistributiveLawTransformer.execute(child, monitor);
     }
 
-    protected List<Substitute> tseytin(Formula child, Monitor monitor) {
-        final TseytinTransformer tseytinTransformer = new TseytinTransformer();
-        tseytinTransformer.setVariableMap(new VariableMap());
-        return tseytinTransformer.execute(child, monitor);
+    protected Result<List<Substitute>> tseitin(Formula child, Monitor monitor) {
+        final TseitinTransformer tseitinTransformer = new TseitinTransformer();
+        tseitinTransformer.setVariableMap(new VariableMap());
+        return tseitinTransformer.execute(child, monitor);
     }
 }

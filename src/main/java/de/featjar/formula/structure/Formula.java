@@ -25,6 +25,7 @@ import de.featjar.formula.structure.atomic.literal.VariableMap;
 import de.featjar.base.tree.Trees;
 import de.featjar.base.tree.structure.Traversable;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BinaryOperator;
 
@@ -55,17 +56,17 @@ public interface Formula extends Traversable<Formula> {
 
     Object eval(List<?> values);
 
-    public static boolean checkValues(int size, List<?> values) {
+    static boolean checkValues(int size, List<?> values) {
         return values.size() == size;
     }
 
-    public static boolean checkValues(Class<?> type, List<?> values) {
+    static boolean checkValues(Class<?> type, List<?> values) {
         return values.stream().allMatch(v -> v == null || type.isInstance(v));
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> T reduce(List<?> values, final BinaryOperator<T> binaryOperator) {
-        if (values.stream().anyMatch(value -> value == null)) {
+    static <T> T reduce(List<?> values, final BinaryOperator<T> binaryOperator) {
+        if (values.stream().anyMatch(Objects::isNull)) {
             return null;
         }
         return values.stream().map(l -> (T) l).reduce(binaryOperator).orElse(null);

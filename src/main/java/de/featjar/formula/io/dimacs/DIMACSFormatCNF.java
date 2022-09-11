@@ -20,10 +20,11 @@
  */
 package de.featjar.formula.io.dimacs;
 
-import de.featjar.clauses.CNF;
-import de.featjar.clauses.LiteralList;
+import de.featjar.formula.clauses.CNF;
+import de.featjar.formula.clauses.LiteralList;
 import de.featjar.base.io.format.Format;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Serializes a {@link CNF} to a String in DIMACS format.
@@ -94,7 +95,7 @@ public class DIMACSFormatCNF implements Format<CNF> {
     }
 
     @Override
-    public String getFileExtension() {
-        return "dimacs";
+    public Optional<String> getFileExtension() {
+        return Optional.of("dimacs");
     }
 }

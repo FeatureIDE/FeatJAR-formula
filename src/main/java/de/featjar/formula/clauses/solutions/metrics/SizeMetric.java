@@ -18,29 +18,24 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.structure.transform;
+package de.featjar.formula.clauses.solutions.metrics;
 
-import de.featjar.base.data.Result;
-import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.compound.And;
-import de.featjar.formula.structure.compound.Compound;
-import de.featjar.formula.structure.compound.Or;
-import de.featjar.base.task.Monitor;
+import de.featjar.formula.clauses.solutions.SolutionList;
 
 /**
- * Transforms propositional formulas into CNF.
+ * Computes the size of a sample.
  *
  * @author Sebastian Krieter
  */
-public class DNFDistributiveLawTransformer extends DistributiveLawTransformer {
+public class SizeMetric implements SampleMetric {
 
-    public DNFDistributiveLawTransformer() {
-        super(And.class, And::new);
+    @Override
+    public double get(SolutionList sample) {
+        return sample.getSolutions().size();
     }
 
     @Override
-    public Result<Compound> execute(Formula formula, Monitor monitor) {
-        final Compound compound = (formula instanceof Or) ? (Or) formula : new Or(formula);
-        return super.execute(compound, monitor);
+    public String getName() {
+        return "Size";
     }
 }

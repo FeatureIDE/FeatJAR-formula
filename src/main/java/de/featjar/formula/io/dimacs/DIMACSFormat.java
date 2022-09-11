@@ -26,6 +26,7 @@ import de.featjar.base.io.InputMapper;
 import de.featjar.base.io.format.Format;
 import de.featjar.base.io.format.ParseProblem;
 import java.text.ParseException;
+import java.util.Optional;
 
 /**
  * Reads and writes feature models in the DIMACS CNF format.
@@ -84,7 +85,7 @@ public class DIMACSFormat implements Format<Formula> {
     }
 
     @Override
-    public String getFileExtension() {
-        return "dimacs";
+    public Optional<String> getFileExtension() {
+        return Optional.of("dimacs");
     }
 }
