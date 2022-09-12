@@ -29,12 +29,11 @@ import java.util.List;
  */
 public class Equals extends ComparingPredicate {
 
-    public Equals(Term leftArgument, Term rightArgument) {
-        super(leftArgument, rightArgument);
+    public Equals(Term leftTerm, Term rightTerm) {
+        super(leftTerm, rightTerm);
     }
 
     protected Equals() {
-        super();
     }
 
     @Override

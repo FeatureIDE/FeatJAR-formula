@@ -23,18 +23,18 @@ package de.featjar.formula.io.textual;
 import de.featjar.formula.io.textual.Symbols.Operator;
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.atomic.literal.Literal;
-import de.featjar.formula.structure.compound.And;
-import de.featjar.formula.structure.compound.AtLeast;
-import de.featjar.formula.structure.compound.AtMost;
-import de.featjar.formula.structure.compound.Between;
-import de.featjar.formula.structure.compound.Biimplies;
-import de.featjar.formula.structure.compound.Choose;
-import de.featjar.formula.structure.compound.Compound;
-import de.featjar.formula.structure.compound.Exists;
-import de.featjar.formula.structure.compound.ForAll;
-import de.featjar.formula.structure.compound.Implies;
-import de.featjar.formula.structure.compound.Not;
-import de.featjar.formula.structure.compound.Or;
+import de.featjar.formula.structure.connective.And;
+import de.featjar.formula.structure.connective.AtLeast;
+import de.featjar.formula.structure.connective.AtMost;
+import de.featjar.formula.structure.connective.Between;
+import de.featjar.formula.structure.connective.BiImplies;
+import de.featjar.formula.structure.connective.Choose;
+import de.featjar.formula.structure.connective.Connective;
+import de.featjar.formula.structure.connective.Exists;
+import de.featjar.formula.structure.connective.ForAll;
+import de.featjar.formula.structure.connective.Implies;
+import de.featjar.formula.structure.connective.Not;
+import de.featjar.formula.structure.connective.Or;
 import java.util.List;
 
 /**
@@ -143,7 +143,7 @@ public class NodeWriter {
      * <li>{@link And}</li>
      * <li>{@link Or}</li>
      * <li>{@link Implies}</li>
-     * <li>{@link Biimplies}</li>
+     * <li>{@link BiImplies}</li>
      * <li>{@link Choose}</li>
      * <li>{@link AtLeast}</li>
      * <li>{@link AtMost}</li>
@@ -293,7 +293,7 @@ public class NodeWriter {
             if (formula instanceof Literal) {
                 literalToString((Literal) formula, sb, depth + 1);
             } else {
-                operationToString((Compound) formula, parent, sb, depth + 1);
+                operationToString((Connective) formula, parent, sb, depth + 1);
             }
         }
     }
@@ -362,7 +362,7 @@ public class NodeWriter {
      * @param sb     the {@link StringBuilder} containing the textual
      *               representation.
      */
-    private void operationToString(Compound node, Operator parent, StringBuilder sb, int depth) {
+    private void operationToString(Connective node, Operator parent, StringBuilder sb, int depth) {
         alignLine(sb, depth);
         final List<Formula> children = node.getChildren();
         if (children.size() == 0) {
@@ -468,7 +468,7 @@ public class NodeWriter {
         return (node instanceof And)
                 || (node instanceof Or)
                 || (node instanceof Implies)
-                || (node instanceof Biimplies);
+                || (node instanceof BiImplies);
     }
 
     /**

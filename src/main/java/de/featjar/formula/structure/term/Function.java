@@ -20,26 +20,26 @@
  */
 package de.featjar.formula.structure.term;
 
-import de.featjar.formula.structure.NonTerminal;
+import de.featjar.formula.structure.NonTerminalFormula;
 import java.util.List;
 
-public abstract class Function extends NonTerminal implements Term {
-
-    public Function(List<Term> nodes) {
+/**
+ * A function in first-order logic.
+ *
+ * @author Sebastian Krieter
+ */
+public abstract class Function extends NonTerminalFormula implements Term {
+    protected Function(Term... nodes) {
         super(nodes);
     }
 
-    public Function(Term... nodes) {
+    protected Function(List<? extends Term> nodes) {
         super(nodes);
-    }
-
-    public Function() {
-        super();
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Term> getChildren() {
-        return (List<Term>) super.getChildren();
+    public List<? extends Term> getChildren() {
+        return (List<? extends Term>) super.getChildren();
     }
 }

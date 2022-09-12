@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.analysis.solver;
 
-import de.featjar.formula.structure.atomic.literal.VariableMap;
+import de.featjar.formula.structure.VariableMap;
 import java.util.ArrayList;
 import java.util.List;
 

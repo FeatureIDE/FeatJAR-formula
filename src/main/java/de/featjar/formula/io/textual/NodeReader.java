@@ -23,12 +23,12 @@ package de.featjar.formula.io.textual;
 import de.featjar.formula.io.textual.Symbols.Operator;
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.atomic.literal.ErrorLiteral;
-import de.featjar.formula.structure.atomic.literal.VariableMap;
-import de.featjar.formula.structure.compound.And;
-import de.featjar.formula.structure.compound.Biimplies;
-import de.featjar.formula.structure.compound.Implies;
-import de.featjar.formula.structure.compound.Not;
-import de.featjar.formula.structure.compound.Or;
+import de.featjar.formula.structure.VariableMap;
+import de.featjar.formula.structure.connective.And;
+import de.featjar.formula.structure.connective.BiImplies;
+import de.featjar.formula.structure.connective.Implies;
+import de.featjar.formula.structure.connective.Not;
+import de.featjar.formula.structure.connective.Or;
 import de.featjar.base.data.Problem;
 import de.featjar.base.data.Problem.Severity;
 import de.featjar.base.data.Result;
@@ -243,7 +243,7 @@ public class NodeReader {
 
                 switch (operator) {
                     case EQUALS: {
-                        return new Biimplies(node1, node2);
+                        return new BiImplies(node1, node2);
                     }
                     case IMPLIES: {
                         return new Implies(node1, node2);

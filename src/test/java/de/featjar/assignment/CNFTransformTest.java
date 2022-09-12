@@ -23,12 +23,11 @@ package de.featjar.assignment;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import de.featjar.formula.ModelRepresentation;
 import de.featjar.formula.io.KConfigReaderFormat;
 import de.featjar.formula.io.dimacs.DIMACSFormat;
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.Formulas;
-import de.featjar.formula.structure.atomic.literal.VariableMap;
+import de.featjar.formula.structure.VariableMap;
 import de.featjar.base.io.IO;
 import de.featjar.base.tree.Trees;
 import java.io.IOException;

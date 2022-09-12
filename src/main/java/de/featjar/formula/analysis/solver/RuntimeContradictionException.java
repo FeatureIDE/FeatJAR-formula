@@ -29,10 +29,7 @@ package de.featjar.formula.analysis.solver;
  */
 public class RuntimeContradictionException extends RuntimeException {
 
-    private static final long serialVersionUID = -4951752949650801254L;
-
     public RuntimeContradictionException() {
-        super();
     }
 
     public RuntimeContradictionException(String message) {

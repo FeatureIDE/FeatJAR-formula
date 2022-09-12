@@ -23,13 +23,13 @@ package de.featjar.formula.io.xml;
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.atomic.literal.ErrorLiteral;
 import de.featjar.formula.structure.atomic.literal.Literal;
-import de.featjar.formula.structure.atomic.literal.VariableMap;
-import de.featjar.formula.structure.compound.And;
-import de.featjar.formula.structure.compound.AtMost;
-import de.featjar.formula.structure.compound.Biimplies;
-import de.featjar.formula.structure.compound.Implies;
-import de.featjar.formula.structure.compound.Not;
-import de.featjar.formula.structure.compound.Or;
+import de.featjar.formula.structure.VariableMap;
+import de.featjar.formula.structure.connective.And;
+import de.featjar.formula.structure.connective.AtMost;
+import de.featjar.formula.structure.connective.BiImplies;
+import de.featjar.formula.structure.connective.Implies;
+import de.featjar.formula.structure.connective.Not;
+import de.featjar.formula.structure.connective.Or;
 import de.featjar.base.data.Problem;
 import de.featjar.base.io.format.ParseException;
 import de.featjar.base.io.xml.XMLFormat;
@@ -297,7 +297,7 @@ public abstract class AbstractXMLFeatureModelFormat<T, U, V> extends XMLFormat<T
     }
 
     protected Formula biImplies(Formula a, Formula b) {
-        return new Biimplies(a, b);
+        return new BiImplies(a, b);
     }
 
     protected Formula implies(Literal a, Formula b) {

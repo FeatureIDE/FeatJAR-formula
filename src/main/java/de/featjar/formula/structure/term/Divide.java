@@ -20,21 +20,30 @@
  */
 package de.featjar.formula.structure.term;
 
-public abstract class Divide extends Function {
+import de.featjar.formula.structure.BinaryFormula;
 
-    public Divide(Term leftArgument, Term rightArgument) {
-        super(leftArgument, rightArgument);
-    }
+import java.util.List;
+
+/**
+ * Divides the values of two terms.
+ *
+ * @author Sebastian Krieter
+ */
+public abstract class Divide extends Function implements BinaryFormula {
 
     protected Divide() {
-        super();
+    }
+
+    protected Divide(Term leftTerm, Term rightTerm) {
+        super(leftTerm, rightTerm);
+    }
+
+    protected Divide(List<Term> arguments) {
+        super(arguments);
     }
 
     @Override
     public String getName() {
         return "/";
     }
-
-    @Override
-    public abstract Divide cloneNode();
 }

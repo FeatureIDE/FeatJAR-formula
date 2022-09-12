@@ -29,12 +29,11 @@ import java.util.List;
  */
 public class LessEqual extends ComparingPredicate {
 
-    public LessEqual(Term leftArgument, Term rightArgument) {
-        super(leftArgument, rightArgument);
+    public LessEqual(Term leftTerm, Term rightTerm) {
+        super(leftTerm, rightTerm);
     }
 
     protected LessEqual() {
-        super();
     }
 
     @Override

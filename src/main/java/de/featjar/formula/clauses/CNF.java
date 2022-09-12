@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.clauses;
 
-import de.featjar.formula.structure.atomic.literal.VariableMap;
+import de.featjar.formula.structure.VariableMap;
 import de.featjar.base.data.Result;
 import java.io.Serializable;
 import java.util.Collection;

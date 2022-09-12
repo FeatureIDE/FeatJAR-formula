@@ -22,19 +22,19 @@ package de.featjar.formula.io.textual;
 
 import de.featjar.formula.io.textual.Symbols.Operator;
 import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.Terminal;
+import de.featjar.formula.structure.TerminalFormula;
 import de.featjar.formula.structure.atomic.literal.Literal;
-import de.featjar.formula.structure.compound.And;
-import de.featjar.formula.structure.compound.AtLeast;
-import de.featjar.formula.structure.compound.AtMost;
-import de.featjar.formula.structure.compound.Between;
-import de.featjar.formula.structure.compound.Biimplies;
-import de.featjar.formula.structure.compound.Choose;
-import de.featjar.formula.structure.compound.Exists;
-import de.featjar.formula.structure.compound.ForAll;
-import de.featjar.formula.structure.compound.Implies;
-import de.featjar.formula.structure.compound.Not;
-import de.featjar.formula.structure.compound.Or;
+import de.featjar.formula.structure.connective.And;
+import de.featjar.formula.structure.connective.AtLeast;
+import de.featjar.formula.structure.connective.AtMost;
+import de.featjar.formula.structure.connective.Between;
+import de.featjar.formula.structure.connective.BiImplies;
+import de.featjar.formula.structure.connective.Choose;
+import de.featjar.formula.structure.connective.Exists;
+import de.featjar.formula.structure.connective.ForAll;
+import de.featjar.formula.structure.connective.Implies;
+import de.featjar.formula.structure.connective.Not;
+import de.featjar.formula.structure.connective.Or;
 import de.featjar.base.tree.visitor.InOrderTreeVisitor;
 
 import java.util.List;
@@ -59,7 +59,7 @@ public class NodeWriter2 implements InOrderTreeVisitor<Void, Formula> {
                 final Formula currentNode = getCurrentNode(path);
 
                 alignLine(path.size());
-                if (currentNode instanceof Terminal) {
+                if (currentNode instanceof TerminalFormula) {
                     if (currentNode instanceof Literal) {
                         if (!((Literal) currentNode).isPositive()) {
                             sb.append(getSymbols().getSymbol(Operator.NOT));
@@ -225,7 +225,7 @@ public class NodeWriter2 implements InOrderTreeVisitor<Void, Formula> {
      * <li>{@link And}</li>
      * <li>{@link Or}</li>
      * <li>{@link Implies}</li>
-     * <li>{@link Biimplies}</li>
+     * <li>{@link BiImplies}</li>
      * <li>{@link Choose}</li>
      * <li>{@link AtLeast}</li>
      * <li>{@link AtMost}</li>

@@ -21,18 +21,18 @@
 package de.featjar.formula.io.textual;
 
 import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.compound.And;
-import de.featjar.formula.structure.compound.AtLeast;
-import de.featjar.formula.structure.compound.AtMost;
-import de.featjar.formula.structure.compound.Between;
-import de.featjar.formula.structure.compound.Biimplies;
-import de.featjar.formula.structure.compound.Choose;
-import de.featjar.formula.structure.compound.Compound;
-import de.featjar.formula.structure.compound.Exists;
-import de.featjar.formula.structure.compound.ForAll;
-import de.featjar.formula.structure.compound.Implies;
-import de.featjar.formula.structure.compound.Not;
-import de.featjar.formula.structure.compound.Or;
+import de.featjar.formula.structure.connective.And;
+import de.featjar.formula.structure.connective.AtLeast;
+import de.featjar.formula.structure.connective.AtMost;
+import de.featjar.formula.structure.connective.Between;
+import de.featjar.formula.structure.connective.BiImplies;
+import de.featjar.formula.structure.connective.Choose;
+import de.featjar.formula.structure.connective.Connective;
+import de.featjar.formula.structure.connective.Exists;
+import de.featjar.formula.structure.connective.ForAll;
+import de.featjar.formula.structure.connective.Implies;
+import de.featjar.formula.structure.connective.Not;
+import de.featjar.formula.structure.connective.Or;
 import de.featjar.base.data.Pair;
 import java.util.Collection;
 import java.util.HashMap;
@@ -104,7 +104,7 @@ public class Symbols {
     }
 
     public static Operator getOperator(Formula node) throws IllegalArgumentException {
-        if (node instanceof Compound) {
+        if (node instanceof Connective) {
             if (node instanceof Not) {
                 return Operator.NOT;
             }
@@ -117,7 +117,7 @@ public class Symbols {
             if (node instanceof Implies) {
                 return Operator.IMPLIES;
             }
-            if (node instanceof Biimplies) {
+            if (node instanceof BiImplies) {
                 return Operator.EQUALS;
             }
             if (node instanceof AtLeast) {

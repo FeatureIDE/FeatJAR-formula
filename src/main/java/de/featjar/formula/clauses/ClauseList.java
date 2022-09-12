@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.clauses;
 
-import de.featjar.formula.structure.atomic.literal.VariableMap;
+import de.featjar.formula.structure.VariableMap;
 import de.featjar.base.data.Result;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -36,7 +36,6 @@ public class ClauseList extends ArrayList<LiteralList> implements Serializable {
     private static final long serialVersionUID = -4298323253677967328L;
 
     public ClauseList() {
-        super();
     }
 
     public ClauseList(int size) {

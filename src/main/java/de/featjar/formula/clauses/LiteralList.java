@@ -20,8 +20,8 @@
  */
 package de.featjar.formula.clauses;
 
-import de.featjar.formula.structure.atomic.literal.NamedTermMap.ValueTerm;
-import de.featjar.formula.structure.atomic.literal.VariableMap;
+import de.featjar.formula.structure.NamedTermMap.ValueTerm;
+import de.featjar.formula.structure.VariableMap;
 import de.featjar.base.data.Problem;
 import de.featjar.base.data.Problem.Severity;
 import de.featjar.base.data.Result;

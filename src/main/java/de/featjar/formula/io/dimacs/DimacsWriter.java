@@ -23,8 +23,8 @@ package de.featjar.formula.io.dimacs;
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.Formulas;
 import de.featjar.formula.structure.atomic.literal.Literal;
-import de.featjar.formula.structure.atomic.literal.VariableMap;
-import de.featjar.formula.structure.compound.Or;
+import de.featjar.formula.structure.VariableMap;
+import de.featjar.formula.structure.connective.Or;
 
 public class DimacsWriter {
 

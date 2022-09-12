@@ -22,7 +22,7 @@ package de.featjar.formula.clauses.solutions.io;
 
 import de.featjar.formula.clauses.LiteralList;
 import de.featjar.formula.clauses.solutions.SolutionList;
-import de.featjar.formula.structure.atomic.literal.VariableMap;
+import de.featjar.formula.structure.VariableMap;
 import de.featjar.base.data.Problem.Severity;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.InputMapper;

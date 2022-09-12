@@ -29,12 +29,11 @@ import java.util.List;
  */
 public class NotEquals extends ComparingPredicate {
 
-    public NotEquals(Term leftArgument, Term rightArgument) {
-        super(leftArgument, rightArgument);
+    public NotEquals(Term leftTerm, Term rightTerm) {
+        super(leftTerm, rightTerm);
     }
 
     protected NotEquals() {
-        super();
     }
 
     @Override

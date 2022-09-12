@@ -22,9 +22,9 @@ package de.featjar.formula.io.xml;
 
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.atomic.literal.Literal;
-import de.featjar.formula.structure.atomic.literal.VariableMap;
-import de.featjar.formula.structure.compound.And;
-import de.featjar.formula.structure.compound.Or;
+import de.featjar.formula.structure.VariableMap;
+import de.featjar.formula.structure.connective.And;
+import de.featjar.formula.structure.connective.Or;
 import de.featjar.base.io.format.ParseException;
 import java.util.ArrayList;
 import java.util.List;

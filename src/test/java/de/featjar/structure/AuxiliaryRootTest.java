@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.featjar.formula.structure.AuxiliaryRoot;
 import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.atomic.literal.VariableMap;
+import de.featjar.formula.structure.VariableMap;
 import java.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

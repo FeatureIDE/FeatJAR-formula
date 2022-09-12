@@ -25,7 +25,7 @@ import de.featjar.formula.structure.term.Term;
 import java.util.List;
 
 /**
- * An atomic formula.
+ * An atomic formula in propositional and first-order logic.
  *
  * @author Sebastian Krieter
  */
@@ -33,6 +33,9 @@ public interface Atomic extends Formula {
 
     @Override
     List<? extends Term> getChildren();
+
+    @Override
+    Atomic cloneNode();
 
     Atomic flip();
 

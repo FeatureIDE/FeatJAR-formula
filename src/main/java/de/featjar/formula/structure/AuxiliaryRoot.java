@@ -30,14 +30,13 @@ import java.util.Objects;
  *
  * @author Sebastian Krieter
  */
-public class AuxiliaryRoot extends NonTerminal {
+public class AuxiliaryRoot extends NonTerminalFormula {
 
     public AuxiliaryRoot(Formula node) {
         super(node);
     }
 
     private AuxiliaryRoot() {
-        super();
     }
 
     @Override
@@ -65,7 +64,7 @@ public class AuxiliaryRoot extends NonTerminal {
     }
 
     @Override
-    public Object eval(List<?> values) {
-        return getChild().eval(values);
+    public Object evaluate(List<?> values) {
+        return getChild().evaluate(values);
     }
 }

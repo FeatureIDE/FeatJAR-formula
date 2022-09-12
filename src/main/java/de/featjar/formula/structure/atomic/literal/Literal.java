@@ -29,15 +29,11 @@ import de.featjar.formula.structure.atomic.Atomic;
  */
 public interface Literal extends Atomic {
 
-    True True = de.featjar.formula.structure.atomic.literal.True.getInstance();
-
-    False False = de.featjar.formula.structure.atomic.literal.False.getInstance();
+    @Override
+    Literal cloneNode();
 
     @Override
     Literal flip();
-
-    @Override
-    Literal cloneNode();
 
     default boolean isPositive() {
         return true;

@@ -21,6 +21,7 @@
 package de.featjar.formula.structure.atomic.predicate;
 
 import de.featjar.formula.structure.Formula;
+import de.featjar.formula.structure.Formulas;
 import de.featjar.formula.structure.term.Term;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -32,16 +33,15 @@ import java.util.List;
  */
 public abstract class ComparingPredicate extends Predicate {
 
-    public ComparingPredicate(Term leftArgument, Term rightArgument) {
-        super(leftArgument, rightArgument);
+    public ComparingPredicate(Term leftTerm, Term rightTerm) {
+        super(leftTerm, rightTerm);
     }
 
     protected ComparingPredicate() {
-        super();
     }
 
-    public void setArguments(Term leftArgument, Term rightArgument) {
-        setChildren(Arrays.asList(leftArgument, rightArgument));
+    public void setArguments(Term leftTerm, Term rightTerm) {
+        setChildren(Arrays.asList(leftTerm, rightTerm));
     }
 
     @Override
@@ -60,9 +60,9 @@ public abstract class ComparingPredicate extends Predicate {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
-    public Boolean eval(List<?> values) {
-        assert Formula.checkValues(2, values);
-        assert Formula.checkValues(Comparable.class, values);
+    public Boolean evaluate(List<?> values) {
+        Formulas.assertSize(2, values);
+        Formulas.assertInstanceOf(Comparable.class, values);
         final Comparable v1 = (Comparable) values.get(0);
         final Comparable v2 = (Comparable) values.get(1);
         return (v1 != null && v2 != null) ? compareDiff(v1.compareTo(v2)) : null;

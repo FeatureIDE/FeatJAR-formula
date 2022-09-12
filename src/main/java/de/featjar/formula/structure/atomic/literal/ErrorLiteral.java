@@ -21,7 +21,8 @@
 package de.featjar.formula.structure.atomic.literal;
 
 import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.Terminal;
+import de.featjar.formula.structure.Formulas;
+import de.featjar.formula.structure.TerminalFormula;
 import java.util.List;
 import java.util.Objects;
 
@@ -31,7 +32,7 @@ import java.util.Objects;
  *
  * @author Sebastian Krieter
  */
-public class ErrorLiteral extends Terminal implements Literal {
+public class ErrorLiteral extends TerminalFormula implements Literal {
 
     private final String errorMessage;
     private final boolean positive;
@@ -85,8 +86,8 @@ public class ErrorLiteral extends Terminal implements Literal {
     }
 
     @Override
-    public Object eval(List<?> values) {
-        assert Formula.checkValues(0, values);
+    public Object evaluate(List<?> values) {
+        Formulas.assertSize(0, values);
         return positive;
     }
 }

@@ -23,10 +23,16 @@ package de.featjar.formula.structure.term;
 import de.featjar.formula.structure.Formula;
 import java.util.List;
 
+/**
+ * A term in first-order logic.
+ *
+ * @author Sebastian Krieter
+ */
 public interface Term extends Formula {
 
     @Override
     List<? extends Term> getChildren();
 
-    Class<?> getType();
+    @Override
+    Term cloneNode();
 }

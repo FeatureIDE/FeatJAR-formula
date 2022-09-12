@@ -20,23 +20,27 @@
  */
 package de.featjar.formula.structure.term.real;
 
-import de.featjar.formula.structure.Formula;
+import de.featjar.formula.structure.Formulas;
 import de.featjar.formula.structure.term.Multiply;
 import de.featjar.formula.structure.term.Term;
 import java.util.List;
 
+/**
+ * Multiplies the values of two real terms.
+ *
+ * @author Sebastian Krieter
+ */
 public class RealMultiply extends Multiply {
 
-    public RealMultiply(Term leftArgument, Term rightArgument) {
-        super(leftArgument, rightArgument);
+    protected RealMultiply() {
+    }
+
+    public RealMultiply(Term leftTerm, Term rightTerm) {
+        super(leftTerm, rightTerm);
     }
 
     public RealMultiply(List<Term> arguments) {
         super(arguments);
-    }
-
-    private RealMultiply() {
-        super();
     }
 
     @Override
@@ -45,12 +49,12 @@ public class RealMultiply extends Multiply {
     }
 
     @Override
-    public RealMultiply cloneNode() {
-        return new RealMultiply();
+    public Double evaluate(List<?> values) {
+        return Formulas.reduce(values, (a, b) -> a * b);
     }
 
     @Override
-    public Double eval(List<?> values) {
-        return Formula.reduce(values, (a, b) -> a * b);
+    public RealMultiply cloneNode() {
+        return new RealMultiply();
     }
 }

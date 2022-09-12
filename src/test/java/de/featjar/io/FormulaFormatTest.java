@@ -26,10 +26,10 @@ import static org.junit.jupiter.api.Assertions.fail;
 import de.featjar.formula.io.textual.FormulaFormat;
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.atomic.literal.Literal;
-import de.featjar.formula.structure.atomic.literal.VariableMap;
-import de.featjar.formula.structure.compound.And;
-import de.featjar.formula.structure.compound.Not;
-import de.featjar.formula.structure.compound.Or;
+import de.featjar.formula.structure.VariableMap;
+import de.featjar.formula.structure.connective.And;
+import de.featjar.formula.structure.connective.Not;
+import de.featjar.formula.structure.connective.Or;
 import org.junit.jupiter.api.Test;
 
 /**

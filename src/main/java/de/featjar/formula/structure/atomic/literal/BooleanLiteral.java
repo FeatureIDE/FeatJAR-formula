@@ -21,9 +21,10 @@
 package de.featjar.formula.structure.atomic.literal;
 
 import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.NonTerminal;
-import de.featjar.formula.structure.atomic.literal.NamedTermMap.ValueTerm;
-import de.featjar.formula.structure.atomic.literal.VariableMap.Variable;
+import de.featjar.formula.structure.Formulas;
+import de.featjar.formula.structure.NonTerminalFormula;
+import de.featjar.formula.structure.NamedTermMap.ValueTerm;
+import de.featjar.formula.structure.VariableMap.Variable;
 import java.util.List;
 import java.util.Objects;
 
@@ -35,7 +36,7 @@ import java.util.Objects;
  *
  * @author Sebastian Krieter
  */
-public class BooleanLiteral extends NonTerminal implements Literal {
+public class BooleanLiteral extends NonTerminalFormula implements Literal {
 
     private final boolean positive;
 
@@ -104,9 +105,9 @@ public class BooleanLiteral extends NonTerminal implements Literal {
     }
 
     @Override
-    public Boolean eval(List<?> values) {
-        assert Formula.checkValues(1, values);
-        assert Formula.checkValues(Boolean.class, values);
+    public Boolean evaluate(List<?> values) {
+        Formulas.assertSize(1, values);
+        Formulas.assertInstanceOf(Boolean.class, values);
         final Boolean b = (Boolean) values.get(0);
         return b != null ? positive == b : null;
     }

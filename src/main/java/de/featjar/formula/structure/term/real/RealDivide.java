@@ -20,19 +20,27 @@
  */
 package de.featjar.formula.structure.term.real;
 
-import de.featjar.formula.structure.Formula;
+import de.featjar.formula.structure.Formulas;
 import de.featjar.formula.structure.term.Divide;
 import de.featjar.formula.structure.term.Term;
 import java.util.List;
 
+/**
+ * Divides the values of two real terms.
+ *
+ * @author Sebastian Krieter
+ */
 public class RealDivide extends Divide {
 
-    public RealDivide(Term leftArgument, Term rightArgument) {
-        super(leftArgument, rightArgument);
+    protected RealDivide() {
     }
 
-    private RealDivide() {
-        super();
+    public RealDivide(Term leftTerm, Term rightTerm) {
+        super(leftTerm, rightTerm);
+    }
+
+    public RealDivide(List<Term> arguments) {
+        super(arguments);
     }
 
     @Override
@@ -41,12 +49,12 @@ public class RealDivide extends Divide {
     }
 
     @Override
-    public RealDivide cloneNode() {
-        return new RealDivide();
+    public Double evaluate(List<?> values) {
+        return Formulas.reduce(values, (a, b) -> a / b);
     }
 
     @Override
-    public Double eval(List<?> values) {
-        return Formula.reduce(values, (a, b) -> a / b);
+    public RealDivide cloneNode() {
+        return new RealDivide();
     }
 }

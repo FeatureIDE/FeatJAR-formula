@@ -23,10 +23,10 @@ package de.featjar.formula.clauses;
 import de.featjar.base.data.Result;
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.Formulas;
-import de.featjar.formula.structure.atomic.VariableAssignment;
+import de.featjar.formula.structure.assignment.VariableAssignment;
 import de.featjar.formula.structure.atomic.literal.BooleanLiteral;
 import de.featjar.formula.structure.atomic.literal.Literal;
-import de.featjar.formula.structure.atomic.literal.VariableMap;
+import de.featjar.formula.structure.VariableMap;
 import de.featjar.base.task.Monitor;
 import de.featjar.base.task.MonitorableFunction;
 import de.featjar.base.tree.Trees;
@@ -106,11 +106,11 @@ public class FormulaToCNF implements MonitorableFunction<Formula, CNF> {
                     keepLiteralOrder ? LiteralList.Order.UNORDERED : LiteralList.Order.NATURAL);
         } else {
             final List<? extends Formula> clauseChildren = clauseExpression.getChildren();
-            if (clauseChildren.stream().anyMatch(literal -> literal == Literal.True)) {
+            if (clauseChildren.stream().anyMatch(literal -> literal == Formula.TRUE)) {
                 return null;
             } else {
                 final int[] literals = clauseChildren.stream()
-                        .filter(literal -> literal != Literal.False)
+                        .filter(literal -> literal != Formula.FALSE)
                         .filter(literal -> literal instanceof BooleanLiteral)
                         .mapToInt(literal -> {
                             final int variable = mapping.getVariableSignature(((BooleanLiteral) literal)

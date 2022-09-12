@@ -20,23 +20,27 @@
  */
 package de.featjar.formula.structure.term.real;
 
-import de.featjar.formula.structure.Formula;
+import de.featjar.formula.structure.Formulas;
 import de.featjar.formula.structure.term.Add;
 import de.featjar.formula.structure.term.Term;
 import java.util.List;
 
+/**
+ * Adds the values of two real terms.
+ *
+ * @author Sebastian Krieter
+ */
 public class RealAdd extends Add {
 
-    public RealAdd(Term leftArgument, Term rightArgument) {
-        super(leftArgument, rightArgument);
+    protected RealAdd() {
+    }
+
+    public RealAdd(Term leftTerm, Term rightTerm) {
+        super(leftTerm, rightTerm);
     }
 
     public RealAdd(List<Term> arguments) {
         super(arguments);
-    }
-
-    private RealAdd() {
-        super();
     }
 
     @Override
@@ -45,12 +49,12 @@ public class RealAdd extends Add {
     }
 
     @Override
-    public RealAdd cloneNode() {
-        return new RealAdd();
+    public Double evaluate(List<?> values) {
+        return Formulas.reduce(values, Double::sum);
     }
 
     @Override
-    public Double eval(List<?> values) {
-        return Formula.reduce(values, Double::sum);
+    public RealAdd cloneNode() {
+        return new RealAdd();
     }
 }

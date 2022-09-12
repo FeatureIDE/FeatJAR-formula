@@ -20,32 +20,30 @@
  */
 package de.featjar.formula.structure.term;
 
-import java.util.Arrays;
+import de.featjar.formula.structure.BinaryFormula;
+
 import java.util.List;
 
-public abstract class Add extends Function {
-
-    public Add(Term leftArgument, Term rightArgument) {
-        super(leftArgument, rightArgument);
-    }
-
-    public Add(List<Term> arguments) {
-        super(arguments);
-    }
+/**
+ * Adds the values of two terms.
+ *
+ * @author Sebastian Krieter
+ */
+public abstract class Add extends Function implements BinaryFormula {
 
     protected Add() {
-        super();
     }
 
-    public void setArguments(Term leftArgument, Term rightArgument) {
-        setChildren(Arrays.asList(leftArgument, rightArgument));
+    protected Add(Term leftTerm, Term rightTerm) {
+        super(leftTerm, rightTerm);
+    }
+
+    protected Add(List<Term> arguments) {
+        super(arguments);
     }
 
     @Override
     public String getName() {
         return "+";
     }
-
-    @Override
-    public abstract Add cloneNode();
 }

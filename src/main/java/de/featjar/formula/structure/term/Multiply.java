@@ -20,27 +20,29 @@
  */
 package de.featjar.formula.structure.term;
 
+import de.featjar.formula.structure.BinaryFormula;
+
 import java.util.List;
 
-public abstract class Multiply extends Function {
-
-    public Multiply(Term leftArgument, Term rightArgument) {
-        super(leftArgument, rightArgument);
-    }
-
-    public Multiply(List<Term> arguments) {
-        super(arguments);
-    }
-
+/**
+ * Multiplies the values of two terms.
+ *
+ * @author Sebastian Krieter
+ */
+public abstract class Multiply extends Function implements BinaryFormula {
     protected Multiply() {
-        super();
+    }
+
+    protected Multiply(Term leftTerm, Term rightTerm) {
+        super(leftTerm, rightTerm);
+    }
+
+    protected Multiply(List<Term> arguments) {
+        super(arguments);
     }
 
     @Override
     public String getName() {
         return "*";
     }
-
-    @Override
-    public abstract Multiply cloneNode();
 }

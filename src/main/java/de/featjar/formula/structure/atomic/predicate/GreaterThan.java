@@ -29,12 +29,11 @@ import java.util.List;
  */
 public class GreaterThan extends ComparingPredicate {
 
-    public GreaterThan(Term leftArgument, Term rightArgument) {
-        super(leftArgument, rightArgument);
+    public GreaterThan(Term leftTerm, Term rightTerm) {
+        super(leftTerm, rightTerm);
     }
 
     protected GreaterThan() {
-        super();
     }
 
     @Override

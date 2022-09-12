@@ -20,13 +20,13 @@
  */
 package de.featjar.formula.structure.atomic.predicate;
 
-import de.featjar.formula.structure.NonTerminal;
+import de.featjar.formula.structure.NonTerminalFormula;
 import de.featjar.formula.structure.atomic.Atomic;
 import de.featjar.formula.structure.term.Term;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class Predicate extends NonTerminal implements Atomic {
+public abstract class Predicate extends NonTerminalFormula implements Atomic {
 
     protected Predicate(List<Term> nodes) {
         super(nodes);
@@ -38,11 +38,10 @@ public abstract class Predicate extends NonTerminal implements Atomic {
     }
 
     protected Predicate() {
-        super();
     }
 
-    public void setArguments(Term leftArgument, Term rightArgument) {
-        setChildren(Arrays.asList(leftArgument, rightArgument));
+    public void setArguments(Term leftTerm, Term rightTerm) {
+        setChildren(Arrays.asList(leftTerm, rightTerm));
     }
 
     @Override

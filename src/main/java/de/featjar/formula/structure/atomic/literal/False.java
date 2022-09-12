@@ -21,7 +21,7 @@
 package de.featjar.formula.structure.atomic.literal;
 
 import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.Terminal;
+import de.featjar.formula.structure.TerminalFormula;
 import de.featjar.formula.structure.atomic.Atomic;
 import de.featjar.formula.structure.term.Term;
 import java.util.Collections;
@@ -32,12 +32,11 @@ import java.util.List;
  *
  * @author Sebastian Krieter
  */
-public class False extends Terminal implements Literal {
+public class False extends TerminalFormula implements Literal {
 
     private static final False INSTANCE = new False();
 
     private False() {
-        super();
     }
 
     public static False getInstance() {
@@ -51,7 +50,7 @@ public class False extends Terminal implements Literal {
 
     @Override
     public True flip() {
-        return Literal.True;
+        return Formula.TRUE;
     }
 
     @Override
@@ -80,7 +79,7 @@ public class False extends Terminal implements Literal {
     }
 
     @Override
-    public Boolean eval(List<?> values) {
+    public Boolean evaluate(List<?> values) {
         return Boolean.FALSE;
     }
 }

@@ -22,14 +22,13 @@ package de.featjar.formula.structure;
 
 import de.featjar.formula.io.textual.FormulaFormat;
 import de.featjar.formula.structure.ValueVisitor.UnknownVariableHandling;
-import de.featjar.formula.structure.atomic.Assignment;
-import de.featjar.formula.structure.atomic.literal.VariableMap;
-import de.featjar.formula.structure.atomic.literal.VariableMap.Variable;
-import de.featjar.formula.structure.transform.CNFTransformer;
-import de.featjar.formula.structure.transform.DNFTransformer;
-import de.featjar.formula.structure.transform.NormalForms;
-import de.featjar.formula.structure.transform.NormalForms.NormalForm;
-import de.featjar.formula.structure.transform.VariableMapSetter;
+import de.featjar.formula.structure.assignment.Assignment;
+import de.featjar.formula.structure.VariableMap.Variable;
+import de.featjar.formula.transform.CNFTransformer;
+import de.featjar.formula.transform.DNFTransformer;
+import de.featjar.formula.transform.NormalForms;
+import de.featjar.formula.transform.NormalForms.NormalForm;
+import de.featjar.formula.transform.VariableMapSetter;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.IO;
 import de.featjar.base.tree.Trees;
@@ -40,7 +39,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -154,5 +155,30 @@ public class Formulas {
                 .map(f -> (T) Formulas.manipulate(f, new VariableMapSetter(composedMap)))
                 .collect(Collectors.toList());
         return collect;
+    }
+
+    /**
+     * {@return a list of values reduced to a single value}
+     *
+     * @param values the values
+     * @param binaryOperator the binary operator
+     * @param <T> the type of the value
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T reduce(List<?> values, final BinaryOperator<T> binaryOperator) {
+        if (values.stream().anyMatch(Objects::isNull)) {
+            return null;
+        }
+        return values.stream().map(l -> (T) l).reduce(binaryOperator).orElse(null);
+    }
+
+    public static void assertInstanceOf(Class<?> type, List<?> values) {
+        if (!values.stream().allMatch(v -> v == null || type.isInstance(v)))
+            throw new AssertionError();
+    }
+
+    public static void assertSize(int size, List<?> values) {
+        if (values.size() != size)
+            throw new AssertionError();
     }
 }

@@ -27,9 +27,9 @@ import de.featjar.formula.io.dimacs.DIMACSFormat;
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.atomic.literal.BooleanLiteral;
 import de.featjar.formula.structure.atomic.literal.Literal;
-import de.featjar.formula.structure.atomic.literal.VariableMap;
-import de.featjar.formula.structure.compound.And;
-import de.featjar.formula.structure.compound.Or;
+import de.featjar.formula.structure.VariableMap;
+import de.featjar.formula.structure.connective.And;
+import de.featjar.formula.structure.connective.Or;
 import org.junit.jupiter.api.Test;
 
 /**

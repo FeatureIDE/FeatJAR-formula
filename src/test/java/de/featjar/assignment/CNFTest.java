@@ -25,11 +25,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.Formulas;
 import de.featjar.formula.structure.atomic.literal.Literal;
-import de.featjar.formula.structure.atomic.literal.VariableMap;
-import de.featjar.formula.structure.compound.And;
-import de.featjar.formula.structure.compound.Biimplies;
-import de.featjar.formula.structure.compound.Implies;
-import de.featjar.formula.structure.compound.Or;
+import de.featjar.formula.structure.VariableMap;
+import de.featjar.formula.structure.connective.And;
+import de.featjar.formula.structure.connective.BiImplies;
+import de.featjar.formula.structure.connective.Implies;
+import de.featjar.formula.structure.connective.Or;
 import de.featjar.base.tree.Trees;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,7 +48,7 @@ public class CNFTest {
 
         final Implies implies1 = new Implies(a, b);
         final Or or = new Or(implies1, c);
-        final Biimplies equals = new Biimplies(a, b);
+        final BiImplies equals = new BiImplies(a, b);
         final And and = new And(equals, c);
         final Implies formula = new Implies(or, and);
 
