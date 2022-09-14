@@ -27,12 +27,11 @@ import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.Formulas;
-import de.featjar.formula.structure.atomic.literal.BooleanLiteral;
-import de.featjar.formula.structure.atomic.literal.Literal;
-import de.featjar.formula.structure.TermMap;
-import de.featjar.formula.structure.connective.And;
-import de.featjar.formula.structure.connective.Implies;
+import de.featjar.formula.tmp.Formulas;
+import de.featjar.formula.structure.formula.literal.Literal;
+import de.featjar.formula.tmp.TermMap;
+import de.featjar.formula.structure.formula.connective.And;
+import de.featjar.formula.structure.formula.connective.Implies;
 
 import java.util.List;
 import java.util.Optional;
@@ -54,13 +53,13 @@ public class NonTerminalFormulaTest {
         assertNotEquals(new And(p1, q), new And(q, p2));
         assertDoesNotThrow(() -> Formulas.create(m -> new Implies(m.createLiteral("p"), m.createLiteral("q"))));
         assertEquals(
-                (BooleanLiteral) Formulas.create(m -> m.createLiteral("1")),
+                (Literal) Formulas.create(m -> m.createLiteral("1")),
                 Formulas.create(m -> m.createLiteral("1")));
         assertEquals(
-                (BooleanLiteral) Formulas.create(m -> m.createLiteral("1", false)),
+                (Literal) Formulas.create(m -> m.createLiteral("1", false)),
                 Formulas.create(m -> m.createLiteral("1", false)));
         assertNotEquals(
-                (BooleanLiteral) Formulas.create(m -> m.createLiteral("1", false)),
+                (Literal) Formulas.create(m -> m.createLiteral("1", false)),
                 Formulas.create(m -> m.createLiteral("1")));
     }
 

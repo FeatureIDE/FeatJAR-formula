@@ -23,11 +23,11 @@ package de.featjar.assignment;
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.assignment.Assignment;
 import de.featjar.formula.structure.assignment.VariableAssignment;
-import de.featjar.formula.structure.atomic.literal.Literal;
-import de.featjar.formula.structure.TermMap;
-import de.featjar.formula.structure.connective.And;
-import de.featjar.formula.structure.connective.Implies;
-import de.featjar.formula.structure.connective.Or;
+import de.featjar.formula.structure.formula.literal.Literal;
+import de.featjar.formula.tmp.TermMap;
+import de.featjar.formula.structure.formula.connective.And;
+import de.featjar.formula.structure.formula.connective.Implies;
+import de.featjar.formula.structure.formula.connective.Or;
 import java.util.Arrays;
 import java.util.function.Consumer;
 
@@ -40,7 +40,7 @@ public class FormulaCreator {
         final Literal r = map.createLiteral("r");
         final Literal s = map.createLiteral("s");
 
-        return new Implies(new And(new Or(p, q), r), s.flip());
+        return new Implies(new And(new Or(p, q), r), s.invert());
     }
 
     public static Formula getFormula02() {
@@ -53,7 +53,7 @@ public class FormulaCreator {
         return new And(
                 new Implies(r, new And(p, q)),
                 new Implies(s, new And(q, p)),
-                new Or(new And(s.flip(), r), new And(s, r.flip())));
+                new Or(new And(s.invert(), r), new And(s, r.invert())));
     }
 
     public static void testAllAssignments(TermMap map, Consumer<Assignment> testFunction) {

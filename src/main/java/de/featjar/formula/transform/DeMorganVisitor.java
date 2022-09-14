@@ -22,12 +22,12 @@ package de.featjar.formula.transform;
 
 import de.featjar.formula.structure.AuxiliaryRoot;
 import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.atomic.Atomic;
-import de.featjar.formula.structure.atomic.literal.Literal;
-import de.featjar.formula.structure.connective.And;
-import de.featjar.formula.structure.connective.Connective;
-import de.featjar.formula.structure.connective.Not;
-import de.featjar.formula.structure.connective.Or;
+import de.featjar.formula.structure.formula.Predicate;
+import de.featjar.formula.structure.formula.literal.Literal;
+import de.featjar.formula.structure.formula.connective.And;
+import de.featjar.formula.structure.formula.connective.Connective;
+import de.featjar.formula.structure.formula.connective.Not;
+import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.base.tree.visitor.TreeVisitor;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,7 +37,7 @@ public class DeMorganVisitor implements TreeVisitor<Void, Formula> {
     @Override
     public TraversalAction firstVisit(List<Formula> path) {
         final Formula formula = getCurrentNode(path);
-        if (formula instanceof Atomic) {
+        if (formula instanceof Predicate) {
             return TraversalAction.SKIP_CHILDREN;
         } else if (formula instanceof Connective) {
             formula.replaceChildren(this::replace);
@@ -55,7 +55,7 @@ public class DeMorganVisitor implements TreeVisitor<Void, Formula> {
         while (newFormula instanceof Not) {
             final Formula notChild = newFormula.getChildren().iterator().next();
             if (notChild instanceof Literal) {
-                newFormula = ((Literal) notChild).flip();
+                newFormula = ((Literal) notChild).invert();
             } else if (notChild instanceof Not) {
                 newFormula = notChild.getChildren().get(0);
             } else if (notChild instanceof Or) {

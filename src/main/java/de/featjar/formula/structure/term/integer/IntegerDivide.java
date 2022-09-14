@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.structure.term.integer;
 
-import de.featjar.formula.structure.Formulas;
+import de.featjar.formula.tmp.Formulas;
 import de.featjar.formula.structure.term.Divide;
 import de.featjar.formula.structure.term.Term;
 import java.util.List;

@@ -24,10 +24,10 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import de.featjar.formula.io.xml.XMLFeatureModelCNFFormat;
 import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.atomic.literal.Literal;
-import de.featjar.formula.structure.TermMap;
-import de.featjar.formula.structure.connective.And;
-import de.featjar.formula.structure.connective.Or;
+import de.featjar.formula.structure.formula.literal.Literal;
+import de.featjar.formula.tmp.TermMap;
+import de.featjar.formula.structure.formula.connective.And;
+import de.featjar.formula.structure.formula.connective.Or;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -74,11 +74,11 @@ public class XMLFeatureModelCNFFormatTest {
                 final Literal c = map.createLiteral("C");
                 return new And(
                         root.cloneNode(),
-                        new Or(a.flip(), root.cloneNode()),
-                        new Or(b.flip(), root.cloneNode()),
-                        new Or(c.flip(), root.cloneNode()),
-                        new Or(root.flip(), a.cloneNode(), b.cloneNode(), c.cloneNode()),
-                        new Or(a.flip(), b.flip(), c.flip()));
+                        new Or(a.invert(), root.cloneNode()),
+                        new Or(b.invert(), root.cloneNode()),
+                        new Or(c.invert(), root.cloneNode()),
+                        new Or(root.invert(), a.cloneNode(), b.cloneNode(), c.cloneNode()),
+                        new Or(a.invert(), b.invert(), c.invert()));
             }
             case "SingleGroups": {
                 final TermMap map = new TermMap();
@@ -89,14 +89,14 @@ public class XMLFeatureModelCNFFormatTest {
                 final Literal b1 = map.createLiteral("B1");
                 return new And(
                         root.cloneNode(),
-                        new Or(a.flip(), root.cloneNode()),
-                        new Or(root.flip(), a.cloneNode()),
-                        new Or(a1.flip(), a.cloneNode()),
-                        new Or(a.flip(), a1.cloneNode()),
-                        new Or(b.flip(), root.cloneNode()),
-                        new Or(root.flip(), b.cloneNode()),
-                        new Or(b1.flip(), b.cloneNode()),
-                        new Or(b.flip(), b1.cloneNode()));
+                        new Or(a.invert(), root.cloneNode()),
+                        new Or(root.invert(), a.cloneNode()),
+                        new Or(a1.invert(), a.cloneNode()),
+                        new Or(a.invert(), a1.cloneNode()),
+                        new Or(b.invert(), root.cloneNode()),
+                        new Or(root.invert(), b.cloneNode()),
+                        new Or(b1.invert(), b.cloneNode()),
+                        new Or(b.invert(), b1.cloneNode()));
             }
             case "A": {
                 final TermMap map = new TermMap();

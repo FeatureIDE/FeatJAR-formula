@@ -1,7 +1,6 @@
 package de.featjar.formula.structure.term;
 
-import de.featjar.formula.structure.Formulas;
-import de.featjar.formula.structure.TermMap;
+import de.featjar.formula.tmp.Formulas;
 
 import java.util.List;
 
@@ -12,15 +11,17 @@ import java.util.List;
  * @author Elias Kuiter
  */
 public class Variable extends NullaryTerm {
-    // todo inv: all subtrees have the same variablemap
+    private Variable(Variable variable) {
+        super(variable);
+    }
 
-    public Variable(String name, int index, Class<?> type, TermMap termMap) {
-        super(name, index, type, termMap);
+    public Variable(String name, Class<?> type) {
+        super(name, type);
     }
 
     @Override
-    protected Variable copy(TermMap newMap) {
-        return new Variable(name, index, type, newMap);
+    public Variable cloneNode() {
+        return new Variable(this);
     }
 
     @Override

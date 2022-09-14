@@ -21,6 +21,7 @@
 package de.featjar.formula.structure.term;
 
 import de.featjar.formula.structure.NonTerminalFormula;
+
 import java.util.List;
 
 /**

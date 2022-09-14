@@ -21,9 +21,9 @@
 package de.featjar.formula.transform;
 
 import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.atomic.Atomic;
-import de.featjar.formula.structure.connective.And;
-import de.featjar.formula.structure.connective.Or;
+import de.featjar.formula.structure.formula.Predicate;
+import de.featjar.formula.structure.formula.connective.And;
+import de.featjar.formula.structure.formula.connective.Or;
 
 import java.util.List;
 
@@ -40,7 +40,7 @@ public class DNFTester extends NFTester {
             }
             for (final Formula child : formula.getChildren()) {
                 if (!(child instanceof And)) {
-                    if (!(child instanceof Atomic)) {
+                    if (!(child instanceof Predicate)) {
                         isNf = false;
                         isClausalNf = false;
                         return TraversalAction.SKIP_ALL;
@@ -59,14 +59,14 @@ public class DNFTester extends NFTester {
                 isClausalNf = false;
             }
             for (final Formula child : formula.getChildren()) {
-                if (!(child instanceof Atomic)) {
+                if (!(child instanceof Predicate)) {
                     isNf = false;
                     isClausalNf = false;
                     return TraversalAction.SKIP_ALL;
                 }
             }
             return TraversalAction.CONTINUE;
-        } else if (formula instanceof Atomic) {
+        } else if (formula instanceof Predicate) {
             if (path.size() > 3) {
                 isNf = false;
                 isClausalNf = false;

@@ -22,9 +22,9 @@ package de.featjar.formula.transform;
 
 import de.featjar.base.data.Result;
 import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.connective.And;
-import de.featjar.formula.structure.connective.Connective;
-import de.featjar.formula.structure.connective.Or;
+import de.featjar.formula.structure.formula.connective.And;
+import de.featjar.formula.structure.formula.connective.Connective;
+import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.base.task.Monitor;
 
 /**

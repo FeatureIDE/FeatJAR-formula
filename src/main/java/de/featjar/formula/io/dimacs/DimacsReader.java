@@ -21,11 +21,10 @@
 package de.featjar.formula.io.dimacs;
 
 import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.atomic.literal.BooleanLiteral;
-import de.featjar.formula.structure.atomic.literal.Literal;
-import de.featjar.formula.structure.TermMap;
-import de.featjar.formula.structure.connective.And;
-import de.featjar.formula.structure.connective.Or;
+import de.featjar.formula.structure.formula.literal.Literal;
+import de.featjar.formula.tmp.TermMap;
+import de.featjar.formula.structure.formula.connective.And;
+import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.base.io.NonEmptyLineIterator;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -279,7 +278,7 @@ public class DimacsReader {
                 map.addBooleanVariable(variableName);
             }
             literals[j] =
-                    new BooleanLiteral(map.getVariableSignature(variableName).get(), index > 0);
+                    new Literal(map.getVariableSignature(variableName).get(), index > 0);
         }
         return new Or(literals);
     }

@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.clauses;
 
-import de.featjar.formula.structure.TermMap;
+import de.featjar.formula.tmp.TermMap;
 import de.featjar.base.data.Result;
 import java.io.Serializable;
 import java.util.Collection;

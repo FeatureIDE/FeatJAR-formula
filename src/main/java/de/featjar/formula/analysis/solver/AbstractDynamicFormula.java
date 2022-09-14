@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.analysis.solver;
 
-import de.featjar.formula.structure.TermMap;
+import de.featjar.formula.tmp.TermMap;
 import java.util.ArrayList;
 import java.util.List;
 

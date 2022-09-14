@@ -22,19 +22,19 @@ package de.featjar.formula.transform;
 
 import de.featjar.formula.structure.AuxiliaryRoot;
 import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.atomic.Atomic;
-import de.featjar.formula.structure.TermMap.Variable;
-import de.featjar.formula.structure.connective.And;
-import de.featjar.formula.structure.connective.AtLeast;
-import de.featjar.formula.structure.connective.AtMost;
-import de.featjar.formula.structure.connective.Between;
-import de.featjar.formula.structure.connective.BiImplies;
-import de.featjar.formula.structure.connective.Choose;
-import de.featjar.formula.structure.connective.Connective;
-import de.featjar.formula.structure.connective.Implies;
-import de.featjar.formula.structure.connective.Not;
-import de.featjar.formula.structure.connective.Or;
-import de.featjar.formula.structure.connective.Quantifier;
+import de.featjar.formula.structure.formula.Predicate;
+import de.featjar.formula.tmp.TermMap.Variable;
+import de.featjar.formula.structure.formula.connective.And;
+import de.featjar.formula.structure.formula.connective.AtLeast;
+import de.featjar.formula.structure.formula.connective.AtMost;
+import de.featjar.formula.structure.formula.connective.Between;
+import de.featjar.formula.structure.formula.connective.BiImplies;
+import de.featjar.formula.structure.formula.connective.Choose;
+import de.featjar.formula.structure.formula.connective.Connective;
+import de.featjar.formula.structure.formula.connective.Implies;
+import de.featjar.formula.structure.formula.connective.Not;
+import de.featjar.formula.structure.formula.connective.Or;
+import de.featjar.formula.structure.formula.connective.Quantifier;
 import de.featjar.base.tree.visitor.TreeVisitor;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,7 +53,7 @@ public class EquivalenceVisitor implements TreeVisitor<Void, Formula> {
     @Override
     public TraversalAction firstVisit(List<Formula> path) {
         final Formula formula = getCurrentNode(path);
-        if (formula instanceof Atomic) {
+        if (formula instanceof Predicate) {
             return TraversalAction.SKIP_CHILDREN;
         } else if (formula instanceof Connective) {
             if (formula instanceof Quantifier) {
@@ -80,7 +80,7 @@ public class EquivalenceVisitor implements TreeVisitor<Void, Formula> {
     @SuppressWarnings("unchecked")
     private Formula replace(Formula formula) {
         if (((formula instanceof Variable)
-                || (formula instanceof Atomic)
+                || (formula instanceof Predicate)
                 || (formula instanceof And)
                 || (formula instanceof Or)
                 || (formula instanceof Not))) {

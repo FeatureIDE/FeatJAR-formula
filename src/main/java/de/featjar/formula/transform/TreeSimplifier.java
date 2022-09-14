@@ -22,10 +22,10 @@ package de.featjar.formula.transform;
 
 import de.featjar.formula.structure.AuxiliaryRoot;
 import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.atomic.Atomic;
-import de.featjar.formula.structure.connective.And;
-import de.featjar.formula.structure.connective.Connective;
-import de.featjar.formula.structure.connective.Or;
+import de.featjar.formula.structure.formula.Predicate;
+import de.featjar.formula.structure.formula.connective.And;
+import de.featjar.formula.structure.formula.connective.Connective;
+import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.base.tree.visitor.TreeVisitor;
 import java.util.Arrays;
 import java.util.List;
@@ -35,7 +35,7 @@ public class TreeSimplifier implements TreeVisitor<Void, Formula> {
     @Override
     public TraversalAction firstVisit(List<Formula> path) {
         final Formula formula = getCurrentNode(path);
-        if (formula instanceof Atomic) {
+        if (formula instanceof Predicate) {
             return TraversalAction.SKIP_CHILDREN;
         } else if ((formula instanceof AuxiliaryRoot) || (formula instanceof Connective)) {
             return TraversalAction.CONTINUE;
@@ -67,14 +67,14 @@ public class TreeSimplifier implements TreeVisitor<Void, Formula> {
 
     private List<? extends Formula> mergeAnd(final Formula child) {
         return (child instanceof And)
-                        || (!(child instanceof Atomic) && (child.getChildren().size() == 1))
+                        || (!(child instanceof Predicate) && (child.getChildren().size() == 1))
                 ? child.getChildren()
                 : null;
     }
 
     private List<? extends Formula> mergeOr(final Formula child) {
         return (child instanceof Or)
-                        || (!(child instanceof Atomic) && (child.getChildren().size() == 1))
+                        || (!(child instanceof Predicate) && (child.getChildren().size() == 1))
                 ? child.getChildren()
                 : null;
     }

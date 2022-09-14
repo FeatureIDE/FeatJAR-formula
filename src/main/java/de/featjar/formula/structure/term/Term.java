@@ -21,18 +21,18 @@
 package de.featjar.formula.structure.term;
 
 import de.featjar.formula.structure.Formula;
-import java.util.List;
 
 /**
  * A term in a formula.
  *
  * @author Sebastian Krieter
+ * @author Elias Kuiter
  */
-public interface Term extends Formula {
+public interface Term extends Formula<Term> {
 
-    @Override
-    List<? extends Term> getChildren();
-
-    @Override
-    Term cloneNode();
+//    @Override
+//    List<? extends Term> getChildren();
+//
+//    @Override
+//    Term cloneNode();
 }

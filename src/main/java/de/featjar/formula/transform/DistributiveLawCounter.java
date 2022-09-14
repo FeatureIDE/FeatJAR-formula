@@ -22,8 +22,8 @@ package de.featjar.formula.transform;
 
 import de.featjar.formula.structure.AuxiliaryRoot;
 import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.atomic.Atomic;
-import de.featjar.formula.structure.connective.Connective;
+import de.featjar.formula.structure.formula.Predicate;
+import de.featjar.formula.structure.formula.connective.Connective;
 import de.featjar.base.tree.visitor.TreeVisitor;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -57,7 +57,7 @@ public class DistributiveLawCounter implements TreeVisitor<Integer, Formula> {
     @Override
     public TraversalAction firstVisit(List<Formula> path) {
         final Formula formula = getCurrentNode(path);
-        if (formula instanceof Atomic) {
+        if (formula instanceof Predicate) {
             return TraversalAction.SKIP_CHILDREN;
         } else if ((formula instanceof Connective) || (formula instanceof AuxiliaryRoot)) {
             stack.push(new StackElement((Formula) formula));
@@ -70,7 +70,7 @@ public class DistributiveLawCounter implements TreeVisitor<Integer, Formula> {
     @Override
     public TraversalAction lastVisit(List<Formula> path) {
         final Formula formula = getCurrentNode(path);
-        if (formula instanceof Atomic) {
+        if (formula instanceof Predicate) {
             stack.push(new StackElement(formula));
         } else {
             final ArrayList<StackElement> children = new ArrayList<>();

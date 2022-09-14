@@ -21,6 +21,8 @@
 package de.featjar.formula.structure;
 
 import de.featjar.base.tree.structure.Tree;
+import de.featjar.formula.tmp.TermMap;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -117,9 +119,9 @@ public abstract class NonTerminalFormula extends Tree<Formula> implements Formul
 
     @Override
     public Formula removeChild(int index) {
-        Formula expression = super.removeChild(index);
+        Formula formula = super.removeChild(index);
         hasHashCode = false;
-        return expression;
+        return formula;
     }
 
     @Override

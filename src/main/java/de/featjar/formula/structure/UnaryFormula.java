@@ -23,7 +23,7 @@ package de.featjar.formula.structure;
 import de.featjar.base.data.Range;
 
 /**
- * A logical formula that has exactly one operand.
+ * A formula with exactly one operand.
  *
  * @author Elias Kuiter
  */
@@ -40,4 +40,7 @@ public interface UnaryFormula extends Formula {
     default void setFormula(Formula formula) {
         replaceChild(0, formula);
     }
+
+    @Override
+    UnaryFormula cloneNode();
 }

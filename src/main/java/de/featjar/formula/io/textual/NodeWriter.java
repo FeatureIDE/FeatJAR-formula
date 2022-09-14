@@ -22,19 +22,19 @@ package de.featjar.formula.io.textual;
 
 import de.featjar.formula.io.textual.Symbols.Operator;
 import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.atomic.literal.Literal;
-import de.featjar.formula.structure.connective.And;
-import de.featjar.formula.structure.connective.AtLeast;
-import de.featjar.formula.structure.connective.AtMost;
-import de.featjar.formula.structure.connective.Between;
-import de.featjar.formula.structure.connective.BiImplies;
-import de.featjar.formula.structure.connective.Choose;
-import de.featjar.formula.structure.connective.Connective;
-import de.featjar.formula.structure.connective.Exists;
-import de.featjar.formula.structure.connective.ForAll;
-import de.featjar.formula.structure.connective.Implies;
-import de.featjar.formula.structure.connective.Not;
-import de.featjar.formula.structure.connective.Or;
+import de.featjar.formula.structure.formula.literal.Literal;
+import de.featjar.formula.structure.formula.connective.And;
+import de.featjar.formula.structure.formula.connective.AtLeast;
+import de.featjar.formula.structure.formula.connective.AtMost;
+import de.featjar.formula.structure.formula.connective.Between;
+import de.featjar.formula.structure.formula.connective.BiImplies;
+import de.featjar.formula.structure.formula.connective.Choose;
+import de.featjar.formula.structure.formula.connective.Connective;
+import de.featjar.formula.structure.formula.connective.Exists;
+import de.featjar.formula.structure.formula.connective.ForAll;
+import de.featjar.formula.structure.formula.connective.Implies;
+import de.featjar.formula.structure.formula.connective.Not;
+import de.featjar.formula.structure.formula.connective.Or;
 import java.util.List;
 
 /**
@@ -286,7 +286,7 @@ public class NodeWriter {
             if (formula instanceof Not) {
                 final Formula child = ((Not) formula).getChildren().get(0);
                 if (child instanceof Literal) {
-                    literalToString(((Literal) child).cloneNode().flip(), sb, depth + 1);
+                    literalToString(((Literal) child).cloneNode().invert(), sb, depth + 1);
                     return;
                 }
             }

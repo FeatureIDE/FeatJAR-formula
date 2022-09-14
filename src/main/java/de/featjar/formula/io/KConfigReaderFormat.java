@@ -23,7 +23,7 @@ package de.featjar.formula.io;
 import de.featjar.formula.io.textual.NodeReader;
 import de.featjar.formula.io.textual.PropositionalModelSymbols;
 import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.connective.And;
+import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.base.data.Problem;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.InputMapper;

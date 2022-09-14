@@ -21,9 +21,9 @@
 package de.featjar.formula.transform;
 
 import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.TermMap;
-import de.featjar.formula.structure.TermMap.Constant;
-import de.featjar.formula.structure.TermMap.Variable;
+import de.featjar.formula.tmp.TermMap;
+import de.featjar.formula.tmp.TermMap.Constant;
+import de.featjar.formula.tmp.TermMap.Variable;
 import de.featjar.base.tree.visitor.TreeVisitor;
 import java.util.List;
 

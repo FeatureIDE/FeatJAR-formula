@@ -23,14 +23,13 @@ package de.featjar.formula.transform;
 import de.featjar.base.data.Result;
 import de.featjar.formula.structure.AuxiliaryRoot;
 import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.atomic.Atomic;
-import de.featjar.formula.structure.atomic.literal.BooleanLiteral;
-import de.featjar.formula.structure.atomic.literal.Literal;
-import de.featjar.formula.structure.TermMap;
-import de.featjar.formula.structure.TermMap.Variable;
-import de.featjar.formula.structure.connective.And;
-import de.featjar.formula.structure.connective.Connective;
-import de.featjar.formula.structure.connective.Or;
+import de.featjar.formula.structure.formula.Predicate;
+import de.featjar.formula.structure.formula.literal.Literal;
+import de.featjar.formula.tmp.TermMap;
+import de.featjar.formula.tmp.TermMap.Variable;
+import de.featjar.formula.structure.formula.connective.And;
+import de.featjar.formula.structure.formula.connective.Connective;
+import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.base.task.Monitor;
 import de.featjar.base.task.MonitorableFunction;
 import de.featjar.base.tree.Trees;
@@ -105,22 +104,22 @@ public class TseitinTransformer
         final Substitute substitute = new Substitute(clonedLastNode, addBooleanVariable, newChildren.size() + 1);
         substitutes.add(substitute);
 
-        final BooleanLiteral tempLiteral = new BooleanLiteral(substitute.variable, true);
+        final Literal tempLiteral = new Literal(substitute.variable, true);
         if (clonedLastNode instanceof And) {
             final ArrayList<Literal> flippedChildren = new ArrayList<>();
             for (final Literal l : newChildren) {
-                substitute.addClause(new Or(tempLiteral.flip(), l.cloneNode()));
-                flippedChildren.add(l.flip());
+                substitute.addClause(new Or(tempLiteral.invert(), l.cloneNode()));
+                flippedChildren.add(l.invert());
             }
             flippedChildren.add(tempLiteral.cloneNode());
             substitute.addClause(new Or(flippedChildren));
         } else if (clonedLastNode instanceof Or) {
             final ArrayList<Literal> flippedChildren = new ArrayList<>();
             for (final Literal l : newChildren) {
-                substitute.addClause(new Or(tempLiteral.cloneNode(), l.flip()));
+                substitute.addClause(new Or(tempLiteral.cloneNode(), l.invert()));
                 flippedChildren.add(l.cloneNode());
             }
-            flippedChildren.add(tempLiteral.flip());
+            flippedChildren.add(tempLiteral.invert());
             substitute.addClause(new Or(flippedChildren));
         } else {
             throw new RuntimeException(clonedLastNode.getClass().toString());
@@ -150,7 +149,7 @@ public class TseitinTransformer
     @Override
     public TraversalAction firstVisit(List<Formula> path) {
         final Formula formula = getCurrentNode(path);
-        if (formula instanceof Atomic) {
+        if (formula instanceof Predicate) {
             return TraversalAction.SKIP_CHILDREN;
         } else if ((formula instanceof Connective) || (formula instanceof AuxiliaryRoot)) {
             stack.push((Formula) formula);
@@ -163,7 +162,7 @@ public class TseitinTransformer
     @Override
     public TraversalAction lastVisit(List<Formula> path) {
         final Formula formula = getCurrentNode(path);
-        if (formula instanceof Atomic) {
+        if (formula instanceof Predicate) {
             final Formula clonedFormula = formula;
             if (path.isEmpty()) {
                 substitutes.add(new Substitute(clonedFormula, null, clonedFormula));
@@ -188,7 +187,7 @@ public class TseitinTransformer
             } else {
                 final Formula clonedLastNode = lastNode;
                 final Variable variable = newVariable(newChildren, clonedLastNode);
-                stack.push(new BooleanLiteral(variable, true));
+                stack.push(new Literal(variable, true));
             }
         }
         return TreeVisitor.super.lastVisit(path);

@@ -1,8 +1,6 @@
 package de.featjar.formula.structure.term;
 
-import de.featjar.formula.structure.Formulas;
-import de.featjar.formula.structure.NamedTermMap;
-import de.featjar.formula.structure.TermMap;
+import de.featjar.formula.tmp.Formulas;
 
 import java.util.List;
 
@@ -14,25 +12,30 @@ import java.util.List;
  */
 public class Constant extends NullaryTerm {
 
-    private final Object value;
+    protected Object value;
 
-    public Constant(String name, int index, Class<?> type, TermMap termMap, Object value) {
-        super(name, index, type, termMap);
-        this.value = value;
+    private Constant(Constant constant) {
+        super(constant);
+        setValue(constant.getValue());
+    }
+
+    public Constant(Object value, Class<?> type) {
+        super(null, type);
+        setValue(value);
     }
 
     public Object getValue() {
         return value;
     }
 
-    @Override
-    public Constant copy(TermMap newMap) {
-        return new Constant(name, index, type, newMap, value);
+    public void setValue(Object value) {
+        this.value = value;
+        setName(String.valueOf(value));
     }
 
     @Override
-    public String toString() {
-        return index + ": " + name + " (" + value + ")";
+    public Constant cloneNode() {
+        return new Constant(this);
     }
 
     @Override

@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.structure.term.real;
 
-import de.featjar.formula.structure.Formulas;
+import de.featjar.formula.tmp.Formulas;
 import de.featjar.formula.structure.term.Multiply;
 import de.featjar.formula.structure.term.Term;
 import java.util.List;

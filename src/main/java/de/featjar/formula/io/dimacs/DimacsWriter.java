@@ -21,10 +21,10 @@
 package de.featjar.formula.io.dimacs;
 
 import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.Formulas;
-import de.featjar.formula.structure.atomic.literal.Literal;
-import de.featjar.formula.structure.TermMap;
-import de.featjar.formula.structure.connective.Or;
+import de.featjar.formula.tmp.Formulas;
+import de.featjar.formula.structure.formula.literal.Literal;
+import de.featjar.formula.tmp.TermMap;
+import de.featjar.formula.structure.formula.connective.Or;
 
 public class DimacsWriter {
 

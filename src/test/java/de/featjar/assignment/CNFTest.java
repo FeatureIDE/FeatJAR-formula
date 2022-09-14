@@ -23,13 +23,13 @@ package de.featjar.assignment;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.Formulas;
-import de.featjar.formula.structure.atomic.literal.Literal;
-import de.featjar.formula.structure.TermMap;
-import de.featjar.formula.structure.connective.And;
-import de.featjar.formula.structure.connective.BiImplies;
-import de.featjar.formula.structure.connective.Implies;
-import de.featjar.formula.structure.connective.Or;
+import de.featjar.formula.tmp.Formulas;
+import de.featjar.formula.structure.formula.literal.Literal;
+import de.featjar.formula.tmp.TermMap;
+import de.featjar.formula.structure.formula.connective.And;
+import de.featjar.formula.structure.formula.connective.BiImplies;
+import de.featjar.formula.structure.formula.connective.Implies;
+import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.base.tree.Trees;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,9 +55,9 @@ public class CNFTest {
         final Formula cnfFormula = Formulas.toCNF(formula).get();
 
         final Or or2 = new Or(a, c);
-        final Or or3 = new Or(a, b.flip());
-        final Or or4 = new Or(c, b.flip());
-        final Or or5 = new Or(b, a.flip(), c.flip());
+        final Or or3 = new Or(a, b.invert());
+        final Or or4 = new Or(c, b.invert());
+        final Or or5 = new Or(b, a.invert(), c.invert());
         final And and2 = new And(or2, or3, or4, or5);
 
         sortChildren(cnfFormula);

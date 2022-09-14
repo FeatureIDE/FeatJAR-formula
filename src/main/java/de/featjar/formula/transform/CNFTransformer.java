@@ -22,11 +22,11 @@ package de.featjar.formula.transform;
 
 import de.featjar.base.data.Result;
 import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.Formulas;
-import de.featjar.formula.structure.TermMap;
-import de.featjar.formula.structure.TermMap.Variable;
-import de.featjar.formula.structure.connective.And;
-import de.featjar.formula.structure.connective.Connective;
+import de.featjar.formula.tmp.Formulas;
+import de.featjar.formula.tmp.TermMap;
+import de.featjar.formula.tmp.TermMap.Variable;
+import de.featjar.formula.structure.formula.connective.And;
+import de.featjar.formula.structure.formula.connective.Connective;
 import de.featjar.base.task.Monitor;
 import de.featjar.base.task.CancelableMonitor;
 import de.featjar.base.tree.Trees;

@@ -22,11 +22,11 @@ package de.featjar.formula.io.xml;
 
 import de.featjar.formula.structure.AuxiliaryRoot;
 import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.Formulas;
-import de.featjar.formula.structure.atomic.literal.Literal;
-import de.featjar.formula.structure.connective.And;
-import de.featjar.formula.structure.connective.Not;
-import de.featjar.formula.structure.connective.Or;
+import de.featjar.formula.tmp.Formulas;
+import de.featjar.formula.structure.formula.literal.Literal;
+import de.featjar.formula.structure.formula.connective.And;
+import de.featjar.formula.structure.formula.connective.Not;
+import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.formula.transform.CNFTransformer;
 import de.featjar.formula.transform.DeMorganVisitor;
 import de.featjar.formula.transform.TreeSimplifier;
@@ -96,7 +96,7 @@ public class XMLFeatureModelCNFFormat extends XMLFeatureModelFormat {
 
     @Override
     protected Formula implies(Literal a, Formula b) {
-        return new Or(a.flip(), b);
+        return new Or(a.invert(), b);
     }
 
     @Override
@@ -107,7 +107,7 @@ public class XMLFeatureModelCNFFormat extends XMLFeatureModelFormat {
     @Override
     protected Formula implies(Literal f, List<? extends Formula> parseFeatures) {
         final ArrayList<Formula> list = new ArrayList<>(parseFeatures.size() + 1);
-        list.add(f.flip());
+        list.add(f.invert());
         list.addAll(parseFeatures);
         return new Or(list);
     }

@@ -20,33 +20,29 @@
  */
 package de.featjar.formula.structure;
 
-import de.featjar.formula.structure.NamedTermMap.ValueTerm;
-import de.featjar.base.tree.Trees;
 import de.featjar.base.tree.structure.Traversable;
-import de.featjar.formula.structure.atomic.literal.False;
-import de.featjar.formula.structure.atomic.literal.True;
+import de.featjar.formula.structure.assignment.Assignment;
+import de.featjar.formula.structure.formula.literal.False;
+import de.featjar.formula.structure.formula.literal.True;
+import de.featjar.formula.tmp.ValueVisitor;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
- * A logical formula.
- * Can be propositional (using {@link TermMap} and {@link de.featjar.formula.structure.atomic.literal.Literal})
- * or first-order (using {@link de.featjar.formula.structure.atomic.predicate.Predicate},
- * {@link de.featjar.formula.structure.term.Term}, and {@link de.featjar.formula.structure.connective.Quantifier}).
+ * A propositional or first-order formula.
  * Implemented recursively as a tree.
  *
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public interface Formula extends Traversable<Formula> {
+public interface Formula<T extends Formula<T>> extends Traversable<T> {
     /**
-     * A tautological formula.
+     * A tautology.
      */
     True TRUE = True.getInstance();
 
     /**
-     * A contradictory formula.
+     * A contradiction.
      */
     False FALSE = False.getInstance();
 
@@ -61,25 +57,20 @@ public interface Formula extends Traversable<Formula> {
     Class<?> getType();
 
     /**
-     * {@return this formula's variable map, if any}
-     * It is guaranteed that all subformulas of a formula share the same {@link TermMap}.
-     * That is, {@code getChildren().stream().allMatch(child -> child.getVariableMap() == getVariableMap())} holds.
-     * A formula that has no variables (e.g., {@link de.featjar.formula.structure.atomic.literal.True} or
-     * {@link de.featjar.formula.structure.atomic.literal.False}) has no {@link TermMap}.
-     */
-    default Optional<TermMap> getTermMap() {
-        return Trees.preOrderStream(this)
-                .filter(n -> n instanceof ValueTerm)
-                .map(n -> ((ValueTerm) n).getMap())
-                .findAny();
-    }
-
-    /**
      * {@return the evaluation of this formula on a given list of values}
      *
      * @param values the values
      */
-    Object evaluate(List<?> values); // todo: add easy call to a valuevisitor // evaluateNode, evaluateTree?
+    Object evaluate(List<?> values);
+
+    /**
+     * {@return the evaluation of this formula on a given assignment}
+     *
+     * @param assignment the assignment
+     */
+    default Object evaluate(Assignment assignment) {
+        return traverse(new ValueVisitor(assignment));
+    }
 
     @Override
     Formula cloneNode();

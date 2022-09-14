@@ -22,10 +22,8 @@ package de.featjar.formula.structure;
 
 import de.featjar.base.data.Range;
 
-import java.util.Collections;
-
 /**
- * A logical formula that has exactly two operands.
+ * A formula with exactly two operands.
  *
  * @author Elias Kuiter
  */

@@ -22,8 +22,8 @@ package de.featjar.formula.transform;
 
 import de.featjar.base.data.Result;
 import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.atomic.literal.Literal;
-import de.featjar.formula.structure.connective.Connective;
+import de.featjar.formula.structure.formula.literal.Literal;
+import de.featjar.formula.structure.formula.connective.Connective;
 import de.featjar.base.task.Monitor;
 import de.featjar.base.task.MonitorableFunction;
 import java.util.ArrayDeque;
@@ -169,7 +169,7 @@ public class DistributiveLawTransformer implements MonitorableFunction<Formula, 
                 final Literal clauseLiteral = (Literal) child;
                 if (literals.contains(clauseLiteral)) {
                     convertNF(clauses, literals, index + 1);
-                } else if (!literals.contains(clauseLiteral.flip())) {
+                } else if (!literals.contains(clauseLiteral.invert())) {
                     literals.add(clauseLiteral);
                     convertNF(clauses, literals, index + 1);
                     literals.remove(clauseLiteral);
@@ -181,7 +181,7 @@ public class DistributiveLawTransformer implements MonitorableFunction<Formula, 
                     for (final Formula grandChild : child.getChildren()) {
                         if (grandChild instanceof Literal) {
                             final Literal newlyAddedLiteral = (Literal) grandChild;
-                            if (!literals.contains(newlyAddedLiteral.flip())) {
+                            if (!literals.contains(newlyAddedLiteral.invert())) {
                                 literals.add(newlyAddedLiteral);
                                 convertNF(clauses, literals, index + 1);
                                 literals.remove(newlyAddedLiteral);
@@ -204,17 +204,17 @@ public class DistributiveLawTransformer implements MonitorableFunction<Formula, 
     }
 
     private boolean containsNoComplements(LinkedHashSet<Literal> literals, final List<Literal> greatGrandChildren) {
-        return greatGrandChildren.stream().map(Literal::flip).noneMatch(literals::contains);
+        return greatGrandChildren.stream().map(Literal::invert).noneMatch(literals::contains);
     }
 
     private boolean isRedundant(LinkedHashSet<Literal> literals, final Formula child) {
         return child.getChildren().stream().anyMatch(e -> isRedundant(e, literals));
     }
 
-    private static boolean isRedundant(Formula expression, LinkedHashSet<Literal> literals) {
-        return (expression instanceof Literal)
-                ? literals.contains(expression)
-                : expression.getChildren().stream().allMatch(literals::contains);
+    private static boolean isRedundant(Formula formula, LinkedHashSet<Literal> literals) {
+        return (formula instanceof Literal)
+                ? literals.contains(formula)
+                : formula.getChildren().stream().allMatch(literals::contains);
     }
 
     public int getMaximumNumberOfLiterals() {

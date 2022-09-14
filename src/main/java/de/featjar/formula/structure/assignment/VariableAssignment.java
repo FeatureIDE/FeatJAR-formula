@@ -20,9 +20,9 @@
  */
 package de.featjar.formula.structure.assignment;
 
-import de.featjar.formula.structure.NamedTermMap.ValueTerm;
-import de.featjar.formula.structure.TermMap;
-import de.featjar.formula.structure.TermMap.Variable;
+import de.featjar.formula.tmp.NamedTermMap.ValueTerm;
+import de.featjar.formula.tmp.TermMap;
+import de.featjar.formula.tmp.TermMap.Variable;
 import de.featjar.base.data.Pair;
 import java.util.LinkedHashMap;
 import java.util.List;
