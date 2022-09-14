@@ -22,9 +22,9 @@ package de.featjar.assignment;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.featjar.formula.structure.Formula;
+import de.featjar.formula.structure.Expression;
 import de.featjar.formula.tmp.Formulas;
-import de.featjar.formula.structure.formula.literal.Literal;
+import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.tmp.TermMap;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.BiImplies;
@@ -52,7 +52,7 @@ public class CNFTest {
         final And and = new And(equals, c);
         final Implies formula = new Implies(or, and);
 
-        final Formula cnfFormula = Formulas.toCNF(formula).get();
+        final Expression cnfExpression = Formulas.toCNF(formula).get();
 
         final Or or2 = new Or(a, c);
         final Or or3 = new Or(a, b.invert());
@@ -60,15 +60,15 @@ public class CNFTest {
         final Or or5 = new Or(b, a.invert(), c.invert());
         final And and2 = new And(or2, or3, or4, or5);
 
-        sortChildren(cnfFormula);
+        sortChildren(cnfExpression);
         sortChildren(and2);
-        assertEquals(cnfFormula.getDescendantsAsPreOrder(), and2.getDescendantsAsPreOrder());
-        assertEquals(cnfFormula.getDescendantsAsPostOrder(), and2.getDescendantsAsPostOrder());
+        assertEquals(cnfExpression.getDescendantsAsPreOrder(), and2.getDescendantsAsPreOrder());
+        assertEquals(cnfExpression.getDescendantsAsPostOrder(), and2.getDescendantsAsPostOrder());
     }
 
-    private void sortChildren(final Formula root) {
+    private void sortChildren(final Expression root) {
         Trees.postOrderStream(root).forEach(node -> {
-            final ArrayList<Formula> sortedChildren = new ArrayList<>(node.getChildren());
+            final ArrayList<Expression> sortedChildren = new ArrayList<>(node.getChildren());
             Collections.sort(sortedChildren, Comparator.comparing(e -> e.getDescendantsAsPreOrder()
                     .toString()));
             node.setChildren(sortedChildren);

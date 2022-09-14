@@ -21,8 +21,8 @@
 package de.featjar.formula.structure.formula.connective;
 
 import de.featjar.base.data.Range;
-import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.NonTerminalFormula;
+import de.featjar.formula.structure.Expression;
+import de.featjar.formula.structure.NonTerminalExpression;
 
 import java.util.List;
 import java.util.Objects;
@@ -34,10 +34,10 @@ import java.util.Objects;
  *
  * @author Sebastian Krieter
  */
-public abstract class Cardinal extends NonTerminalFormula implements Connective {
+public abstract class Cardinal extends NonTerminalExpression implements Connective {
     protected Range range;
 
-    protected Cardinal(Range range, List<? extends Formula> formulas) {
+    protected Cardinal(Range range, List<? extends Expression> formulas) {
         super(formulas);
         setRange(range);
     }
@@ -79,7 +79,7 @@ public abstract class Cardinal extends NonTerminalFormula implements Connective 
     }
 
     @Override
-    public boolean equalsNode(Formula other) {
+    public boolean equalsNode(Expression other) {
         return super.equalsNode(other) && Objects.equals(range, ((Cardinal) other).range);
     }
 }

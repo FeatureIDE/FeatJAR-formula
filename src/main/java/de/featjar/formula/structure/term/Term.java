@@ -20,19 +20,16 @@
  */
 package de.featjar.formula.structure.term;
 
-import de.featjar.formula.structure.Formula;
+import de.featjar.formula.structure.Expression;
 
 /**
- * A term in a formula.
+ * A term.
+ * By convention, all children are terms as well.
+ * A term is either a {@link de.featjar.formula.structure.term.function.Function}
+ * or a {@link de.featjar.formula.structure.term.value.Value}.
  *
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public interface Term extends Formula<Term> {
-
-//    @Override
-//    List<? extends Term> getChildren();
-//
-//    @Override
-//    Term cloneNode();
+public interface Term extends Expression {
 }

@@ -20,6 +20,7 @@
  */
 package de.featjar.formula.structure.formula.predicate;
 
+import de.featjar.formula.structure.NonTerminalExpression;
 import de.featjar.formula.structure.term.Term;
 import java.util.List;
 
@@ -29,7 +30,7 @@ import java.util.List;
  *
  * @author Sebastian Krieter
  */
-public class LessThan extends BinaryPredicate {
+public class LessThan extends NonTerminalExpression implements BinaryPredicate, InvertiblePredicate {
     protected LessThan() {
     }
 
@@ -53,11 +54,11 @@ public class LessThan extends BinaryPredicate {
 
     @Override
     public GreaterEqual invert() {
-        return new GreaterEqual((Term) getLeftFormula(), (Term) getRightFormula());
+        return new GreaterEqual((Term) getLeftExpression(), (Term) getRightFormula());
     }
 
     @Override
-    protected boolean compareDifference(int difference) {
+    public boolean compareDifference(int difference) {
         return difference < 0;
     }
 }

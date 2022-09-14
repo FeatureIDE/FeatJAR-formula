@@ -20,9 +20,9 @@
  */
 package de.featjar.formula.io.dimacs;
 
-import de.featjar.formula.structure.Formula;
+import de.featjar.formula.structure.Expression;
 import de.featjar.formula.tmp.Formulas;
-import de.featjar.formula.structure.formula.literal.Literal;
+import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.tmp.TermMap;
 import de.featjar.formula.structure.formula.connective.Or;
 
@@ -34,20 +34,20 @@ public class DimacsWriter {
      */
     private boolean writingVariableDirectory = true;
 
-    private final Formula formula;
+    private final Expression expression;
     private TermMap variables;
 
     /**
      * Constructs a new instance of this class with the given CNF.
      *
-     * @param formula the formula to transform; not null
+     * @param expression the formula to transform; not null
      * @throws IllegalArgumentException if the input is null or not in CNF
      */
-    public DimacsWriter(Formula formula) throws IllegalArgumentException {
-        if ((formula == null) || !Formulas.isCNF(formula)) {
+    public DimacsWriter(Expression expression) throws IllegalArgumentException {
+        if ((expression == null) || !Formulas.isCNF(expression)) {
             throw new IllegalArgumentException();
         }
-        this.formula = Formulas.toCNF(formula).get();
+        this.expression = Formulas.toCNF(expression).get();
     }
 
     /**
@@ -78,7 +78,7 @@ public class DimacsWriter {
      * @return the transformed CNF; not null
      */
     public String write() {
-        variables = formula.getTermMap().orElseGet(TermMap::new);
+        variables = expression.getTermMap().orElseGet(TermMap::new);
         final StringBuilder sb = new StringBuilder();
         if (writingVariableDirectory) {
             writeVariableDirectory(sb);
@@ -127,7 +127,7 @@ public class DimacsWriter {
         sb.append(' ');
         sb.append(variables.getVariableCount());
         sb.append(' ');
-        sb.append(formula.getChildren().size());
+        sb.append(expression.getChildren().size());
         sb.append(System.lineSeparator());
     }
 
@@ -138,7 +138,7 @@ public class DimacsWriter {
      * @param clause clause to transform; not null
      */
     private void writeClause(StringBuilder sb, Or clause) {
-        for (final Formula child : clause.getChildren()) {
+        for (final Expression child : clause.getChildren()) {
             final Literal l = (Literal) child;
             final Integer index = variables
                     .getVariableIndex(l.getName())
@@ -156,7 +156,7 @@ public class DimacsWriter {
      * @param sb the string builder that builds the document
      */
     private void writeClauses(StringBuilder sb) {
-        for (final Formula clause : formula.getChildren()) {
+        for (final Expression clause : expression.getChildren()) {
             writeClause(sb, (Or) clause);
         }
     }

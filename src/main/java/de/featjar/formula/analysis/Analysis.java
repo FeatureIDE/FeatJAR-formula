@@ -22,7 +22,7 @@ package de.featjar.formula.analysis;
 
 import de.featjar.formula.analysis.solver.RuntimeContradictionException;
 import de.featjar.formula.analysis.solver.Solver;
-import de.featjar.formula.structure.Formula;
+import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.assignment.Assignment;
 import de.featjar.formula.structure.assignment.IndexAssignment;
 import de.featjar.base.data.Computation;
@@ -47,7 +47,7 @@ public abstract class Analysis<U, S extends Solver, T> implements Computation<T,
 
     protected final Assignment assumptions = new IndexAssignment();
 
-    protected final List<Formula> assumedConstraints = new ArrayList<>();
+    protected final List<Expression> assumedConstraints = new ArrayList<>();
     protected S solver;
     public void setSolver(S solver) {
         this.solver = solver;
@@ -57,7 +57,7 @@ public abstract class Analysis<U, S extends Solver, T> implements Computation<T,
         return assumptions;
     }
 
-    public List<Formula> getAssumedConstraints() {
+    public List<Expression> getAssumedConstraints() {
         return assumedConstraints;
     }
 

@@ -20,8 +20,8 @@
  */
 package de.featjar.formula.structure.formula.connective;
 
-import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.term.Variable;
+import de.featjar.formula.structure.Expression;
+import de.featjar.formula.structure.term.value.Variable;
 
 /**
  * Expresses "exists X such that A" constraints (i.e., existential quantification).
@@ -35,8 +35,8 @@ public class Exists extends Quantifier {
         super(exists);
     }
 
-    public Exists(Variable boundVariable, Formula formula) {
-        super(boundVariable, formula);
+    public Exists(Variable boundVariable, Expression expression) {
+        super(boundVariable, expression);
     }
 
     @Override

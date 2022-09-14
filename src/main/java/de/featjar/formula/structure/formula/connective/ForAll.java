@@ -20,8 +20,8 @@
  */
 package de.featjar.formula.structure.formula.connective;
 
-import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.term.Variable;
+import de.featjar.formula.structure.Expression;
+import de.featjar.formula.structure.term.value.Variable;
 
 /**
  * Expresses "for all X such that A" constraints (i.e., universal quantification).
@@ -35,8 +35,8 @@ public class ForAll extends Quantifier {
         super(forAll);
     }
 
-    public ForAll(Variable boundVariable, Formula formula) {
-        super(boundVariable, formula);
+    public ForAll(Variable boundVariable, Expression expression) {
+        super(boundVariable, expression);
     }
 
     @Override

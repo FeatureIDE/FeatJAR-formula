@@ -20,8 +20,8 @@
  */
 package de.featjar.formula.io.dimacs;
 
-import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.formula.literal.Literal;
+import de.featjar.formula.structure.Expression;
+import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.tmp.TermMap;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Or;
@@ -92,7 +92,7 @@ public class DimacsReader {
      * @throws ParseException if the input does not conform to the DIMACS CNF file
      *                        format
      */
-    public Formula read(Reader in) throws ParseException, IOException {
+    public Expression read(Reader in) throws ParseException, IOException {
         indexVariables.clear();
         variableCount = -1;
         clauseCount = -1;
@@ -152,7 +152,7 @@ public class DimacsReader {
      * @throws ParseException if the input does not conform to the DIMACS CNF file
      *                        format
      */
-    public Formula read(String in) throws ParseException, IOException {
+    public Expression read(String in) throws ParseException, IOException {
         return read(new StringReader(in));
     }
 

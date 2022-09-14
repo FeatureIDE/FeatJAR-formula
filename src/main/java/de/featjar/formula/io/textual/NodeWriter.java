@@ -21,8 +21,8 @@
 package de.featjar.formula.io.textual;
 
 import de.featjar.formula.io.textual.Symbols.Operator;
-import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.formula.literal.Literal;
+import de.featjar.formula.structure.Expression;
+import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.AtLeast;
 import de.featjar.formula.structure.formula.connective.AtMost;
@@ -266,34 +266,34 @@ public class NodeWriter {
     /**
      * Converts the given node into the specified textual representation.
      *
-     * @param formula the formula to write
+     * @param expression the formula to write
      * @return the textual representation; not null
      */
-    public String write(Formula formula) {
+    public String write(Expression expression) {
         final StringBuilder sb = new StringBuilder();
-        nodeToString(formula, null, sb, -1);
+        nodeToString(expression, null, sb, -1);
         return sb.toString();
     }
 
-    public void write(Formula formula, StringBuilder sb) {
-        nodeToString(formula, null, sb, -1);
+    public void write(Expression expression, StringBuilder sb) {
+        nodeToString(expression, null, sb, -1);
     }
 
-    private void nodeToString(Formula formula, Operator parent, StringBuilder sb, int depth) {
-        if (formula == null) {
-            sb.append(String.valueOf(formula));
+    private void nodeToString(Expression expression, Operator parent, StringBuilder sb, int depth) {
+        if (expression == null) {
+            sb.append(String.valueOf(expression));
         } else {
-            if (formula instanceof Not) {
-                final Formula child = ((Not) formula).getChildren().get(0);
+            if (expression instanceof Not) {
+                final Expression child = ((Not) expression).getChildren().get(0);
                 if (child instanceof Literal) {
                     literalToString(((Literal) child).cloneNode().invert(), sb, depth + 1);
                     return;
                 }
             }
-            if (formula instanceof Literal) {
-                literalToString((Literal) formula, sb, depth + 1);
+            if (expression instanceof Literal) {
+                literalToString((Literal) expression, sb, depth + 1);
             } else {
-                operationToString((Connective) formula, parent, sb, depth + 1);
+                operationToString((Connective) expression, parent, sb, depth + 1);
             }
         }
     }
@@ -364,7 +364,7 @@ public class NodeWriter {
      */
     private void operationToString(Connective node, Operator parent, StringBuilder sb, int depth) {
         alignLine(sb, depth);
-        final List<Formula> children = node.getChildren();
+        final List<Expression> children = node.getChildren();
         if (children.size() == 0) {
             sb.append("()");
             return;
@@ -461,14 +461,14 @@ public class NodeWriter {
      * is false for unary operations (i.e. {@link Not}). This is also false for
      * {@link Choose}, {@link AtLeast} and {@link AtMost}.
      *
-     * @param formula operation in question
+     * @param expression operation in question
      * @return true iff the given operation can be written in infix notation
      */
-    private boolean isInfixCompatibleOperation(Formula formula) {
-        return (formula instanceof And)
-                || (formula instanceof Or)
-                || (formula instanceof Implies)
-                || (formula instanceof BiImplies);
+    private boolean isInfixCompatibleOperation(Expression expression) {
+        return (expression instanceof And)
+                || (expression instanceof Or)
+                || (expression instanceof Implies)
+                || (expression instanceof BiImplies);
     }
 
     /**

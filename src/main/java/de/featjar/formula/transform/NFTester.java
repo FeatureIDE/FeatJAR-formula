@@ -20,11 +20,11 @@
  */
 package de.featjar.formula.transform;
 
-import de.featjar.formula.structure.Formula;
+import de.featjar.formula.structure.Expression;
 import de.featjar.base.tree.visitor.TreeVisitor;
 import java.util.Optional;
 
-public class NFTester implements TreeVisitor<Boolean, Formula> {
+public class NFTester implements TreeVisitor<Boolean, Expression> {
 
     protected boolean isNf;
     protected boolean isClausalNf;

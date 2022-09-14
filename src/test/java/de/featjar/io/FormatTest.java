@@ -26,11 +26,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import de.featjar.formula.structure.Formula;
+import de.featjar.formula.structure.Expression;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.IO;
 import de.featjar.base.io.format.Format;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -51,31 +50,31 @@ public class FormatTest {
     private static final Path rootDirectory = Paths.get("src/test/resources");
     private static final Path formatsDirectory = rootDirectory.resolve("formats");
 
-    public static void testLoad(Formula formula1, String name, Format<Formula> format) {
+    public static void testLoad(Expression expression1, String name, Format<Expression> format) {
         assertEquals(format.getClass().getCanonicalName(), format.getIdentifier());
         assertTrue(format.supportsParse());
         assertFalse(format.supportsSerialize());
 
         for (final Path file : getFileList(name, format)) {
-            final Formula formula2 = load(format, file);
-            compareFormulas(formula1, formula2);
+            final Expression expression2 = load(format, file);
+            compareFormulas(expression1, expression2);
         }
     }
 
-    public static void testLoadAndSave(Formula formula1, String name, Format<Formula> format) {
+    public static void testLoadAndSave(Expression expression1, String name, Format<Expression> format) {
         assertEquals(format.getClass().getCanonicalName(), format.getIdentifier());
         assertTrue(format.supportsParse());
         assertTrue(format.supportsSerialize());
-        final Formula formula3 = saveAndLoad(formula1, format);
+        final Expression expression3 = saveAndLoad(expression1, format);
         for (final Path file : getFileList(name, format)) {
-            final Formula formula2 = load(format, file);
-            final Formula formula4 = saveAndLoad(formula2, format);
-            compareFormulas(formula1, formula2);
-            compareFormulas(formula1, formula3);
-            compareFormulas(formula1, formula4);
-            compareFormulas(formula2, formula3);
-            compareFormulas(formula2, formula4);
-            compareFormulas(formula3, formula4);
+            final Expression expression2 = load(format, file);
+            final Expression expression4 = saveAndLoad(expression2, format);
+            compareFormulas(expression1, expression2);
+            compareFormulas(expression1, expression3);
+            compareFormulas(expression1, expression4);
+            compareFormulas(expression2, expression3);
+            compareFormulas(expression2, expression4);
+            compareFormulas(expression3, expression4);
         }
     }
 
@@ -83,7 +82,7 @@ public class FormatTest {
         return IO.load(path, format).get();
     }
 
-    private static List<Path> getFileList(String name, Format<Formula> format) {
+    private static List<Path> getFileList(String name, Format<Expression> format) {
         final String namePattern = Pattern.quote(name) + "_\\d\\d[.]" + format.getFileExtension();
         try {
             final List<Path> fileList = Files.walk(formatsDirectory.resolve(format.getName()))
@@ -101,10 +100,10 @@ public class FormatTest {
         }
     }
 
-    private static void compareFormulas(final Formula formula1, final Formula formula2) {
-        assertEquals(formula1, formula2, "Formulas are different");
-        if (formula1 != null) {
-            assertEquals(formula1.getTermMap(), formula2.getTermMap(), "Variables are different");
+    private static void compareFormulas(final Expression expression1, final Expression expression2) {
+        assertEquals(expression1, expression2, "Formulas are different");
+        if (expression1 != null) {
+            assertEquals(expression1.getTermMap(), expression2.getTermMap(), "Variables are different");
         }
     }
 

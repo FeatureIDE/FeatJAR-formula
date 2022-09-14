@@ -21,7 +21,7 @@
 package de.featjar.formula.tmp;
 
 import de.featjar.formula.tmp.NamedTermMap.ValueTerm;
-import de.featjar.formula.structure.term.NullaryTerm;
+import de.featjar.formula.structure.term.value.Value;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,7 +38,7 @@ import java.util.Random;
  *
  * @author Sebastian Krieter
  */
-public class NamedTermMap<T extends NullaryTerm> implements Iterable<T> {
+public class NamedTermMap<T extends Value> implements Iterable<T> {
     private final ArrayList<T> fromIndex;
     private final LinkedHashMap<String, T> fromName = new LinkedHashMap<>();
 

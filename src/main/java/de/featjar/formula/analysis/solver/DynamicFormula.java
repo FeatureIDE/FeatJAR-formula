@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.analysis.solver;
 
-import de.featjar.formula.structure.Formula;
+import de.featjar.formula.structure.Expression;
 import de.featjar.formula.tmp.TermMap;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -51,7 +51,7 @@ public interface DynamicFormula<O> {
      * @see #pop()
      * @see #pop(int)
      */
-    List<O> push(Formula clause);
+    List<O> push(Expression clause);
 
     /**
      * Adds multiple clauses.
@@ -61,14 +61,14 @@ public interface DynamicFormula<O> {
      * @return A list of the identifying constraint objects of the added clauses
      *         that can be used to remove them from the solver.
      *
-     * @see #push(Formula)
+     * @see #push(Expression)
      * @see #pop()
      * @see #pop(int)
      */
-    default List<O> push(Collection<Formula> clauses) {
+    default List<O> push(Collection<Expression> clauses) {
         int addCount = 0;
         final ArrayList<O> constraintList = new ArrayList<>(clauses.size());
-        for (final Formula clause : clauses) {
+        for (final Expression clause : clauses) {
             try {
                 push(clause);
                 addCount++;
@@ -96,7 +96,7 @@ public interface DynamicFormula<O> {
      *
      * @param count The number of clauses to be removed.
      *
-     * @see #push(Formula)
+     * @see #push(Expression)
      */
     default void pop(int count) {
         if (count > size()) {

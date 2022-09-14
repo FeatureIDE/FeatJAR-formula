@@ -20,12 +20,11 @@
  */
 package de.featjar.formula.io.dimacs;
 
-import de.featjar.formula.structure.Formula;
+import de.featjar.formula.structure.Expression;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.InputMapper;
 import de.featjar.base.io.format.Format;
 import de.featjar.base.io.format.ParseProblem;
-
 import java.text.ParseException;
 import java.util.Optional;
 
@@ -35,19 +34,19 @@ import java.util.Optional;
  * @author Sebastian Krieter
  * @author Timo G&uuml;nther
  */
-public class DIMACSFormat implements Format<Formula> {
+public class DIMACSFormat implements Format<Expression> {
 
     public static final String ID = DIMACSFormat.class.getCanonicalName();
 
     @Override
-    public String serialize(Formula formula) {
-        final DimacsWriter w = new DimacsWriter(formula);
+    public String serialize(Expression expression) {
+        final DimacsWriter w = new DimacsWriter(expression);
         w.setWritingVariableDirectory(true);
         return w.write();
     }
 
     @Override
-    public Result<Formula> parse(InputMapper inputMapper) {
+    public Result<Expression> parse(InputMapper inputMapper) {
         final DimacsReader r = new DimacsReader();
         r.setReadingVariableDirectory(true);
         try {

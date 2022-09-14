@@ -20,24 +20,24 @@
  */
 package de.featjar.formula.io.textual;
 
-import de.featjar.formula.structure.Formula;
+import de.featjar.formula.structure.Expression;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.InputMapper;
 import de.featjar.base.io.format.Format;
 
 import java.util.Optional;
 
-public class FormulaFormat implements Format<Formula> {
+public class FormulaFormat implements Format<Expression> {
 
     public static final String ID = FormulaFormat.class.getCanonicalName();
 
     @Override
-    public Result<Formula> parse(InputMapper inputMapper) {
+    public Result<Expression> parse(InputMapper inputMapper) {
         return new NodeReader().read(inputMapper.get().read().get());
     }
 
     @Override
-    public String serialize(Formula object) {
+    public String serialize(Expression object) {
         return new NodeWriter().write(object);
     }
 

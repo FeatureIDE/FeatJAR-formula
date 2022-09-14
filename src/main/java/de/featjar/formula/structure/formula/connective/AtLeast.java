@@ -21,8 +21,7 @@
 package de.featjar.formula.structure.formula.connective;
 
 import de.featjar.base.data.Range;
-import de.featjar.formula.structure.Formula;
-
+import de.featjar.formula.structure.Expression;
 import java.util.List;
 
 /**
@@ -36,8 +35,8 @@ public class AtLeast extends Cardinal {
         super(atLeast);
     }
 
-    public AtLeast(int minimum, List<Formula> formulas) {
-        super(Range.atLeast(minimum), formulas);
+    public AtLeast(int minimum, List<Expression> expressions) {
+        super(Range.atLeast(minimum), expressions);
     }
 
     @Override

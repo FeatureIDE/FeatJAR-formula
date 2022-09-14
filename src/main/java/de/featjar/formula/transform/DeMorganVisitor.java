@@ -20,10 +20,10 @@
  */
 package de.featjar.formula.transform;
 
-import de.featjar.formula.structure.AuxiliaryRoot;
-import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.formula.Predicate;
-import de.featjar.formula.structure.formula.literal.Literal;
+import de.featjar.formula.tmp.AuxiliaryRoot;
+import de.featjar.formula.structure.Expression;
+import de.featjar.formula.structure.formula.predicate.Predicate;
+import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Connective;
 import de.featjar.formula.structure.formula.connective.Not;
@@ -32,40 +32,40 @@ import de.featjar.base.tree.visitor.TreeVisitor;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class DeMorganVisitor implements TreeVisitor<Void, Formula> {
+public class DeMorganVisitor implements TreeVisitor<Void, Expression> {
 
     @Override
-    public TraversalAction firstVisit(List<Formula> path) {
-        final Formula formula = getCurrentNode(path);
-        if (formula instanceof Predicate) {
+    public TraversalAction firstVisit(List<Expression> path) {
+        final Expression expression = getCurrentNode(path);
+        if (expression instanceof Predicate) {
             return TraversalAction.SKIP_CHILDREN;
-        } else if (formula instanceof Connective) {
-            formula.replaceChildren(this::replace);
+        } else if (expression instanceof Connective) {
+            expression.replaceChildren(this::replace);
             return TraversalAction.CONTINUE;
-        } else if (formula instanceof AuxiliaryRoot) {
-            formula.replaceChildren(this::replace);
+        } else if (expression instanceof AuxiliaryRoot) {
+            expression.replaceChildren(this::replace);
             return TraversalAction.CONTINUE;
         } else {
             return TraversalAction.FAIL;
         }
     }
 
-    private Formula replace(Formula formula) {
-        Formula newFormula = formula;
-        while (newFormula instanceof Not) {
-            final Formula notChild = newFormula.getChildren().iterator().next();
+    private Expression replace(Expression expression) {
+        Expression newExpression = expression;
+        while (newExpression instanceof Not) {
+            final Expression notChild = newExpression.getChildren().iterator().next();
             if (notChild instanceof Literal) {
-                newFormula = ((Literal) notChild).invert();
+                newExpression = ((Literal) notChild).invert();
             } else if (notChild instanceof Not) {
-                newFormula = notChild.getChildren().get(0);
+                newExpression = notChild.getChildren().get(0);
             } else if (notChild instanceof Or) {
-                newFormula = new And(((Connective) notChild)
+                newExpression = new And(((Connective) notChild)
                         .getChildren().stream().map(Not::new).collect(Collectors.toList()));
             } else if (notChild instanceof And) {
-                newFormula = new Or(((Connective) notChild)
+                newExpression = new Or(((Connective) notChild)
                         .getChildren().stream().map(Not::new).collect(Collectors.toList()));
             }
         }
-        return newFormula;
+        return newExpression;
     }
 }

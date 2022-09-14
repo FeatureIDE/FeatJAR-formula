@@ -21,10 +21,10 @@
 package de.featjar.formula.transform;
 
 import de.featjar.base.data.Result;
-import de.featjar.formula.structure.AuxiliaryRoot;
-import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.formula.Predicate;
-import de.featjar.formula.structure.formula.literal.Literal;
+import de.featjar.formula.tmp.AuxiliaryRoot;
+import de.featjar.formula.structure.Expression;
+import de.featjar.formula.structure.formula.predicate.Predicate;
+import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.tmp.TermMap;
 import de.featjar.formula.tmp.TermMap.Variable;
 import de.featjar.formula.structure.formula.connective.And;
@@ -40,33 +40,33 @@ import java.util.List;
 import java.util.Objects;
 
 public class TseitinTransformer
-        implements MonitorableFunction<Formula, List<TseitinTransformer.Substitute>>, TreeVisitor<Formula, Formula> {
+        implements MonitorableFunction<Expression, List<TseitinTransformer.Substitute>>, TreeVisitor<Expression, Expression> {
 
     public static class Substitute {
-        private Formula orgFormula;
+        private Expression orgExpression;
         private Variable variable;
-        private List<Formula> clauses = new ArrayList<>();
+        private List<Expression> clauses = new ArrayList<>();
 
-        private Substitute(Formula orgFormula, Variable variable, int numberOfClauses) {
-            this.orgFormula = orgFormula;
+        private Substitute(Expression orgExpression, Variable variable, int numberOfClauses) {
+            this.orgExpression = orgExpression;
             this.variable = variable;
             clauses = new ArrayList<>(numberOfClauses);
         }
 
-        private Substitute(Formula orgFormula, Variable variable, Formula clause) {
-            this.orgFormula = orgFormula;
+        private Substitute(Expression orgExpression, Variable variable, Expression clause) {
+            this.orgExpression = orgExpression;
             this.variable = variable;
             clauses = new ArrayList<>(1);
             clauses.add(clause);
         }
 
-        private Substitute(Formula orgFormula, Variable variable, List<? extends Formula> clauses) {
-            this.orgFormula = orgFormula;
+        private Substitute(Expression orgExpression, Variable variable, List<? extends Expression> clauses) {
+            this.orgExpression = orgExpression;
             this.variable = variable;
             this.clauses = new ArrayList<>(clauses);
         }
 
-        private void addClause(Formula clause) {
+        private void addClause(Expression clause) {
             clauses.add(clause);
         }
 
@@ -74,20 +74,20 @@ public class TseitinTransformer
             return variable;
         }
 
-        public List<Formula> getClauses() {
+        public List<Expression> getClauses() {
             return clauses;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hashCode(orgFormula);
+            return Objects.hashCode(orgExpression);
         }
 
         @Override
         public boolean equals(Object obj) {
             return (obj != null)
                     && (getClass() == obj.getClass())
-                    && Objects.equals(orgFormula, ((Substitute) obj).orgFormula);
+                    && Objects.equals(orgExpression, ((Substitute) obj).orgExpression);
         }
     }
 
@@ -99,7 +99,7 @@ public class TseitinTransformer
         this.termMap = termMap;
     }
 
-    private Variable newVariable(final ArrayList<Literal> newChildren, final Formula clonedLastNode) {
+    private Variable newVariable(final ArrayList<Literal> newChildren, final Expression clonedLastNode) {
         Variable addBooleanVariable = termMap.addBooleanVariable();
         final Substitute substitute = new Substitute(clonedLastNode, addBooleanVariable, newChildren.size() + 1);
         substitutes.add(substitute);
@@ -127,10 +127,10 @@ public class TseitinTransformer
         return substitute.variable;
     }
 
-    private final ArrayDeque<Formula> stack = new ArrayDeque<>();
+    private final ArrayDeque<Expression> stack = new ArrayDeque<>();
 
     @Override
-    public Result<List<Substitute>> execute(Formula child, Monitor monitor) {
+    public Result<List<Substitute>> execute(Expression child, Monitor monitor) {
         substitutes.clear();
         stack.clear();
 
@@ -147,12 +147,12 @@ public class TseitinTransformer
     }
 
     @Override
-    public TraversalAction firstVisit(List<Formula> path) {
-        final Formula formula = getCurrentNode(path);
-        if (formula instanceof Predicate) {
+    public TraversalAction firstVisit(List<Expression> path) {
+        final Expression expression = getCurrentNode(path);
+        if (expression instanceof Predicate) {
             return TraversalAction.SKIP_CHILDREN;
-        } else if ((formula instanceof Connective) || (formula instanceof AuxiliaryRoot)) {
-            stack.push((Formula) formula);
+        } else if ((expression instanceof Connective) || (expression instanceof AuxiliaryRoot)) {
+            stack.push((Expression) expression);
             return TraversalAction.CONTINUE;
         } else {
             return TraversalAction.FAIL;
@@ -160,32 +160,32 @@ public class TseitinTransformer
     }
 
     @Override
-    public TraversalAction lastVisit(List<Formula> path) {
-        final Formula formula = getCurrentNode(path);
-        if (formula instanceof Predicate) {
-            final Formula clonedFormula = formula;
+    public TraversalAction lastVisit(List<Expression> path) {
+        final Expression expression = getCurrentNode(path);
+        if (expression instanceof Predicate) {
+            final Expression clonedExpression = expression;
             if (path.isEmpty()) {
-                substitutes.add(new Substitute(clonedFormula, null, clonedFormula));
+                substitutes.add(new Substitute(clonedExpression, null, clonedExpression));
             } else {
-                stack.push(clonedFormula);
+                stack.push(clonedExpression);
             }
         } else {
             final ArrayList<Literal> newChildren = new ArrayList<>();
-            Formula lastNode = stack.pop();
-            while (lastNode != formula) {
+            Expression lastNode = stack.pop();
+            while (lastNode != expression) {
                 newChildren.add((Literal) lastNode);
                 lastNode = stack.pop();
             }
 
             if (stack.isEmpty()) {
-                final Formula clonedLastNode = lastNode;
+                final Expression clonedLastNode = lastNode;
                 if (lastNode instanceof And) {
                     substitutes.add(new Substitute(clonedLastNode, null, newChildren));
                 } else {
                     substitutes.add(new Substitute(clonedLastNode, null, new Or(newChildren)));
                 }
             } else {
-                final Formula clonedLastNode = lastNode;
+                final Expression clonedLastNode = lastNode;
                 final Variable variable = newVariable(newChildren, clonedLastNode);
                 stack.push(new Literal(variable, true));
             }

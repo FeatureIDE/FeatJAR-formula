@@ -20,9 +20,9 @@
  */
 package de.featjar.formula.transform;
 
-import de.featjar.formula.structure.AuxiliaryRoot;
-import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.formula.Predicate;
+import de.featjar.formula.tmp.AuxiliaryRoot;
+import de.featjar.formula.structure.Expression;
+import de.featjar.formula.structure.formula.predicate.Predicate;
 import de.featjar.formula.tmp.TermMap.Variable;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.AtLeast;
@@ -41,7 +41,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class EquivalenceVisitor implements TreeVisitor<Void, Formula> {
+public class EquivalenceVisitor implements TreeVisitor<Void, Expression> {
 
     private boolean fail;
 
@@ -51,16 +51,16 @@ public class EquivalenceVisitor implements TreeVisitor<Void, Formula> {
     }
 
     @Override
-    public TraversalAction firstVisit(List<Formula> path) {
-        final Formula formula = getCurrentNode(path);
-        if (formula instanceof Predicate) {
+    public TraversalAction firstVisit(List<Expression> path) {
+        final Expression expression = getCurrentNode(path);
+        if (expression instanceof Predicate) {
             return TraversalAction.SKIP_CHILDREN;
-        } else if (formula instanceof Connective) {
-            if (formula instanceof Quantifier) {
+        } else if (expression instanceof Connective) {
+            if (expression instanceof Quantifier) {
                 return TraversalAction.FAIL;
             }
             return TraversalAction.CONTINUE;
-        } else if (formula instanceof AuxiliaryRoot) {
+        } else if (expression instanceof AuxiliaryRoot) {
             return TraversalAction.CONTINUE;
         } else {
             return TraversalAction.FAIL;
@@ -68,9 +68,9 @@ public class EquivalenceVisitor implements TreeVisitor<Void, Formula> {
     }
 
     @Override
-    public TraversalAction lastVisit(List<Formula> path) {
-        final Formula formula = getCurrentNode(path);
-        formula.replaceChildren(this::replace);
+    public TraversalAction lastVisit(List<Expression> path) {
+        final Expression expression = getCurrentNode(path);
+        expression.replaceChildren(this::replace);
         if (fail) {
             return TraversalAction.FAIL;
         }
@@ -78,75 +78,75 @@ public class EquivalenceVisitor implements TreeVisitor<Void, Formula> {
     }
 
     @SuppressWarnings("unchecked")
-    private Formula replace(Formula formula) {
-        if (((formula instanceof Variable)
-                || (formula instanceof Predicate)
-                || (formula instanceof And)
-                || (formula instanceof Or)
-                || (formula instanceof Not))) {
+    private Expression replace(Expression expression) {
+        if (((expression instanceof Variable)
+                || (expression instanceof Predicate)
+                || (expression instanceof And)
+                || (expression instanceof Or)
+                || (expression instanceof Not))) {
             return null;
         }
-        final List<Formula> children = (List<Formula>) formula.getChildren();
-        Formula newFormula;
-        if (formula instanceof Implies) {
-            newFormula = new Or(new Not(children.get(0)), children.get(1));
-        } else if (formula instanceof BiImplies) {
-            newFormula = new And( //
+        final List<Expression> children = (List<Expression>) expression.getChildren();
+        Expression newExpression;
+        if (expression instanceof Implies) {
+            newExpression = new Or(new Not(children.get(0)), children.get(1));
+        } else if (expression instanceof BiImplies) {
+            newExpression = new And( //
                     new Or(new Not(children.get(0)), children.get(1)),
                     new Or(new Not(children.get(1)), children.get(0)));
-        } else if (formula instanceof AtLeast) {
-            newFormula = new And(atLeastK(children, ((AtLeast) formula).getMinimum()));
-        } else if (formula instanceof AtMost) {
-            newFormula = new And(atMostK(children, ((AtMost) formula).getMaximum()));
-        } else if (formula instanceof Between) {
-            final Between between = (Between) formula;
-            newFormula = new And(
+        } else if (expression instanceof AtLeast) {
+            newExpression = new And(atLeastK(children, ((AtLeast) expression).getMinimum()));
+        } else if (expression instanceof AtMost) {
+            newExpression = new And(atMostK(children, ((AtMost) expression).getMaximum()));
+        } else if (expression instanceof Between) {
+            final Between between = (Between) expression;
+            newExpression = new And(
                     new And(atLeastK(children, between.getMinimum())), new And(atMostK(children, between.getMaximum())));
-        } else if (formula instanceof Choose) {
-            final Choose choose = (Choose) formula;
-            newFormula = new And(new And(atLeastK(children, choose.getK())), new And(atMostK(children, choose.getK())));
+        } else if (expression instanceof Choose) {
+            final Choose choose = (Choose) expression;
+            newExpression = new And(new And(atLeastK(children, choose.getK())), new And(atMostK(children, choose.getK())));
         } else {
             fail = true;
             return null;
         }
-        return newFormula;
+        return newExpression;
     }
 
-    private List<Formula> atMostK(List<? extends Formula> elements, int k) {
+    private List<Expression> atMostK(List<? extends Expression> elements, int k) {
         final int n = elements.size();
 
         // return tautology
         if (k <= 0) {
-            return Arrays.asList(Formula.FALSE);
+            return Arrays.asList(Expression.FALSE);
         }
 
         // return contradiction
         if (k > n) {
-            return Arrays.asList(Formula.TRUE);
+            return Arrays.asList(Expression.TRUE);
         }
 
         return groupElements(elements.stream().map(Not::new).collect(Collectors.toList()), k, n);
     }
 
-    private List<Formula> atLeastK(List<? extends Formula> elements, int k) {
+    private List<Expression> atLeastK(List<? extends Expression> elements, int k) {
         final int n = elements.size();
 
         // return tautology
         if (k <= 0) {
-            return Arrays.asList(Formula.TRUE);
+            return Arrays.asList(Expression.TRUE);
         }
 
         // return contradiction
         if (k > n) {
-            return Arrays.asList(Formula.FALSE);
+            return Arrays.asList(Expression.FALSE);
         }
 
         return groupElements(elements, n - k, n);
     }
 
-    private List<Formula> groupElements(List<? extends Formula> elements, int k, final int n) {
-        final List<Formula> groupedElements = new ArrayList<>();
-        final Formula[] clause = new Formula[k + 1];
+    private List<Expression> groupElements(List<? extends Expression> elements, int k, final int n) {
+        final List<Expression> groupedElements = new ArrayList<>();
+        final Expression[] clause = new Expression[k + 1];
         final int[] index = new int[k + 1];
 
         // the position that is currently filled in clause
@@ -163,7 +163,7 @@ public class EquivalenceVisitor implements TreeVisitor<Void, Formula> {
             } else {
                 clause[level] = elements.get(index[level]);
                 if (level == k) {
-                    final Formula[] clonedClause = new Formula[clause.length];
+                    final Expression[] clonedClause = new Expression[clause.length];
                     Arrays.copyOf(clause, clause.length);
                     for (int i = 0; i < clause.length; i++) {
                         //						clonedClause[i] = Trees.cloneTree(clause[i]);

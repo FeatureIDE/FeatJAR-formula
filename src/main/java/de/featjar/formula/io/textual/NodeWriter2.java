@@ -21,9 +21,9 @@
 package de.featjar.formula.io.textual;
 
 import de.featjar.formula.io.textual.Symbols.Operator;
-import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.TerminalFormula;
-import de.featjar.formula.structure.formula.literal.Literal;
+import de.featjar.formula.structure.Expression;
+import de.featjar.formula.structure.TerminalExpression;
+import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.AtLeast;
 import de.featjar.formula.structure.formula.connective.AtMost;
@@ -46,20 +46,20 @@ import java.util.List;
  * @author Timo Günther
  * @author Sebastian Krieter
  */
-public class NodeWriter2 implements InOrderTreeVisitor<Void, Formula> {
+public class NodeWriter2 implements InOrderTreeVisitor<Void, Expression> {
 
     private final StringBuilder sb = new StringBuilder();
 
     @Override
-    public TraversalAction firstVisit(List<Formula> path) {
+    public TraversalAction firstVisit(List<Expression> path) {
         final Notation notation = getNotation();
         switch (notation) {
             case INFIX:
                 // if literal or not infixable or != 2 children
-                final Formula currentNode = getCurrentNode(path);
+                final Expression currentNode = getCurrentNode(path);
 
                 alignLine(path.size());
-                if (currentNode instanceof TerminalFormula) {
+                if (currentNode instanceof TerminalExpression) {
                     if (currentNode instanceof Literal) {
                         if (!((Literal) currentNode).isPositive()) {
                             sb.append(getSymbols().getSymbol(Operator.NOT));
@@ -69,8 +69,8 @@ public class NodeWriter2 implements InOrderTreeVisitor<Void, Formula> {
                     sb.append(variableToString(currentNode.getName()));
                 } else if (currentNode.getChildren().size() != 2) {
 
-                } else if (currentNode instanceof Formula) {
-                    Symbols.getOperator((Formula) currentNode);
+                } else if (currentNode instanceof Expression) {
+                    Symbols.getOperator((Expression) currentNode);
                 }
                 break;
             case PREFIX:
@@ -86,15 +86,15 @@ public class NodeWriter2 implements InOrderTreeVisitor<Void, Formula> {
     }
 
     @Override
-    public TraversalAction visit(List<Formula> path) {
+    public TraversalAction visit(List<Expression> path) {
         final Notation notation = getNotation();
         switch (notation) {
             case INFIX:
                 // if not literal and infixable and == 2 children
-                final Formula currentNode = getCurrentNode(path);
+                final Expression currentNode = getCurrentNode(path);
                 if (currentNode.getChildren().size() == 2) {
                     alignLine(path.size());
-                    Symbols.getOperator((Formula) currentNode);
+                    Symbols.getOperator((Expression) currentNode);
                 }
                 break;
             case PREFIX:
@@ -110,7 +110,7 @@ public class NodeWriter2 implements InOrderTreeVisitor<Void, Formula> {
     }
 
     @Override
-    public TraversalAction lastVisit(List<Formula> path) {
+    public TraversalAction lastVisit(List<Expression> path) {
         final Notation notation = getNotation();
         switch (notation) {
             case INFIX:

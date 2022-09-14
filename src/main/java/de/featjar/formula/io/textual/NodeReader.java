@@ -21,15 +21,14 @@
 package de.featjar.formula.io.textual;
 
 import de.featjar.formula.io.textual.Symbols.Operator;
-import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.formula.literal.ErrorLiteral;
+import de.featjar.formula.structure.Expression;
+import de.featjar.formula.structure.formula.predicate.Problem;
 import de.featjar.formula.tmp.TermMap;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.BiImplies;
 import de.featjar.formula.structure.formula.connective.Implies;
 import de.featjar.formula.structure.formula.connective.Not;
 import de.featjar.formula.structure.formula.connective.Or;
-import de.featjar.base.data.Problem;
 import de.featjar.base.data.Problem.Severity;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.format.ParseException;
@@ -122,7 +121,7 @@ public class NodeReader {
 
     private ErrorHandling ignoreMissingFeatures = ErrorHandling.THROW;
     private ErrorHandling ignoreUnparsableSubExpressions = ErrorHandling.THROW;
-    private List<Problem> problemList;
+    private List<de.featjar.base.data.Problem> problemList;
 
     public TermMap getFeatureNames() {
         return map;
@@ -163,12 +162,12 @@ public class NodeReader {
     }
 
     /**
-     * Parses a constraint and create a corresponding {@link Formula}.
+     * Parses a constraint and create a corresponding {@link Expression}.
      *
      * @param formulaString The constraint as a string representation
      * @return The parsed formula
      */
-    public Result<Formula> read(String formulaString) {
+    public Result<Expression> read(String formulaString) {
         problemList = new ArrayList<>();
         if (formulaString == null) {
             return Result.empty(new ParseProblem(new ParseException(ErrorMessage.NULL_CONSTRAINT.getMessage(), 0), 0));
@@ -179,7 +178,7 @@ public class NodeReader {
             problemList.add(new ParseProblem(e, 0));
             switch (ignoreUnparsableSubExpressions) {
                 case KEEP:
-                    return Result.of(new ErrorLiteral(formulaString));
+                    return Result.of(new Problem(formulaString));
                 case REMOVE:
                 case THROW:
                     return Result.empty(problemList);
@@ -189,7 +188,7 @@ public class NodeReader {
         }
     }
 
-    private Formula checkExpression(String source, List<String> quotedVariables, List<String> subExpressions)
+    private Expression checkExpression(String source, List<String> quotedVariables, List<String> subExpressions)
             throws ParseException {
         if (source.isEmpty()) {
             return handleInvalidExpression(ErrorMessage.EMPTY_EXPRESSION, source);
@@ -206,56 +205,56 @@ public class NodeReader {
 
                 // recursion for children nodes
 
-                final Formula formula1, formula2;
+                final Expression expression1, expression2;
                 if (operator == Operator.NOT) {
                     final String rightSide = source.substring(index + symbol.length(), source.length())
                             .trim();
-                    formula1 = null;
+                    expression1 = null;
                     if (rightSide.isEmpty()) {
-                        formula2 = handleInvalidExpression(ErrorMessage.MISSING_NAME, source);
+                        expression2 = handleInvalidExpression(ErrorMessage.MISSING_NAME, source);
                     } else {
-                        formula2 = checkExpression(rightSide, quotedVariables, subExpressions);
+                        expression2 = checkExpression(rightSide, quotedVariables, subExpressions);
                     }
-                    if (formula2 == null) {
+                    if (expression2 == null) {
                         return null;
                     }
                 } else {
                     final String leftSide = source.substring(0, index).trim();
                     if (leftSide.isEmpty()) {
-                        formula1 = handleInvalidExpression(ErrorMessage.MISSING_NAME_LEFT, source);
+                        expression1 = handleInvalidExpression(ErrorMessage.MISSING_NAME_LEFT, source);
                     } else {
-                        formula1 = checkExpression(leftSide, quotedVariables, subExpressions);
+                        expression1 = checkExpression(leftSide, quotedVariables, subExpressions);
                     }
-                    if (formula1 == null) {
+                    if (expression1 == null) {
                         return null;
                     }
                     final String rightSide = source.substring(index + symbol.length(), source.length())
                             .trim();
                     if (rightSide.isEmpty()) {
-                        formula2 = handleInvalidExpression(ErrorMessage.MISSING_NAME_RIGHT, source);
+                        expression2 = handleInvalidExpression(ErrorMessage.MISSING_NAME_RIGHT, source);
                     } else {
-                        formula2 = checkExpression(rightSide, quotedVariables, subExpressions);
+                        expression2 = checkExpression(rightSide, quotedVariables, subExpressions);
                     }
-                    if (formula2 == null) {
+                    if (expression2 == null) {
                         return null;
                     }
                 }
 
                 switch (operator) {
                     case EQUALS: {
-                        return new BiImplies(formula1, formula2);
+                        return new BiImplies(expression1, expression2);
                     }
                     case IMPLIES: {
-                        return new Implies(formula1, formula2);
+                        return new Implies(expression1, expression2);
                     }
                     case OR: {
-                        return new Or(formula1, formula2);
+                        return new Or(expression1, expression2);
                     }
                     case AND: {
-                        return new And(formula1, formula2);
+                        return new And(expression1, expression2);
                     }
                     case NOT: {
-                        return new Not(formula2);
+                        return new Not(expression2);
                     }
                     case ATLEAST:
                     case ATMOST:
@@ -312,20 +311,20 @@ public class NodeReader {
         }
     }
 
-    private Formula handleInvalidFeatureName(String featureName) throws ParseException {
+    private Expression handleInvalidFeatureName(String featureName) throws ParseException {
         return getInvalidLiteral(ErrorMessage.INVALID_FEATURE_NAME, ignoreMissingFeatures, featureName);
     }
 
-    private Formula handleInvalidExpression(ErrorMessage message, String constraint) throws ParseException {
+    private Expression handleInvalidExpression(ErrorMessage message, String constraint) throws ParseException {
         return getInvalidLiteral(message, ignoreUnparsableSubExpressions, constraint);
     }
 
-    private Formula getInvalidLiteral(ErrorMessage message, ErrorHandling handleError, String element)
+    private Expression getInvalidLiteral(ErrorMessage message, ErrorHandling handleError, String element)
             throws ParseException {
         switch (handleError) {
             case KEEP:
                 problemList.add(new ParseProblem(message.getMessage(), 0, Severity.WARNING));
-                return new ErrorLiteral(message.getMessage());
+                return new Problem(message.getMessage());
             case REMOVE:
                 problemList.add(new ParseProblem(message.getMessage(), 0, Severity.WARNING));
                 return null;
@@ -336,7 +335,7 @@ public class NodeReader {
         }
     }
 
-    private Formula parseNode(String constraint) throws ParseException {
+    private Expression parseNode(String constraint) throws ParseException {
         constraint = constraint.trim();
         if (constraint.isEmpty()) {
             throwParsingError(ErrorMessage.EMPTY_CONSTRAINT, 0);

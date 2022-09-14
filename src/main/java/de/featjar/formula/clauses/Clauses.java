@@ -22,8 +22,8 @@ package de.featjar.formula.clauses;
 
 import de.featjar.base.Feat;
 import de.featjar.formula.io.FormulaFormats;
-import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.formula.literal.Literal;
+import de.featjar.formula.structure.Expression;
+import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.tmp.TermMap;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Or;
@@ -83,25 +83,25 @@ public class Clauses {
         return literal < 0 ? -index : index;
     }
 
-    public static CNF convertToCNF(Formula formula) {
-        return new FormulaToCNF().apply(formula).get();
+    public static CNF convertToCNF(Expression expression) {
+        return new FormulaToCNF().apply(expression).get();
     }
 
-    public static CNF convertToCNF(Formula formula, TermMap termMap) {
+    public static CNF convertToCNF(Expression expression, TermMap termMap) {
         final FormulaToCNF function = new FormulaToCNF();
         function.setVariableMapping(termMap);
-        return function.apply(formula).get();
+        return function.apply(expression).get();
     }
 
-    public static CNF convertToDNF(Formula formula) {
-        final CNF cnf = new FormulaToCNF().apply(formula).get();
+    public static CNF convertToDNF(Expression expression) {
+        final CNF cnf = new FormulaToCNF().apply(expression).get();
         return new CNF(cnf.getVariableMap(), convertNF(cnf.getClauses()));
     }
 
-    public static CNF convertToDNF(Formula formula, TermMap termMap) {
+    public static CNF convertToDNF(Expression expression, TermMap termMap) {
         final FormulaToCNF function = new FormulaToCNF();
         function.setVariableMapping(termMap);
-        final CNF cnf = function.apply(formula).get();
+        final CNF cnf = function.apply(expression).get();
         return new CNF(termMap, convertNF(cnf.getClauses()));
     }
 

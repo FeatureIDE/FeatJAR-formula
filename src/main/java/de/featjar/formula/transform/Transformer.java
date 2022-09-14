@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.transform;
 
-import de.featjar.formula.structure.Formula;
+import de.featjar.formula.structure.Expression;
 import de.featjar.base.task.MonitorableFunction;
 
-public interface Transformer extends MonitorableFunction<Formula, Formula> {}
+public interface Transformer extends MonitorableFunction<Expression, Expression> {}

@@ -23,8 +23,8 @@ package de.featjar.io;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import de.featjar.formula.io.xml.XMLFeatureModelFormat;
-import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.formula.literal.Literal;
+import de.featjar.formula.structure.Expression;
+import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.tmp.TermMap;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Implies;
@@ -63,7 +63,7 @@ public class XMLFeatureModelFormatTest {
         FormatTest.testLoad(getFormula(name), name, new XMLFeatureModelFormat());
     }
 
-    private static Formula getFormula(String name) {
+    private static Expression getFormula(String name) {
         switch (name) {
             case "faulty": {
                 return null;

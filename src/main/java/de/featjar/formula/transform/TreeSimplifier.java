@@ -20,9 +20,9 @@
  */
 package de.featjar.formula.transform;
 
-import de.featjar.formula.structure.AuxiliaryRoot;
-import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.formula.Predicate;
+import de.featjar.formula.tmp.AuxiliaryRoot;
+import de.featjar.formula.structure.Expression;
+import de.featjar.formula.structure.formula.predicate.Predicate;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Connective;
 import de.featjar.formula.structure.formula.connective.Or;
@@ -30,14 +30,14 @@ import de.featjar.base.tree.visitor.TreeVisitor;
 import java.util.Arrays;
 import java.util.List;
 
-public class TreeSimplifier implements TreeVisitor<Void, Formula> {
+public class TreeSimplifier implements TreeVisitor<Void, Expression> {
 
     @Override
-    public TraversalAction firstVisit(List<Formula> path) {
-        final Formula formula = getCurrentNode(path);
-        if (formula instanceof Predicate) {
+    public TraversalAction firstVisit(List<Expression> path) {
+        final Expression expression = getCurrentNode(path);
+        if (expression instanceof Predicate) {
             return TraversalAction.SKIP_CHILDREN;
-        } else if ((formula instanceof AuxiliaryRoot) || (formula instanceof Connective)) {
+        } else if ((expression instanceof AuxiliaryRoot) || (expression instanceof Connective)) {
             return TraversalAction.CONTINUE;
         } else {
             return TraversalAction.FAIL;
@@ -45,34 +45,34 @@ public class TreeSimplifier implements TreeVisitor<Void, Formula> {
     }
 
     @Override
-    public TraversalAction lastVisit(List<Formula> path) {
-        final Formula formula = getCurrentNode(path);
-        if ((formula instanceof AuxiliaryRoot) || (formula instanceof Connective)) {
-            if (formula instanceof And) {
-                if (formula.getChildren().stream().anyMatch(c -> c == Formula.FALSE)) {
-                    formula.setChildren(Arrays.asList(Formula.FALSE));
+    public TraversalAction lastVisit(List<Expression> path) {
+        final Expression expression = getCurrentNode(path);
+        if ((expression instanceof AuxiliaryRoot) || (expression instanceof Connective)) {
+            if (expression instanceof And) {
+                if (expression.getChildren().stream().anyMatch(c -> c == Expression.FALSE)) {
+                    expression.setChildren(Arrays.asList(Expression.FALSE));
                 } else {
-                    formula.flatReplaceChildren(this::mergeAnd);
+                    expression.flatReplaceChildren(this::mergeAnd);
                 }
-            } else if (formula instanceof Or) {
-                if (formula.getChildren().stream().anyMatch(c -> c == Formula.TRUE)) {
-                    formula.setChildren(Arrays.asList(Formula.TRUE));
+            } else if (expression instanceof Or) {
+                if (expression.getChildren().stream().anyMatch(c -> c == Expression.TRUE)) {
+                    expression.setChildren(Arrays.asList(Expression.TRUE));
                 } else {
-                    formula.flatReplaceChildren(this::mergeOr);
+                    expression.flatReplaceChildren(this::mergeOr);
                 }
             }
         }
         return TraversalAction.CONTINUE;
     }
 
-    private List<? extends Formula> mergeAnd(final Formula child) {
+    private List<? extends Expression> mergeAnd(final Expression child) {
         return (child instanceof And)
                         || (!(child instanceof Predicate) && (child.getChildren().size() == 1))
                 ? child.getChildren()
                 : null;
     }
 
-    private List<? extends Formula> mergeOr(final Formula child) {
+    private List<? extends Expression> mergeOr(final Expression child) {
         return (child instanceof Or)
                         || (!(child instanceof Predicate) && (child.getChildren().size() == 1))
                 ? child.getChildren()

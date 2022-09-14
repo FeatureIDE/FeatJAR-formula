@@ -1,6 +1,6 @@
 package de.featjar.formula.tmp;
 
-import de.featjar.formula.structure.Formula;
+import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.formula.connective.And;
 
 import java.util.Arrays;
@@ -16,23 +16,23 @@ public class FormulaBuilder {
         termMap = new TermMap();
     }
 
-    public FormulaBuilder(Formula formula) {
-        this.termMap = formula.getTermMap().get();
+    public FormulaBuilder(Expression expression) {
+        this.termMap = expression.getTermMap().get();
     }
 
-    public FormulaBuilder(Formula... formulas) {
+    public FormulaBuilder(Expression... expressions) {
         // need to merge, consider special case 0 and 1 formulas
     }
 
-    public static FormulaBuilder of(Formula... formulas) {
+    public static FormulaBuilder of(Expression... expressions) {
 
     }
 
     // also implement Formula.getBuilder(Formula... formulas)
 
-    public Formula and(Formula... formulas) {
+    public Expression and(Expression... expressions) {
         And and = new And(); // maybe remove all constructors? rename to AndFormula/Connective?
-        and.setChildren(Arrays.asList(formulas));
+        and.setChildren(Arrays.asList(expressions));
     }
 
     // what if x is renamed in a submodel to y? what happens to the x in the termmap of the parent model?

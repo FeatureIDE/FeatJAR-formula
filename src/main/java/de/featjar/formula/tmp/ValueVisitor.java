@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.tmp;
 
-import de.featjar.formula.structure.Formula;
+import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.assignment.Assignment;
 import de.featjar.formula.tmp.TermMap.Variable;
 import de.featjar.base.tree.visitor.TreeVisitor;
@@ -29,7 +29,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-public class ValueVisitor implements TreeVisitor<Object, Formula> {
+public class ValueVisitor implements TreeVisitor<Object, Expression> {
 
     public enum UnknownVariableHandling {
         ERROR,
@@ -76,10 +76,10 @@ public class ValueVisitor implements TreeVisitor<Object, Formula> {
     }
 
     @Override
-    public TraversalAction lastVisit(List<Formula> path) {
-        final Formula formula = getCurrentNode(path);
-        if (formula instanceof Variable) {
-            final Variable variable = (Variable) formula;
+    public TraversalAction lastVisit(List<Expression> path) {
+        final Expression expression = getCurrentNode(path);
+        if (expression instanceof Variable) {
+            final Variable variable = (Variable) expression;
             final int index = variable.getIndex();
             if (index <= 0) {
                 switch (unknownVariableHandling) {
@@ -114,9 +114,9 @@ public class ValueVisitor implements TreeVisitor<Object, Formula> {
                 }
             }
         } else {
-            final List<Object> arguments = values.subList(0, formula.getChildren().size());
+            final List<Object> arguments = values.subList(0, expression.getChildren().size());
             Collections.reverse(arguments);
-            final Object value = formula.evaluate(arguments);
+            final Object value = expression.evaluate(arguments);
             arguments.clear();
             values.push(value);
         }

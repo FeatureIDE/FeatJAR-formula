@@ -21,8 +21,8 @@
 package de.featjar.formula.transform;
 
 import de.featjar.base.data.Result;
-import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.formula.literal.Literal;
+import de.featjar.formula.structure.Expression;
+import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.structure.formula.connective.Connective;
 import de.featjar.base.task.Monitor;
 import de.featjar.base.task.MonitorableFunction;
@@ -41,33 +41,33 @@ import java.util.stream.Collectors;
  *
  * @author Sebastian Krieter
  */
-public class DistributiveLawTransformer implements MonitorableFunction<Formula, Connective> {
+public class DistributiveLawTransformer implements MonitorableFunction<Expression, Connective> {
 
     public static class MaximumNumberOfLiteralsExceededException extends Exception {
         private static final long serialVersionUID = 7582471416721588997L;
     }
 
     private static class PathElement {
-        Formula formula;
-        List<Formula> newChildren = new ArrayList<>();
+        Expression expression;
+        List<Expression> newChildren = new ArrayList<>();
         int maxDepth = 0;
 
-        PathElement(Formula formula) {
-            this.formula = formula;
+        PathElement(Expression expression) {
+            this.expression = expression;
         }
     }
 
-    private final Function<List<? extends Formula>, Formula> clauseConstructor;
+    private final Function<List<? extends Expression>, Expression> clauseConstructor;
     private final Class<? extends Connective> clauseClass;
 
     private int maximumNumberOfLiterals = Integer.MAX_VALUE;
 
     private int numberOfLiterals;
 
-    private List<Formula> children;
+    private List<Expression> children;
 
     public DistributiveLawTransformer(
-            Class<? extends Connective> clauseClass, Function<List<? extends Formula>, Formula> clauseConstructor) {
+            Class<? extends Connective> clauseClass, Function<List<? extends Expression>, Expression> clauseConstructor) {
         this.clauseClass = clauseClass;
         this.clauseConstructor = clauseConstructor;
     }
@@ -77,13 +77,13 @@ public class DistributiveLawTransformer implements MonitorableFunction<Formula, 
     }
 
     @Override
-    public Result<Connective> execute(Formula formula, Monitor monitor) {
+    public Result<Connective> execute(Expression expression, Monitor monitor) {
         final ArrayList<PathElement> path = new ArrayList<>();
-        final ArrayDeque<Formula> stack = new ArrayDeque<>();
-        stack.addLast(formula);
+        final ArrayDeque<Expression> stack = new ArrayDeque<>();
+        stack.addLast(expression);
         while (!stack.isEmpty()) {
-            final Formula curNode = stack.getLast();
-            final boolean firstEncounter = path.isEmpty() || (curNode != path.get(path.size() - 1).formula);
+            final Expression curNode = stack.getLast();
+            final boolean firstEncounter = path.isEmpty() || (curNode != path.get(path.size() - 1).expression);
             if (firstEncounter) {
                 if (curNode instanceof Literal) {
                     final PathElement parent = path.get(path.size() - 1);
@@ -119,11 +119,11 @@ public class DistributiveLawTransformer implements MonitorableFunction<Formula, 
                 stack.removeLast();
             }
         }
-        return Result.of((Connective) formula);
+        return Result.of((Connective) expression);
     }
 
     @SuppressWarnings("unchecked")
-    private List<Formula> convert(Formula child) throws MaximumNumberOfLiteralsExceededException {
+    private List<Expression> convert(Expression child) throws MaximumNumberOfLiteralsExceededException {
         if (child instanceof Literal) {
             return null;
         } else {
@@ -133,7 +133,7 @@ public class DistributiveLawTransformer implements MonitorableFunction<Formula, 
             children.sort(Comparator.comparingInt(c -> c.getChildren().size()));
             convertNF(newClauseList, new LinkedHashSet<>(children.size() << 1), 0);
 
-            final List<Formula> filteredClauseList = new ArrayList<>(newClauseList.size());
+            final List<Expression> filteredClauseList = new ArrayList<>(newClauseList.size());
             newClauseList.sort(Comparator.comparingInt(Set::size));
             final int lastIndex = newClauseList.size();
             for (int i = 0; i < lastIndex; i++) {
@@ -164,7 +164,7 @@ public class DistributiveLawTransformer implements MonitorableFunction<Formula, 
             }
             clauses.add(newClause);
         } else {
-            final Formula child = children.get(index);
+            final Expression child = children.get(index);
             if (child instanceof Literal) {
                 final Literal clauseLiteral = (Literal) child;
                 if (literals.contains(clauseLiteral)) {
@@ -178,7 +178,7 @@ public class DistributiveLawTransformer implements MonitorableFunction<Formula, 
                 if (isRedundant(literals, child)) {
                     convertNF(clauses, literals, index + 1);
                 } else {
-                    for (final Formula grandChild : child.getChildren()) {
+                    for (final Expression grandChild : child.getChildren()) {
                         if (grandChild instanceof Literal) {
                             final Literal newlyAddedLiteral = (Literal) grandChild;
                             if (!literals.contains(newlyAddedLiteral.invert())) {
@@ -207,14 +207,14 @@ public class DistributiveLawTransformer implements MonitorableFunction<Formula, 
         return greatGrandChildren.stream().map(Literal::invert).noneMatch(literals::contains);
     }
 
-    private boolean isRedundant(LinkedHashSet<Literal> literals, final Formula child) {
+    private boolean isRedundant(LinkedHashSet<Literal> literals, final Expression child) {
         return child.getChildren().stream().anyMatch(e -> isRedundant(e, literals));
     }
 
-    private static boolean isRedundant(Formula formula, LinkedHashSet<Literal> literals) {
-        return (formula instanceof Literal)
-                ? literals.contains(formula)
-                : formula.getChildren().stream().allMatch(literals::contains);
+    private static boolean isRedundant(Expression expression, LinkedHashSet<Literal> literals) {
+        return (expression instanceof Literal)
+                ? literals.contains(expression)
+                : expression.getChildren().stream().allMatch(literals::contains);
     }
 
     public int getMaximumNumberOfLiterals() {

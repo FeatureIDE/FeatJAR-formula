@@ -20,8 +20,8 @@
  */
 package de.featjar.formula.transform;
 
-import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.formula.Predicate;
+import de.featjar.formula.structure.Expression;
+import de.featjar.formula.structure.formula.predicate.Predicate;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Or;
 
@@ -30,15 +30,15 @@ import java.util.List;
 public class DNFTester extends NFTester {
 
     @Override
-    public TraversalAction firstVisit(List<Formula> path) {
-        final Formula formula = getCurrentNode(path);
-        if (formula instanceof Or) {
+    public TraversalAction firstVisit(List<Expression> path) {
+        final Expression expression = getCurrentNode(path);
+        if (expression instanceof Or) {
             if (path.size() > 1) {
                 isNf = false;
                 isClausalNf = false;
                 return TraversalAction.SKIP_ALL;
             }
-            for (final Formula child : formula.getChildren()) {
+            for (final Expression child : expression.getChildren()) {
                 if (!(child instanceof And)) {
                     if (!(child instanceof Predicate)) {
                         isNf = false;
@@ -49,7 +49,7 @@ public class DNFTester extends NFTester {
                 }
             }
             return TraversalAction.CONTINUE;
-        } else if (formula instanceof And) {
+        } else if (expression instanceof And) {
             if (path.size() > 2) {
                 isNf = false;
                 isClausalNf = false;
@@ -58,7 +58,7 @@ public class DNFTester extends NFTester {
             if (path.size() < 2) {
                 isClausalNf = false;
             }
-            for (final Formula child : formula.getChildren()) {
+            for (final Expression child : expression.getChildren()) {
                 if (!(child instanceof Predicate)) {
                     isNf = false;
                     isClausalNf = false;
@@ -66,7 +66,7 @@ public class DNFTester extends NFTester {
                 }
             }
             return TraversalAction.CONTINUE;
-        } else if (formula instanceof Predicate) {
+        } else if (expression instanceof Predicate) {
             if (path.size() > 3) {
                 isNf = false;
                 isClausalNf = false;

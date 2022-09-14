@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.io.textual;
 
-import de.featjar.formula.structure.Formula;
+import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.AtLeast;
 import de.featjar.formula.structure.formula.connective.AtMost;
@@ -103,44 +103,44 @@ public class Symbols {
         return symbol != null ? symbol : operator.defaultName;
     }
 
-    public static Operator getOperator(Formula formula) throws IllegalArgumentException {
-        if (formula instanceof Connective) {
-            if (formula instanceof Not) {
+    public static Operator getOperator(Expression expression) throws IllegalArgumentException {
+        if (expression instanceof Connective) {
+            if (expression instanceof Not) {
                 return Operator.NOT;
             }
-            if (formula instanceof And) {
+            if (expression instanceof And) {
                 return Operator.AND;
             }
-            if (formula instanceof Or) {
+            if (expression instanceof Or) {
                 return Operator.OR;
             }
-            if (formula instanceof Implies) {
+            if (expression instanceof Implies) {
                 return Operator.IMPLIES;
             }
-            if (formula instanceof BiImplies) {
+            if (expression instanceof BiImplies) {
                 return Operator.EQUALS;
             }
-            if (formula instanceof AtLeast) {
+            if (expression instanceof AtLeast) {
                 return Operator.ATLEAST;
             }
-            if (formula instanceof AtMost) {
+            if (expression instanceof AtMost) {
                 return Operator.ATMOST;
             }
-            if (formula instanceof Choose) {
+            if (expression instanceof Choose) {
                 return Operator.CHOOSE;
             }
-            if (formula instanceof Between) {
+            if (expression instanceof Between) {
                 return Operator.BETWEEN;
             }
-            if (formula instanceof ForAll) {
+            if (expression instanceof ForAll) {
                 return Operator.FORALL;
             }
-            if (formula instanceof Exists) {
+            if (expression instanceof Exists) {
                 return Operator.EXISTS;
             }
             return Operator.UNKNOWN;
         }
-        throw new IllegalArgumentException("Unrecognized node type: " + formula.getClass());
+        throw new IllegalArgumentException("Unrecognized node type: " + expression.getClass());
     }
 
     public boolean isTextual() {

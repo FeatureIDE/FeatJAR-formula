@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.structure.formula.predicate;
 
-import de.featjar.formula.structure.NonTerminalFormula;
+import de.featjar.formula.structure.NonTerminalExpression;
 import de.featjar.formula.structure.term.Term;
 import java.util.List;
 
@@ -30,7 +30,7 @@ import java.util.List;
  *
  * @author Sebastian Krieter
  */
-public class Equals extends NonTerminalFormula implements BinaryPredicate {
+public class Equals extends NonTerminalExpression implements BinaryPredicate, InvertiblePredicate {
 
     protected Equals() {
     }
@@ -55,11 +55,11 @@ public class Equals extends NonTerminalFormula implements BinaryPredicate {
 
     @Override
     public NotEquals invert() {
-        return new NotEquals((Term) getLeftFormula(), (Term) getRightFormula());
+        return new NotEquals((Term) getLeftExpression(), (Term) getRightFormula());
     }
 
     @Override
-    protected boolean compareDifference(int difference) {
+    public boolean compareDifference(int difference) {
         return difference == 0;
     }
 }

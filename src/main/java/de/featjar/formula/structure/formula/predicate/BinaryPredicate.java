@@ -20,18 +20,17 @@
  */
 package de.featjar.formula.structure.formula.predicate;
 
-import de.featjar.formula.structure.BinaryFormula;
-import de.featjar.formula.structure.formula.Predicate;
+import de.featjar.formula.structure.BinaryExpression;
 import de.featjar.formula.tmp.Formulas;
 
 import java.util.List;
 
 /**
- * A binary predicate formula.
+ * A binary predicate.
  *
- * @author Sebastian Krieter
+ * @author Elias Kuiter
  */
-public interface BinaryPredicate extends Predicate, BinaryFormula {
+public interface BinaryPredicate extends Predicate, BinaryExpression {
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     default Boolean evaluate(List<?> values) {
@@ -41,5 +40,5 @@ public interface BinaryPredicate extends Predicate, BinaryFormula {
         return (v1 != null && v2 != null) ? compareDifference(v1.compareTo(v2)) : null;
     }
 
-    boolean compareDifference(int diff);
+    boolean compareDifference(int difference);
 }

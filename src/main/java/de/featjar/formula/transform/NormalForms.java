@@ -20,9 +20,9 @@
  */
 package de.featjar.formula.transform;
 
-import de.featjar.formula.structure.AuxiliaryRoot;
-import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.formula.literal.Literal;
+import de.featjar.formula.tmp.AuxiliaryRoot;
+import de.featjar.formula.structure.Expression;
+import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.base.data.Result;
@@ -42,24 +42,24 @@ public class NormalForms {
         DNF
     }
 
-    public static Formula simplifyForNF(Formula formula) {
-        final AuxiliaryRoot auxiliaryRoot = new AuxiliaryRoot(formula);
+    public static Expression simplifyForNF(Expression expression) {
+        final AuxiliaryRoot auxiliaryRoot = new AuxiliaryRoot(expression);
         Trees.traverse(auxiliaryRoot, new EquivalenceVisitor());
         Trees.traverse(auxiliaryRoot, new DeMorganVisitor());
         Trees.traverse(auxiliaryRoot, new TreeSimplifier());
-        return (Formula) auxiliaryRoot.getChild();
+        return (Expression) auxiliaryRoot.getChild();
     }
 
-    public static Result<Formula> toNF(Formula root, Transformer transformer) {
+    public static Result<Expression> toNF(Expression root, Transformer transformer) {
         return transformer.apply(root);
     }
 
-    public static boolean isNF(Formula formula, NormalForm normalForm, boolean clausal) {
-        final NFTester tester = getNFTester(formula, normalForm);
+    public static boolean isNF(Expression expression, NormalForm normalForm, boolean clausal) {
+        final NFTester tester = getNFTester(expression, normalForm);
         return clausal ? tester.isClausalNf() : tester.isNf();
     }
 
-    static NFTester getNFTester(Formula formula, NormalForm normalForm) {
+    static NFTester getNFTester(Expression expression, NormalForm normalForm) {
         NFTester tester;
         switch (normalForm) {
             case CNF:
@@ -71,32 +71,32 @@ public class NormalForms {
             default:
                 throw new IllegalStateException(String.valueOf(normalForm));
         }
-        Trees.traverse(formula, tester);
+        Trees.traverse(expression, tester);
         return tester;
     }
 
-    public static Formula toClausalNF(Formula formula, NormalForm normalForm) {
+    public static Expression toClausalNF(Expression expression, NormalForm normalForm) {
         switch (normalForm) {
             case CNF:
-                if (formula instanceof Literal) {
-                    formula = new And(new Or(formula));
-                } else if (formula instanceof Or) {
-                    formula = new And(formula);
+                if (expression instanceof Literal) {
+                    expression = new And(new Or(expression));
+                } else if (expression instanceof Or) {
+                    expression = new And(expression);
                 } else {
-                    formula.replaceChildren(child -> (child instanceof Literal ? new Or((Literal) child) : child));
+                    expression.replaceChildren(child -> (child instanceof Literal ? new Or((Literal) child) : child));
                 }
                 break;
             case DNF:
-                if (formula instanceof Literal) {
-                    formula = new Or(new And(formula));
-                } else if (formula instanceof And) {
-                    formula = new Or(new And(formula));
+                if (expression instanceof Literal) {
+                    expression = new Or(new And(expression));
+                } else if (expression instanceof And) {
+                    expression = new Or(new And(expression));
                 } else {
-                    formula.replaceChildren(child -> (child instanceof Literal ? new And((Literal) child) : child));
+                    expression.replaceChildren(child -> (child instanceof Literal ? new And((Literal) child) : child));
                 }
                 break;
             default:
         }
-        return formula;
+        return expression;
     }
 }

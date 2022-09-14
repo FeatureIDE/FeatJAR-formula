@@ -20,20 +20,14 @@
  */
 package de.featjar.formula.structure.formula.connective;
 
-import de.featjar.formula.structure.Formula;
+import de.featjar.formula.structure.formula.Formula;
 
 /**
- * A Boolean connective formula.
+ * A connective.
+ * By convention, all children are formulas.
  *
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
 public interface Connective extends Formula {
-    @Override
-    Connective cloneNode();
-
-    @Override
-    default Class<Boolean> getType() {
-        return Boolean.class;
-    }
 }

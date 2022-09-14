@@ -20,9 +20,9 @@
  */
 package de.featjar.formula.transform;
 
-import de.featjar.formula.structure.AuxiliaryRoot;
-import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.formula.Predicate;
+import de.featjar.formula.tmp.AuxiliaryRoot;
+import de.featjar.formula.structure.Expression;
+import de.featjar.formula.structure.formula.predicate.Predicate;
 import de.featjar.formula.structure.formula.connective.Connective;
 import de.featjar.base.tree.visitor.TreeVisitor;
 import java.util.ArrayDeque;
@@ -30,15 +30,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class DistributiveLawCounter implements TreeVisitor<Integer, Formula> {
+public class DistributiveLawCounter implements TreeVisitor<Integer, Expression> {
 
     private static class StackElement {
         int clauseNumber = 1;
         int clauseSize = 1;
-        Formula formula;
+        Expression expression;
 
-        public StackElement(Formula formula) {
-            this.formula = formula;
+        public StackElement(Expression expression) {
+            this.expression = expression;
         }
     }
 
@@ -55,12 +55,12 @@ public class DistributiveLawCounter implements TreeVisitor<Integer, Formula> {
     }
 
     @Override
-    public TraversalAction firstVisit(List<Formula> path) {
-        final Formula formula = getCurrentNode(path);
-        if (formula instanceof Predicate) {
+    public TraversalAction firstVisit(List<Expression> path) {
+        final Expression expression = getCurrentNode(path);
+        if (expression instanceof Predicate) {
             return TraversalAction.SKIP_CHILDREN;
-        } else if ((formula instanceof Connective) || (formula instanceof AuxiliaryRoot)) {
-            stack.push(new StackElement((Formula) formula));
+        } else if ((expression instanceof Connective) || (expression instanceof AuxiliaryRoot)) {
+            stack.push(new StackElement((Expression) expression));
             return TraversalAction.CONTINUE;
         } else {
             return TraversalAction.FAIL;
@@ -68,15 +68,15 @@ public class DistributiveLawCounter implements TreeVisitor<Integer, Formula> {
     }
 
     @Override
-    public TraversalAction lastVisit(List<Formula> path) {
-        final Formula formula = getCurrentNode(path);
-        if (formula instanceof Predicate) {
-            stack.push(new StackElement(formula));
+    public TraversalAction lastVisit(List<Expression> path) {
+        final Expression expression = getCurrentNode(path);
+        if (expression instanceof Predicate) {
+            stack.push(new StackElement(expression));
         } else {
             final ArrayList<StackElement> children = new ArrayList<>();
             StackElement lastNode = stack.pop();
             boolean invalid = false;
-            for (; lastNode.formula != formula; lastNode = stack.pop()) {
+            for (; lastNode.expression != expression; lastNode = stack.pop()) {
                 children.add(lastNode);
                 if (lastNode.clauseNumber < 0) {
                     invalid = true;

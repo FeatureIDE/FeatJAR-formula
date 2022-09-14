@@ -21,7 +21,7 @@
 package de.featjar.formula.transform;
 
 import de.featjar.base.data.Result;
-import de.featjar.formula.structure.Formula;
+import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.base.task.Monitor;
@@ -45,17 +45,17 @@ public class DNFTransformer implements Transformer {
     }
 
     @Override
-    public Result<Formula> execute(Formula formula, Monitor monitor) {
-        final NFTester nfTester = NormalForms.getNFTester(formula, NormalForms.NormalForm.DNF);
+    public Result<Expression> execute(Expression expression, Monitor monitor) {
+        final NFTester nfTester = NormalForms.getNFTester(expression, NormalForms.NormalForm.DNF);
         if (nfTester.isNf) {
             if (!nfTester.isClausalNf()) {
-                return Result.of(NormalForms.toClausalNF(Trees.clone(formula), NormalForms.NormalForm.DNF));
+                return Result.of(NormalForms.toClausalNF(Trees.clone(expression), NormalForms.NormalForm.DNF));
             } else {
-                return Result.of(Trees.clone(formula));
+                return Result.of(Trees.clone(expression));
             }
         } else {
-            formula = NormalForms.simplifyForNF(Trees.clone(formula));
-            return distributiveLawTransformer.execute((formula instanceof Or) ? formula : new Or(formula), monitor)
+            expression = NormalForms.simplifyForNF(Trees.clone(expression));
+            return distributiveLawTransformer.execute((expression instanceof Or) ? expression : new Or(expression), monitor)
                     .map(f -> NormalForms.toClausalNF(f, NormalForms.NormalForm.DNF));
         }
     }

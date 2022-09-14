@@ -21,7 +21,7 @@
 package de.featjar.formula.transform;
 
 import de.featjar.base.data.Result;
-import de.featjar.formula.structure.Formula;
+import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Connective;
 import de.featjar.formula.structure.formula.connective.Or;
@@ -39,8 +39,8 @@ public class DNFDistributiveLawTransformer extends DistributiveLawTransformer {
     }
 
     @Override
-    public Result<Connective> execute(Formula formula, Monitor monitor) {
-        final Connective connective = (formula instanceof Or) ? (Or) formula : new Or(formula);
+    public Result<Connective> execute(Expression expression, Monitor monitor) {
+        final Connective connective = (expression instanceof Or) ? (Or) expression : new Or(expression);
         return super.execute(connective, monitor);
     }
 }

@@ -20,8 +20,8 @@
  */
 package de.featjar.formula.io.xml;
 
-import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.formula.literal.Literal;
+import de.featjar.formula.structure.Expression;
+import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.tmp.TermMap;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Or;
@@ -39,8 +39,8 @@ import org.w3c.dom.Element;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class XMLFeatureModelFormat extends AbstractXMLFeatureModelFormat<Formula, Literal, Boolean> {
-    protected final List<Formula> constraints = new ArrayList<>();
+public class XMLFeatureModelFormat extends AbstractXMLFeatureModelFormat<Expression, Literal, Boolean> {
+    protected final List<Expression> constraints = new ArrayList<>();
     protected final TermMap termMap = new TermMap();
 
     @Override
@@ -59,7 +59,7 @@ public class XMLFeatureModelFormat extends AbstractXMLFeatureModelFormat<Formula
     }
 
     @Override
-    protected Formula parseDocument(Document document) throws ParseException {
+    protected Expression parseDocument(Document document) throws ParseException {
         final Element featureModelElement = getDocumentElement(document, FEATURE_MODEL);
         parseFeatureTree(getElement(featureModelElement, STRUCT));
         Optional<Element> constraintsElement = getOptionalElement(featureModelElement, CONSTRAINTS);
@@ -75,7 +75,7 @@ public class XMLFeatureModelFormat extends AbstractXMLFeatureModelFormat<Formula
     }
 
     @Override
-    protected void writeDocument(Formula object, Document doc) {
+    protected void writeDocument(Expression object, Document doc) {
         throw new UnsupportedOperationException();
     }
 
@@ -132,8 +132,8 @@ public class XMLFeatureModelFormat extends AbstractXMLFeatureModelFormat<Formula
     }
 
     @Override
-    protected void addConstraint(Boolean constraintLabel, Formula formula) throws ParseException {
-        constraints.add(formula);
+    protected void addConstraint(Boolean constraintLabel, Expression expression) throws ParseException {
+        constraints.add(expression);
     }
 
     @Override

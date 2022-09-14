@@ -21,8 +21,7 @@
 package de.featjar.formula.tmp;
 
 import de.featjar.formula.io.textual.FormulaFormat;
-import de.featjar.formula.structure.AuxiliaryRoot;
-import de.featjar.formula.structure.Formula;
+import de.featjar.formula.structure.Expression;
 import de.featjar.formula.tmp.ValueVisitor.UnknownVariableHandling;
 import de.featjar.formula.structure.assignment.Assignment;
 import de.featjar.formula.tmp.TermMap.Variable;
@@ -52,78 +51,78 @@ public class Formulas {
 
     private Formulas() {}
 
-    public static String printTree(Formula formula) {
+    public static String printTree(Expression expression) {
         final TreePrinter visitor = new TreePrinter();
         visitor.setFilter(n -> (!(n instanceof Variable)));
-        return Trees.traverse(formula, visitor).orElse("");
+        return Trees.traverse(expression, visitor).orElse("");
     }
 
-    public static String printFormula(Formula formula) {
+    public static String printFormula(Expression expression) {
         try (final ByteArrayOutputStream s = new ByteArrayOutputStream()) {
-            IO.save(formula, s, new FormulaFormat());
+            IO.save(expression, s, new FormulaFormat());
             return s.toString();
         } catch (IOException e) {
             return "";
         }
     }
 
-    public static Optional<Object> evaluate(Formula formula, Assignment assignment) {
+    public static Optional<Object> evaluate(Expression expression, Assignment assignment) {
         final ValueVisitor visitor = new ValueVisitor(assignment);
         visitor.setUnknown(UnknownVariableHandling.ERROR);
-        return Trees.traverse(formula, visitor);
+        return Trees.traverse(expression, visitor);
     }
 
-    public static boolean isCNF(Formula formula) {
-        return NormalForms.isNF(formula, NormalForm.CNF, false);
+    public static boolean isCNF(Expression expression) {
+        return NormalForms.isNF(expression, NormalForm.CNF, false);
     }
 
-    public static boolean isDNF(Formula formula) {
-        return NormalForms.isNF(formula, NormalForm.DNF, false);
+    public static boolean isDNF(Expression expression) {
+        return NormalForms.isNF(expression, NormalForm.DNF, false);
     }
 
-    public static boolean isClausalCNF(Formula formula) {
-        return NormalForms.isNF(formula, NormalForm.CNF, true);
+    public static boolean isClausalCNF(Expression expression) {
+        return NormalForms.isNF(expression, NormalForm.CNF, true);
     }
 
-    public static Result<Formula> toCNF(Formula formula) {
-        return NormalForms.toNF(formula, new CNFTransformer());
+    public static Result<Expression> toCNF(Expression expression) {
+        return NormalForms.toNF(expression, new CNFTransformer());
     }
 
-    public static Result<Formula> toCNF(Formula formula, int maximumNumberOfLiterals) {
+    public static Result<Expression> toCNF(Expression expression, int maximumNumberOfLiterals) {
         final CNFTransformer transformer = new CNFTransformer();
         transformer.setMaximumNumberOfLiterals(maximumNumberOfLiterals);
-        return NormalForms.toNF(formula, transformer);
+        return NormalForms.toNF(expression, transformer);
     }
 
-    public static Result<Formula> toDNF(Formula formula) {
-        return NormalForms.toNF(formula, new DNFTransformer());
+    public static Result<Expression> toDNF(Expression expression) {
+        return NormalForms.toNF(expression, new DNFTransformer());
     }
 
-    public static Formula manipulate(Formula formula, TreeVisitor<Void, Formula> visitor) {
-        final AuxiliaryRoot auxiliaryRoot = new AuxiliaryRoot(Trees.clone(formula));
+    public static Expression manipulate(Expression expression, TreeVisitor<Void, Expression> visitor) {
+        final AuxiliaryRoot auxiliaryRoot = new AuxiliaryRoot(Trees.clone(expression));
         Trees.traverse(auxiliaryRoot, visitor);
         return auxiliaryRoot.getChild();
     }
 
-    public static int getMaxDepth(Formula formula) {
-        return Trees.traverse(formula, new TreeDepthCounter()).get();
+    public static int getMaxDepth(Expression expression) {
+        return Trees.traverse(expression, new TreeDepthCounter()).get();
     }
 
-    public static Stream<Variable> getVariableStream(Formula formula) {
+    public static Stream<Variable> getVariableStream(Expression expression) {
         final Stream<Variable> stream =
-                Trees.preOrderStream(formula).filter(n -> n instanceof Variable).map(n -> (Variable) n);
+                Trees.preOrderStream(expression).filter(n -> n instanceof Variable).map(n -> (Variable) n);
         return stream.distinct();
     }
 
-    public static List<Variable> getVariables(Formula formula) {
-        return getVariableStream(formula).collect(Collectors.toList());
+    public static List<Variable> getVariables(Expression expression) {
+        return getVariableStream(expression).collect(Collectors.toList());
     }
 
-    public static List<String> getVariableNames(Formula formula) {
-        return getVariableStream(formula).map(Variable::getName).collect(Collectors.toList());
+    public static List<String> getVariableNames(Expression expression) {
+        return getVariableStream(expression).map(Variable::getName).collect(Collectors.toList());
     }
 
-    public static <T extends Formula> T create(Function<TermMap, T> fn) {
+    public static <T extends Expression> T create(Function<TermMap, T> fn) {
         return fn.apply(new TermMap());
     }
 
@@ -132,12 +131,12 @@ public class Formulas {
      * composed formula exists independently of its children. This is useful e.g.
      * for composing several feature model (interface) formulas.
      */
-    public static <T, U extends Formula> T compose(Function<List<U>, T> fn, List<U> expressions) {
+    public static <T, U extends Expression> T compose(Function<List<U>, T> fn, List<U> expressions) {
         return fn.apply(cloneWithSharedVariableMap(expressions));
     }
 
     @SafeVarargs
-    public static <T, U extends Formula> T compose(Function<List<U>, T> fn, U... expressions) {
+    public static <T, U extends Expression> T compose(Function<List<U>, T> fn, U... expressions) {
         return compose(fn, Arrays.asList(expressions));
     }
 
@@ -148,7 +147,7 @@ public class Formulas {
      * formulas and their variable maps untouched by returning copies.
      */
     @SuppressWarnings("unchecked")
-    public static <T extends Formula> List<T> cloneWithSharedVariableMap(List<T> children) {
+    public static <T extends Expression> List<T> cloneWithSharedVariableMap(List<T> children) {
         final List<TermMap> maps = children.stream()
                 .map(f -> f.getTermMap().orElseGet(TermMap::new))
                 .collect(Collectors.toList());

@@ -22,7 +22,7 @@ package de.featjar.formula.io;
 
 import de.featjar.formula.io.textual.NodeReader;
 import de.featjar.formula.io.textual.PropositionalModelSymbols;
-import de.featjar.formula.structure.Formula;
+import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.base.data.Problem;
 import de.featjar.base.data.Result;
@@ -32,12 +32,12 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class KConfigReaderFormat implements Format<Formula> {
+public class KConfigReaderFormat implements Format<Expression> {
 
     public static final String ID = KConfigReaderFormat.class.getCanonicalName();
 
     @Override
-    public Result<Formula> parse(InputMapper inputMapper) {
+    public Result<Expression> parse(InputMapper inputMapper) {
         final ArrayList<Problem> problems = new ArrayList<>();
         final NodeReader nodeReader = new NodeReader();
         nodeReader.setSymbols(PropositionalModelSymbols.INSTANCE);

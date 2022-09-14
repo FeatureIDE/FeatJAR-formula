@@ -22,8 +22,8 @@ package de.featjar.structure;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.featjar.formula.structure.AuxiliaryRoot;
-import de.featjar.formula.structure.Formula;
+import de.featjar.formula.tmp.AuxiliaryRoot;
+import de.featjar.formula.structure.Expression;
 import de.featjar.formula.tmp.TermMap;
 import java.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,26 +31,26 @@ import org.junit.jupiter.api.Test;
 
 public class AuxiliaryRootTest {
 
-    private Formula formula1, formula2;
+    private Expression expression1, expression2;
 
     @BeforeEach
     public void setUp() {
         final TermMap map = new TermMap(Arrays.asList("L1", "L2"));
-        formula1 = map.createLiteral("L1");
-        formula2 = map.createLiteral("L2");
+        expression1 = map.createLiteral("L1");
+        expression2 = map.createLiteral("L2");
     }
 
     @Test
     public void createAuxiliaryRoot() {
-        final AuxiliaryRoot newRoot = new AuxiliaryRoot(formula1);
-        assertEquals(formula1, newRoot.getChild());
+        final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
+        assertEquals(expression1, newRoot.getChild());
         assertEquals("", newRoot.getName());
     }
 
     @Test
     public void replaceChild() {
-        final AuxiliaryRoot newRoot = new AuxiliaryRoot(formula1);
-        newRoot.setChild(formula2);
-        assertEquals(formula2, newRoot.getChild());
+        final AuxiliaryRoot newRoot = new AuxiliaryRoot(expression1);
+        newRoot.setChild(expression2);
+        assertEquals(expression2, newRoot.getChild());
     }
 }

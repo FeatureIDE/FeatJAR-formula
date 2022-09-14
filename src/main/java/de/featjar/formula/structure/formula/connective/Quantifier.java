@@ -20,10 +20,10 @@
  */
 package de.featjar.formula.structure.formula.connective;
 
-import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.NonTerminalFormula;
-import de.featjar.formula.structure.UnaryFormula;
-import de.featjar.formula.structure.term.Variable;
+import de.featjar.formula.structure.Expression;
+import de.featjar.formula.structure.NonTerminalExpression;
+import de.featjar.formula.structure.UnaryExpression;
+import de.featjar.formula.structure.term.value.Variable;
 
 import java.util.List;
 import java.util.Objects;
@@ -34,15 +34,15 @@ import java.util.Objects;
  *
  * @author Sebastian Krieter
  */
-public abstract class Quantifier extends NonTerminalFormula implements Connective, UnaryFormula {
+public abstract class Quantifier extends NonTerminalExpression implements Connective, UnaryExpression {
     protected Variable boundVariable;
 
     protected Quantifier(Quantifier quantifier) {
         setBoundVariable(quantifier.boundVariable);
     }
 
-    public Quantifier(Variable boundVariable, Formula formula) {
-        super(formula);
+    public Quantifier(Variable boundVariable, Expression expression) {
+        super(expression);
         setBoundVariable(boundVariable);
     }
 
@@ -66,7 +66,7 @@ public abstract class Quantifier extends NonTerminalFormula implements Connectiv
     }
 
     @Override
-    public boolean equalsNode(Formula other) {
+    public boolean equalsNode(Expression other) {
         return super.equalsNode(other) && Objects.equals(boundVariable, ((Quantifier) other).boundVariable);
     }
 }

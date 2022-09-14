@@ -21,8 +21,7 @@
 package de.featjar.formula.structure.formula.connective;
 
 import de.featjar.base.data.Range;
-import de.featjar.formula.structure.Formula;
-
+import de.featjar.formula.structure.Expression;
 import java.util.List;
 
 /**
@@ -36,8 +35,8 @@ public class AtMost extends Cardinal {
         super(atMost);
     }
 
-    public AtMost(int maximum, List<Formula> formulas) {
-        super(Range.atMost(maximum), formulas);
+    public AtMost(int maximum, List<Expression> expressions) {
+        super(Range.atMost(maximum), expressions);
     }
 
     @Override

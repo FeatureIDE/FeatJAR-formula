@@ -20,9 +20,9 @@
  */
 package de.featjar.formula.tmp;
 
-import de.featjar.formula.structure.Formula;
+import de.featjar.formula.structure.Expression;
 import de.featjar.formula.tmp.NamedTermMap.ValueTerm;
-import de.featjar.formula.structure.formula.literal.Literal;
+import de.featjar.formula.structure.formula.predicate.Literal;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -131,17 +131,17 @@ public class TermMap {
         return new TermMap(this);
     }
 
-    public Formula get(Formula formula) {
-        if (formula instanceof Variable) {
-            return getVariable(formula.getName())
+    public Expression get(Expression expression) {
+        if (expression instanceof Variable) {
+            return getVariable(expression.getName())
                     .orElseThrow(() -> new IllegalArgumentException(
-                            "Map does not contain variable with name " + formula.getName()));
-        } else if (formula instanceof Constant) {
-            return getConstant(formula.getName())
+                            "Map does not contain variable with name " + expression.getName()));
+        } else if (expression instanceof Constant) {
+            return getConstant(expression.getName())
                     .orElseThrow(() -> new IllegalArgumentException(
-                            "Map does not contain constant with name " + formula.getName()));
+                            "Map does not contain constant with name " + expression.getName()));
         }
-        return formula;
+        return expression;
     }
 
     public void normalize() {

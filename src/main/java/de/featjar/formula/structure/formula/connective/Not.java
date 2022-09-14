@@ -20,9 +20,9 @@
  */
 package de.featjar.formula.structure.formula.connective;
 
-import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.NonTerminalFormula;
-import de.featjar.formula.structure.UnaryFormula;
+import de.featjar.formula.structure.Expression;
+import de.featjar.formula.structure.NonTerminalExpression;
+import de.featjar.formula.structure.UnaryExpression;
 
 import java.util.List;
 
@@ -32,15 +32,15 @@ import java.util.List;
  *
  * @author Sebastian Krieter
  */
-public class Not extends NonTerminalFormula implements Connective, UnaryFormula {
+public class Not extends NonTerminalExpression implements Connective, UnaryExpression {
     protected Not() {
     }
 
-    public Not(Formula formula) {
-        super(formula);
+    public Not(Expression expression) {
+        super(expression);
     }
 
-    public Not(List<? extends Formula> formulas) {
+    public Not(List<? extends Expression> formulas) {
         super(formulas);
     }
 

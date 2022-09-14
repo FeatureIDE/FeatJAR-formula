@@ -21,7 +21,7 @@
 package de.featjar.formula.structure.formula.connective;
 
 import de.featjar.base.data.Range;
-import de.featjar.formula.structure.Formula;
+import de.featjar.formula.structure.Expression;
 
 import java.util.List;
 
@@ -36,8 +36,8 @@ public class Choose extends Cardinal {
         super(choose);
     }
 
-    public Choose(int bound, List<Formula> formulas) {
-        super(Range.exactly(bound), formulas);
+    public Choose(int bound, List<Expression> expressions) {
+        super(Range.exactly(bound), expressions);
     }
 
     @Override

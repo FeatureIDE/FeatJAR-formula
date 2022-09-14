@@ -21,10 +21,10 @@
 package de.featjar.formula.clauses;
 
 import de.featjar.base.data.Result;
-import de.featjar.formula.structure.Formula;
+import de.featjar.formula.structure.Expression;
 import de.featjar.formula.tmp.Formulas;
 import de.featjar.formula.structure.assignment.VariableAssignment;
-import de.featjar.formula.structure.formula.literal.Literal;
+import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.tmp.TermMap;
 import de.featjar.base.task.Monitor;
 import de.featjar.base.task.MonitorableFunction;
@@ -34,42 +34,42 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * Several methods concerning {@link Formula} framework.
+ * Several methods concerning {@link Expression} framework.
  *
  * @author Sebastian Krieter
  */
-public class FormulaToCNF implements MonitorableFunction<Formula, CNF> {
+public class FormulaToCNF implements MonitorableFunction<Expression, CNF> {
 
     private boolean keepLiteralOrder;
     private TermMap termMap;
 
-    public static CNF convert(Formula formula) {
-        return new FormulaToCNF().apply(formula).get();
+    public static CNF convert(Expression expression) {
+        return new FormulaToCNF().apply(expression).get();
     }
 
-    public static CNF convert(Formula formula, TermMap termMap) {
+    public static CNF convert(Expression expression, TermMap termMap) {
         final FormulaToCNF function = new FormulaToCNF();
         function.setVariableMapping(termMap);
         function.setKeepLiteralOrder(true);
-        return function.apply(formula).get();
+        return function.apply(expression).get();
     }
 
     @Override
-    public Result<CNF> execute(Formula formula, Monitor monitor) {
-        if (formula == null) {
+    public Result<CNF> execute(Expression expression, Monitor monitor) {
+        if (expression == null) {
             return Result.empty();
         }
         final TermMap mapping = termMap != null
                 ? termMap
-                : formula.getTermMap().orElseGet(TermMap::new);
+                : expression.getTermMap().orElseGet(TermMap::new);
         final ClauseList clauses = new ClauseList();
-        final Optional<Object> formulaValue = Formulas.evaluate(formula, new VariableAssignment(mapping));
+        final Optional<Object> formulaValue = Formulas.evaluate(expression, new VariableAssignment(mapping));
         if (formulaValue.isPresent()) {
             if (formulaValue.get() == Boolean.FALSE) {
                 clauses.add(new LiteralList());
             }
         } else {
-            final Formula cnf = Formulas.toCNF(Trees.clone(formula)).get();
+            final Expression cnf = Formulas.toCNF(Trees.clone(expression)).get();
             cnf.getChildren().stream()
                     .map(exp -> getClause(exp, mapping))
                     .filter(Objects::nonNull)
@@ -94,9 +94,9 @@ public class FormulaToCNF implements MonitorableFunction<Formula, CNF> {
         this.termMap = termMap;
     }
 
-    private LiteralList getClause(Formula clauseFormula, TermMap mapping) {
-        if (clauseFormula instanceof Literal) {
-            final Literal literal = (Literal) clauseFormula;
+    private LiteralList getClause(Expression clauseExpression, TermMap mapping) {
+        if (clauseExpression instanceof Literal) {
+            final Literal literal = (Literal) clauseExpression;
             final int variable = mapping.getVariableSignature(literal.getName())
                     .orElseThrow(RuntimeException::new)
                     .getIndex();
@@ -104,12 +104,12 @@ public class FormulaToCNF implements MonitorableFunction<Formula, CNF> {
                     new int[] {literal.isPositive() ? variable : -variable},
                     keepLiteralOrder ? LiteralList.Order.UNORDERED : LiteralList.Order.NATURAL);
         } else {
-            final List<? extends Formula> clauseChildren = clauseFormula.getChildren();
-            if (clauseChildren.stream().anyMatch(literal -> literal == Formula.TRUE)) {
+            final List<? extends Expression> clauseChildren = clauseExpression.getChildren();
+            if (clauseChildren.stream().anyMatch(literal -> literal == Expression.TRUE)) {
                 return null;
             } else {
                 final int[] literals = clauseChildren.stream()
-                        .filter(literal -> literal != Formula.FALSE)
+                        .filter(literal -> literal != Expression.FALSE)
                         .filter(literal -> literal instanceof Literal)
                         .mapToInt(literal -> {
                             final int variable = mapping.getVariableSignature(((Literal) literal)

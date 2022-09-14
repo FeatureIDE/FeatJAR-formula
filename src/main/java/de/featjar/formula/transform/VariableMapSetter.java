@@ -20,14 +20,14 @@
  */
 package de.featjar.formula.transform;
 
-import de.featjar.formula.structure.Formula;
+import de.featjar.formula.structure.Expression;
 import de.featjar.formula.tmp.TermMap;
 import de.featjar.formula.tmp.TermMap.Constant;
 import de.featjar.formula.tmp.TermMap.Variable;
 import de.featjar.base.tree.visitor.TreeVisitor;
 import java.util.List;
 
-public class VariableMapSetter implements TreeVisitor<Void, Formula> {
+public class VariableMapSetter implements TreeVisitor<Void, Expression> {
 
     private final TermMap termMap;
 
@@ -35,27 +35,27 @@ public class VariableMapSetter implements TreeVisitor<Void, Formula> {
         this.termMap = termMap;
     }
 
-    private Formula replaceValueTerms(Formula formula) {
-        if (formula instanceof Variable) {
+    private Expression replaceValueTerms(Expression expression) {
+        if (expression instanceof Variable) {
             final Variable replacement = termMap
-                    .getVariable(formula.getName())
+                    .getVariable(expression.getName())
                     .orElseThrow(() ->
-                            new IllegalArgumentException("Map does not contain variable with name " + formula.getName()));
+                            new IllegalArgumentException("Map does not contain variable with name " + expression.getName()));
             return replacement;
-        } else if (formula instanceof Constant) {
+        } else if (expression instanceof Constant) {
             final Constant replacement = termMap
-                    .getConstant(formula.getName())
+                    .getConstant(expression.getName())
                     .orElseThrow(() ->
-                            new IllegalArgumentException("Map does not contain constant with name " + formula.getName()));
+                            new IllegalArgumentException("Map does not contain constant with name " + expression.getName()));
             return replacement;
         }
-        return formula;
+        return expression;
     }
 
     @Override
-    public TraversalAction lastVisit(List<Formula> path) {
-        final Formula formula = getCurrentNode(path);
-        formula.replaceChildren(this::replaceValueTerms);
+    public TraversalAction lastVisit(List<Expression> path) {
+        final Expression expression = getCurrentNode(path);
+        expression.replaceChildren(this::replaceValueTerms);
         return TreeVisitor.super.lastVisit(path);
     }
 }

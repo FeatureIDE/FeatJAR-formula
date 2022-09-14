@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.featjar.formula.io.KConfigReaderFormat;
 import de.featjar.formula.io.dimacs.DIMACSFormat;
-import de.featjar.formula.structure.Formula;
+import de.featjar.formula.structure.Expression;
 import de.featjar.formula.tmp.Formulas;
 import de.featjar.formula.tmp.TermMap;
 import de.featjar.base.io.IO;
@@ -48,41 +48,41 @@ public class CNFTransformTest {
         testTransform(FormulaCreator.getFormula02());
     }
 
-    private void testTransform(final Formula formulaOrg) {
-        final Formula formulaClone = Trees.clone(formulaOrg);
-        final TermMap map = formulaOrg.getTermMap().orElseThrow();
+    private void testTransform(final Expression expressionOrg) {
+        final Expression expressionClone = Trees.clone(expressionOrg);
+        final TermMap map = expressionOrg.getTermMap().orElseThrow();
         final TermMap mapClone = map.clone();
 
-        final ModelRepresentation rep = new ModelRepresentation(formulaOrg);
-        final Formula formulaCNF = rep.get(FormulaComputation.CNF.fromFormula());
+        final ModelRepresentation rep = new ModelRepresentation(expressionOrg);
+        final Expression expressionCNF = rep.get(FormulaComputation.CNF.fromFormula());
 
         FormulaCreator.testAllAssignments(map, assignment -> {
             final Boolean orgEval =
-                    (Boolean) Formulas.evaluate(formulaOrg, assignment).orElseThrow();
+                    (Boolean) Formulas.evaluate(expressionOrg, assignment).orElseThrow();
             final Boolean cnfEval =
-                    (Boolean) Formulas.evaluate(formulaCNF, assignment).orElseThrow();
+                    (Boolean) Formulas.evaluate(expressionCNF, assignment).orElseThrow();
             assertEquals(orgEval, cnfEval, assignment.toString());
         });
-        assertTrue(Trees.equals(formulaOrg, formulaClone));
+        assertTrue(Trees.equals(expressionOrg, expressionClone));
         assertEquals(mapClone, map);
-        assertEquals(mapClone, formulaOrg.getTermMap().get());
+        assertEquals(mapClone, expressionOrg.getTermMap().get());
     }
 
     @Test
     public void testKConfigReader() throws IOException {
         final Path modelFile = Paths.get("src/test/resources/kconfigreader/min-example.model");
         final Path dimacsFile = Paths.get("src/test/resources/kconfigreader/min-example.dimacs");
-        final Formula formula = IO.load(modelFile, new KConfigReaderFormat()).orElseThrow();
+        final Expression expression = IO.load(modelFile, new KConfigReaderFormat()).orElseThrow();
 
-        ModelRepresentation rep = new ModelRepresentation(formula);
+        ModelRepresentation rep = new ModelRepresentation(expression);
         IO.save(rep.get(FormulaComputation.CNF.fromFormula()), dimacsFile, new DIMACSFormat());
         Files.deleteIfExists(dimacsFile);
 
-        rep = new ModelRepresentation(formula);
+        rep = new ModelRepresentation(expression);
         IO.save(rep.get(FormulaComputation.CNF.fromFormula(0)), dimacsFile, new DIMACSFormat());
         Files.deleteIfExists(dimacsFile);
 
-        rep = new ModelRepresentation(formula);
+        rep = new ModelRepresentation(expression);
         IO.save(rep.get(FormulaComputation.CNF.fromFormula(100)), dimacsFile, new DIMACSFormat());
         Files.deleteIfExists(dimacsFile);
     }
