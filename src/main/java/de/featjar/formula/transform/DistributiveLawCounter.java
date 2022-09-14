@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class DistributiveLawCounter implements TreeVisitor<Integer, Expression> {
+public class DistributiveLawCounter implements TreeVisitor<Expression, Integer> {
 
     private static class StackElement {
         int clauseNumber = 1;

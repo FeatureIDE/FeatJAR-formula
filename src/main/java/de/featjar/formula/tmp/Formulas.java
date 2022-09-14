@@ -98,7 +98,7 @@ public class Formulas {
         return NormalForms.toNF(expression, new DNFTransformer());
     }
 
-    public static Expression manipulate(Expression expression, TreeVisitor<Void, Expression> visitor) {
+    public static Expression manipulate(Expression expression, TreeVisitor<Expression, Void> visitor) {
         final AuxiliaryRoot auxiliaryRoot = new AuxiliaryRoot(Trees.clone(expression));
         Trees.traverse(auxiliaryRoot, visitor);
         return auxiliaryRoot.getChild();

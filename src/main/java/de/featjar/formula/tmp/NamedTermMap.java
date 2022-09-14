@@ -20,7 +20,6 @@
  */
 package de.featjar.formula.tmp;
 
-import de.featjar.formula.tmp.NamedTermMap.ValueTerm;
 import de.featjar.formula.structure.term.value.Value;
 
 import java.util.ArrayList;

@@ -30,7 +30,7 @@ import de.featjar.base.tree.visitor.TreeVisitor;
 import java.util.Arrays;
 import java.util.List;
 
-public class TreeSimplifier implements TreeVisitor<Void, Expression> {
+public class TreeSimplifier implements TreeVisitor<Expression, Void> {
 
     @Override
     public TraversalAction firstVisit(List<Expression> path) {

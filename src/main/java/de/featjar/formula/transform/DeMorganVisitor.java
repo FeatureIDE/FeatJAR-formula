@@ -32,7 +32,7 @@ import de.featjar.base.tree.visitor.TreeVisitor;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class DeMorganVisitor implements TreeVisitor<Void, Expression> {
+public class DeMorganVisitor implements TreeVisitor<Expression, Void> {
 
     @Override
     public TraversalAction firstVisit(List<Expression> path) {

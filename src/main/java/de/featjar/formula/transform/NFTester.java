@@ -24,7 +24,7 @@ import de.featjar.formula.structure.Expression;
 import de.featjar.base.tree.visitor.TreeVisitor;
 import java.util.Optional;
 
-public class NFTester implements TreeVisitor<Boolean, Expression> {
+public class NFTester implements TreeVisitor<Expression, Boolean> {
 
     protected boolean isNf;
     protected boolean isClausalNf;

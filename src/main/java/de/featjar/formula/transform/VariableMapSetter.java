@@ -27,7 +27,7 @@ import de.featjar.formula.tmp.TermMap.Variable;
 import de.featjar.base.tree.visitor.TreeVisitor;
 import java.util.List;
 
-public class VariableMapSetter implements TreeVisitor<Void, Expression> {
+public class VariableMapSetter implements TreeVisitor<Expression, Void> {
 
     private final TermMap termMap;
 

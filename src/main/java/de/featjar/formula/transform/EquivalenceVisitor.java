@@ -41,7 +41,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class EquivalenceVisitor implements TreeVisitor<Void, Expression> {
+public class EquivalenceVisitor implements TreeVisitor<Expression, Void> {
 
     private boolean fail;
 

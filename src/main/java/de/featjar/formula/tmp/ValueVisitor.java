@@ -22,14 +22,13 @@ package de.featjar.formula.tmp;
 
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.assignment.Assignment;
-import de.featjar.formula.tmp.TermMap.Variable;
 import de.featjar.base.tree.visitor.TreeVisitor;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-public class ValueVisitor implements TreeVisitor<Object, Expression> {
+public class ValueVisitor implements TreeVisitor<Expression, Object> {
 
     public enum UnknownVariableHandling {
         ERROR,
