@@ -24,7 +24,7 @@ import de.featjar.formula.structure.Formula;
 import java.util.List;
 
 /**
- * A term in first-order logic.
+ * A term in a formula.
  *
  * @author Sebastian Krieter
  */

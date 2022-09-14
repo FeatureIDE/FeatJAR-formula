@@ -27,7 +27,7 @@ import de.featjar.formula.io.KConfigReaderFormat;
 import de.featjar.formula.io.dimacs.DIMACSFormat;
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.Formulas;
-import de.featjar.formula.structure.VariableMap;
+import de.featjar.formula.structure.TermMap;
 import de.featjar.base.io.IO;
 import de.featjar.base.tree.Trees;
 import java.io.IOException;
@@ -50,8 +50,8 @@ public class CNFTransformTest {
 
     private void testTransform(final Formula formulaOrg) {
         final Formula formulaClone = Trees.clone(formulaOrg);
-        final VariableMap map = formulaOrg.getVariableMap().orElseThrow();
-        final VariableMap mapClone = map.clone();
+        final TermMap map = formulaOrg.getTermMap().orElseThrow();
+        final TermMap mapClone = map.clone();
 
         final ModelRepresentation rep = new ModelRepresentation(formulaOrg);
         final Formula formulaCNF = rep.get(FormulaComputation.CNF.fromFormula());
@@ -65,7 +65,7 @@ public class CNFTransformTest {
         });
         assertTrue(Trees.equals(formulaOrg, formulaClone));
         assertEquals(mapClone, map);
-        assertEquals(mapClone, formulaOrg.getVariableMap().get());
+        assertEquals(mapClone, formulaOrg.getTermMap().get());
     }
 
     @Test

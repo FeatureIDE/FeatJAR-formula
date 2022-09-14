@@ -23,7 +23,7 @@ package de.featjar.formula.io.xml;
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.atomic.literal.ErrorLiteral;
 import de.featjar.formula.structure.atomic.literal.Literal;
-import de.featjar.formula.structure.VariableMap;
+import de.featjar.formula.structure.TermMap;
 import de.featjar.formula.structure.connective.And;
 import de.featjar.formula.structure.connective.AtMost;
 import de.featjar.formula.structure.connective.BiImplies;
@@ -192,7 +192,7 @@ public abstract class AbstractXMLFeatureModelFormat<T, U, V> extends XMLFormat<T
         return featureLabel;
     }
 
-    protected void parseConstraints(Element constraintsElement, VariableMap map) throws ParseException {
+    protected void parseConstraints(Element constraintsElement, TermMap map) throws ParseException {
         for (final Element child : getElements(constraintsElement.getChildNodes())) {
             final String nodeName = child.getNodeName();
             if (nodeName.equals(RULE)) {
@@ -229,7 +229,7 @@ public abstract class AbstractXMLFeatureModelFormat<T, U, V> extends XMLFormat<T
         }
     }
 
-    protected List<Formula> parseConstraints(NodeList nodeList, V parentConstraintLabel, VariableMap map)
+    protected List<Formula> parseConstraints(NodeList nodeList, V parentConstraintLabel, TermMap map)
             throws ParseException {
         final List<Formula> nodes = new ArrayList<>();
         List<Formula> children;

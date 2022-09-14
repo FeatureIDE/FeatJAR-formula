@@ -27,7 +27,7 @@ import de.featjar.formula.io.dimacs.DIMACSFormat;
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.atomic.literal.BooleanLiteral;
 import de.featjar.formula.structure.atomic.literal.Literal;
-import de.featjar.formula.structure.VariableMap;
+import de.featjar.formula.structure.TermMap;
 import de.featjar.formula.structure.connective.And;
 import de.featjar.formula.structure.connective.Or;
 import org.junit.jupiter.api.Test;
@@ -107,7 +107,7 @@ public class DIMACSFormatTest {
                 return new And(new Or());
             }
             case "123-n1n2n3": {
-                final VariableMap map = new VariableMap();
+                final TermMap map = new TermMap();
                 final Literal a = map.createLiteral("1");
                 final Literal b = map.createLiteral("2");
                 final Literal c = map.createLiteral("3");
@@ -115,7 +115,7 @@ public class DIMACSFormatTest {
                         new Or(a.cloneNode(), b.cloneNode(), c.cloneNode()), new Or(a.flip(), b.flip(), c.flip()));
             }
             case "ABC-nAnBnC": {
-                final VariableMap map = new VariableMap();
+                final TermMap map = new TermMap();
                 final Literal a = map.createLiteral("A");
                 final Literal b = map.createLiteral("B");
                 final Literal c = map.createLiteral("C");
@@ -123,26 +123,26 @@ public class DIMACSFormatTest {
                         new Or(a.cloneNode(), b.cloneNode(), c.cloneNode()), new Or(a.flip(), b.flip(), c.flip()));
             }
             case "empty-ABC": {
-                final VariableMap map = new VariableMap();
+                final TermMap map = new TermMap();
                 map.addBooleanVariable("A");
                 map.addBooleanVariable("B");
                 map.addBooleanVariable("C");
                 return new And();
             }
             case "empty-A2C": {
-                final VariableMap map = new VariableMap();
+                final TermMap map = new TermMap();
                 map.addBooleanVariable("A");
                 map.addBooleanVariable("2");
                 map.addBooleanVariable("C");
                 return new And();
             }
             case "empty-A": {
-                final VariableMap map = new VariableMap();
+                final TermMap map = new TermMap();
                 map.addBooleanVariable("A");
                 return new And();
             }
             case "empty-1": {
-                final VariableMap map = new VariableMap();
+                final TermMap map = new TermMap();
                 map.addBooleanVariable("1");
                 return new And();
             }
@@ -150,12 +150,12 @@ public class DIMACSFormatTest {
                 return new And();
             }
             case "nA": {
-                final VariableMap map = new VariableMap();
+                final TermMap map = new TermMap();
                 final Literal a = new BooleanLiteral(map.addBooleanVariable("A"));
                 return new And(new Or(a.flip()));
             }
             case "nAB": {
-                final VariableMap map = new VariableMap("A", "B");
+                final TermMap map = new TermMap("A", "B");
                 final Literal a = map.createLiteral("A");
                 final Literal b = map.createLiteral("B");
                 return new And(new Or(a.flip(), b.cloneNode()));

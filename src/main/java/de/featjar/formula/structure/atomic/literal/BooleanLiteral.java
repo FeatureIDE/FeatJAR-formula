@@ -24,7 +24,8 @@ import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.Formulas;
 import de.featjar.formula.structure.NonTerminalFormula;
 import de.featjar.formula.structure.NamedTermMap.ValueTerm;
-import de.featjar.formula.structure.VariableMap.Variable;
+import de.featjar.formula.structure.UnaryFormula;
+import de.featjar.formula.structure.TermMap.Variable;
 import java.util.List;
 import java.util.Objects;
 
@@ -36,7 +37,7 @@ import java.util.Objects;
  *
  * @author Sebastian Krieter
  */
-public class BooleanLiteral extends NonTerminalFormula implements Literal {
+public class BooleanLiteral extends NonTerminalFormula implements Literal, UnaryFormula {
 
     private final boolean positive;
 
@@ -67,7 +68,7 @@ public class BooleanLiteral extends NonTerminalFormula implements Literal {
     }
 
     public ValueTerm getVariable() {
-        return (ValueTerm) children.get(0);
+        return (ValueTerm) getChildren().get(0);
     }
 
     @Override

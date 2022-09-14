@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.clauses;
 
-import de.featjar.formula.structure.VariableMap;
+import de.featjar.formula.structure.TermMap;
 import de.featjar.base.data.Result;
 import java.io.Serializable;
 import java.util.Collection;
@@ -40,19 +40,19 @@ public class CNF implements Serializable {
     private static final long serialVersionUID = -7716526687669886274L;
 
     protected ClauseList clauses;
-    protected VariableMap variables;
+    protected TermMap variables;
 
-    public CNF(VariableMap mapping, ClauseList clauses) {
+    public CNF(TermMap mapping, ClauseList clauses) {
         variables = mapping;
         this.clauses = clauses;
     }
 
-    public CNF(VariableMap mapping, List<LiteralList> clauses) {
+    public CNF(TermMap mapping, List<LiteralList> clauses) {
         variables = mapping;
         this.clauses = new ClauseList(clauses);
     }
 
-    public CNF(VariableMap mapping) {
+    public CNF(TermMap mapping) {
         variables = mapping;
         clauses = new ClauseList();
     }
@@ -69,11 +69,11 @@ public class CNF implements Serializable {
         this.clauses.addAll(clauses);
     }
 
-    public void setVariableMap(VariableMap variables) {
+    public void setVariableMap(TermMap variables) {
         this.variables = variables;
     }
 
-    public VariableMap getVariableMap() {
+    public TermMap getVariableMap() {
         return variables;
     }
 
@@ -107,22 +107,22 @@ public class CNF implements Serializable {
      * Creates a new clause list from this CNF with all clauses adapted to a new
      * variable mapping.
      *
-     * @param newVariableMap the new variables
+     * @param newTermMap the new variables
      * @return an adapted cnf, {@code null} if there are old variables names the are
      *         not contained in the new variables.
      */
-    public Result<CNF> adapt(VariableMap newVariableMap) {
-        return clauses.adapt(variables, newVariableMap).map(c -> new CNF(newVariableMap, c));
+    public Result<CNF> adapt(TermMap newTermMap) {
+        return clauses.adapt(variables, newTermMap).map(c -> new CNF(newTermMap, c));
     }
 
     public CNF randomize(Random random) {
-        final VariableMap newVariableMap = variables.clone();
-        newVariableMap.randomize(random);
+        final TermMap newTermMap = variables.clone();
+        newTermMap.randomize(random);
 
         final ClauseList adaptedClauseList =
-                clauses.adapt(variables, newVariableMap).get();
+                clauses.adapt(variables, newTermMap).get();
         Collections.shuffle(adaptedClauseList, random);
 
-        return new CNF(newVariableMap, adaptedClauseList);
+        return new CNF(newTermMap, adaptedClauseList);
     }
 }

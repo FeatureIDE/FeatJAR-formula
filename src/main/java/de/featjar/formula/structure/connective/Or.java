@@ -36,12 +36,12 @@ public class Or extends NonTerminalFormula implements Connective {
     protected Or() {
     }
 
-    public Or(Formula... nodes) {
-        super(nodes);
+    public Or(Formula... formulas) {
+        super(formulas);
     }
 
-    public Or(List<? extends Formula> nodes) {
-        super(nodes);
+    public Or(List<? extends Formula> formulas) {
+        super(formulas);
     }
 
     @Override

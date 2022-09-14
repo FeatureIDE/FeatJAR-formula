@@ -23,7 +23,7 @@ package de.featjar.formula.io.dimacs;
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.atomic.literal.BooleanLiteral;
 import de.featjar.formula.structure.atomic.literal.Literal;
-import de.featjar.formula.structure.VariableMap;
+import de.featjar.formula.structure.TermMap;
 import de.featjar.formula.structure.connective.And;
 import de.featjar.formula.structure.connective.Or;
 import de.featjar.base.io.NonEmptyLineIterator;
@@ -50,7 +50,7 @@ public class DimacsReader {
     /** Maps indexes to variables. */
     private final Map<Integer, String> indexVariables = new LinkedHashMap<>();
 
-    private VariableMap map;
+    private TermMap map;
 
     /**
      * The amount of variables as declared in the problem definition. May differ
@@ -99,7 +99,7 @@ public class DimacsReader {
         clauseCount = -1;
         readingVariables = readVariableDirectory;
         if (!readVariableDirectory) {
-            map = new VariableMap();
+            map = new TermMap();
         }
         try (final BufferedReader reader = new BufferedReader(in)) {
             final NonEmptyLineIterator nonemptyLineIterator = new NonEmptyLineIterator(reader);
@@ -114,7 +114,7 @@ public class DimacsReader {
                 for (int i = 1; i <= variableCount; i++) {
                     indexVariables.putIfAbsent(i, Integer.toString(i));
                 }
-                map = new VariableMap();
+                map = new TermMap();
                 indexVariables.forEach((i, n) -> map.addBooleanVariable(n, i));
             }
 

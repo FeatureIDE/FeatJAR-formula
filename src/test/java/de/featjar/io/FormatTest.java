@@ -103,7 +103,7 @@ public class FormatTest {
     private static void compareFormulas(final Formula formula1, final Formula formula2) {
         assertEquals(formula1, formula2, "Formulas are different");
         if (formula1 != null) {
-            assertEquals(formula1.getVariableMap(), formula2.getVariableMap(), "Variables are different");
+            assertEquals(formula1.getTermMap(), formula2.getTermMap(), "Variables are different");
         }
     }
 

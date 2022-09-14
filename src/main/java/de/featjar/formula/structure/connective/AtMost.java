@@ -35,8 +35,8 @@ public class AtMost extends Cardinal {
         super(oldNode);
     }
 
-    public AtMost(int maximum, List<Formula> nodes) {
-        super(Range.atMost(maximum), nodes);
+    public AtMost(int maximum, List<Formula> formulas) {
+        super(Range.atMost(maximum), formulas);
     }
 
     @Override

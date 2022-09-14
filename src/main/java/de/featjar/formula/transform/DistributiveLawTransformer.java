@@ -48,12 +48,12 @@ public class DistributiveLawTransformer implements MonitorableFunction<Formula, 
     }
 
     private static class PathElement {
-        Formula node;
+        Formula formula;
         List<Formula> newChildren = new ArrayList<>();
         int maxDepth = 0;
 
-        PathElement(Formula node) {
-            this.node = node;
+        PathElement(Formula formula) {
+            this.formula = formula;
         }
     }
 
@@ -77,13 +77,13 @@ public class DistributiveLawTransformer implements MonitorableFunction<Formula, 
     }
 
     @Override
-    public Result<Connective> execute(Formula node, Monitor monitor) {
+    public Result<Connective> execute(Formula formula, Monitor monitor) {
         final ArrayList<PathElement> path = new ArrayList<>();
         final ArrayDeque<Formula> stack = new ArrayDeque<>();
-        stack.addLast(node);
+        stack.addLast(formula);
         while (!stack.isEmpty()) {
             final Formula curNode = stack.getLast();
-            final boolean firstEncounter = path.isEmpty() || (curNode != path.get(path.size() - 1).node);
+            final boolean firstEncounter = path.isEmpty() || (curNode != path.get(path.size() - 1).formula);
             if (firstEncounter) {
                 if (curNode instanceof Literal) {
                     final PathElement parent = path.get(path.size() - 1);
@@ -119,7 +119,7 @@ public class DistributiveLawTransformer implements MonitorableFunction<Formula, 
                 stack.removeLast();
             }
         }
-        return Result.of((Connective) node);
+        return Result.of((Connective) formula);
     }
 
     @SuppressWarnings("unchecked")

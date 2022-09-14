@@ -31,4 +31,13 @@ public interface UnaryFormula extends Formula {
     default Range getChildrenCountRange() {
         return Range.exactly(1);
     }
+
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    default Formula getFormula() {
+        return getFirstChild().get();
+    }
+
+    default void setFormula(Formula formula) {
+        replaceChild(0, formula);
+    }
 }

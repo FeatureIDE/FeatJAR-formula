@@ -28,8 +28,8 @@ import java.util.List;
 
 /**
  * Expresses "if A, then B" constraints (i.e., implication).
- * Evaluates to {@code true} iff the left value evaluates to {@code false} or
- * the right value evaluates to {@code true}.
+ * Evaluates to {@code true} iff the left child evaluates to {@code false} or
+ * the right child evaluates to {@code true}.
  *
  * @author Sebastian Krieter
  */
@@ -38,12 +38,12 @@ public class Implies extends NonTerminalFormula implements Connective, BinaryFor
     protected Implies() {
     }
 
-    public Implies(Formula leftNode, Formula rightNode) {
-        super(leftNode, rightNode);
+    public Implies(Formula leftFormula, Formula rightFormula) {
+        super(leftFormula, rightFormula);
     }
 
-    public Implies(List<? extends Formula> nodes) {
-        super(nodes);
+    public Implies(List<? extends Formula> formulas) {
+        super(formulas);
     }
 
     @Override

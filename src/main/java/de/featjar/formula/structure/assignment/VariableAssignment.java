@@ -21,8 +21,8 @@
 package de.featjar.formula.structure.assignment;
 
 import de.featjar.formula.structure.NamedTermMap.ValueTerm;
-import de.featjar.formula.structure.VariableMap;
-import de.featjar.formula.structure.VariableMap.Variable;
+import de.featjar.formula.structure.TermMap;
+import de.featjar.formula.structure.TermMap.Variable;
 import de.featjar.base.data.Pair;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -35,9 +35,9 @@ import java.util.stream.Collectors;
 public class VariableAssignment implements Assignment {
 
     protected final LinkedHashMap<Integer, Object> assignments;
-    protected final VariableMap variables;
+    protected final TermMap variables;
 
-    public VariableAssignment(VariableMap variables) {
+    public VariableAssignment(TermMap variables) {
         this.variables = Objects.requireNonNull(variables);
         final int assignmentSize = variables.getVariableCount() + 1;
         assignments = new LinkedHashMap<>(assignmentSize);
@@ -92,7 +92,7 @@ public class VariableAssignment implements Assignment {
                 .collect(Collectors.toList());
     }
 
-    public VariableMap getVariables() {
+    public TermMap getVariables() {
         return variables;
     }
 

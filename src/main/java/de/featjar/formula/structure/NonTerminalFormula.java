@@ -44,12 +44,12 @@ public abstract class NonTerminalFormula extends Tree<Formula> implements Formul
     }
 
     protected void assertSharedVariableMap(List<? extends Formula> children) {
-        VariableMap firstElement = null;
+        TermMap firstElement = null;
         for (Formula element : children) {
             if (firstElement == null) {
-                firstElement = element.getVariableMap().orElse(null);
+                firstElement = element.getTermMap().orElse(null);
             } else {
-                if (firstElement != element.getVariableMap().orElse(firstElement)) {
+                if (firstElement != element.getTermMap().orElse(firstElement)) {
                     throw new IllegalArgumentException(
                             "tried to instantiate formula with different variable maps. perhaps you meant to use Formulas.compose(...)?");
                 }
@@ -58,7 +58,7 @@ public abstract class NonTerminalFormula extends Tree<Formula> implements Formul
     }
 
     protected void assertSharedVariableMap(Formula newChild) {
-        if (getVariableMap().orElse(null) != newChild.getVariableMap().orElse(null))
+        if (getTermMap().orElse(null) != newChild.getTermMap().orElse(null))
             throw new IllegalArgumentException(
                     "tried to add formula with different variable map. perhaps you meant to use Formulas.compose(...)?");
     }

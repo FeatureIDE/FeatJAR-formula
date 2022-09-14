@@ -21,7 +21,8 @@
 package de.featjar.formula.structure;
 
 import de.featjar.formula.structure.NamedTermMap.ValueTerm;
-import de.featjar.formula.structure.term.Term;
+import de.featjar.formula.structure.term.NullaryTerm;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -37,100 +38,18 @@ import java.util.Random;
  *
  * @author Sebastian Krieter
  */
-public class NamedTermMap<T extends ValueTerm> implements Iterable<T> {
-
-    public abstract static class ValueTerm extends TerminalFormula implements Term {
-
-        protected int index;
-        protected String name;
-        protected final Class<?> type;
-        protected VariableMap map;
-
-        protected ValueTerm(String name, int index, Class<?> type, VariableMap map) {
-            this.index = index;
-            this.name = name;
-            this.type = type;
-            this.map = map;
-        }
-
-        protected abstract ValueTerm copy(VariableMap newMap);
-
-        void setIndex(int index) {
-            this.index = index;
-        }
-
-        void setName(String name) {
-            this.name = name;
-        }
-
-        public void rename(String newName) {
-            map.renameVariable(index, newName);
-        }
-
-        public int getIndex() {
-            return index;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public Class<?> getType() {
-            return type;
-        }
-
-        public void setVariableMap(VariableMap map) {
-            this.map = map;
-        }
-
-        @Override
-        public Formula cloneNode() {
-            return this;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hashCode(name);
-        }
-
-        @Override
-        public boolean equalsNode(Formula other) {
-            if (this == other) return true;
-            if (getClass() != other.getClass()) return false;
-            return Objects.equals(name, ((ValueTerm) other).name);
-        }
-
-        @Override
-        public boolean equalsTree(Formula obj) {
-            return equalsNode(obj);
-        }
-
-        @Override
-        public String toString() {
-            return index + ": " + name;
-        }
-
-        @Override
-        public Optional<VariableMap> getVariableMap() {
-            return Optional.of(map);
-        }
-
-        public VariableMap getMap() {
-            return map;
-        }
-    }
-
+public class NamedTermMap<T extends NullaryTerm> implements Iterable<T> {
     private final ArrayList<T> fromIndex;
     private final LinkedHashMap<String, T> fromName = new LinkedHashMap<>();
 
     @SuppressWarnings("unchecked")
-    protected NamedTermMap(NamedTermMap<T> otherMap, VariableMap newVariableMap) {
+    protected NamedTermMap(NamedTermMap<T> otherMap, TermMap newTermMap) {
         fromIndex = new ArrayList<>(otherMap.fromIndex.size());
         for (T term : otherMap.fromIndex) {
             if (term == null) {
                 fromIndex.add(null);
             } else {
-                term = (T) term.copy(newVariableMap);
+                term = (T) term.copy(newTermMap);
                 fromIndex.add(term);
                 fromName.put(term.getName(), term);
             }
@@ -138,10 +57,10 @@ public class NamedTermMap<T extends ValueTerm> implements Iterable<T> {
     }
 
     @SuppressWarnings("unchecked")
-    protected NamedTermMap(NamedTermMap<T> map1, NamedTermMap<T> map2, VariableMap newVariableMap) {
+    protected NamedTermMap(NamedTermMap<T> map1, NamedTermMap<T> map2, TermMap newTermMap) {
         for (T term : map1.fromIndex) {
             if (term != null) {
-                term = (T) term.copy(newVariableMap);
+                term = (T) term.copy(newTermMap);
                 fromName.put(term.getName(), term);
             }
         }
@@ -153,7 +72,7 @@ public class NamedTermMap<T extends ValueTerm> implements Iterable<T> {
                         throw new IllegalArgumentException("Merged maps have incompatible types for term " + term.name);
                     }
                 } else {
-                    term = (T) term.copy(newVariableMap);
+                    term = (T) term.copy(newTermMap);
                     fromName.put(term.getName(), term);
                 }
             }
@@ -216,7 +135,7 @@ public class NamedTermMap<T extends ValueTerm> implements Iterable<T> {
             term.setName(newName);
             fromName.put(newName, term);
         } else {
-            throw new NoSuchElementException(String.valueOf(oldName));
+            throw new NoSuchElementException(oldName);
         }
     }
 

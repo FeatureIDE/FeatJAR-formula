@@ -21,7 +21,7 @@
 package de.featjar.formula.analysis.solver;
 
 import de.featjar.formula.structure.assignment.Assignment;
-import de.featjar.formula.structure.VariableMap;
+import de.featjar.formula.structure.TermMap;
 
 /**
  * Solver interface.
@@ -34,7 +34,7 @@ public interface Solver {
 
     DynamicFormula<?> getDynamicFormula();
 
-    VariableMap getVariables();
+    TermMap getVariables();
 
     default void reset() {}
 }

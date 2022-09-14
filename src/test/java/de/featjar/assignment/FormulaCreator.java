@@ -24,7 +24,7 @@ import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.assignment.Assignment;
 import de.featjar.formula.structure.assignment.VariableAssignment;
 import de.featjar.formula.structure.atomic.literal.Literal;
-import de.featjar.formula.structure.VariableMap;
+import de.featjar.formula.structure.TermMap;
 import de.featjar.formula.structure.connective.And;
 import de.featjar.formula.structure.connective.Implies;
 import de.featjar.formula.structure.connective.Or;
@@ -34,7 +34,7 @@ import java.util.function.Consumer;
 public class FormulaCreator {
 
     public static Formula getFormula01() {
-        final VariableMap map = new VariableMap(Arrays.asList("p", "q", "r", "s"));
+        final TermMap map = new TermMap(Arrays.asList("p", "q", "r", "s"));
         final Literal p = map.createLiteral("p");
         final Literal q = map.createLiteral("q");
         final Literal r = map.createLiteral("r");
@@ -44,7 +44,7 @@ public class FormulaCreator {
     }
 
     public static Formula getFormula02() {
-        final VariableMap map = new VariableMap(Arrays.asList("p", "q", "r", "s"));
+        final TermMap map = new TermMap(Arrays.asList("p", "q", "r", "s"));
         final Literal p = map.createLiteral("p");
         final Literal q = map.createLiteral("q");
         final Literal r = map.createLiteral("r");
@@ -56,7 +56,7 @@ public class FormulaCreator {
                 new Or(new And(s.flip(), r), new And(s, r.flip())));
     }
 
-    public static void testAllAssignments(VariableMap map, Consumer<Assignment> testFunction) {
+    public static void testAllAssignments(TermMap map, Consumer<Assignment> testFunction) {
         final Assignment assignment = new VariableAssignment(map);
         final int numVariables = map.getVariableCount();
         final int numAssignments = (int) Math.pow(2, numVariables);

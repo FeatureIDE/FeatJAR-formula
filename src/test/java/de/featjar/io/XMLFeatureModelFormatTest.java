@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import de.featjar.formula.io.xml.XMLFeatureModelFormat;
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.atomic.literal.Literal;
-import de.featjar.formula.structure.VariableMap;
+import de.featjar.formula.structure.TermMap;
 import de.featjar.formula.structure.connective.And;
 import de.featjar.formula.structure.connective.Implies;
 import de.featjar.formula.structure.connective.Not;
@@ -69,7 +69,7 @@ public class XMLFeatureModelFormatTest {
                 return null;
             }
             case "ABC-nAnBnC": {
-                final VariableMap map = new VariableMap();
+                final TermMap map = new TermMap();
                 final Literal root = map.createLiteral("Root");
                 final Literal a = map.createLiteral("A");
                 final Literal b = map.createLiteral("B");
@@ -83,7 +83,7 @@ public class XMLFeatureModelFormatTest {
                         new Or(new Not(a.cloneNode()), new Not(b.cloneNode()), new Not(c.cloneNode())));
             }
             case "SingleGroups": {
-                final VariableMap map = new VariableMap();
+                final TermMap map = new TermMap();
                 final Literal root = map.createLiteral("Root");
                 final Literal a = map.createLiteral("A");
                 final Literal a1 = map.createLiteral("A1");
@@ -101,7 +101,7 @@ public class XMLFeatureModelFormatTest {
                         new Implies(b.cloneNode(), b1.cloneNode()));
             }
             case "A": {
-                final VariableMap map = new VariableMap();
+                final TermMap map = new TermMap();
                 final Literal a = map.createLiteral("A");
                 return new And(a.cloneNode());
             }

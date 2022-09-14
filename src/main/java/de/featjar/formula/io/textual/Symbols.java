@@ -103,44 +103,44 @@ public class Symbols {
         return symbol != null ? symbol : operator.defaultName;
     }
 
-    public static Operator getOperator(Formula node) throws IllegalArgumentException {
-        if (node instanceof Connective) {
-            if (node instanceof Not) {
+    public static Operator getOperator(Formula formula) throws IllegalArgumentException {
+        if (formula instanceof Connective) {
+            if (formula instanceof Not) {
                 return Operator.NOT;
             }
-            if (node instanceof And) {
+            if (formula instanceof And) {
                 return Operator.AND;
             }
-            if (node instanceof Or) {
+            if (formula instanceof Or) {
                 return Operator.OR;
             }
-            if (node instanceof Implies) {
+            if (formula instanceof Implies) {
                 return Operator.IMPLIES;
             }
-            if (node instanceof BiImplies) {
+            if (formula instanceof BiImplies) {
                 return Operator.EQUALS;
             }
-            if (node instanceof AtLeast) {
+            if (formula instanceof AtLeast) {
                 return Operator.ATLEAST;
             }
-            if (node instanceof AtMost) {
+            if (formula instanceof AtMost) {
                 return Operator.ATMOST;
             }
-            if (node instanceof Choose) {
+            if (formula instanceof Choose) {
                 return Operator.CHOOSE;
             }
-            if (node instanceof Between) {
+            if (formula instanceof Between) {
                 return Operator.BETWEEN;
             }
-            if (node instanceof ForAll) {
+            if (formula instanceof ForAll) {
                 return Operator.FORALL;
             }
-            if (node instanceof Exists) {
+            if (formula instanceof Exists) {
                 return Operator.EXISTS;
             }
             return Operator.UNKNOWN;
         }
-        throw new IllegalArgumentException("Unrecognized node type: " + node.getClass());
+        throw new IllegalArgumentException("Unrecognized node type: " + formula.getClass());
     }
 
     public boolean isTextual() {

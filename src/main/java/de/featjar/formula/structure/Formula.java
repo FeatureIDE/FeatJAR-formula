@@ -31,7 +31,7 @@ import java.util.Optional;
 
 /**
  * A logical formula.
- * Can be propositional (using {@link VariableMap} and {@link de.featjar.formula.structure.atomic.literal.Literal})
+ * Can be propositional (using {@link TermMap} and {@link de.featjar.formula.structure.atomic.literal.Literal})
  * or first-order (using {@link de.featjar.formula.structure.atomic.predicate.Predicate},
  * {@link de.featjar.formula.structure.term.Term}, and {@link de.featjar.formula.structure.connective.Quantifier}).
  * Implemented recursively as a tree.
@@ -40,7 +40,14 @@ import java.util.Optional;
  * @author Elias Kuiter
  */
 public interface Formula extends Traversable<Formula> {
+    /**
+     * A tautological formula.
+     */
     True TRUE = True.getInstance();
+
+    /**
+     * A contradictory formula.
+     */
     False FALSE = False.getInstance();
 
     /**
@@ -55,12 +62,12 @@ public interface Formula extends Traversable<Formula> {
 
     /**
      * {@return this formula's variable map, if any}
-     * It is guaranteed that all subformulas of a formula share the same {@link VariableMap}.
+     * It is guaranteed that all subformulas of a formula share the same {@link TermMap}.
      * That is, {@code getChildren().stream().allMatch(child -> child.getVariableMap() == getVariableMap())} holds.
      * A formula that has no variables (e.g., {@link de.featjar.formula.structure.atomic.literal.True} or
-     * {@link de.featjar.formula.structure.atomic.literal.False}) has no {@link VariableMap}.
+     * {@link de.featjar.formula.structure.atomic.literal.False}) has no {@link TermMap}.
      */
-    default Optional<VariableMap> getVariableMap() { // todo: rename to TermMap?
+    default Optional<TermMap> getTermMap() {
         return Trees.preOrderStream(this)
                 .filter(n -> n instanceof ValueTerm)
                 .map(n -> ((ValueTerm) n).getMap())

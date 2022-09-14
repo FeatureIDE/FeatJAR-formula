@@ -35,8 +35,8 @@ public class AtLeast extends Cardinal {
         super(oldNode);
     }
 
-    public AtLeast(int minimum, List<Formula> nodes) {
-        super(Range.atLeast(minimum), nodes);
+    public AtLeast(int minimum, List<Formula> formulas) {
+        super(Range.atLeast(minimum), formulas);
     }
 
     @Override

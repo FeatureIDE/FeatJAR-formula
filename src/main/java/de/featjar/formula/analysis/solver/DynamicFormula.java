@@ -21,7 +21,7 @@
 package de.featjar.formula.analysis.solver;
 
 import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.VariableMap;
+import de.featjar.formula.structure.TermMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -37,7 +37,7 @@ public interface DynamicFormula<O> {
 
     List<O> getConstraints();
 
-    VariableMap getVariableMap();
+    TermMap getVariableMap();
 
     /**
      * Adds a clause.

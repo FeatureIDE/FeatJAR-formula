@@ -22,7 +22,7 @@ package de.featjar.formula.io.xml;
 
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.atomic.literal.Literal;
-import de.featjar.formula.structure.VariableMap;
+import de.featjar.formula.structure.TermMap;
 import de.featjar.formula.structure.connective.And;
 import de.featjar.formula.structure.connective.Or;
 import de.featjar.base.io.format.ParseException;
@@ -41,7 +41,7 @@ import org.w3c.dom.Element;
  */
 public class XMLFeatureModelFormat extends AbstractXMLFeatureModelFormat<Formula, Literal, Boolean> {
     protected final List<Formula> constraints = new ArrayList<>();
-    protected final VariableMap variableMap = new VariableMap();
+    protected final TermMap termMap = new TermMap();
 
     @Override
     public XMLFeatureModelFormat getInstance() {
@@ -63,7 +63,7 @@ public class XMLFeatureModelFormat extends AbstractXMLFeatureModelFormat<Formula
         final Element featureModelElement = getDocumentElement(document, FEATURE_MODEL);
         parseFeatureTree(getElement(featureModelElement, STRUCT));
         Optional<Element> constraintsElement = getOptionalElement(featureModelElement, CONSTRAINTS);
-        if (constraintsElement.isPresent()) parseConstraints(constraintsElement.get(), variableMap);
+        if (constraintsElement.isPresent()) parseConstraints(constraintsElement.get(), termMap);
         if (constraints.isEmpty()) {
             return new And();
         } else {
@@ -88,13 +88,13 @@ public class XMLFeatureModelFormat extends AbstractXMLFeatureModelFormat<Formula
     protected Literal createFeatureLabel(
             String name, Literal parentFeatureLabel, boolean mandatory, boolean _abstract, boolean hidden)
             throws ParseException {
-        if (variableMap.hasVariable(name)) {
+        if (termMap.hasVariable(name)) {
             throw new ParseException("Duplicate feature name!");
         } else {
-            variableMap.addBooleanVariable(name);
+            termMap.addBooleanVariable(name);
         }
 
-        Literal literal = variableMap.createLiteral(name);
+        Literal literal = termMap.createLiteral(name);
         if (parentFeatureLabel == null) {
             constraints.add(literal);
         } else {

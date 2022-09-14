@@ -30,7 +30,7 @@ import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.Formulas;
 import de.featjar.formula.structure.atomic.literal.BooleanLiteral;
 import de.featjar.formula.structure.atomic.literal.Literal;
-import de.featjar.formula.structure.VariableMap;
+import de.featjar.formula.structure.TermMap;
 import de.featjar.formula.structure.connective.And;
 import de.featjar.formula.structure.connective.Implies;
 
@@ -43,7 +43,7 @@ import org.junit.jupiter.api.Test;
 public class NonTerminalFormulaTest {
     @Test
     public void createSimpleFormulas() {
-        final VariableMap map = new VariableMap();
+        final TermMap map = new TermMap();
         final Literal p1 = map.createLiteral("p");
         final Literal p2 = map.createLiteral("p");
         assertEquals(p1, p2);
@@ -66,8 +66,8 @@ public class NonTerminalFormulaTest {
 
     @Test
     public void ensureSharedVariableMap() {
-        final VariableMap map1 = new VariableMap();
-        final VariableMap map2 = new VariableMap();
+        final TermMap map1 = new TermMap();
+        final TermMap map2 = new TermMap();
         assertDoesNotThrow(() -> new And(Formula.TRUE, Formula.FALSE));
         assertDoesNotThrow(() -> new And(map1.createLiteral("a"), map1.createLiteral("a", false)));
         assertThrows(
@@ -87,7 +87,7 @@ public class NonTerminalFormulaTest {
             Formula formula3 = Formulas.compose(And::new, formula1, formula2);
             Literal x = formula3.getFirstChild()
                     .get()
-                    .getVariableMap()
+                    .getTermMap()
                     .orElseThrow()
                     .createLiteral("x");
             assertDoesNotThrow(() -> Formulas.compose(And::new, formula3, x));
@@ -98,14 +98,14 @@ public class NonTerminalFormulaTest {
             assertThrows(IllegalArgumentException.class, () -> new And(formula1, formula2, formula3));
             assertDoesNotThrow(() -> Formulas.compose(And::new, formula1, formula2, formula3));
             Formula formula = Formulas.compose(And::new, formula1, formula2, formula3);
-            assertNotEquals(formula1.getVariableMap(), formula);
-            assertNotEquals(formula2.getVariableMap(), formula);
-            assertNotEquals(formula3.getVariableMap(), formula);
-            assertEquals(Optional.empty(), formula.getChildren().get(0).getVariableMap());
-            assertEquals(formula.getVariableMap(), formula.getChildren().get(1).getVariableMap());
-            assertEquals(formula.getVariableMap(), formula.getChildren().get(2).getVariableMap());
+            assertNotEquals(formula1.getTermMap(), formula);
+            assertNotEquals(formula2.getTermMap(), formula);
+            assertNotEquals(formula3.getTermMap(), formula);
+            assertEquals(Optional.empty(), formula.getChildren().get(0).getTermMap());
+            assertEquals(formula.getTermMap(), formula.getChildren().get(1).getTermMap());
+            assertEquals(formula.getTermMap(), formula.getChildren().get(2).getTermMap());
         };
-        VariableMap m = new VariableMap();
+        TermMap m = new TermMap();
         List.of(m.createLiteral("p"), m.createLiteral("q"));
         test.accept(new And());
         test.accept(Formula.TRUE);

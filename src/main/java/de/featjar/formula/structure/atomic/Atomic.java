@@ -25,7 +25,7 @@ import de.featjar.formula.structure.term.Term;
 import java.util.List;
 
 /**
- * An atomic formula in propositional and first-order logic.
+ * An atomic formula.
  *
  * @author Sebastian Krieter
  */

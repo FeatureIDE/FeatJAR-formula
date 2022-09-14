@@ -31,14 +31,14 @@ public class DNFTester extends NFTester {
 
     @Override
     public TraversalAction firstVisit(List<Formula> path) {
-        final Formula node = getCurrentNode(path);
-        if (node instanceof Or) {
+        final Formula formula = getCurrentNode(path);
+        if (formula instanceof Or) {
             if (path.size() > 1) {
                 isNf = false;
                 isClausalNf = false;
                 return TraversalAction.SKIP_ALL;
             }
-            for (final Formula child : node.getChildren()) {
+            for (final Formula child : formula.getChildren()) {
                 if (!(child instanceof And)) {
                     if (!(child instanceof Atomic)) {
                         isNf = false;
@@ -49,7 +49,7 @@ public class DNFTester extends NFTester {
                 }
             }
             return TraversalAction.CONTINUE;
-        } else if (node instanceof And) {
+        } else if (formula instanceof And) {
             if (path.size() > 2) {
                 isNf = false;
                 isClausalNf = false;
@@ -58,7 +58,7 @@ public class DNFTester extends NFTester {
             if (path.size() < 2) {
                 isClausalNf = false;
             }
-            for (final Formula child : node.getChildren()) {
+            for (final Formula child : formula.getChildren()) {
                 if (!(child instanceof Atomic)) {
                     isNf = false;
                     isClausalNf = false;
@@ -66,7 +66,7 @@ public class DNFTester extends NFTester {
                 }
             }
             return TraversalAction.CONTINUE;
-        } else if (node instanceof Atomic) {
+        } else if (formula instanceof Atomic) {
             if (path.size() > 3) {
                 isNf = false;
                 isClausalNf = false;

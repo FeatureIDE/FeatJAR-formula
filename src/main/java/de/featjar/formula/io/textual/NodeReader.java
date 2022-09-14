@@ -23,7 +23,7 @@ package de.featjar.formula.io.textual;
 import de.featjar.formula.io.textual.Symbols.Operator;
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.atomic.literal.ErrorLiteral;
-import de.featjar.formula.structure.VariableMap;
+import de.featjar.formula.structure.TermMap;
 import de.featjar.formula.structure.connective.And;
 import de.featjar.formula.structure.connective.BiImplies;
 import de.featjar.formula.structure.connective.Implies;
@@ -115,7 +115,7 @@ public class NodeReader {
         Collections.sort(Arrays.asList(operators), (o1, o2) -> o2.getPriority() - o1.getPriority());
     }
 
-    private VariableMap map = new VariableMap();
+    private TermMap map = new TermMap();
     private boolean hasVariableNames = false;
 
     private Symbols symbols = ShortSymbols.INSTANCE;
@@ -124,7 +124,7 @@ public class NodeReader {
     private ErrorHandling ignoreUnparsableSubExpressions = ErrorHandling.THROW;
     private List<Problem> problemList;
 
-    public VariableMap getFeatureNames() {
+    public TermMap getFeatureNames() {
         return map;
     }
 
@@ -137,7 +137,7 @@ public class NodeReader {
     }
 
     public void setVariableNames(Collection<String> variableNames) {
-        map = new VariableMap();
+        map = new TermMap();
         if (variableNames == null) {
             hasVariableNames = false;
         } else {
@@ -206,56 +206,56 @@ public class NodeReader {
 
                 // recursion for children nodes
 
-                final Formula node1, node2;
+                final Formula formula1, formula2;
                 if (operator == Operator.NOT) {
                     final String rightSide = source.substring(index + symbol.length(), source.length())
                             .trim();
-                    node1 = null;
+                    formula1 = null;
                     if (rightSide.isEmpty()) {
-                        node2 = handleInvalidExpression(ErrorMessage.MISSING_NAME, source);
+                        formula2 = handleInvalidExpression(ErrorMessage.MISSING_NAME, source);
                     } else {
-                        node2 = checkExpression(rightSide, quotedVariables, subExpressions);
+                        formula2 = checkExpression(rightSide, quotedVariables, subExpressions);
                     }
-                    if (node2 == null) {
+                    if (formula2 == null) {
                         return null;
                     }
                 } else {
                     final String leftSide = source.substring(0, index).trim();
                     if (leftSide.isEmpty()) {
-                        node1 = handleInvalidExpression(ErrorMessage.MISSING_NAME_LEFT, source);
+                        formula1 = handleInvalidExpression(ErrorMessage.MISSING_NAME_LEFT, source);
                     } else {
-                        node1 = checkExpression(leftSide, quotedVariables, subExpressions);
+                        formula1 = checkExpression(leftSide, quotedVariables, subExpressions);
                     }
-                    if (node1 == null) {
+                    if (formula1 == null) {
                         return null;
                     }
                     final String rightSide = source.substring(index + symbol.length(), source.length())
                             .trim();
                     if (rightSide.isEmpty()) {
-                        node2 = handleInvalidExpression(ErrorMessage.MISSING_NAME_RIGHT, source);
+                        formula2 = handleInvalidExpression(ErrorMessage.MISSING_NAME_RIGHT, source);
                     } else {
-                        node2 = checkExpression(rightSide, quotedVariables, subExpressions);
+                        formula2 = checkExpression(rightSide, quotedVariables, subExpressions);
                     }
-                    if (node2 == null) {
+                    if (formula2 == null) {
                         return null;
                     }
                 }
 
                 switch (operator) {
                     case EQUALS: {
-                        return new BiImplies(node1, node2);
+                        return new BiImplies(formula1, formula2);
                     }
                     case IMPLIES: {
-                        return new Implies(node1, node2);
+                        return new Implies(formula1, formula2);
                     }
                     case OR: {
-                        return new Or(node1, node2);
+                        return new Or(formula1, formula2);
                     }
                     case AND: {
-                        return new And(node1, node2);
+                        return new And(formula1, formula2);
                     }
                     case NOT: {
-                        return new Not(node2);
+                        return new Not(formula2);
                     }
                     case ATLEAST:
                     case ATMOST:

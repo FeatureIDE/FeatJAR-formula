@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.clauses;
 
-import de.featjar.formula.structure.VariableMap;
+import de.featjar.formula.structure.TermMap;
 import de.featjar.base.data.Result;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -67,10 +67,10 @@ public class ClauseList extends ArrayList<LiteralList> implements Serializable {
         return negatedClauseList;
     }
 
-    public Result<ClauseList> adapt(VariableMap oldVariableMap, VariableMap newVariableMap) {
+    public Result<ClauseList> adapt(TermMap oldTermMap, TermMap newTermMap) {
         final ClauseList adaptedClauseList = new ClauseList();
         for (final LiteralList clause : this) {
-            final Result<LiteralList> adapted = clause.adapt(oldVariableMap, newVariableMap);
+            final Result<LiteralList> adapted = clause.adapt(oldTermMap, newTermMap);
             if (adapted.isEmpty()) {
                 return Result.empty(adapted.getProblems());
             }

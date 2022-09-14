@@ -23,8 +23,8 @@ package de.featjar.formula.transform;
 import de.featjar.base.data.Result;
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.Formulas;
-import de.featjar.formula.structure.VariableMap;
-import de.featjar.formula.structure.VariableMap.Variable;
+import de.featjar.formula.structure.TermMap;
+import de.featjar.formula.structure.TermMap.Variable;
 import de.featjar.formula.structure.connective.And;
 import de.featjar.formula.structure.connective.Connective;
 import de.featjar.base.task.Monitor;
@@ -44,7 +44,7 @@ public class CNFTransformer implements Transformer {
     protected boolean useDistributive;
     protected int maximumNumberOfLiterals = Integer.MAX_VALUE;
 
-    protected VariableMap variableMap = null;
+    protected TermMap termMap = null;
 
     public CNFTransformer() {
         if (useMultipleThreads) {
@@ -71,7 +71,7 @@ public class CNFTransformer implements Transformer {
                 return Result.of(Trees.clone(orgFormula));
             }
         }
-        variableMap = orgFormula.getVariableMap().map(VariableMap::clone).orElseGet(VariableMap::new);
+        termMap = orgFormula.getTermMap().map(TermMap::clone).orElseGet(TermMap::new);
         Formula formula = NormalForms.simplifyForNF(Trees.clone(orgFormula));
         if (formula instanceof And) {
             final List<Formula> children = ((And) formula).getChildren();
@@ -86,7 +86,7 @@ public class CNFTransformer implements Transformer {
 
         formula = new And(getTransformedClauses());
         formula = NormalForms.toClausalNF(formula, NormalForms.NormalForm.CNF);
-        formula = Formulas.manipulate(formula, new VariableMapSetter(variableMap));
+        formula = Formulas.manipulate(formula, new VariableMapSetter(termMap));
         return Result.of(formula);
     }
 
@@ -96,7 +96,7 @@ public class CNFTransformer implements Transformer {
         transformedClauses.addAll(distributiveClauses);
 
         if (!tseitinClauses.isEmpty()) {
-            variableMap = variableMap.clone();
+            termMap = termMap.clone();
             final HashMap<TseitinTransformer.Substitute, TseitinTransformer.Substitute> combinedTseitinClauses = new HashMap<>();
             for (final TseitinTransformer.Substitute tseitinClause : tseitinClauses) {
                 TseitinTransformer.Substitute substitute = combinedTseitinClauses.get(tseitinClause);
@@ -104,7 +104,7 @@ public class CNFTransformer implements Transformer {
                     combinedTseitinClauses.put(tseitinClause, tseitinClause);
                     final Variable variable = tseitinClause.getVariable();
                     if (variable != null) {
-                        variable.rename(variableMap.addBooleanVariable().getName());
+                        variable.rename(termMap.addBooleanVariable().getName());
                     }
                 } else {
                     final Variable variable = substitute.getVariable();
@@ -115,7 +115,7 @@ public class CNFTransformer implements Transformer {
             }
             for (final TseitinTransformer.Substitute tseitinClause : combinedTseitinClauses.keySet()) {
                 for (final Formula formula : tseitinClause.getClauses()) {
-                    transformedClauses.add(Formulas.manipulate(formula, new VariableMapSetter(variableMap)));
+                    transformedClauses.add(Formulas.manipulate(formula, new VariableMapSetter(termMap)));
                 }
             }
         }
@@ -152,7 +152,7 @@ public class CNFTransformer implements Transformer {
 
     protected Result<List<TseitinTransformer.Substitute>> tseitin(Formula child, Monitor monitor) {
         final TseitinTransformer tseitinTransformer = new TseitinTransformer();
-        tseitinTransformer.setVariableMap(new VariableMap());
+        tseitinTransformer.setVariableMap(new TermMap());
         return tseitinTransformer.execute(child, monitor);
     }
 }

@@ -23,7 +23,7 @@ package de.featjar.formula.transform;
 import de.featjar.formula.structure.AuxiliaryRoot;
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.atomic.Atomic;
-import de.featjar.formula.structure.VariableMap.Variable;
+import de.featjar.formula.structure.TermMap.Variable;
 import de.featjar.formula.structure.connective.And;
 import de.featjar.formula.structure.connective.AtLeast;
 import de.featjar.formula.structure.connective.AtMost;
@@ -52,15 +52,15 @@ public class EquivalenceVisitor implements TreeVisitor<Void, Formula> {
 
     @Override
     public TraversalAction firstVisit(List<Formula> path) {
-        final Formula node = getCurrentNode(path);
-        if (node instanceof Atomic) {
+        final Formula formula = getCurrentNode(path);
+        if (formula instanceof Atomic) {
             return TraversalAction.SKIP_CHILDREN;
-        } else if (node instanceof Connective) {
-            if (node instanceof Quantifier) {
+        } else if (formula instanceof Connective) {
+            if (formula instanceof Quantifier) {
                 return TraversalAction.FAIL;
             }
             return TraversalAction.CONTINUE;
-        } else if (node instanceof AuxiliaryRoot) {
+        } else if (formula instanceof AuxiliaryRoot) {
             return TraversalAction.CONTINUE;
         } else {
             return TraversalAction.FAIL;
@@ -69,8 +69,8 @@ public class EquivalenceVisitor implements TreeVisitor<Void, Formula> {
 
     @Override
     public TraversalAction lastVisit(List<Formula> path) {
-        final Formula node = getCurrentNode(path);
-        node.replaceChildren(this::replace);
+        final Formula formula = getCurrentNode(path);
+        formula.replaceChildren(this::replace);
         if (fail) {
             return TraversalAction.FAIL;
         }
@@ -78,38 +78,38 @@ public class EquivalenceVisitor implements TreeVisitor<Void, Formula> {
     }
 
     @SuppressWarnings("unchecked")
-    private Formula replace(Formula node) {
-        if (((node instanceof Variable)
-                || (node instanceof Atomic)
-                || (node instanceof And)
-                || (node instanceof Or)
-                || (node instanceof Not))) {
+    private Formula replace(Formula formula) {
+        if (((formula instanceof Variable)
+                || (formula instanceof Atomic)
+                || (formula instanceof And)
+                || (formula instanceof Or)
+                || (formula instanceof Not))) {
             return null;
         }
-        final List<Formula> children = (List<Formula>) node.getChildren();
-        Formula newNode = null;
-        if (node instanceof Implies) {
-            newNode = new Or(new Not(children.get(0)), children.get(1));
-        } else if (node instanceof BiImplies) {
-            newNode = new And( //
+        final List<Formula> children = (List<Formula>) formula.getChildren();
+        Formula newFormula;
+        if (formula instanceof Implies) {
+            newFormula = new Or(new Not(children.get(0)), children.get(1));
+        } else if (formula instanceof BiImplies) {
+            newFormula = new And( //
                     new Or(new Not(children.get(0)), children.get(1)),
                     new Or(new Not(children.get(1)), children.get(0)));
-        } else if (node instanceof AtLeast) {
-            newNode = new And(atLeastK(children, ((AtLeast) node).getMinimum()));
-        } else if (node instanceof AtMost) {
-            newNode = new And(atMostK(children, ((AtMost) node).getMaximum()));
-        } else if (node instanceof Between) {
-            final Between between = (Between) node;
-            newNode = new And(
+        } else if (formula instanceof AtLeast) {
+            newFormula = new And(atLeastK(children, ((AtLeast) formula).getMinimum()));
+        } else if (formula instanceof AtMost) {
+            newFormula = new And(atMostK(children, ((AtMost) formula).getMaximum()));
+        } else if (formula instanceof Between) {
+            final Between between = (Between) formula;
+            newFormula = new And(
                     new And(atLeastK(children, between.getMinimum())), new And(atMostK(children, between.getMaximum())));
-        } else if (node instanceof Choose) {
-            final Choose choose = (Choose) node;
-            newNode = new And(new And(atLeastK(children, choose.getK())), new And(atMostK(children, choose.getK())));
+        } else if (formula instanceof Choose) {
+            final Choose choose = (Choose) formula;
+            newFormula = new And(new And(atLeastK(children, choose.getK())), new And(atMostK(children, choose.getK())));
         } else {
             fail = true;
             return null;
         }
-        return newNode;
+        return newFormula;
     }
 
     private List<Formula> atMostK(List<? extends Formula> elements, int k) {

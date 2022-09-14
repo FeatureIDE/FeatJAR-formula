@@ -21,41 +21,41 @@
 package de.featjar.formula.transform;
 
 import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.VariableMap;
-import de.featjar.formula.structure.VariableMap.Constant;
-import de.featjar.formula.structure.VariableMap.Variable;
+import de.featjar.formula.structure.TermMap;
+import de.featjar.formula.structure.TermMap.Constant;
+import de.featjar.formula.structure.TermMap.Variable;
 import de.featjar.base.tree.visitor.TreeVisitor;
 import java.util.List;
 
 public class VariableMapSetter implements TreeVisitor<Void, Formula> {
 
-    private final VariableMap variableMap;
+    private final TermMap termMap;
 
-    public VariableMapSetter(VariableMap variableMap) {
-        this.variableMap = variableMap;
+    public VariableMapSetter(TermMap termMap) {
+        this.termMap = termMap;
     }
 
-    private Formula replaceValueTerms(Formula node) {
-        if (node instanceof Variable) {
-            final Variable replacement = variableMap
-                    .getVariable(node.getName())
+    private Formula replaceValueTerms(Formula formula) {
+        if (formula instanceof Variable) {
+            final Variable replacement = termMap
+                    .getVariable(formula.getName())
                     .orElseThrow(() ->
-                            new IllegalArgumentException("Map does not contain variable with name " + node.getName()));
+                            new IllegalArgumentException("Map does not contain variable with name " + formula.getName()));
             return replacement;
-        } else if (node instanceof Constant) {
-            final Constant replacement = variableMap
-                    .getConstant(node.getName())
+        } else if (formula instanceof Constant) {
+            final Constant replacement = termMap
+                    .getConstant(formula.getName())
                     .orElseThrow(() ->
-                            new IllegalArgumentException("Map does not contain constant with name " + node.getName()));
+                            new IllegalArgumentException("Map does not contain constant with name " + formula.getName()));
             return replacement;
         }
-        return node;
+        return formula;
     }
 
     @Override
     public TraversalAction lastVisit(List<Formula> path) {
-        final Formula node = getCurrentNode(path);
-        node.replaceChildren(this::replaceValueTerms);
+        final Formula formula = getCurrentNode(path);
+        formula.replaceChildren(this::replaceValueTerms);
         return TreeVisitor.super.lastVisit(path);
     }
 }

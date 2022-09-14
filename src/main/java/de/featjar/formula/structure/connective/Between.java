@@ -35,8 +35,8 @@ public class Between extends Cardinal {
         super(oldNode);
     }
 
-    public Between(int minimum, int maximum, List<Formula> nodes) {
-        super(Range.of(minimum, maximum), nodes);
+    public Between(int minimum, int maximum, List<Formula> formulas) {
+        super(Range.of(minimum, maximum), formulas);
     }
 
     @Override

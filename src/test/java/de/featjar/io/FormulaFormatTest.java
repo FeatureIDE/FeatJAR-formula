@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import de.featjar.formula.io.textual.FormulaFormat;
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.atomic.literal.Literal;
-import de.featjar.formula.structure.VariableMap;
+import de.featjar.formula.structure.TermMap;
 import de.featjar.formula.structure.connective.And;
 import de.featjar.formula.structure.connective.Not;
 import de.featjar.formula.structure.connective.Or;
@@ -69,7 +69,7 @@ public class FormulaFormatTest {
                 return null;
             }
             case "ABC-nAnBnC": {
-                final VariableMap map = new VariableMap();
+                final TermMap map = new TermMap();
                 final Literal a = map.createLiteral("A");
                 final Literal b = map.createLiteral("B");
                 final Literal c = map.createLiteral("C");
@@ -78,12 +78,12 @@ public class FormulaFormatTest {
                         new Or(new Not(a.cloneNode()), new Or(new Not(b.cloneNode()), new Not(c.cloneNode()))));
             }
             case "nA": {
-                final VariableMap map = new VariableMap();
+                final TermMap map = new TermMap();
                 final Literal a = map.createLiteral("A");
                 return new Not(a.cloneNode());
             }
             case "nAB": {
-                final VariableMap map = new VariableMap();
+                final TermMap map = new TermMap();
                 final Literal a = map.createLiteral("A");
                 final Literal b = map.createLiteral("B");
                 return new Or(new Not(a.cloneNode()), b.cloneNode());

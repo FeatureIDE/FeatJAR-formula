@@ -32,8 +32,8 @@ import java.util.Objects;
  */
 public class AuxiliaryRoot extends NonTerminalFormula {
 
-    public AuxiliaryRoot(Formula node) {
-        super(node);
+    public AuxiliaryRoot(Formula formula) {
+        super(formula);
     }
 
     private AuxiliaryRoot() {
@@ -48,9 +48,9 @@ public class AuxiliaryRoot extends NonTerminalFormula {
         return getChildren().iterator().next();
     }
 
-    public void setChild(Formula node) {
-        Objects.requireNonNull(node);
-        setChildren(Arrays.asList(node));
+    public void setChild(Formula formula) {
+        Objects.requireNonNull(formula);
+        setChildren(Arrays.asList(formula));
     }
 
     @Override

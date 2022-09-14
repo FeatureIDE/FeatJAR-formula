@@ -20,20 +20,27 @@
  */
 package de.featjar.formula.structure.atomic.predicate;
 
+import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.term.Term;
 import java.util.List;
 
 /**
+ * Expresses "A = B" constraints.
+ * Evaluates to {@code true} iff both children evaluate to the same value.
  *
  * @author Sebastian Krieter
  */
 public class Equals extends ComparingPredicate {
 
+    protected Equals() {
+    }
+
     public Equals(Term leftTerm, Term rightTerm) {
         super(leftTerm, rightTerm);
     }
 
-    protected Equals() {
+    public Equals(List<? extends Term> terms) {
+        super(terms);
     }
 
     @Override
@@ -48,12 +55,11 @@ public class Equals extends ComparingPredicate {
 
     @Override
     public NotEquals flip() {
-        final List<? extends Term> children = getChildren();
-        return new NotEquals(children.get(0), children.get(1));
+        return new NotEquals((Term) getLeftFormula(), (Term) getRightFormula());
     }
 
     @Override
-    protected boolean compareDiff(int diff) {
-        return diff == 0;
+    protected boolean compareDifference(int difference) {
+        return difference == 0;
     }
 }

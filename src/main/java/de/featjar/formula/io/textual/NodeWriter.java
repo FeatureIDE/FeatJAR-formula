@@ -461,14 +461,14 @@ public class NodeWriter {
      * is false for unary operations (i.e. {@link Not}). This is also false for
      * {@link Choose}, {@link AtLeast} and {@link AtMost}.
      *
-     * @param node operation in question
+     * @param formula operation in question
      * @return true iff the given operation can be written in infix notation
      */
-    private boolean isInfixCompatibleOperation(Formula node) {
-        return (node instanceof And)
-                || (node instanceof Or)
-                || (node instanceof Implies)
-                || (node instanceof BiImplies);
+    private boolean isInfixCompatibleOperation(Formula formula) {
+        return (formula instanceof And)
+                || (formula instanceof Or)
+                || (formula instanceof Implies)
+                || (formula instanceof BiImplies);
     }
 
     /**

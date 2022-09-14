@@ -26,7 +26,7 @@ import de.featjar.formula.structure.Formulas;
 import de.featjar.formula.structure.assignment.VariableAssignment;
 import de.featjar.formula.structure.atomic.literal.BooleanLiteral;
 import de.featjar.formula.structure.atomic.literal.Literal;
-import de.featjar.formula.structure.VariableMap;
+import de.featjar.formula.structure.TermMap;
 import de.featjar.base.task.Monitor;
 import de.featjar.base.task.MonitorableFunction;
 import de.featjar.base.tree.Trees;
@@ -42,35 +42,35 @@ import java.util.Optional;
 public class FormulaToCNF implements MonitorableFunction<Formula, CNF> {
 
     private boolean keepLiteralOrder;
-    private VariableMap variableMapping;
+    private TermMap termMap;
 
     public static CNF convert(Formula formula) {
         return new FormulaToCNF().apply(formula).get();
     }
 
-    public static CNF convert(Formula formula, VariableMap variableMapping) {
+    public static CNF convert(Formula formula, TermMap termMap) {
         final FormulaToCNF function = new FormulaToCNF();
-        function.setVariableMapping(variableMapping);
+        function.setVariableMapping(termMap);
         function.setKeepLiteralOrder(true);
         return function.apply(formula).get();
     }
 
     @Override
-    public Result<CNF> execute(Formula node, Monitor monitor) {
-        if (node == null) {
+    public Result<CNF> execute(Formula formula, Monitor monitor) {
+        if (formula == null) {
             return Result.empty();
         }
-        final VariableMap mapping = variableMapping != null
-                ? variableMapping
-                : node.getVariableMap().orElseGet(VariableMap::new);
+        final TermMap mapping = termMap != null
+                ? termMap
+                : formula.getTermMap().orElseGet(TermMap::new);
         final ClauseList clauses = new ClauseList();
-        final Optional<Object> formulaValue = Formulas.evaluate(node, new VariableAssignment(mapping));
+        final Optional<Object> formulaValue = Formulas.evaluate(formula, new VariableAssignment(mapping));
         if (formulaValue.isPresent()) {
             if (formulaValue.get() == Boolean.FALSE) {
                 clauses.add(new LiteralList());
             }
         } else {
-            final Formula cnf = Formulas.toCNF(Trees.clone(node)).get();
+            final Formula cnf = Formulas.toCNF(Trees.clone(formula)).get();
             cnf.getChildren().stream()
                     .map(exp -> getClause(exp, mapping))
                     .filter(Objects::nonNull)
@@ -87,15 +87,15 @@ public class FormulaToCNF implements MonitorableFunction<Formula, CNF> {
         this.keepLiteralOrder = keepLiteralOrder;
     }
 
-    public VariableMap getVariableMapping() {
-        return variableMapping;
+    public TermMap getVariableMapping() {
+        return termMap;
     }
 
-    public void setVariableMapping(VariableMap variableMapping) {
-        this.variableMapping = variableMapping;
+    public void setVariableMapping(TermMap termMap) {
+        this.termMap = termMap;
     }
 
-    private LiteralList getClause(Formula clauseExpression, VariableMap mapping) {
+    private LiteralList getClause(Formula clauseExpression, TermMap mapping) {
         if (clauseExpression instanceof Literal) {
             final Literal literal = (Literal) clauseExpression;
             final int variable = mapping.getVariableSignature(literal.getName())

@@ -34,10 +34,10 @@ public class TreeSimplifier implements TreeVisitor<Void, Formula> {
 
     @Override
     public TraversalAction firstVisit(List<Formula> path) {
-        final Formula node = getCurrentNode(path);
-        if (node instanceof Atomic) {
+        final Formula formula = getCurrentNode(path);
+        if (formula instanceof Atomic) {
             return TraversalAction.SKIP_CHILDREN;
-        } else if ((node instanceof AuxiliaryRoot) || (node instanceof Connective)) {
+        } else if ((formula instanceof AuxiliaryRoot) || (formula instanceof Connective)) {
             return TraversalAction.CONTINUE;
         } else {
             return TraversalAction.FAIL;
@@ -46,19 +46,19 @@ public class TreeSimplifier implements TreeVisitor<Void, Formula> {
 
     @Override
     public TraversalAction lastVisit(List<Formula> path) {
-        final Formula node = getCurrentNode(path);
-        if ((node instanceof AuxiliaryRoot) || (node instanceof Connective)) {
-            if (node instanceof And) {
-                if (node.getChildren().stream().anyMatch(c -> c == Formula.FALSE)) {
-                    node.setChildren(Arrays.asList(Formula.FALSE));
+        final Formula formula = getCurrentNode(path);
+        if ((formula instanceof AuxiliaryRoot) || (formula instanceof Connective)) {
+            if (formula instanceof And) {
+                if (formula.getChildren().stream().anyMatch(c -> c == Formula.FALSE)) {
+                    formula.setChildren(Arrays.asList(Formula.FALSE));
                 } else {
-                    node.flatReplaceChildren(this::mergeAnd);
+                    formula.flatReplaceChildren(this::mergeAnd);
                 }
-            } else if (node instanceof Or) {
-                if (node.getChildren().stream().anyMatch(c -> c == Formula.TRUE)) {
-                    node.setChildren(Arrays.asList(Formula.TRUE));
+            } else if (formula instanceof Or) {
+                if (formula.getChildren().stream().anyMatch(c -> c == Formula.TRUE)) {
+                    formula.setChildren(Arrays.asList(Formula.TRUE));
                 } else {
-                    node.flatReplaceChildren(this::mergeOr);
+                    formula.flatReplaceChildren(this::mergeOr);
                 }
             }
         }

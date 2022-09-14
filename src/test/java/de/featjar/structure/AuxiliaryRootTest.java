@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.featjar.formula.structure.AuxiliaryRoot;
 import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.VariableMap;
+import de.featjar.formula.structure.TermMap;
 import java.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,7 +35,7 @@ public class AuxiliaryRootTest {
 
     @BeforeEach
     public void setUp() {
-        final VariableMap map = new VariableMap(Arrays.asList("L1", "L2"));
+        final TermMap map = new TermMap(Arrays.asList("L1", "L2"));
         expression1 = map.createLiteral("L1");
         expression2 = map.createLiteral("L2");
     }

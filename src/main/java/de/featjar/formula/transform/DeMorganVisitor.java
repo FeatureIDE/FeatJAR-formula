@@ -36,36 +36,36 @@ public class DeMorganVisitor implements TreeVisitor<Void, Formula> {
 
     @Override
     public TraversalAction firstVisit(List<Formula> path) {
-        final Formula node = getCurrentNode(path);
-        if (node instanceof Atomic) {
+        final Formula formula = getCurrentNode(path);
+        if (formula instanceof Atomic) {
             return TraversalAction.SKIP_CHILDREN;
-        } else if (node instanceof Connective) {
-            node.replaceChildren(this::replace);
+        } else if (formula instanceof Connective) {
+            formula.replaceChildren(this::replace);
             return TraversalAction.CONTINUE;
-        } else if (node instanceof AuxiliaryRoot) {
-            node.replaceChildren(this::replace);
+        } else if (formula instanceof AuxiliaryRoot) {
+            formula.replaceChildren(this::replace);
             return TraversalAction.CONTINUE;
         } else {
             return TraversalAction.FAIL;
         }
     }
 
-    private Formula replace(Formula node) {
-        Formula newNode = node;
-        while (newNode instanceof Not) {
-            final Formula notChild = (Formula) newNode.getChildren().iterator().next();
+    private Formula replace(Formula formula) {
+        Formula newFormula = formula;
+        while (newFormula instanceof Not) {
+            final Formula notChild = newFormula.getChildren().iterator().next();
             if (notChild instanceof Literal) {
-                newNode = ((Literal) notChild).flip();
+                newFormula = ((Literal) notChild).flip();
             } else if (notChild instanceof Not) {
-                newNode = notChild.getChildren().get(0);
+                newFormula = notChild.getChildren().get(0);
             } else if (notChild instanceof Or) {
-                newNode = new And(((Connective) notChild)
+                newFormula = new And(((Connective) notChild)
                         .getChildren().stream().map(Not::new).collect(Collectors.toList()));
             } else if (notChild instanceof And) {
-                newNode = new Or(((Connective) notChild)
+                newFormula = new Or(((Connective) notChild)
                         .getChildren().stream().map(Not::new).collect(Collectors.toList()));
             }
         }
-        return newNode;
+        return newFormula;
     }
 }

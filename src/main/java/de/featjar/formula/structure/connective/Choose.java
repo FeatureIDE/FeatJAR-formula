@@ -35,8 +35,8 @@ public class Choose extends Cardinal {
         super(oldNode);
     }
 
-    public Choose(int bound, List<Formula> nodes) {
-        super(Range.exactly(bound), nodes);
+    public Choose(int bound, List<Formula> formulas) {
+        super(Range.exactly(bound), formulas);
     }
 
     @Override

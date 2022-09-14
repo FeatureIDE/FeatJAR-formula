@@ -23,7 +23,7 @@ package de.featjar.formula.structure;
 import de.featjar.formula.io.textual.FormulaFormat;
 import de.featjar.formula.structure.ValueVisitor.UnknownVariableHandling;
 import de.featjar.formula.structure.assignment.Assignment;
-import de.featjar.formula.structure.VariableMap.Variable;
+import de.featjar.formula.structure.TermMap.Variable;
 import de.featjar.formula.transform.CNFTransformer;
 import de.featjar.formula.transform.DNFTransformer;
 import de.featjar.formula.transform.NormalForms;
@@ -97,32 +97,32 @@ public class Formulas {
         return NormalForms.toNF(formula, new DNFTransformer());
     }
 
-    public static Formula manipulate(Formula node, TreeVisitor<Void, Formula> visitor) {
-        final AuxiliaryRoot auxiliaryRoot = new AuxiliaryRoot(Trees.clone(node));
+    public static Formula manipulate(Formula formula, TreeVisitor<Void, Formula> visitor) {
+        final AuxiliaryRoot auxiliaryRoot = new AuxiliaryRoot(Trees.clone(formula));
         Trees.traverse(auxiliaryRoot, visitor);
         return auxiliaryRoot.getChild();
     }
 
-    public static int getMaxDepth(Formula expression) {
-        return Trees.traverse(expression, new TreeDepthCounter()).get();
+    public static int getMaxDepth(Formula formula) {
+        return Trees.traverse(formula, new TreeDepthCounter()).get();
     }
 
-    public static Stream<Variable> getVariableStream(Formula node) {
+    public static Stream<Variable> getVariableStream(Formula formula) {
         final Stream<Variable> stream =
-                Trees.preOrderStream(node).filter(n -> n instanceof Variable).map(n -> (Variable) n);
+                Trees.preOrderStream(formula).filter(n -> n instanceof Variable).map(n -> (Variable) n);
         return stream.distinct();
     }
 
-    public static List<Variable> getVariables(Formula node) {
-        return getVariableStream(node).collect(Collectors.toList());
+    public static List<Variable> getVariables(Formula formula) {
+        return getVariableStream(formula).collect(Collectors.toList());
     }
 
-    public static List<String> getVariableNames(Formula node) {
-        return getVariableStream(node).map(Variable::getName).collect(Collectors.toList());
+    public static List<String> getVariableNames(Formula formula) {
+        return getVariableStream(formula).map(Variable::getName).collect(Collectors.toList());
     }
 
-    public static <T extends Formula> T create(Function<VariableMap, T> fn) {
-        return fn.apply(new VariableMap());
+    public static <T extends Formula> T create(Function<TermMap, T> fn) {
+        return fn.apply(new TermMap());
     }
 
     /**
@@ -147,10 +147,10 @@ public class Formulas {
      */
     @SuppressWarnings("unchecked")
     public static <T extends Formula> List<T> cloneWithSharedVariableMap(List<T> children) {
-        final List<VariableMap> maps = children.stream()
-                .map(f -> f.getVariableMap().orElseGet(VariableMap::new))
+        final List<TermMap> maps = children.stream()
+                .map(f -> f.getTermMap().orElseGet(TermMap::new))
                 .collect(Collectors.toList());
-        VariableMap composedMap = VariableMap.merge(maps);
+        TermMap composedMap = TermMap.merge(maps);
         final List<T> collect = children.stream()
                 .map(f -> (T) Formulas.manipulate(f, new VariableMapSetter(composedMap)))
                 .collect(Collectors.toList());

@@ -22,6 +22,8 @@ package de.featjar.formula.structure;
 
 import de.featjar.base.data.Range;
 
+import java.util.Collections;
+
 /**
  * A logical formula that has exactly two operands.
  *
@@ -30,5 +32,23 @@ import de.featjar.base.data.Range;
 public interface BinaryFormula extends Formula {
     default Range getChildrenCountRange() {
         return Range.exactly(2);
+    }
+
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    default Formula getLeftFormula() {
+        return getFirstChild().get();
+    }
+
+    default void setLeftFormula(Formula formula) {
+        replaceChild(0, formula);
+    }
+
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    default Formula getRightFormula() {
+        return getLastChild().get();
+    }
+
+    default void setRightFormula(Formula formula) {
+        replaceChild(1, formula);
     }
 }

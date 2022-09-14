@@ -23,7 +23,7 @@ package de.featjar.formula.io.dimacs;
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.Formulas;
 import de.featjar.formula.structure.atomic.literal.Literal;
-import de.featjar.formula.structure.VariableMap;
+import de.featjar.formula.structure.TermMap;
 import de.featjar.formula.structure.connective.Or;
 
 public class DimacsWriter {
@@ -35,7 +35,7 @@ public class DimacsWriter {
     private boolean writingVariableDirectory = true;
 
     private final Formula formula;
-    private VariableMap variables;
+    private TermMap variables;
 
     /**
      * Constructs a new instance of this class with the given CNF.
@@ -78,7 +78,7 @@ public class DimacsWriter {
      * @return the transformed CNF; not null
      */
     public String write() {
-        variables = formula.getVariableMap().orElseGet(VariableMap::new);
+        variables = formula.getTermMap().orElseGet(TermMap::new);
         final StringBuilder sb = new StringBuilder();
         if (writingVariableDirectory) {
             writeVariableDirectory(sb);

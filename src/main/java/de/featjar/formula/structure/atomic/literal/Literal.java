@@ -23,7 +23,7 @@ package de.featjar.formula.structure.atomic.literal;
 import de.featjar.formula.structure.atomic.Atomic;
 
 /**
- * A variable or negated variable.
+ * A literal formula.
  *
  * @author Sebastian Krieter
  */

@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.analysis.solver;
 
-import de.featjar.formula.structure.VariableMap;
+import de.featjar.formula.structure.TermMap;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,15 +34,15 @@ import java.util.List;
 public abstract class AbstractDynamicFormula<O> implements DynamicFormula<O> {
 
     protected final ArrayList<O> constraints;
-    protected final VariableMap variableMap;
+    protected final TermMap termMap;
 
-    public AbstractDynamicFormula(VariableMap variableMap) {
-        this.variableMap = variableMap;
+    public AbstractDynamicFormula(TermMap termMap) {
+        this.termMap = termMap;
         constraints = new ArrayList<>();
     }
 
     protected AbstractDynamicFormula(AbstractDynamicFormula<O> oldFormula) {
-        variableMap = oldFormula.variableMap;
+        termMap = oldFormula.termMap;
         constraints = new ArrayList<>(oldFormula.constraints);
     }
 
@@ -52,8 +52,8 @@ public abstract class AbstractDynamicFormula<O> implements DynamicFormula<O> {
     }
 
     @Override
-    public VariableMap getVariableMap() {
-        return variableMap;
+    public TermMap getVariableMap() {
+        return termMap;
     }
 
     @Override

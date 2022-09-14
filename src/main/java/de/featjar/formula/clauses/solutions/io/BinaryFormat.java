@@ -22,7 +22,7 @@ package de.featjar.formula.clauses.solutions.io;
 
 import de.featjar.formula.clauses.LiteralList;
 import de.featjar.formula.clauses.solutions.SolutionList;
-import de.featjar.formula.structure.VariableMap;
+import de.featjar.formula.structure.TermMap;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.InputMapper;
 import de.featjar.base.io.OutputMapper;
@@ -74,8 +74,8 @@ public class BinaryFormat extends de.featjar.base.io.binary.BinaryFormat<Solutio
             for (int i = 0; i < numberOfVariables; i++) {
                 variableNames.add(readString(inputStream));
             }
-            final VariableMap variableMap = new VariableMap();
-            variableNames.forEach(variableMap::addBooleanVariable);
+            final TermMap termMap = new TermMap();
+            variableNames.forEach(termMap::addBooleanVariable);
             final int numberOfSolutions = readInt(inputStream);
             final List<LiteralList> solutionList = new ArrayList<>(numberOfSolutions);
             for (int i = 0; i < numberOfSolutions; i++) {
@@ -86,7 +86,7 @@ public class BinaryFormat extends de.featjar.base.io.binary.BinaryFormat<Solutio
                 }
                 solutionList.add(new LiteralList(literals, LiteralList.Order.INDEX, false));
             }
-            return Result.of(new SolutionList(variableMap, solutionList));
+            return Result.of(new SolutionList(termMap, solutionList));
         } catch (final IOException e) {
             return Result.empty(e);
         }

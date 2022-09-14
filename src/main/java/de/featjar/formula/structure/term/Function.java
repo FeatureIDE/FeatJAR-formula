@@ -24,17 +24,17 @@ import de.featjar.formula.structure.NonTerminalFormula;
 import java.util.List;
 
 /**
- * A function in first-order logic.
+ * A function term in a formula.
  *
  * @author Sebastian Krieter
  */
 public abstract class Function extends NonTerminalFormula implements Term {
-    protected Function(Term... nodes) {
-        super(nodes);
+    protected Function(Term... terms) {
+        super(terms);
     }
 
-    protected Function(List<? extends Term> nodes) {
-        super(nodes);
+    protected Function(List<? extends Term> terms) {
+        super(terms);
     }
 
     @SuppressWarnings("unchecked")

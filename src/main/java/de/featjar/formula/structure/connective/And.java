@@ -35,12 +35,12 @@ public class And extends NonTerminalFormula implements Connective {
     protected And() {
     }
 
-    public And(Formula... nodes) {
-        super(nodes);
+    public And(Formula... formulas) {
+        super(formulas);
     }
 
-    public And(List<? extends Formula> nodes) {
-        super(nodes);
+    public And(List<? extends Formula> formulas) {
+        super(formulas);
     }
 
     @Override

@@ -20,33 +20,25 @@
  */
 package de.featjar.formula.structure.atomic.predicate;
 
+import de.featjar.formula.structure.BinaryFormula;
 import de.featjar.formula.structure.NonTerminalFormula;
 import de.featjar.formula.structure.atomic.Atomic;
 import de.featjar.formula.structure.term.Term;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * A predicate formula.
+ *
+ * @author Sebastian Krieter
+ */
 public abstract class Predicate extends NonTerminalFormula implements Atomic {
-
-    protected Predicate(List<Term> nodes) {
-        super(nodes);
+    protected Predicate(Term... terms) {
+        super(terms);
     }
 
-    @SafeVarargs
-    protected Predicate(Term... nodes) {
-        super(nodes);
-    }
-
-    protected Predicate() {
-    }
-
-    public void setArguments(Term leftTerm, Term rightTerm) {
-        setChildren(Arrays.asList(leftTerm, rightTerm));
-    }
-
-    @Override
-    public String getName() {
-        return "=";
+    protected Predicate(List<? extends Term> terms) {
+        super(terms);
     }
 
     @SuppressWarnings("unchecked")
@@ -54,7 +46,4 @@ public abstract class Predicate extends NonTerminalFormula implements Atomic {
     public List<? extends Term> getChildren() {
         return (List<? extends Term>) super.getChildren();
     }
-
-    @Override
-    public abstract Predicate flip();
 }

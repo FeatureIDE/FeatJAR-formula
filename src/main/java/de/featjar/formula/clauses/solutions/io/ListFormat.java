@@ -22,7 +22,7 @@ package de.featjar.formula.clauses.solutions.io;
 
 import de.featjar.formula.clauses.LiteralList;
 import de.featjar.formula.clauses.solutions.SolutionList;
-import de.featjar.formula.structure.VariableMap;
+import de.featjar.formula.structure.TermMap;
 import de.featjar.base.data.Problem.Severity;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.InputMapper;
@@ -80,7 +80,7 @@ public class ListFormat implements Format<SolutionList> {
                     return Result.empty(new ParseProblem("Empty file!", lineNumber, Severity.ERROR));
                 }
                 final String[] names = line.split(";");
-                final VariableMap map = new VariableMap();
+                final TermMap map = new TermMap();
                 Arrays.asList(names).subList(1, names.length).forEach(map::addBooleanVariable);
                 configurationList.setVariables(map);
             }

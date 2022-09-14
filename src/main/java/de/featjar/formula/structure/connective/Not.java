@@ -36,12 +36,12 @@ public class Not extends NonTerminalFormula implements Connective, UnaryFormula 
     protected Not() {
     }
 
-    public Not(Formula node) {
-        super(node);
+    public Not(Formula formula) {
+        super(formula);
     }
 
-    public Not(List<? extends Formula> nodes) {
-        super(nodes);
+    public Not(List<? extends Formula> formulas) {
+        super(formulas);
     }
 
     @Override

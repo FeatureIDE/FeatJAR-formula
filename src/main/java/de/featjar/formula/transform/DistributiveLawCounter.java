@@ -35,10 +35,10 @@ public class DistributiveLawCounter implements TreeVisitor<Integer, Formula> {
     private static class StackElement {
         int clauseNumber = 1;
         int clauseSize = 1;
-        Formula node;
+        Formula formula;
 
-        public StackElement(Formula node) {
-            this.node = node;
+        public StackElement(Formula formula) {
+            this.formula = formula;
         }
     }
 
@@ -56,11 +56,11 @@ public class DistributiveLawCounter implements TreeVisitor<Integer, Formula> {
 
     @Override
     public TraversalAction firstVisit(List<Formula> path) {
-        final Formula node = getCurrentNode(path);
-        if (node instanceof Atomic) {
+        final Formula formula = getCurrentNode(path);
+        if (formula instanceof Atomic) {
             return TraversalAction.SKIP_CHILDREN;
-        } else if ((node instanceof Connective) || (node instanceof AuxiliaryRoot)) {
-            stack.push(new StackElement((Formula) node));
+        } else if ((formula instanceof Connective) || (formula instanceof AuxiliaryRoot)) {
+            stack.push(new StackElement((Formula) formula));
             return TraversalAction.CONTINUE;
         } else {
             return TraversalAction.FAIL;
@@ -69,14 +69,14 @@ public class DistributiveLawCounter implements TreeVisitor<Integer, Formula> {
 
     @Override
     public TraversalAction lastVisit(List<Formula> path) {
-        final Formula node = getCurrentNode(path);
-        if (node instanceof Atomic) {
-            stack.push(new StackElement(node));
+        final Formula formula = getCurrentNode(path);
+        if (formula instanceof Atomic) {
+            stack.push(new StackElement(formula));
         } else {
             final ArrayList<StackElement> children = new ArrayList<>();
             StackElement lastNode = stack.pop();
             boolean invalid = false;
-            for (; lastNode.node != node; lastNode = stack.pop()) {
+            for (; lastNode.formula != formula; lastNode = stack.pop()) {
                 children.add(lastNode);
                 if (lastNode.clauseNumber < 0) {
                     invalid = true;

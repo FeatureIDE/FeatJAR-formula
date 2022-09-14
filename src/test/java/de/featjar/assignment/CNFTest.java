@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.Formulas;
 import de.featjar.formula.structure.atomic.literal.Literal;
-import de.featjar.formula.structure.VariableMap;
+import de.featjar.formula.structure.TermMap;
 import de.featjar.formula.structure.connective.And;
 import de.featjar.formula.structure.connective.BiImplies;
 import de.featjar.formula.structure.connective.Implies;
@@ -41,7 +41,7 @@ public class CNFTest {
 
     @Test
     public void convert() {
-        final VariableMap variables = new VariableMap(Arrays.asList("a", "b", "c"));
+        final TermMap variables = new TermMap(Arrays.asList("a", "b", "c"));
         final Literal a = variables.createLiteral("a");
         final Literal b = variables.createLiteral("b");
         final Literal c = variables.createLiteral("c");

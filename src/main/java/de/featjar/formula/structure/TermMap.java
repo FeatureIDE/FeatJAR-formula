@@ -37,58 +37,7 @@ import java.util.stream.Collectors;
  *
  * @author Sebastian Krieter
  */
-public class VariableMap {
-
-    public static class Variable extends ValueTerm {
-        // todo inv: all subtrees have the same variablemap
-
-        public Variable(String name, int index, Class<?> type, VariableMap variableMap) {
-            super(name, index, type, variableMap);
-        }
-
-        @Override
-        protected Variable copy(VariableMap newMap) {
-            return new Variable(name, index, type, newMap);
-        }
-
-        @Override
-        public Object evaluate(List<?> values) {
-            Formulas.assertSize(1, values);
-            Formulas.assertInstanceOf(getType(), values);
-            return values.get(0);
-        }
-    }
-
-    public static class Constant extends ValueTerm {
-
-        private final Object value;
-
-        public Constant(String name, int index, Class<?> type, Object value, VariableMap variableMap) {
-            super(name, index, type, variableMap);
-            this.value = value;
-        }
-
-        public Object getValue() {
-            return value;
-        }
-
-        @Override
-        public Constant copy(VariableMap newMap) {
-            return new Constant(name, index, type, value, newMap);
-        }
-
-        @Override
-        public String toString() {
-            return index + ": " + name + " (" + value + ")";
-        }
-
-        @Override
-        public Object evaluate(List<?> values) {
-            Formulas.assertSize(0, values);
-            Formulas.assertInstanceOf(getType(), values);
-            return value;
-        }
-    }
+public class TermMap {
 
     /**
      * Merges two variable maps in one new map, useful for composing formulas. Joins
@@ -96,49 +45,49 @@ public class VariableMap {
      * map is empty, creates a clone of the other. If used for composition, formulas
      * must be manually adapted to the merged variable map.
      */
-    public static VariableMap merge(Collection<VariableMap> maps) {
+    public static TermMap merge(Collection<TermMap> maps) {
         // TODO: could be optimized for feature-model interfaces (return bigger
         // VariableMap), but may have unwanted interactions with mutation
         // TODO: could also be optimized to merge many maps at once (not create a copy
         // for each map)
 
-        return maps.stream().reduce(new VariableMap(), VariableMap::new);
+        return maps.stream().reduce(new TermMap(), TermMap::new);
     }
 
-    public static VariableMap merge(VariableMap... maps) {
+    public static TermMap merge(TermMap... maps) {
         return merge(Arrays.asList(maps));
     }
 
     private final NamedTermMap<Variable> variables;
     private final NamedTermMap<Constant> constants;
 
-    public VariableMap(VariableMap map) {
+    public TermMap(TermMap map) {
         variables = new NamedTermMap<>(map.variables, this);
         constants = new NamedTermMap<>(map.constants, this);
     }
 
-    private VariableMap(VariableMap map1, VariableMap map2) {
+    private TermMap(TermMap map1, TermMap map2) {
         variables = new NamedTermMap<>(map1.variables, map2.variables, this);
         constants = new NamedTermMap<>(map1.constants, map2.constants, this);
     }
 
-    public VariableMap(String... variableNames) {
+    public TermMap(String... variableNames) {
         this(Arrays.asList(variableNames));
     }
 
-    public VariableMap(Collection<String> variableNames) {
+    public TermMap(Collection<String> variableNames) {
         this();
         variableNames.forEach(this::addBooleanVariable);
     }
 
-    public VariableMap(int variableCount) {
+    public TermMap(int variableCount) {
         this();
         for (int i = 1; i <= variableCount; i++) {
             addBooleanVariable(Integer.toString(i));
         }
     }
 
-    public VariableMap() {
+    public TermMap() {
         variables = new NamedTermMap<>();
         constants = new NamedTermMap<>();
     }
@@ -156,8 +105,8 @@ public class VariableMap {
         if ((obj == null) || (getClass() != obj.getClass())) {
             return false;
         }
-        return Objects.equals(variables, ((VariableMap) obj).variables)
-                && Objects.equals(constants, ((VariableMap) obj).constants);
+        return Objects.equals(variables, ((TermMap) obj).variables)
+                && Objects.equals(constants, ((TermMap) obj).constants);
     }
 
     @Override
@@ -177,8 +126,8 @@ public class VariableMap {
     }
 
     @Override
-    public VariableMap clone() {
-        return new VariableMap(this);
+    public TermMap clone() {
+        return new TermMap(this);
     }
 
     public Formula get(Formula expression) {

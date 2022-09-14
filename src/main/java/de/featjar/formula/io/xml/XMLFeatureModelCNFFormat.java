@@ -65,7 +65,7 @@ public class XMLFeatureModelCNFFormat extends XMLFeatureModelFormat {
         parseFeatureTree(getElement(featureModelElement, STRUCT));
         Optional<Element> constraintsElement = getOptionalElement(featureModelElement, CONSTRAINTS);
         if (constraintsElement.isPresent()) {
-            parseConstraints(constraintsElement.get(), variableMap);
+            parseConstraints(constraintsElement.get(), termMap);
         }
         return Trees.clone(simplify(new And(constraints)));
     }
@@ -74,7 +74,7 @@ public class XMLFeatureModelCNFFormat extends XMLFeatureModelFormat {
     protected void addConstraint(Boolean constraintLabel, Formula formula) throws ParseException {
         Formula transformedFormula = new CNFTransformer().apply(formula)
                 .orElseThrow(p -> new ParseException("failed to transform " + formula));
-        transformedFormula = Formulas.manipulate(transformedFormula, new VariableMapSetter(variableMap)); // todo: this
+        transformedFormula = Formulas.manipulate(transformedFormula, new VariableMapSetter(termMap)); // todo: this
         // is a
         // workaround
         // for weird

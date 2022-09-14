@@ -20,53 +20,34 @@
  */
 package de.featjar.formula.structure.atomic.predicate;
 
-import de.featjar.formula.structure.Formula;
+import de.featjar.formula.structure.BinaryFormula;
 import de.featjar.formula.structure.Formulas;
 import de.featjar.formula.structure.term.Term;
-import java.util.Arrays;
-import java.util.Iterator;
+
 import java.util.List;
 
 /**
+ * A comparing predicate formula.
  *
  * @author Sebastian Krieter
  */
-public abstract class ComparingPredicate extends Predicate {
-
-    public ComparingPredicate(Term leftTerm, Term rightTerm) {
-        super(leftTerm, rightTerm);
+public abstract class ComparingPredicate extends Predicate implements BinaryFormula {
+    protected ComparingPredicate(Term... terms) {
+        super(terms);
     }
 
-    protected ComparingPredicate() {
-    }
-
-    public void setArguments(Term leftTerm, Term rightTerm) {
-        setChildren(Arrays.asList(leftTerm, rightTerm));
-    }
-
-    @Override
-    public void setChildren(List<? extends Formula> children) {
-        if (children.size() != 2) {
-            throw new IllegalArgumentException("Must specify exactly two children");
-        }
-        final Iterator<? extends Formula> iterator = children.iterator();
-        final Class<?> type1 = iterator.next().getType();
-        final Class<?> type2 = iterator.next().getType();
-        if (type1 != type2) {
-            throw new IllegalArgumentException("Type of children differs: " + type1 + " != " + type2);
-        }
-        super.setChildren(children);
+    protected ComparingPredicate(List<? extends Term> terms) {
+        super(terms);
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     public Boolean evaluate(List<?> values) {
-        Formulas.assertSize(2, values);
         Formulas.assertInstanceOf(Comparable.class, values);
         final Comparable v1 = (Comparable) values.get(0);
         final Comparable v2 = (Comparable) values.get(1);
-        return (v1 != null && v2 != null) ? compareDiff(v1.compareTo(v2)) : null;
+        return (v1 != null && v2 != null) ? compareDifference(v1.compareTo(v2)) : null;
     }
 
-    protected abstract boolean compareDiff(int diff);
+    protected abstract boolean compareDifference(int diff);
 }

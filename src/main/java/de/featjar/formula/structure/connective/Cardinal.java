@@ -37,8 +37,8 @@ import java.util.Objects;
 public abstract class Cardinal extends NonTerminalFormula implements Connective {
     protected Range range;
 
-    protected Cardinal(Range range, List<? extends Formula> nodes) {
-        super(nodes);
+    protected Cardinal(Range range, List<? extends Formula> formulas) {
+        super(formulas);
         setRange(range);
     }
 

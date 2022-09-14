@@ -21,7 +21,7 @@
 package de.featjar.formula.structure;
 
 import de.featjar.formula.structure.assignment.Assignment;
-import de.featjar.formula.structure.VariableMap.Variable;
+import de.featjar.formula.structure.TermMap.Variable;
 import de.featjar.base.tree.visitor.TreeVisitor;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -76,9 +76,9 @@ public class ValueVisitor implements TreeVisitor<Object, Formula> {
 
     @Override
     public TraversalAction lastVisit(List<Formula> path) {
-        final Formula node = getCurrentNode(path);
-        if (node instanceof Variable) {
-            final Variable variable = (Variable) node;
+        final Formula formula = getCurrentNode(path);
+        if (formula instanceof Variable) {
+            final Variable variable = (Variable) formula;
             final int index = variable.getIndex();
             if (index <= 0) {
                 switch (unknownVariableHandling) {
@@ -113,9 +113,9 @@ public class ValueVisitor implements TreeVisitor<Object, Formula> {
                 }
             }
         } else {
-            final List<Object> arguments = values.subList(0, node.getChildren().size());
+            final List<Object> arguments = values.subList(0, formula.getChildren().size());
             Collections.reverse(arguments);
-            final Object value = node.evaluate(arguments);
+            final Object value = formula.evaluate(arguments);
             arguments.clear();
             values.push(value);
         }

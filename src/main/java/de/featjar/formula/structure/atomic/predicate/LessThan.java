@@ -24,21 +24,26 @@ import de.featjar.formula.structure.term.Term;
 import java.util.List;
 
 /**
+ * Expresses "A < B" constraints.
+ * Evaluates to {@code true} iff the left child evaluates to a smaller value as the right child.
  *
  * @author Sebastian Krieter
  */
 public class LessThan extends ComparingPredicate {
+    protected LessThan() {
+    }
 
     public LessThan(Term leftTerm, Term rightTerm) {
         super(leftTerm, rightTerm);
     }
 
-    protected LessThan() {
+    public LessThan(List<? extends Term> terms) {
+        super(terms);
     }
 
     @Override
     public String getName() {
-        return "<";
+        return ">";
     }
 
     @Override
@@ -48,12 +53,11 @@ public class LessThan extends ComparingPredicate {
 
     @Override
     public GreaterEqual flip() {
-        final List<? extends Term> children = getChildren();
-        return new GreaterEqual(children.get(0), children.get(1));
+        return new GreaterEqual((Term) getLeftFormula(), (Term) getRightFormula());
     }
 
     @Override
-    protected boolean compareDiff(int diff) {
-        return diff < 0;
+    protected boolean compareDifference(int difference) {
+        return difference < 0;
     }
 }

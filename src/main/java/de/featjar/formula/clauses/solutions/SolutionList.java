@@ -22,7 +22,7 @@ package de.featjar.formula.clauses.solutions;
 
 import de.featjar.formula.clauses.CNF;
 import de.featjar.formula.clauses.LiteralList;
-import de.featjar.formula.structure.VariableMap;
+import de.featjar.formula.structure.TermMap;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,13 +43,13 @@ public class SolutionList implements Serializable {
     private static final long serialVersionUID = 3882530497452645334L;
 
     protected final List<LiteralList> solutions;
-    protected VariableMap variables;
+    protected TermMap variables;
 
     public SolutionList() {
         solutions = new ArrayList<>();
     }
 
-    public SolutionList(VariableMap mapping, List<LiteralList> solutions) {
+    public SolutionList(TermMap mapping, List<LiteralList> solutions) {
         variables = mapping;
         this.solutions = solutions;
     }
@@ -62,11 +62,11 @@ public class SolutionList implements Serializable {
         solutions.addAll(clauses);
     }
 
-    public void setVariables(VariableMap variables) {
+    public void setVariables(TermMap variables) {
         this.variables = variables;
     }
 
-    public VariableMap getVariableMap() {
+    public TermMap getVariableMap() {
         return variables;
     }
 

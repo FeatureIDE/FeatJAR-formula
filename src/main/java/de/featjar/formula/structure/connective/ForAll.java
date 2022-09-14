@@ -21,7 +21,7 @@
 package de.featjar.formula.structure.connective;
 
 import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.VariableMap.Variable;
+import de.featjar.formula.structure.TermMap.Variable;
 
 /**
  * Expresses "for all X such that A" constraints (i.e., universal quantification).

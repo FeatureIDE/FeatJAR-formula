@@ -23,8 +23,8 @@ package de.featjar.formula.structure.connective;
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.NonTerminalFormula;
 import de.featjar.formula.structure.UnaryFormula;
-import de.featjar.formula.structure.VariableMap.Variable;
-import java.util.Arrays;
+import de.featjar.formula.structure.TermMap.Variable;
+
 import java.util.List;
 import java.util.Objects;
 

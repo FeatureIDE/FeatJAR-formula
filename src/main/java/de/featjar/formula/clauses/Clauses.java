@@ -24,7 +24,7 @@ import de.featjar.base.Feat;
 import de.featjar.formula.io.FormulaFormats;
 import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.atomic.literal.Literal;
-import de.featjar.formula.structure.VariableMap;
+import de.featjar.formula.structure.TermMap;
 import de.featjar.formula.structure.connective.And;
 import de.featjar.formula.structure.connective.Or;
 import de.featjar.base.data.Store;
@@ -57,7 +57,7 @@ public class Clauses {
                 .toArray());
     }
 
-    public static LiteralList getLiterals(VariableMap variables) {
+    public static LiteralList getLiterals(TermMap variables) {
         return new LiteralList(IntStream.rangeClosed(1, variables.getVariableCount())
                 .flatMap(i -> IntStream.of(-i, i))
                 .toArray());
@@ -73,11 +73,11 @@ public class Clauses {
         return clauses.stream().map(LiteralList::negate);
     }
 
-    public static Result<LiteralList> adapt(LiteralList clause, VariableMap oldVariables, VariableMap newVariables) {
+    public static Result<LiteralList> adapt(LiteralList clause, TermMap oldVariables, TermMap newVariables) {
         return clause.adapt(oldVariables, newVariables);
     }
 
-    public static int adapt(int literal, VariableMap oldVariables, VariableMap newVariables) {
+    public static int adapt(int literal, TermMap oldVariables, TermMap newVariables) {
         final String name = oldVariables.getVariableName(Math.abs(literal)).orElse(null);
         final int index = newVariables.getVariableIndex(name).orElse(0);
         return literal < 0 ? -index : index;
@@ -87,9 +87,9 @@ public class Clauses {
         return new FormulaToCNF().apply(formula).get();
     }
 
-    public static CNF convertToCNF(Formula formula, VariableMap variableMap) {
+    public static CNF convertToCNF(Formula formula, TermMap termMap) {
         final FormulaToCNF function = new FormulaToCNF();
-        function.setVariableMapping(variableMap);
+        function.setVariableMapping(termMap);
         return function.apply(formula).get();
     }
 
@@ -98,11 +98,11 @@ public class Clauses {
         return new CNF(cnf.getVariableMap(), convertNF(cnf.getClauses()));
     }
 
-    public static CNF convertToDNF(Formula formula, VariableMap variableMap) {
+    public static CNF convertToDNF(Formula formula, TermMap termMap) {
         final FormulaToCNF function = new FormulaToCNF();
-        function.setVariableMapping(variableMap);
+        function.setVariableMapping(termMap);
         final CNF cnf = function.apply(formula).get();
-        return new CNF(variableMap, convertNF(cnf.getClauses()));
+        return new CNF(termMap, convertNF(cnf.getClauses()));
     }
 
     /**
@@ -181,17 +181,17 @@ public class Clauses {
         return store;
     }
 
-    public static Or toOrClause(LiteralList clause, VariableMap variableMap) {
-        return new Or(toLiterals(clause, variableMap));
+    public static Or toOrClause(LiteralList clause, TermMap termMap) {
+        return new Or(toLiterals(clause, termMap));
     }
 
-    public static And toAndClause(LiteralList clause, VariableMap variableMap) {
-        return new And(toLiterals(clause, variableMap));
+    public static And toAndClause(LiteralList clause, TermMap termMap) {
+        return new And(toLiterals(clause, termMap));
     }
 
-    public static List<Literal> toLiterals(LiteralList clause, VariableMap variableMap) {
+    public static List<Literal> toLiterals(LiteralList clause, TermMap termMap) {
         return Arrays.stream(clause.getLiterals())
-                .mapToObj(l -> variableMap.createLiteral(Math.abs(l), l > 0))
+                .mapToObj(l -> termMap.createLiteral(Math.abs(l), l > 0))
                 .collect(Collectors.toList());
     }
 }

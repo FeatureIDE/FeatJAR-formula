@@ -26,8 +26,8 @@ import de.featjar.formula.structure.Formula;
 import de.featjar.formula.structure.atomic.Atomic;
 import de.featjar.formula.structure.atomic.literal.BooleanLiteral;
 import de.featjar.formula.structure.atomic.literal.Literal;
-import de.featjar.formula.structure.VariableMap;
-import de.featjar.formula.structure.VariableMap.Variable;
+import de.featjar.formula.structure.TermMap;
+import de.featjar.formula.structure.TermMap.Variable;
 import de.featjar.formula.structure.connective.And;
 import de.featjar.formula.structure.connective.Connective;
 import de.featjar.formula.structure.connective.Or;
@@ -94,14 +94,14 @@ public class TseitinTransformer
 
     private final List<Substitute> substitutes = new ArrayList<>();
 
-    private VariableMap variableMap;
+    private TermMap termMap;
 
-    public void setVariableMap(VariableMap variableMap) {
-        this.variableMap = variableMap;
+    public void setVariableMap(TermMap termMap) {
+        this.termMap = termMap;
     }
 
     private Variable newVariable(final ArrayList<Literal> newChildren, final Formula clonedLastNode) {
-        Variable addBooleanVariable = variableMap.addBooleanVariable();
+        Variable addBooleanVariable = termMap.addBooleanVariable();
         final Substitute substitute = new Substitute(clonedLastNode, addBooleanVariable, newChildren.size() + 1);
         substitutes.add(substitute);
 
@@ -136,8 +136,8 @@ public class TseitinTransformer
         stack.clear();
 
         Trees.sort(child);
-        if (variableMap == null) {
-            variableMap = child.getVariableMap().map(VariableMap::clone).orElseGet(VariableMap::new);
+        if (termMap == null) {
+            termMap = child.getTermMap().map(TermMap::clone).orElseGet(TermMap::new);
         }
 
         try {
@@ -149,11 +149,11 @@ public class TseitinTransformer
 
     @Override
     public TraversalAction firstVisit(List<Formula> path) {
-        final Formula node = getCurrentNode(path);
-        if (node instanceof Atomic) {
+        final Formula formula = getCurrentNode(path);
+        if (formula instanceof Atomic) {
             return TraversalAction.SKIP_CHILDREN;
-        } else if ((node instanceof Connective) || (node instanceof AuxiliaryRoot)) {
-            stack.push((Formula) node);
+        } else if ((formula instanceof Connective) || (formula instanceof AuxiliaryRoot)) {
+            stack.push((Formula) formula);
             return TraversalAction.CONTINUE;
         } else {
             return TraversalAction.FAIL;
@@ -162,18 +162,18 @@ public class TseitinTransformer
 
     @Override
     public TraversalAction lastVisit(List<Formula> path) {
-        final Formula node = getCurrentNode(path);
-        if (node instanceof Atomic) {
-            final Formula clonedNode = node;
+        final Formula formula = getCurrentNode(path);
+        if (formula instanceof Atomic) {
+            final Formula clonedFormula = formula;
             if (path.isEmpty()) {
-                substitutes.add(new Substitute(clonedNode, null, clonedNode));
+                substitutes.add(new Substitute(clonedFormula, null, clonedFormula));
             } else {
-                stack.push(clonedNode);
+                stack.push(clonedFormula);
             }
         } else {
             final ArrayList<Literal> newChildren = new ArrayList<>();
             Formula lastNode = stack.pop();
-            while (lastNode != node) {
+            while (lastNode != formula) {
                 newChildren.add((Literal) lastNode);
                 lastNode = stack.pop();
             }

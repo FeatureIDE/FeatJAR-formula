@@ -28,7 +28,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A special {@link Atomic} that is always {@code false}.
+ * Expresses a contradiction.
+ * Always evaluates to {@code false}.
  *
  * @author Sebastian Krieter
  */
@@ -36,26 +37,11 @@ public class False extends TerminalFormula implements Literal {
 
     private static final False INSTANCE = new False();
 
-    private False() {
+    protected False() {
     }
 
     public static False getInstance() {
         return INSTANCE;
-    }
-
-    @Override
-    public List<? extends Term> getChildren() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public True flip() {
-        return Formula.TRUE;
-    }
-
-    @Override
-    public False cloneNode() {
-        return this;
     }
 
     @Override
@@ -64,22 +50,17 @@ public class False extends TerminalFormula implements Literal {
     }
 
     @Override
-    public int hashCode() {
-        return 97;
-    }
-
-    @Override
-    public boolean equalsTree(Formula other) {
-        return other == INSTANCE;
-    }
-
-    @Override
-    public boolean equalsNode(Formula other) {
-        return other == INSTANCE;
-    }
-
-    @Override
     public Boolean evaluate(List<?> values) {
         return Boolean.FALSE;
+    }
+
+    @Override
+    public False cloneNode() {
+        return this;
+    }
+
+    @Override
+    public True flip() {
+        return Formula.TRUE;
     }
 }

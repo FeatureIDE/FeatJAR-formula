@@ -23,7 +23,7 @@ package de.featjar.formula.structure.connective;
 import de.featjar.formula.structure.Formula;
 
 /**
- * A Boolean connective in propositional and first-order logic.
+ * A Boolean connective formula.
  *
  * @author Sebastian Krieter
  */

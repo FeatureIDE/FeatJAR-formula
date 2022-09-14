@@ -28,7 +28,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A special {@link Atomic} that is always {@code true}.
+ * Expresses a tautology.
+ * Always evaluates to {@code true}.
  *
  * @author Sebastian Krieter
  */
@@ -36,26 +37,11 @@ public class True extends TerminalFormula implements Literal {
 
     private static final True INSTANCE = new True();
 
-    private True() {
+    protected True() {
     }
 
     public static True getInstance() {
         return INSTANCE;
-    }
-
-    @Override
-    public List<? extends Term> getChildren() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public False flip() {
-        return Formula.FALSE;
-    }
-
-    @Override
-    public True cloneNode() {
-        return this;
     }
 
     @Override
@@ -64,22 +50,17 @@ public class True extends TerminalFormula implements Literal {
     }
 
     @Override
-    public int hashCode() {
-        return 91;
-    }
-
-    @Override
-    public boolean equalsTree(Formula other) {
-        return other == INSTANCE;
-    }
-
-    @Override
-    public boolean equalsNode(Formula other) {
-        return other == INSTANCE;
-    }
-
-    @Override
     public Boolean evaluate(List<?> values) {
         return Boolean.TRUE;
+    }
+
+    @Override
+    public True cloneNode() {
+        return this;
+    }
+
+    @Override
+    public False flip() {
+        return Formula.FALSE;
     }
 }

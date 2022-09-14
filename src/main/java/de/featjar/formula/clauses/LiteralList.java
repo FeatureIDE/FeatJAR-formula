@@ -21,7 +21,7 @@
 package de.featjar.formula.clauses;
 
 import de.featjar.formula.structure.NamedTermMap.ValueTerm;
-import de.featjar.formula.structure.VariableMap;
+import de.featjar.formula.structure.TermMap;
 import de.featjar.base.data.Problem;
 import de.featjar.base.data.Problem.Severity;
 import de.featjar.base.data.Result;
@@ -75,38 +75,38 @@ public class LiteralList implements Comparable<LiteralList>, Serializable {
         return getVariables(cnf.getVariableMap());
     }
 
-    public static LiteralList getVariables(VariableMap variableMap) {
-        return new LiteralList(constructVariableStream(variableMap).toArray());
+    public static LiteralList getVariables(TermMap termMap) {
+        return new LiteralList(constructVariableStream(termMap).toArray());
     }
 
-    public static LiteralList getVariables(VariableMap variableMap, Collection<String> variableNames) {
+    public static LiteralList getVariables(TermMap termMap, Collection<String> variableNames) {
         return new LiteralList(
-                constructVariableStream(variableMap, variableNames).toArray());
+                constructVariableStream(termMap, variableNames).toArray());
     }
 
     public static LiteralList getLiterals(CNF cnf) {
         return getLiterals(cnf.getVariableMap());
     }
 
-    public static LiteralList getLiterals(VariableMap variables) {
+    public static LiteralList getLiterals(TermMap variables) {
         return new LiteralList(constructVariableStream(variables)
                 .flatMap(n -> IntStream.of(-n, n))
                 .toArray());
     }
 
-    public static LiteralList getLiterals(VariableMap variableMap, Collection<String> variableNames) {
-        return new LiteralList(constructVariableStream(variableMap, variableNames)
+    public static LiteralList getLiterals(TermMap termMap, Collection<String> variableNames) {
+        return new LiteralList(constructVariableStream(termMap, variableNames)
                 .flatMap(n -> IntStream.of(-n, n))
                 .toArray());
     }
 
-    private static IntStream constructVariableStream(VariableMap variables) {
+    private static IntStream constructVariableStream(TermMap variables) {
         return IntStream.rangeClosed(1, variables.getVariableCount());
     }
 
-    private static IntStream constructVariableStream(VariableMap variableMap, Collection<String> variableNames) {
+    private static IntStream constructVariableStream(TermMap termMap, Collection<String> variableNames) {
         return variableNames.stream()
-                .map(variableMap::getVariable)
+                .map(termMap::getVariable)
                 .flatMap(Optional::stream)
                 .mapToInt(ValueTerm::getIndex)
                 .distinct();
@@ -652,7 +652,7 @@ public class LiteralList implements Comparable<LiteralList>, Serializable {
         return lengthDiff;
     }
 
-    public Result<LiteralList> adapt(VariableMap oldVariables, VariableMap newVariables) {
+    public Result<LiteralList> adapt(TermMap oldVariables, TermMap newVariables) {
         final int[] oldLiterals = literals;
         final int[] newLiterals = new int[oldLiterals.length];
         for (int i = 0; i < oldLiterals.length; i++) {

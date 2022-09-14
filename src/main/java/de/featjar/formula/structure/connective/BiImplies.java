@@ -28,7 +28,7 @@ import java.util.List;
 
 /**
  * Expresses "A iff B" constraints (i.e., bi-implication).
- * Evaluates to {@code true} iff all both evaluate to the same value.
+ * Evaluates to {@code true} iff both children evaluate to the same value.
  *
  * @author Sebastian Krieter
  */
@@ -37,12 +37,12 @@ public class BiImplies extends NonTerminalFormula implements Connective, BinaryF
     protected BiImplies() {
     }
 
-    public BiImplies(Formula leftNode, Formula rightNode) {
-        super(leftNode, rightNode);
+    public BiImplies(Formula leftFormula, Formula rightFormula) {
+        super(leftFormula, rightFormula);
     }
 
-    public BiImplies(List<? extends Formula> nodes) {
-        super(nodes);
+    public BiImplies(List<? extends Formula> formulas) {
+        super(formulas);
     }
 
     @Override
