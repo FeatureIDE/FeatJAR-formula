@@ -18,7 +18,7 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.transform;
+package de.featjar.formula.transformer;
 
 import de.featjar.base.data.Result;
 import de.featjar.formula.structure.Expression;
@@ -26,6 +26,8 @@ import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.base.task.Monitor;
 import de.featjar.base.tree.Trees;
+import de.featjar.formula.visitor.NormalFormTester;
+import de.featjar.formula.visitor.NormalForms;
 
 /**
  * Transforms propositional formulas into DNF.
@@ -46,9 +48,9 @@ public class DNFTransformer implements Transformer {
 
     @Override
     public Result<Expression> execute(Expression expression, Monitor monitor) {
-        final NFTester nfTester = NormalForms.getNFTester(expression, NormalForms.NormalForm.DNF);
-        if (nfTester.isNf) {
-            if (!nfTester.isClausalNf()) {
+        final NormalFormTester normalFormTester = NormalForms.getNormalFormTester(expression, NormalForms.NormalForm.DNF);
+        if (normalFormTester.isNormalForm) {
+            if (!normalFormTester.isClausalNormalForm()) {
                 return Result.of(NormalForms.toClausalNF(Trees.clone(expression), NormalForms.NormalForm.DNF));
             } else {
                 return Result.of(Trees.clone(expression));

@@ -21,11 +21,10 @@
 package de.featjar.formula.structure;
 
 import de.featjar.base.tree.structure.Traversable;
+import de.featjar.formula.structure.assignment.Assignment;
+import de.featjar.formula.visitor.ValueVisitor;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
@@ -54,6 +53,15 @@ public interface Expression extends Traversable<Expression> {
      * @param values the values
      */
     Object evaluate(List<?> values);
+
+    /**
+     * {@return the evaluation of this formula on a given assignment}
+     *
+     * @param assignment the assignment
+     */
+    default Object evaluate(Assignment assignment) {
+        return traverse(new ValueVisitor(assignment)).orElse(null);
+    }
 
     /**
      * {@return the type this expression's children must evaluate to, if any}

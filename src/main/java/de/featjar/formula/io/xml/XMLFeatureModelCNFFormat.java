@@ -27,10 +27,10 @@ import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Not;
 import de.featjar.formula.structure.formula.connective.Or;
-import de.featjar.formula.transform.CNFTransformer;
-import de.featjar.formula.transform.DeMorganVisitor;
-import de.featjar.formula.transform.TreeSimplifier;
-import de.featjar.formula.transform.VariableMapSetter;
+import de.featjar.formula.transformer.CNFTransformer;
+import de.featjar.formula.visitor.DeMorganApplier;
+import de.featjar.formula.visitor.AndOrSimplifier;
+import de.featjar.formula.visitor.VariableMapSetter;
 import de.featjar.base.io.format.ParseException;
 import de.featjar.base.tree.Trees;
 import java.util.ArrayList;
@@ -150,8 +150,8 @@ public class XMLFeatureModelCNFFormat extends XMLFeatureModelFormat {
 
     private static Expression simplify(Expression expression) {
         final AuxiliaryRoot auxiliaryRoot = new AuxiliaryRoot(expression);
-        Trees.traverse(auxiliaryRoot, new DeMorganVisitor());
-        Trees.traverse(auxiliaryRoot, new TreeSimplifier());
+        Trees.traverse(auxiliaryRoot, new DeMorganApplier());
+        Trees.traverse(auxiliaryRoot, new AndOrSimplifier());
         return auxiliaryRoot.getChild();
     }
 }

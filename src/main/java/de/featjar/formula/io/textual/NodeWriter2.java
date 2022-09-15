@@ -46,7 +46,7 @@ import java.util.List;
  * @author Timo Günther
  * @author Sebastian Krieter
  */
-public class NodeWriter2 implements InOrderTreeVisitor<Void, Expression> {
+public class NodeWriter2 implements InOrderTreeVisitor<Expression, Void> {
 
     private final StringBuilder sb = new StringBuilder();
 

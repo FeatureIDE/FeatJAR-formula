@@ -18,8 +18,10 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.transform;
+package de.featjar.formula.visitor;
 
+import de.featjar.formula.structure.formula.Formula;
+import de.featjar.formula.transformer.Transformer;
 import de.featjar.formula.tmp.AuxiliaryRoot;
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.formula.predicate.Literal;
@@ -40,27 +42,11 @@ public class NormalForms {
     public enum NormalForm {
         CNF,
         DNF
+        // todo: NNF tester
     }
 
-    public static Expression simplifyForNF(Expression expression) {
-        final AuxiliaryRoot auxiliaryRoot = new AuxiliaryRoot(expression);
-        Trees.traverse(auxiliaryRoot, new EquivalenceVisitor());
-        Trees.traverse(auxiliaryRoot, new DeMorganVisitor());
-        Trees.traverse(auxiliaryRoot, new TreeSimplifier());
-        return (Expression) auxiliaryRoot.getChild();
-    }
-
-    public static Result<Expression> toNF(Expression root, Transformer transformer) {
-        return transformer.apply(root);
-    }
-
-    public static boolean isNF(Expression expression, NormalForm normalForm, boolean clausal) {
-        final NFTester tester = getNFTester(expression, normalForm);
-        return clausal ? tester.isClausalNf() : tester.isNf();
-    }
-
-    static NFTester getNFTester(Expression expression, NormalForm normalForm) {
-        NFTester tester;
+    protected static NormalFormTester getNormalFormTester(Formula formula, NormalForm normalForm) {
+        NormalFormTester tester;
         switch (normalForm) {
             case CNF:
                 tester = new CNFTester();
@@ -71,8 +57,25 @@ public class NormalForms {
             default:
                 throw new IllegalStateException(String.valueOf(normalForm));
         }
-        Trees.traverse(expression, tester);
+        formula.traverse(tester);
         return tester;
+    }
+
+    public static boolean isNormalForm(Formula formula, NormalForm normalForm, boolean clausal) {
+        final NormalFormTester tester = getNormalFormTester(formula, normalForm);
+        return clausal ? tester.isClausalNormalForm() : tester.isNormalForm();
+    }
+
+    public static Expression simplifyForNF(Expression expression) {
+        final AuxiliaryRoot auxiliaryRoot = new AuxiliaryRoot(expression);
+        Trees.traverse(auxiliaryRoot, new ConnectiveSimplifier());
+        Trees.traverse(auxiliaryRoot, new DeMorganApplier());
+        Trees.traverse(auxiliaryRoot, new AndOrSimplifier());
+        return auxiliaryRoot.getChild();
+    }
+
+    public static Result<Expression> toNF(Expression root, Transformer transformer) {
+        return transformer.apply(root);
     }
 
     public static Expression toClausalNF(Expression expression, NormalForm normalForm) {
@@ -83,7 +86,7 @@ public class NormalForms {
                 } else if (expression instanceof Or) {
                     expression = new And(expression);
                 } else {
-                    expression.replaceChildren(child -> (child instanceof Literal ? new Or((Literal) child) : child));
+                    expression.replaceChildren(child -> (child instanceof Literal ? new Or(child) : child));
                 }
                 break;
             case DNF:
@@ -92,7 +95,7 @@ public class NormalForms {
                 } else if (expression instanceof And) {
                     expression = new Or(new And(expression));
                 } else {
-                    expression.replaceChildren(child -> (child instanceof Literal ? new And((Literal) child) : child));
+                    expression.replaceChildren(child -> (child instanceof Literal ? new And(child) : child));
                 }
                 break;
             default:

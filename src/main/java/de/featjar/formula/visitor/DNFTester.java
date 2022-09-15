@@ -18,67 +18,73 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.transform;
+package de.featjar.formula.visitor;
 
 import de.featjar.formula.structure.Expression;
+import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.formula.predicate.Predicate;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Or;
 
 import java.util.List;
 
-public class DNFTester extends NFTester {
+/**
+ * Tests whether a formula is in disjunctive normal form.
+ *
+ * @author Sebastian Krieter
+ */
+public class DNFTester extends NormalFormTester {
 
     @Override
-    public TraversalAction firstVisit(List<Expression> path) {
-        final Expression expression = getCurrentNode(path);
-        if (expression instanceof Or) {
+    public TraversalAction firstVisit(List<Formula> path) {
+        final Formula formula = getCurrentNode(path);
+        if (formula instanceof Or) {
             if (path.size() > 1) {
-                isNf = false;
-                isClausalNf = false;
+                isNormalForm = false;
+                isClausalNormalForm = false;
                 return TraversalAction.SKIP_ALL;
             }
-            for (final Expression child : expression.getChildren()) {
+            for (final Expression child : formula.getChildren()) {
                 if (!(child instanceof And)) {
                     if (!(child instanceof Predicate)) {
-                        isNf = false;
-                        isClausalNf = false;
+                        isNormalForm = false;
+                        isClausalNormalForm = false;
                         return TraversalAction.SKIP_ALL;
                     }
-                    isClausalNf = false;
+                    isClausalNormalForm = false;
                 }
             }
             return TraversalAction.CONTINUE;
-        } else if (expression instanceof And) {
+        } else if (formula instanceof And) {
             if (path.size() > 2) {
-                isNf = false;
-                isClausalNf = false;
+                isNormalForm = false;
+                isClausalNormalForm = false;
                 return TraversalAction.SKIP_ALL;
             }
             if (path.size() < 2) {
-                isClausalNf = false;
+                isClausalNormalForm = false;
             }
-            for (final Expression child : expression.getChildren()) {
+            for (final Expression child : formula.getChildren()) {
                 if (!(child instanceof Predicate)) {
-                    isNf = false;
-                    isClausalNf = false;
+                    isNormalForm = false;
+                    isClausalNormalForm = false;
                     return TraversalAction.SKIP_ALL;
                 }
             }
             return TraversalAction.CONTINUE;
-        } else if (expression instanceof Predicate) {
+        } else if (formula instanceof Predicate) {
             if (path.size() > 3) {
-                isNf = false;
-                isClausalNf = false;
+                isNormalForm = false;
+                isClausalNormalForm = false;
                 return TraversalAction.SKIP_ALL;
             }
             if (path.size() < 3) {
-                isClausalNf = false;
+                isClausalNormalForm = false;
             }
             return TraversalAction.SKIP_CHILDREN;
         } else {
-            isNf = false;
-            isClausalNf = false;
+            isNormalForm = false;
+            isClausalNormalForm = false;
             return TraversalAction.SKIP_ALL;
         }
     }

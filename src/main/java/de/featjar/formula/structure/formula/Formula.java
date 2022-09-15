@@ -1,12 +1,10 @@
 package de.featjar.formula.structure.formula;
 
 import de.featjar.formula.structure.Expression;
-import de.featjar.formula.structure.assignment.Assignment;
 import de.featjar.formula.structure.formula.predicate.False;
 import de.featjar.formula.structure.formula.predicate.Predicate;
 import de.featjar.formula.structure.formula.predicate.True;
 import de.featjar.formula.structure.term.value.Variable;
-import de.featjar.formula.tmp.ValueVisitor;
 
 /**
  * A well-formed formula.
@@ -32,14 +30,5 @@ public interface Formula extends Expression {
 
     default Class<?> getType() {
         return Boolean.class;
-    }
-
-    /**
-     * {@return the evaluation of this formula on a given assignment}
-     *
-     * @param assignment the assignment
-     */
-    default Boolean evaluate(Assignment assignment) {
-        return (Boolean) traverse(new ValueVisitor(assignment)).orElse(null);
     }
 }

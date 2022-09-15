@@ -18,7 +18,7 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.transform;
+package de.featjar.formula.transformer;
 
 import de.featjar.base.data.Result;
 import de.featjar.formula.structure.Expression;
@@ -32,15 +32,15 @@ import de.featjar.base.task.Monitor;
  *
  * @author Sebastian Krieter
  */
-public class CNFDistributiveLawTransformer extends DistributiveLawTransformer {
+public class DNFDistributiveLawTransformer extends DistributiveLawTransformer {
 
-    public CNFDistributiveLawTransformer() {
-        super(Or.class, Or::new);
+    public DNFDistributiveLawTransformer() {
+        super(And.class, And::new);
     }
 
     @Override
     public Result<Connective> execute(Expression expression, Monitor monitor) {
-        final Connective connective = (expression instanceof And) ? (And) expression : new And(expression);
+        final Connective connective = (expression instanceof Or) ? (Or) expression : new Or(expression);
         return super.execute(connective, monitor);
     }
 }

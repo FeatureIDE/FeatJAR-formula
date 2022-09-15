@@ -27,6 +27,18 @@ import java.util.Optional;
 
 public interface Assignment { //todo move to other package?
 
+    Optional<Object> get(int index);
+
+    void set(int index, Object assignment);
+
+    default void unset(int index) {
+        set(index, null);
+    }
+
+    void unsetAll();
+
+    List<Pair<Integer, Object>> getAll();
+
     default void setAll(Collection<Pair<Integer, Object>> assignments) {
         for (final Pair<Integer, Object> pair : assignments) {
             set(pair.getKey(), pair.getValue());
@@ -38,16 +50,4 @@ public interface Assignment { //todo move to other package?
             set(pair.getKey(), null);
         }
     }
-
-    void unsetAll();
-
-    default void unset(int index) {
-        set(index, null);
-    }
-
-    void set(int index, Object assignment);
-
-    Optional<Object> get(int index);
-
-    List<Pair<Integer, Object>> getAll();
 }

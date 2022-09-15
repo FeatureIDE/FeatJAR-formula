@@ -18,33 +18,29 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.transform;
+package de.featjar.formula.transformer;
 
+import de.featjar.base.data.Result;
 import de.featjar.formula.structure.Expression;
-import de.featjar.base.tree.visitor.TreeVisitor;
-import java.util.Optional;
+import de.featjar.formula.structure.formula.connective.And;
+import de.featjar.formula.structure.formula.connective.Connective;
+import de.featjar.formula.structure.formula.connective.Or;
+import de.featjar.base.task.Monitor;
 
-public class NFTester implements TreeVisitor<Expression, Boolean> {
+/**
+ * Transforms propositional formulas into CNF.
+ *
+ * @author Sebastian Krieter
+ */
+public class CNFDistributiveLawTransformer extends DistributiveLawTransformer {
 
-    protected boolean isNf;
-    protected boolean isClausalNf;
-
-    @Override
-    public void reset() {
-        isNf = true;
-        isClausalNf = true;
+    public CNFDistributiveLawTransformer() {
+        super(Or.class, Or::new);
     }
 
     @Override
-    public Optional<Boolean> getResult() {
-        return Optional.of(isNf);
-    }
-
-    public boolean isNf() {
-        return isNf;
-    }
-
-    public boolean isClausalNf() {
-        return isClausalNf;
+    public Result<Connective> execute(Expression expression, Monitor monitor) {
+        final Connective connective = (expression instanceof And) ? (And) expression : new And(expression);
+        return super.execute(connective, monitor);
     }
 }

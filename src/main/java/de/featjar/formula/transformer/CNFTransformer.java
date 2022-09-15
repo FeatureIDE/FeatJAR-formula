@@ -18,10 +18,11 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.transform;
+package de.featjar.formula.transformer;
 
 import de.featjar.base.data.Result;
 import de.featjar.formula.structure.Expression;
+import de.featjar.formula.visitor.NormalFormTester;
 import de.featjar.formula.tmp.Formulas;
 import de.featjar.formula.structure.map.TermMap;
 import de.featjar.formula.structure.map.TermMap.Variable;
@@ -30,6 +31,9 @@ import de.featjar.formula.structure.formula.connective.Connective;
 import de.featjar.base.task.Monitor;
 import de.featjar.base.task.CancelableMonitor;
 import de.featjar.base.tree.Trees;
+import de.featjar.formula.visitor.NormalForms;
+import de.featjar.formula.visitor.VariableMapSetter;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -63,9 +67,9 @@ public class CNFTransformer implements Transformer {
     @Override
     public Result<Expression> execute(Expression orgExpression, Monitor monitor) {
         useDistributive = (maximumNumberOfLiterals > 0);
-        final NFTester nfTester = NormalForms.getNFTester(orgExpression, NormalForms.NormalForm.CNF);
-        if (nfTester.isNf) {
-            if (!nfTester.isClausalNf()) {
+        final NormalFormTester normalFormTester = NormalForms.getNormalFormTester(orgExpression, NormalForms.NormalForm.CNF);
+        if (normalFormTester.isNormalForm) {
+            if (!normalFormTester.isClausalNormalForm()) {
                 return Result.of(NormalForms.toClausalNF(Trees.clone(orgExpression), NormalForms.NormalForm.CNF));
             } else {
                 return Result.of(Trees.clone(orgExpression));

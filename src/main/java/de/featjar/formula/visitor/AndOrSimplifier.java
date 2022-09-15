@@ -18,8 +18,9 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.transform;
+package de.featjar.formula.visitor;
 
+import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.tmp.AuxiliaryRoot;
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.formula.predicate.Predicate;
@@ -27,17 +28,25 @@ import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Connective;
 import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.base.tree.visitor.TreeVisitor;
-import java.util.Arrays;
+
+import java.util.Collections;
 import java.util.List;
 
-public class TreeSimplifier implements TreeVisitor<Expression, Void> {
+/**
+ * Merges nested {@link And} and {@link Or} connectives and reduces
+ * occurrences of {@link de.featjar.formula.structure.formula.predicate.True}
+ * and {@link de.featjar.formula.structure.formula.predicate.False}.
+ *
+ * @author Sebastian Krieter
+ */
+public class AndOrSimplifier implements TreeVisitor<Formula, Void> {
 
     @Override
-    public TraversalAction firstVisit(List<Expression> path) {
-        final Expression expression = getCurrentNode(path);
-        if (expression instanceof Predicate) {
+    public TraversalAction firstVisit(List<Formula> path) {
+        final Formula formula = getCurrentNode(path);
+        if (formula instanceof Predicate) {
             return TraversalAction.SKIP_CHILDREN;
-        } else if ((expression instanceof AuxiliaryRoot) || (expression instanceof Connective)) {
+        } else if ((formula instanceof AuxiliaryRoot) || (formula instanceof Connective)) {
             return TraversalAction.CONTINUE;
         } else {
             return TraversalAction.FAIL;
@@ -45,20 +54,20 @@ public class TreeSimplifier implements TreeVisitor<Expression, Void> {
     }
 
     @Override
-    public TraversalAction lastVisit(List<Expression> path) {
-        final Expression expression = getCurrentNode(path);
-        if ((expression instanceof AuxiliaryRoot) || (expression instanceof Connective)) {
-            if (expression instanceof And) {
-                if (expression.getChildren().stream().anyMatch(c -> c == Expression.FALSE)) {
-                    expression.setChildren(Arrays.asList(Expression.FALSE));
+    public TraversalAction lastVisit(List<Formula> path) {
+        final Formula formula = getCurrentNode(path);
+        if ((formula instanceof AuxiliaryRoot) || (formula instanceof Connective)) {
+            if (formula instanceof And) {
+                if (formula.getChildren().stream().anyMatch(c -> c == Formula.FALSE)) {
+                    formula.setChildren(Collections.singletonList(Formula.FALSE));
                 } else {
-                    expression.flatReplaceChildren(this::mergeAnd);
+                    formula.flatReplaceChildren(this::mergeAnd);
                 }
-            } else if (expression instanceof Or) {
-                if (expression.getChildren().stream().anyMatch(c -> c == Expression.TRUE)) {
-                    expression.setChildren(Arrays.asList(Expression.TRUE));
+            } else if (formula instanceof Or) {
+                if (formula.getChildren().stream().anyMatch(c -> c == Formula.TRUE)) {
+                    formula.setChildren(Collections.singletonList(Formula.TRUE));
                 } else {
-                    expression.flatReplaceChildren(this::mergeOr);
+                    formula.flatReplaceChildren(this::mergeOr);
                 }
             }
         }

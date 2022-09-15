@@ -18,29 +18,39 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.transform;
+package de.featjar.formula.visitor;
 
-import de.featjar.base.data.Result;
-import de.featjar.formula.structure.Expression;
-import de.featjar.formula.structure.formula.connective.And;
-import de.featjar.formula.structure.formula.connective.Connective;
-import de.featjar.formula.structure.formula.connective.Or;
-import de.featjar.base.task.Monitor;
+import de.featjar.base.tree.visitor.TreeVisitor;
+import de.featjar.formula.structure.formula.Formula;
+
+import java.util.Optional;
 
 /**
- * Transforms propositional formulas into CNF.
+ * Tests whether a formula is in a normal form.
  *
  * @author Sebastian Krieter
  */
-public class DNFDistributiveLawTransformer extends DistributiveLawTransformer {
+public abstract class NormalFormTester implements TreeVisitor<Formula, Boolean> {
 
-    public DNFDistributiveLawTransformer() {
-        super(And.class, And::new);
+    protected boolean isNormalForm = true;
+    protected boolean isClausalNormalForm = true;
+
+    @Override
+    public void reset() {
+        isNormalForm = true;
+        isClausalNormalForm = true;
     }
 
     @Override
-    public Result<Connective> execute(Expression expression, Monitor monitor) {
-        final Connective connective = (expression instanceof Or) ? (Or) expression : new Or(expression);
-        return super.execute(connective, monitor);
+    public Optional<Boolean> getResult() {
+        return Optional.of(isNormalForm);
+    }
+
+    public boolean isNormalForm() {
+        return isNormalForm;
+    }
+
+    public boolean isClausalNormalForm() {
+        return isClausalNormalForm;
     }
 }

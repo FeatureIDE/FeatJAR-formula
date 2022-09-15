@@ -18,29 +18,14 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.tmp;
+package de.featjar.formula.transformer;
 
-import de.featjar.formula.structure.formula.predicate.Literal;
-
-import java.util.Comparator;
+import de.featjar.base.task.MonitorableFunction;
+import de.featjar.formula.structure.formula.Formula;
 
 /**
- * Compares two literals based on their {@code var} object and {@code positive}
- * state.
+ * Transforms a formula.
  *
- * @author Sebastian Krieter
+ * @author Elias Kuiter
  */
-public class LiteralComparator implements Comparator<Literal> {
-
-    @Override
-    public int compare(Literal arg0, Literal arg1) {
-        if (arg0.isPositive() != arg1.isPositive()) {
-            return arg0.isPositive() ? -1 : 1;
-        }
-        final int nameCompare = arg0.getName().compareTo(arg1.getName());
-        if (nameCompare != 0) {
-            return nameCompare;
-        }
-        return arg0.getClass().getCanonicalName().compareTo(arg1.getClass().getCanonicalName());
-    }
-}
+public interface Transformer extends MonitorableFunction<Formula, Formula> {}

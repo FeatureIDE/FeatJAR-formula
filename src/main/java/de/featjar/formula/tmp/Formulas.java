@@ -20,37 +20,29 @@
  */
 package de.featjar.formula.tmp;
 
-import de.featjar.formula.io.textual.FormulaFormat;
-import de.featjar.formula.structure.Expression;
-import de.featjar.formula.structure.map.TermMap;
-import de.featjar.formula.tmp.ValueVisitor.UnknownVariableHandling;
-import de.featjar.formula.structure.assignment.Assignment;
-import de.featjar.formula.structure.map.TermMap.Variable;
-import de.featjar.formula.transform.CNFTransformer;
-import de.featjar.formula.transform.DNFTransformer;
-import de.featjar.formula.transform.NormalForms;
-import de.featjar.formula.transform.NormalForms.NormalForm;
-import de.featjar.formula.transform.VariableMapSetter;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.IO;
 import de.featjar.base.tree.Trees;
 import de.featjar.base.tree.visitor.TreeDepthCounter;
 import de.featjar.base.tree.visitor.TreePrinter;
 import de.featjar.base.tree.visitor.TreeVisitor;
+import de.featjar.formula.io.textual.FormulaFormat;
+import de.featjar.formula.structure.Expression;
+import de.featjar.formula.transformer.CNFTransformer;
+import de.featjar.formula.transformer.DNFTransformer;
+import de.featjar.formula.visitor.NormalForms;
+import de.featjar.formula.visitor.NormalForms.NormalForm;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Formulas {
-
-    private Formulas() {}
 
     public static String printTree(Expression expression) {
         final TreePrinter visitor = new TreePrinter();
@@ -67,22 +59,16 @@ public class Formulas {
         }
     }
 
-    public static Optional<Object> evaluate(Expression expression, Assignment assignment) {
-        final ValueVisitor visitor = new ValueVisitor(assignment);
-        visitor.setUnknown(UnknownVariableHandling.ERROR);
-        return Trees.traverse(expression, visitor);
-    }
-
     public static boolean isCNF(Expression expression) {
-        return NormalForms.isNF(expression, NormalForm.CNF, false);
+        return NormalForms.isNormalForm(expression, NormalForm.CNF, false);
     }
 
     public static boolean isDNF(Expression expression) {
-        return NormalForms.isNF(expression, NormalForm.DNF, false);
+        return NormalForms.isNormalForm(expression, NormalForm.DNF, false);
     }
 
     public static boolean isClausalCNF(Expression expression) {
-        return NormalForms.isNF(expression, NormalForm.CNF, true);
+        return NormalForms.isNormalForm(expression, NormalForm.CNF, true);
     }
 
     public static Result<Expression> toCNF(Expression expression) {
@@ -125,38 +111,6 @@ public class Formulas {
 
     public static <T extends Expression> T create(Function<TermMap, T> fn) {
         return fn.apply(new TermMap());
-    }
-
-    /**
-     * Child formulas are cloned and their variable maps merged. That is, the
-     * composed formula exists independently of its children. This is useful e.g.
-     * for composing several feature model (interface) formulas.
-     */
-    public static <T, U extends Expression> T compose(Function<List<U>, T> fn, List<U> expressions) {
-        return fn.apply(cloneWithSharedVariableMap(expressions));
-    }
-
-    @SafeVarargs
-    public static <T, U extends Expression> T compose(Function<List<U>, T> fn, U... expressions) {
-        return compose(fn, Arrays.asList(expressions));
-    }
-
-    /**
-     * Composes formulas (e.g., for feature model fragments and interfaces) by
-     * cloning and variable map merging. Assumes that the supplied formulas are
-     * partly independent, partly dependent (on common variables). Leaves the input
-     * formulas and their variable maps untouched by returning copies.
-     */
-    @SuppressWarnings("unchecked")
-    public static <T extends Expression> List<T> cloneWithSharedVariableMap(List<T> children) {
-        final List<TermMap> maps = children.stream()
-                .map(f -> f.getTermMap().orElseGet(TermMap::new))
-                .collect(Collectors.toList());
-        TermMap composedMap = TermMap.merge(maps);
-        final List<T> collect = children.stream()
-                .map(f -> (T) Formulas.manipulate(f, new VariableMapSetter(composedMap)))
-                .collect(Collectors.toList());
-        return collect;
     }
 
     /**

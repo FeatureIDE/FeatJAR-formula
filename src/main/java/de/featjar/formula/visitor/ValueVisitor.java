@@ -18,7 +18,7 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.tmp;
+package de.featjar.formula.visitor;
 
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.assignment.Assignment;
