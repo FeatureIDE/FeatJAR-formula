@@ -30,7 +30,9 @@ import java.util.List;
 
 /**
  * Tests whether a formula is in disjunctive normal form.
- *
+ * The formula {@code new Literal("x")} is in DNF, but not in clausal DNF.
+ * The formula {@code new Or(new And(new Literal("x")))} is in DNF and in clausal DNF.
+ * *
  * @author Sebastian Krieter
  */
 public class DNFTester extends NormalFormTester {

@@ -20,27 +20,12 @@
  */
 package de.featjar.formula.transformer;
 
-import de.featjar.base.data.Result;
-import de.featjar.formula.structure.Expression;
-import de.featjar.formula.structure.formula.connective.And;
-import de.featjar.formula.structure.formula.connective.Connective;
-import de.featjar.formula.structure.formula.connective.Or;
-import de.featjar.base.task.Monitor;
+import de.featjar.base.data.Computation;
+import de.featjar.formula.structure.formula.Formula;
 
 /**
- * Transforms propositional formulas into CNF.
+ * Transforms a formula.
  *
- * @author Sebastian Krieter
+ * @author Elias Kuiter
  */
-public class DNFDistributiveLawTransformer extends DistributiveLawTransformer {
-
-    public DNFDistributiveLawTransformer() {
-        super(And.class, And::new);
-    }
-
-    @Override
-    public Result<Connective> execute(Expression expression, Monitor monitor) {
-        final Connective connective = (expression instanceof Or) ? (Or) expression : new Or(expression);
-        return super.execute(connective, monitor);
-    }
-}
+public interface FormulaTransformer extends Computation<Formula, Formula> {}

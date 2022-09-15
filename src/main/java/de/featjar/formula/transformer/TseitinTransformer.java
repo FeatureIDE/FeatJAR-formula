@@ -21,12 +21,9 @@
 package de.featjar.formula.transformer;
 
 import de.featjar.base.data.Result;
-import de.featjar.formula.tmp.AuxiliaryRoot;
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.formula.predicate.Predicate;
 import de.featjar.formula.structure.formula.predicate.Literal;
-import de.featjar.formula.structure.map.TermMap;
-import de.featjar.formula.structure.map.TermMap.Variable;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Connective;
 import de.featjar.formula.structure.formula.connective.Or;
@@ -34,18 +31,25 @@ import de.featjar.base.task.Monitor;
 import de.featjar.base.task.MonitorableFunction;
 import de.featjar.base.tree.Trees;
 import de.featjar.base.tree.visitor.TreeVisitor;
+import de.featjar.formula.structure.term.value.Variable;
+
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Transforms a formula into (clausal) conjunctive or disjunctive normal form by introducing Tseitin variables.
+ *
+ * @author Sebastian Krieter
+ */
 public class TseitinTransformer
         implements MonitorableFunction<Expression, List<TseitinTransformer.Substitute>>, TreeVisitor<Expression, Expression> {
 
     public static class Substitute {
-        private Expression orgExpression;
-        private Variable variable;
-        private List<Expression> clauses = new ArrayList<>();
+        private final Expression orgExpression;
+        private final Variable variable;
+        private final List<Expression> clauses;
 
         private Substitute(Expression orgExpression, Variable variable, int numberOfClauses) {
             this.orgExpression = orgExpression;
@@ -92,19 +96,14 @@ public class TseitinTransformer
     }
 
     private final List<Substitute> substitutes = new ArrayList<>();
-
-    private TermMap termMap;
-
-    public void setVariableMap(TermMap termMap) {
-        this.termMap = termMap;
-    }
+    private int i = 0;
 
     private Variable newVariable(final ArrayList<Literal> newChildren, final Expression clonedLastNode) {
-        Variable addBooleanVariable = termMap.addBooleanVariable();
+        Variable addBooleanVariable = new Variable("__tmp__" + (++i));
         final Substitute substitute = new Substitute(clonedLastNode, addBooleanVariable, newChildren.size() + 1);
         substitutes.add(substitute);
 
-        final Literal tempLiteral = new Literal(substitute.variable, true);
+        final Literal tempLiteral = new Literal(substitute.variable);
         if (clonedLastNode instanceof And) {
             final ArrayList<Literal> flippedChildren = new ArrayList<>();
             for (final Literal l : newChildren) {
@@ -135,9 +134,6 @@ public class TseitinTransformer
         stack.clear();
 
         Trees.sort(child);
-        if (termMap == null) {
-            termMap = child.getTermMap().map(TermMap::clone).orElseGet(TermMap::new);
-        }
 
         try {
             child.traverse(this);
@@ -151,8 +147,8 @@ public class TseitinTransformer
         final Expression expression = getCurrentNode(path);
         if (expression instanceof Predicate) {
             return TraversalAction.SKIP_CHILDREN;
-        } else if ((expression instanceof Connective) || (expression instanceof AuxiliaryRoot)) {
-            stack.push((Expression) expression);
+        } else if ((expression instanceof Connective)) {
+            stack.push(expression);
             return TraversalAction.CONTINUE;
         } else {
             return TraversalAction.FAIL;
@@ -187,7 +183,7 @@ public class TseitinTransformer
             } else {
                 final Expression clonedLastNode = lastNode;
                 final Variable variable = newVariable(newChildren, clonedLastNode);
-                stack.push(new Literal(variable, true));
+                stack.push(new Literal(variable));
             }
         }
         return TreeVisitor.super.lastVisit(path);

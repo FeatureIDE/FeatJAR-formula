@@ -24,29 +24,31 @@ import de.featjar.base.data.Result;
 import de.featjar.base.task.Monitor;
 import de.featjar.base.tree.Trees;
 import de.featjar.formula.structure.formula.Formula;
-import de.featjar.formula.structure.formula.connective.Or;
-import de.featjar.formula.visitor.NormalFormTester;
-import de.featjar.formula.visitor.NormalForms;
+import de.featjar.formula.visitor.*;
 
 /**
- * Transforms propositional formulas into negation normal form.
+ * Transforms a formula into negation normal form.
  *
- * @author Sebastian Krieter
+ * @author Elias Kuiter
  */
-public class NNFTransformer implements Transformer {
+public class NNFTransformer implements FormulaTransformer {
     @Override
     public Result<Formula> execute(Formula formula, Monitor monitor) {
-        final NormalFormTester normalFormTester = NormalForms.getNormalFormTester(expression, NormalForms.NormalForm.DNF);
-        if (normalFormTester.isNormalForm) {
-            if (!normalFormTester.isClausalNormalForm()) {
-                return Result.of(NormalForms.toClausalNF(Trees.clone(expression), NormalForms.NormalForm.DNF));
-            } else {
-                return Result.of(Trees.clone(expression));
-            }
+        //todo
+        //final NormalFormTester normalFormTester = NormalForms.getNormalFormTester(formula, NormalForms.NormalForm.NNF);
+        if (false) {//normalFormTester.isNormalForm) {
+//            if (!normalFormTester.isClausalNormalForm()) {
+//                return Result.of(NormalForms.toClausalNF(Trees.clone(expression), NormalForms.NormalForm.DNF));
+//            } else {
+//                return Result.of(Trees.clone(expression));
+//            }
+            return Result.empty();
         } else {
-            expression = NormalForms.simplifyForNF(Trees.clone(expression));
-            return distributiveLawTransformer.execute((expression instanceof Or) ? expression : new Or(expression), monitor)
-                    .map(f -> NormalForms.toClausalNF(f, NormalForms.NormalForm.DNF));
+            formula = (Formula) formula.cloneTree();
+            Trees.traverse(formula, new ConnectiveSimplifier());
+            Trees.traverse(formula, new DeMorganApplier());
+            Trees.traverse(formula, new AndOrSimplifier());
+            return Result.of(formula);
         }
     }
 }

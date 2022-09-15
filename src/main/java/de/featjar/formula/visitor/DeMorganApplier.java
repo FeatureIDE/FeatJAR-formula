@@ -22,7 +22,6 @@ package de.featjar.formula.visitor;
 
 import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.formula.predicate.InvertiblePredicate;
-import de.featjar.formula.tmp.AuxiliaryRoot;
 import de.featjar.formula.structure.formula.predicate.Predicate;
 import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.structure.formula.connective.And;
@@ -46,9 +45,6 @@ public class DeMorganApplier implements TreeVisitor<Formula, Void> {
         if (formula instanceof Predicate) {
             return TraversalAction.SKIP_CHILDREN;
         } else if (formula instanceof Connective) {
-            formula.replaceChildren(expression -> replace((Formula) expression));
-            return TraversalAction.CONTINUE;
-        } else if (formula instanceof AuxiliaryRoot) {
             formula.replaceChildren(expression -> replace((Formula) expression));
             return TraversalAction.CONTINUE;
         } else {

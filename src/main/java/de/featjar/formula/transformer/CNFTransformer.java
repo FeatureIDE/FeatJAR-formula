@@ -22,24 +22,26 @@ package de.featjar.formula.transformer;
 
 import de.featjar.base.data.Result;
 import de.featjar.formula.structure.Expression;
+import de.featjar.formula.structure.formula.Formula;
+import de.featjar.formula.structure.term.value.Variable;
 import de.featjar.formula.visitor.NormalFormTester;
-import de.featjar.formula.tmp.Formulas;
-import de.featjar.formula.structure.map.TermMap;
-import de.featjar.formula.structure.map.TermMap.Variable;
 import de.featjar.formula.structure.formula.connective.And;
-import de.featjar.formula.structure.formula.connective.Connective;
 import de.featjar.base.task.Monitor;
 import de.featjar.base.task.CancelableMonitor;
 import de.featjar.base.tree.Trees;
 import de.featjar.formula.visitor.NormalForms;
-import de.featjar.formula.visitor.VariableMapSetter;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-public class CNFTransformer implements Transformer {
+/**
+ * Transforms a formula into conjunctive normal form.
+ *
+ * @author Sebastian Krieter
+ */
+public class CNFTransformer implements FormulaTransformer {
 
     public final boolean useMultipleThreads = false;
 
@@ -47,8 +49,6 @@ public class CNFTransformer implements Transformer {
     protected final List<TseitinTransformer.Substitute> tseitinClauses;
     protected boolean useDistributive;
     protected int maximumNumberOfLiterals = Integer.MAX_VALUE;
-
-    protected TermMap termMap = null;
 
     public CNFTransformer() {
         if (useMultipleThreads) {
@@ -65,42 +65,37 @@ public class CNFTransformer implements Transformer {
     }
 
     @Override
-    public Result<Expression> execute(Expression orgExpression, Monitor monitor) {
+    public Result<Formula> execute(Formula formula, Monitor monitor) {
         useDistributive = (maximumNumberOfLiterals > 0);
-        final NormalFormTester normalFormTester = NormalForms.getNormalFormTester(orgExpression, NormalForms.NormalForm.CNF);
-        if (normalFormTester.isNormalForm) {
+        final NormalFormTester normalFormTester = NormalForms.getNormalFormTester(formula, Formula.NormalForm.CNF);
+        if (normalFormTester.isNormalForm()) {
             if (!normalFormTester.isClausalNormalForm()) {
-                return Result.of(NormalForms.toClausalNF(Trees.clone(orgExpression), NormalForms.NormalForm.CNF));
+                return Result.of(NormalForms.toClausalNormalForm((Formula) Trees.clone(formula), Formula.NormalForm.CNF));
             } else {
-                return Result.of(Trees.clone(orgExpression));
+                return Result.of((Formula) Trees.clone(formula));
             }
         }
-        termMap = orgExpression.getTermMap().map(TermMap::clone).orElseGet(TermMap::new);
-        Expression expression = NormalForms.simplifyForNF(Trees.clone(orgExpression));
-        if (expression instanceof And) {
-            final List<Expression> children = ((And) expression).getChildren();
+        Formula newFormula = new NNFTransformer().apply((Formula) Trees.clone(formula)).get(); // preferred input computation
+        if (newFormula instanceof And) {
+            final List<? extends Expression> children = newFormula.getChildren();
             if (useMultipleThreads) {
                 children.parallelStream().forEach(this::transform);
             } else {
                 children.forEach(this::transform);
             }
         } else {
-            transform(expression);
+            transform(newFormula);
         }
 
-        expression = new And(getTransformedClauses());
-        expression = NormalForms.toClausalNF(expression, NormalForms.NormalForm.CNF);
-        expression = Formulas.manipulate(expression, new VariableMapSetter(termMap));
-        return Result.of(expression);
+        newFormula = new And(getTransformedClauses());
+        newFormula = NormalForms.toClausalNormalForm(newFormula, Formula.NormalForm.CNF);
+        return Result.of(newFormula);
     }
 
     protected List<? extends Expression> getTransformedClauses() {
-        final List<Expression> transformedClauses = new ArrayList<>();
-
-        transformedClauses.addAll(distributiveClauses);
+        final List<Expression> transformedClauses = new ArrayList<>(distributiveClauses);
 
         if (!tseitinClauses.isEmpty()) {
-            termMap = termMap.clone();
             final HashMap<TseitinTransformer.Substitute, TseitinTransformer.Substitute> combinedTseitinClauses = new HashMap<>();
             for (final TseitinTransformer.Substitute tseitinClause : tseitinClauses) {
                 TseitinTransformer.Substitute substitute = combinedTseitinClauses.get(tseitinClause);
@@ -108,18 +103,18 @@ public class CNFTransformer implements Transformer {
                     combinedTseitinClauses.put(tseitinClause, tseitinClause);
                     final Variable variable = tseitinClause.getVariable();
                     if (variable != null) {
-                        variable.rename(termMap.addBooleanVariable().getName());
+                        //todo variable.setName(termMap.addBooleanVariable().getName());
                     }
                 } else {
                     final Variable variable = substitute.getVariable();
                     if (variable != null) {
-                        tseitinClause.getVariable().rename(variable.getName());
+                        //todo tseitinClause.getVariable().rename(variable.getName());
                     }
                 }
             }
             for (final TseitinTransformer.Substitute tseitinClause : combinedTseitinClauses.keySet()) {
                 for (final Expression expression : tseitinClause.getClauses()) {
-                    transformedClauses.add(Formulas.manipulate(expression, new VariableMapSetter(termMap)));
+                    //todo transformedClauses.add(Formulas.manipulate(expression, new VariableMapSetter(termMap)));
                 }
             }
         }
@@ -128,9 +123,9 @@ public class CNFTransformer implements Transformer {
 
     private void transform(Expression child) {
         final Expression clonedChild = Trees.clone(child);
-        if (Formulas.isCNF(clonedChild)) {
+        if (((Formula) clonedChild).isCNF()) {
             if (clonedChild instanceof And) {
-                distributiveClauses.addAll(((And) clonedChild).getChildren());
+                distributiveClauses.addAll(clonedChild.getChildren());
             } else {
                 distributiveClauses.add(clonedChild);
             }
@@ -140,23 +135,22 @@ public class CNFTransformer implements Transformer {
                     distributiveClauses.addAll(
                             distributive(clonedChild, new CancelableMonitor()).get().getChildren()); // todo .get?
                     return;
-                } catch (final DistributiveLawTransformer.MaximumNumberOfLiteralsExceededException e) {
+                } catch (final DistributiveTransformer.MaximumNumberOfLiteralsExceededException ignored) {
                 }
             }
             tseitinClauses.addAll(tseitin(clonedChild, new CancelableMonitor()).get()); // todo: .get?
         }
     }
 
-    protected Result<Connective> distributive(Expression child, Monitor monitor)
-            throws DistributiveLawTransformer.MaximumNumberOfLiteralsExceededException {
-        final CNFDistributiveLawTransformer cnfDistributiveLawTransformer = new CNFDistributiveLawTransformer();
+    protected Result<Formula> distributive(Expression child, Monitor monitor)
+            throws DistributiveTransformer.MaximumNumberOfLiteralsExceededException {
+        final DistributiveTransformer cnfDistributiveLawTransformer = new DistributiveTransformer(Formula.NormalForm.CNF);
         cnfDistributiveLawTransformer.setMaximumNumberOfLiterals(maximumNumberOfLiterals);
-        return cnfDistributiveLawTransformer.execute(child, monitor);
+        return cnfDistributiveLawTransformer.execute((Formula) child, monitor);
     }
 
     protected Result<List<TseitinTransformer.Substitute>> tseitin(Expression child, Monitor monitor) {
         final TseitinTransformer tseitinTransformer = new TseitinTransformer();
-        tseitinTransformer.setVariableMap(new TermMap());
         return tseitinTransformer.execute(child, monitor);
     }
 }

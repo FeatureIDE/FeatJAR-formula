@@ -21,31 +21,23 @@
 package de.featjar.formula.visitor;
 
 import de.featjar.formula.structure.formula.Formula;
-import de.featjar.formula.transformer.Transformer;
-import de.featjar.formula.tmp.AuxiliaryRoot;
-import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.base.data.Result;
 import de.featjar.base.tree.Trees;
+import de.featjar.formula.transformer.CNFTransformer;
+import de.featjar.formula.transformer.DNFTransformer;
+import de.featjar.formula.transformer.FormulaTransformer;
 
 /**
- * Transforms propositional formulas into (clausal) CNF or DNF.
+ * Tests and transforms formulas for and into normal forms.
  *
  * @author Sebastian Krieter
  */
 public class NormalForms {
 
-    private NormalForms() {}
-
-    public enum NormalForm {
-        CNF,
-        DNF
-        // todo: NNF tester
-    }
-
-    protected static NormalFormTester getNormalFormTester(Formula formula, NormalForm normalForm) {
+    public static NormalFormTester getNormalFormTester(Formula formula, Formula.NormalForm normalForm) {
         NormalFormTester tester;
         switch (normalForm) {
             case CNF:
@@ -57,49 +49,53 @@ public class NormalForms {
             default:
                 throw new IllegalStateException(String.valueOf(normalForm));
         }
-        formula.traverse(tester);
+        Trees.traverse(formula, tester);
         return tester;
     }
 
-    public static boolean isNormalForm(Formula formula, NormalForm normalForm, boolean clausal) {
+    public static boolean isNormalForm(Formula formula, Formula.NormalForm normalForm, boolean clausal) {
         final NormalFormTester tester = getNormalFormTester(formula, normalForm);
         return clausal ? tester.isClausalNormalForm() : tester.isNormalForm();
     }
 
-    public static Expression simplifyForNF(Expression expression) {
-        final AuxiliaryRoot auxiliaryRoot = new AuxiliaryRoot(expression);
-        Trees.traverse(auxiliaryRoot, new ConnectiveSimplifier());
-        Trees.traverse(auxiliaryRoot, new DeMorganApplier());
-        Trees.traverse(auxiliaryRoot, new AndOrSimplifier());
-        return auxiliaryRoot.getChild();
-    }
-
-    public static Result<Expression> toNF(Expression root, Transformer transformer) {
-        return transformer.apply(root);
-    }
-
-    public static Expression toClausalNF(Expression expression, NormalForm normalForm) {
+    // todo: use computation and store
+    public static Result<Formula> toNormalForm(Formula formula, Formula.NormalForm normalForm, boolean clausal) {
+        FormulaTransformer formulaTransformer;
         switch (normalForm) {
             case CNF:
-                if (expression instanceof Literal) {
-                    expression = new And(new Or(expression));
-                } else if (expression instanceof Or) {
-                    expression = new And(expression);
+                formulaTransformer = new CNFTransformer();
+                break;
+            case DNF:
+                formulaTransformer = new DNFTransformer();
+                break;
+            default:
+                throw new IllegalStateException(String.valueOf(normalForm));
+        }
+        Result<Formula> res = formulaTransformer.apply(formula);
+        return res.map(f -> clausal ? toClausalNormalForm(formula, normalForm) : f);
+    }
+
+    public static Formula toClausalNormalForm(Formula formula, Formula.NormalForm normalForm) {
+        switch (normalForm) {
+            case CNF:
+                if (formula instanceof Literal) {
+                    formula = new And(new Or(formula));
+                } else if (formula instanceof Or) {
+                    formula = new And(formula);
                 } else {
-                    expression.replaceChildren(child -> (child instanceof Literal ? new Or(child) : child));
+                    formula.replaceChildren(child -> (child instanceof Literal ? new Or(child) : child));
                 }
                 break;
             case DNF:
-                if (expression instanceof Literal) {
-                    expression = new Or(new And(expression));
-                } else if (expression instanceof And) {
-                    expression = new Or(new And(expression));
+                if (formula instanceof Literal) {
+                    formula = new Or(new And(formula));
+                } else if (formula instanceof And) {
+                    formula = new Or(new And(formula));
                 } else {
-                    expression.replaceChildren(child -> (child instanceof Literal ? new And(child) : child));
+                    formula.replaceChildren(child -> (child instanceof Literal ? new And(child) : child));
                 }
                 break;
-            default:
         }
-        return expression;
+        return formula;
     }
 }

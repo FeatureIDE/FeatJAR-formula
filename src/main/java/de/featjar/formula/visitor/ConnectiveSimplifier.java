@@ -21,7 +21,6 @@
 package de.featjar.formula.visitor;
 
 import de.featjar.formula.structure.formula.Formula;
-import de.featjar.formula.tmp.AuxiliaryRoot;
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.formula.predicate.Predicate;
 import de.featjar.formula.structure.formula.connective.And;
@@ -67,8 +66,6 @@ public class ConnectiveSimplifier implements TreeVisitor<Formula, Void> {
             if (formula instanceof Quantifier) {
                 return TraversalAction.FAIL;
             }
-            return TraversalAction.CONTINUE;
-        } else if (formula instanceof AuxiliaryRoot) {
             return TraversalAction.CONTINUE;
         } else {
             return TraversalAction.FAIL;

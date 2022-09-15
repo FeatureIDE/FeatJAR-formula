@@ -22,7 +22,7 @@ package de.featjar.formula.transformer;
 
 import de.featjar.base.data.Result;
 import de.featjar.formula.structure.Expression;
-import de.featjar.formula.structure.formula.connective.And;
+import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.base.task.Monitor;
 import de.featjar.base.tree.Trees;
@@ -30,35 +30,35 @@ import de.featjar.formula.visitor.NormalFormTester;
 import de.featjar.formula.visitor.NormalForms;
 
 /**
- * Transforms propositional formulas into DNF.
+ * Transforms a formula into disjunctive normal form.
  *
  * @author Sebastian Krieter
  */
-public class DNFTransformer implements Transformer {
+public class DNFTransformer implements FormulaTransformer {
 
-    private final DistributiveLawTransformer distributiveLawTransformer;
+    private final DistributiveTransformer distributiveTransformer;
 
     public DNFTransformer() {
-        distributiveLawTransformer = new DistributiveLawTransformer(And.class, And::new);
+        distributiveTransformer = new DistributiveTransformer(Formula.NormalForm.DNF);
     }
 
     public void setMaximumNumberOfLiterals(int maximumNumberOfLiterals) {
-        distributiveLawTransformer.setMaximumNumberOfLiterals(maximumNumberOfLiterals);
+        distributiveTransformer.setMaximumNumberOfLiterals(maximumNumberOfLiterals);
     }
 
     @Override
-    public Result<Expression> execute(Expression expression, Monitor monitor) {
-        final NormalFormTester normalFormTester = NormalForms.getNormalFormTester(expression, NormalForms.NormalForm.DNF);
-        if (normalFormTester.isNormalForm) {
+    public Result<Formula> execute(Formula formula, Monitor monitor) {
+        final NormalFormTester normalFormTester = NormalForms.getNormalFormTester(formula, Formula.NormalForm.DNF);
+        if (normalFormTester.isNormalForm()) {
             if (!normalFormTester.isClausalNormalForm()) {
-                return Result.of(NormalForms.toClausalNF(Trees.clone(expression), NormalForms.NormalForm.DNF));
+                return NormalForms.toNormalForm((Formula) Trees.clone(formula), Formula.NormalForm.DNF, true);
             } else {
-                return Result.of(Trees.clone(expression));
+                return Result.of((Formula) Trees.clone(formula));
             }
         } else {
-            expression = NormalForms.simplifyForNF(Trees.clone(expression));
-            return distributiveLawTransformer.execute((expression instanceof Or) ? expression : new Or(expression), monitor)
-                    .map(f -> NormalForms.toClausalNF(f, NormalForms.NormalForm.DNF));
+            formula = new NNFTransformer().apply((Formula) Trees.clone(formula)).get(); // todo preferred computation
+            return distributiveTransformer.execute((formula instanceof Or) ? formula : new Or(formula), monitor)
+                    .map(f -> NormalForms.toClausalNormalForm(f, Formula.NormalForm.DNF));
         }
     }
 }

@@ -20,12 +20,18 @@
  */
 package de.featjar.formula.structure;
 
+import de.featjar.base.tree.Trees;
 import de.featjar.base.tree.structure.Traversable;
+import de.featjar.base.tree.visitor.TreeDepthCounter;
 import de.featjar.formula.structure.assignment.Assignment;
+import de.featjar.formula.structure.term.value.Constant;
+import de.featjar.formula.structure.term.value.Variable;
 import de.featjar.formula.visitor.ValueVisitor;
 
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * An expression in propositional or first-order logic.
@@ -73,5 +79,53 @@ public interface Expression extends Traversable<Expression> {
     @Override
     default Predicate<Expression> getChildrenValidator() {
         return expression -> getChildrenType() == null || getChildrenType().isAssignableFrom(expression.getType());
+    }
+
+    /**
+     * {@return a stream of all variables in this expression}
+     */
+    default Stream<Variable> getVariableStream() {
+        return Trees.preOrderStream(this)
+                .filter(e -> e instanceof Variable)
+                .map(e -> (Variable) e)
+                .distinct();
+    }
+
+    /**
+     * {@return a list of all variables in this expression}
+     */
+    default List<Variable> getVariables() {
+        return getVariableStream().collect(Collectors.toList());
+    }
+
+    /**
+     * {@return a list of all variable names in this expression}
+     */
+    default List<String> getVariableNames() {
+        return getVariableStream().map(Variable::getName).collect(Collectors.toList());
+    }
+
+    /**
+     * {@return a stream of all constants in this expression}
+     */
+    default Stream<Constant> getConstantStream() {
+        return Trees.preOrderStream(this)
+                .filter(e -> e instanceof Constant)
+                .map(e -> (Constant) e)
+                .distinct();
+    }
+
+    /**
+     * {@return a list of all constants in this expression}
+     */
+    default List<Constant> getConstants() {
+        return getConstantStream().collect(Collectors.toList());
+    }
+
+    /**
+     * {@return a list of all constant names in this expression}
+     */
+    default List<String> getConstantNames() {
+        return getConstantStream().map(Constant::getName).collect(Collectors.toList());
     }
 }

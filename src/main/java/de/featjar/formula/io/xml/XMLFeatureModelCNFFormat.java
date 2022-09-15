@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.io.xml;
 
-import de.featjar.formula.tmp.AuxiliaryRoot;
+import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.tmp.Formulas;
 import de.featjar.formula.structure.formula.predicate.Literal;
@@ -148,10 +148,9 @@ public class XMLFeatureModelCNFFormat extends XMLFeatureModelFormat {
         return groupedElements;
     }
 
-    private static Expression simplify(Expression expression) {
-        final AuxiliaryRoot auxiliaryRoot = new AuxiliaryRoot(expression);
-        Trees.traverse(auxiliaryRoot, new DeMorganApplier());
-        Trees.traverse(auxiliaryRoot, new AndOrSimplifier());
-        return auxiliaryRoot.getChild();
+    private static Formula simplify(Formula formula) {
+        Trees.traverse(formula, new DeMorganApplier());
+        Trees.traverse(formula, new AndOrSimplifier());
+        return formula;
     }
 }

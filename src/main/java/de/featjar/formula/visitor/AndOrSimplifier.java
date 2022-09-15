@@ -21,7 +21,6 @@
 package de.featjar.formula.visitor;
 
 import de.featjar.formula.structure.formula.Formula;
-import de.featjar.formula.tmp.AuxiliaryRoot;
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.formula.predicate.Predicate;
 import de.featjar.formula.structure.formula.connective.And;
@@ -46,7 +45,7 @@ public class AndOrSimplifier implements TreeVisitor<Formula, Void> {
         final Formula formula = getCurrentNode(path);
         if (formula instanceof Predicate) {
             return TraversalAction.SKIP_CHILDREN;
-        } else if ((formula instanceof AuxiliaryRoot) || (formula instanceof Connective)) {
+        } else if (formula instanceof Connective) {
             return TraversalAction.CONTINUE;
         } else {
             return TraversalAction.FAIL;
@@ -56,7 +55,7 @@ public class AndOrSimplifier implements TreeVisitor<Formula, Void> {
     @Override
     public TraversalAction lastVisit(List<Formula> path) {
         final Formula formula = getCurrentNode(path);
-        if ((formula instanceof AuxiliaryRoot) || (formula instanceof Connective)) {
+        if (formula instanceof Connective) {
             if (formula instanceof And) {
                 if (formula.getChildren().stream().anyMatch(c -> c == Formula.FALSE)) {
                     formula.setChildren(Collections.singletonList(Formula.FALSE));

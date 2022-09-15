@@ -30,6 +30,8 @@ import java.util.List;
 
 /**
  * Tests whether a formula is in conjunctive normal form.
+ * The formula {@code new Literal("x")} is in CNF, but not in clausal CNF.
+ * The formula {@code new And(new Or(new Literal("x")))} is in CNF and in clausal CNF.
  *
  * @author Sebastian Krieter
  */

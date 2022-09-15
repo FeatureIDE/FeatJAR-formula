@@ -26,7 +26,7 @@ import de.featjar.formula.structure.formula.Formula;
 import java.util.Optional;
 
 /**
- * Tests whether a formula is in a normal form.
+ * Tests whether a formula is in (clausal) normal form.
  *
  * @author Sebastian Krieter
  */

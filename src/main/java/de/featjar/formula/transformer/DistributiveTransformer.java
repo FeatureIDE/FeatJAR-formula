@@ -21,30 +21,26 @@
 package de.featjar.formula.transformer;
 
 import de.featjar.base.data.Result;
-import de.featjar.formula.structure.Expression;
-import de.featjar.formula.structure.formula.predicate.Literal;
-import de.featjar.formula.structure.formula.connective.Connective;
 import de.featjar.base.task.Monitor;
-import de.featjar.base.task.MonitorableFunction;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import de.featjar.formula.structure.Expression;
+import de.featjar.formula.structure.formula.Formula;
+import de.featjar.formula.structure.formula.connective.And;
+import de.featjar.formula.structure.formula.connective.Connective;
+import de.featjar.formula.structure.formula.connective.Or;
+import de.featjar.formula.structure.formula.predicate.Literal;
+
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * Transforms propositional formulas into (clausal) CNF or DNF.
+ * Transforms a formula into (clausal) conjunctive or disjunctive normal form using the distributive law.
  *
  * @author Sebastian Krieter
  */
-public class DistributiveLawTransformer implements MonitorableFunction<Expression, Connective> {
+public class DistributiveTransformer implements FormulaTransformer {
 
     public static class MaximumNumberOfLiteralsExceededException extends Exception {
-        private static final long serialVersionUID = 7582471416721588997L;
     }
 
     private static class PathElement {
@@ -57,8 +53,9 @@ public class DistributiveLawTransformer implements MonitorableFunction<Expressio
         }
     }
 
-    private final Function<List<? extends Expression>, Expression> clauseConstructor;
+    private final Formula.NormalForm normalForm;
     private final Class<? extends Connective> clauseClass;
+    private final Function<List<? extends Expression>, Expression> clauseConstructor;
 
     private int maximumNumberOfLiterals = Integer.MAX_VALUE;
 
@@ -66,10 +63,20 @@ public class DistributiveLawTransformer implements MonitorableFunction<Expressio
 
     private List<Expression> children;
 
-    public DistributiveLawTransformer(
-            Class<? extends Connective> clauseClass, Function<List<? extends Expression>, Expression> clauseConstructor) {
-        this.clauseClass = clauseClass;
-        this.clauseConstructor = clauseConstructor;
+    public DistributiveTransformer(Formula.NormalForm normalForm) {
+        this.normalForm = normalForm;
+        switch (normalForm) {
+            case CNF:
+                clauseClass = Or.class;
+                clauseConstructor = Or::new;
+                break;
+            case DNF:
+                clauseClass = And.class;
+                clauseConstructor = And::new;
+                break;
+            default:
+                throw new IllegalStateException(String.valueOf(normalForm));
+        }
     }
 
     public void setMaximumNumberOfLiterals(int maximumNumberOfLiterals) {
@@ -77,10 +84,15 @@ public class DistributiveLawTransformer implements MonitorableFunction<Expressio
     }
 
     @Override
-    public Result<Connective> execute(Expression expression, Monitor monitor) {
+    public Result<Formula> execute(Formula formula, Monitor monitor) {
+        if (normalForm.equals(Formula.NormalForm.CNF))
+            formula = (formula instanceof And) ? (And) formula : new And(formula);
+        if (normalForm.equals(Formula.NormalForm.DNF))
+            formula = (formula instanceof Or) ? (Or) formula : new Or(formula);
+
         final ArrayList<PathElement> path = new ArrayList<>();
         final ArrayDeque<Expression> stack = new ArrayDeque<>();
-        stack.addLast(expression);
+        stack.addLast(formula);
         while (!stack.isEmpty()) {
             final Expression curNode = stack.getLast();
             final boolean firstEncounter = path.isEmpty() || (curNode != path.get(path.size() - 1).expression);
@@ -119,7 +131,7 @@ public class DistributiveLawTransformer implements MonitorableFunction<Expressio
                 stack.removeLast();
             }
         }
-        return Result.of((Connective) expression);
+        return Result.of(formula);
     }
 
     @SuppressWarnings("unchecked")
