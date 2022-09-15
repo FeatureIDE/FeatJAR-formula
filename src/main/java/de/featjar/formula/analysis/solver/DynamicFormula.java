@@ -21,7 +21,7 @@
 package de.featjar.formula.analysis.solver;
 
 import de.featjar.formula.structure.Expression;
-import de.featjar.formula.tmp.TermMap;
+import de.featjar.formula.structure.map.TermMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

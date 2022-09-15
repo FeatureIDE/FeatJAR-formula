@@ -31,10 +31,15 @@ import java.util.List;
  * @author Elias Kuiter
  */
 public interface BinaryPredicate extends Predicate, BinaryExpression {
+    @SuppressWarnings("rawtypes")
+    @Override
+    default Class<Comparable> getChildrenType() {
+        return Comparable.class;
+    }
+
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     default Boolean evaluate(List<?> values) {
-        Formulas.assertInstanceOf(Comparable.class, values);
         final Comparable v1 = (Comparable) values.get(0);
         final Comparable v2 = (Comparable) values.get(1);
         return (v1 != null && v2 != null) ? compareDifference(v1.compareTo(v2)) : null;

@@ -23,7 +23,7 @@ package de.featjar.formula.io.textual;
 import de.featjar.formula.io.textual.Symbols.Operator;
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.formula.predicate.Problem;
-import de.featjar.formula.tmp.TermMap;
+import de.featjar.formula.structure.map.TermMap;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.BiImplies;
 import de.featjar.formula.structure.formula.connective.Implies;

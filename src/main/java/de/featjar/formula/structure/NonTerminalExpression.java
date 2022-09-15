@@ -21,7 +21,6 @@
 package de.featjar.formula.structure;
 
 import de.featjar.base.tree.structure.Tree;
-import de.featjar.formula.tmp.TermMap;
 
 import java.util.Arrays;
 import java.util.List;

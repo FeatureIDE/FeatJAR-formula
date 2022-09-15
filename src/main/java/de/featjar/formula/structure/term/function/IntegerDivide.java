@@ -48,6 +48,11 @@ public class IntegerDivide extends Divide {
     }
 
     @Override
+    public Class<Long> getChildrenType() {
+        return Long.class;
+    }
+
+    @Override
     public Long evaluate(List<?> values) {
         return Formulas.reduce(values, (a, b) -> a / b);
     }

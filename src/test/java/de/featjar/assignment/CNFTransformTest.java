@@ -27,7 +27,7 @@ import de.featjar.formula.io.KConfigReaderFormat;
 import de.featjar.formula.io.dimacs.DIMACSFormat;
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.tmp.Formulas;
-import de.featjar.formula.tmp.TermMap;
+import de.featjar.formula.structure.map.TermMap;
 import de.featjar.base.io.IO;
 import de.featjar.base.tree.Trees;
 import java.io.IOException;

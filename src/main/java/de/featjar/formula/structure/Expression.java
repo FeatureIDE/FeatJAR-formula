@@ -23,6 +23,10 @@ package de.featjar.formula.structure;
 import de.featjar.base.tree.structure.Traversable;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * An expression in propositional or first-order logic.
@@ -50,4 +54,16 @@ public interface Expression extends Traversable<Expression> {
      * @param values the values
      */
     Object evaluate(List<?> values);
+
+    /**
+     * {@return the type this expression's children must evaluate to, if any}
+     */
+    default Class<?> getChildrenType() {
+        return null;
+    }
+
+    @Override
+    default Predicate<Expression> getChildrenValidator() {
+        return expression -> getChildrenType() == null || getChildrenType().isAssignableFrom(expression.getType());
+    }
 }

@@ -18,10 +18,10 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.tmp;
+package de.featjar.formula.structure.map;
 
+import de.featjar.base.data.RangeMap;
 import de.featjar.formula.structure.Expression;
-import de.featjar.formula.tmp.NamedTermMap.ValueTerm;
 import de.featjar.formula.structure.formula.predicate.Literal;
 
 import java.util.Arrays;
@@ -37,6 +37,7 @@ import java.util.stream.Collectors;
  * Variables of a formula.
  *
  * @author Sebastian Krieter
+ * @author Elias Kuiter
  */
 public class TermMap {
 
@@ -59,17 +60,17 @@ public class TermMap {
         return merge(Arrays.asList(maps));
     }
 
-    private final NamedTermMap<Variable> variables;
-    private final NamedTermMap<Constant> constants;
+    private final RangeMap<Variable> variables;
+    private final RangeMap<Constant> constants;
 
     public TermMap(TermMap map) {
-        variables = new NamedTermMap<>(map.variables, this);
-        constants = new NamedTermMap<>(map.constants, this);
+        variables = new RangeMap<>(map.variables, this);
+        constants = new RangeMap<>(map.constants, this);
     }
 
     private TermMap(TermMap map1, TermMap map2) {
-        variables = new NamedTermMap<>(map1.variables, map2.variables, this);
-        constants = new NamedTermMap<>(map1.constants, map2.constants, this);
+        variables = new RangeMap<>(map1.variables, map2.variables, this);
+        constants = new RangeMap<>(map1.constants, map2.constants, this);
     }
 
     public TermMap(String... variableNames) {
@@ -89,8 +90,8 @@ public class TermMap {
     }
 
     public TermMap() {
-        variables = new NamedTermMap<>();
-        constants = new NamedTermMap<>();
+        variables = new RangeMap<>();
+        constants = new RangeMap<>();
     }
 
     @Override
@@ -166,11 +167,11 @@ public class TermMap {
     }
 
     public int getVariableCount() {
-        return variables.getMaxIndex();
+        return variables.getMaximumIndex();
     }
 
     public int getConstantCount() {
-        return constants.getMaxIndex();
+        return constants.getMaximumIndex();
     }
 
     public void renameVariable(int index, String newName) {
@@ -254,19 +255,19 @@ public class TermMap {
     }
 
     public List<Variable> getVariableSignatures() {
-        return Collections.unmodifiableList(variables.getTerms());
+        return Collections.unmodifiableList(variables.getNames());
     }
 
     public List<String> getVariableNames() {
-        return variables.getTerms().stream().map(ValueTerm::getName).collect(Collectors.toList());
+        return variables.getNames().stream().map(ValueTerm::getName).collect(Collectors.toList());
     }
 
     public List<Constant> getConstantSignatures() {
-        return Collections.unmodifiableList(constants.getTerms());
+        return Collections.unmodifiableList(constants.getNames());
     }
 
     public List<String> getConstantNames() {
-        return constants.getTerms().stream().map(ValueTerm::getName).collect(Collectors.toList());
+        return constants.getNames().stream().map(ValueTerm::getName).collect(Collectors.toList());
     }
 
     public Optional<Constant> getConstantSignature(int index) {

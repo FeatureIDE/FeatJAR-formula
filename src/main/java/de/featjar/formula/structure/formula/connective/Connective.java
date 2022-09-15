@@ -30,4 +30,8 @@ import de.featjar.formula.structure.formula.Formula;
  * @author Elias Kuiter
  */
 public interface Connective extends Formula {
+    @Override
+    default Class<Boolean> getChildrenType() {
+        return Boolean.class;
+    }
 }

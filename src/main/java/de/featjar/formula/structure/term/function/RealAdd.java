@@ -48,6 +48,11 @@ public class RealAdd extends Add {
     }
 
     @Override
+    public Class<Double> getChildrenType() {
+        return Double.class;
+    }
+
+    @Override
     public Double evaluate(List<?> values) {
         return Formulas.reduce(values, Double::sum);
     }

@@ -23,7 +23,7 @@ package de.featjar.formula.transform;
 import de.featjar.formula.tmp.AuxiliaryRoot;
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.formula.predicate.Predicate;
-import de.featjar.formula.tmp.TermMap.Variable;
+import de.featjar.formula.structure.map.TermMap.Variable;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.AtLeast;
 import de.featjar.formula.structure.formula.connective.AtMost;

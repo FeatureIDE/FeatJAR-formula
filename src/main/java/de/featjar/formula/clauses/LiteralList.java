@@ -20,8 +20,8 @@
  */
 package de.featjar.formula.clauses;
 
-import de.featjar.formula.tmp.NamedTermMap.ValueTerm;
-import de.featjar.formula.tmp.TermMap;
+import de.featjar.base.data.RangeMap.ValueTerm;
+import de.featjar.formula.structure.map.TermMap;
 import de.featjar.base.data.Problem;
 import de.featjar.base.data.Problem.Severity;
 import de.featjar.base.data.Result;

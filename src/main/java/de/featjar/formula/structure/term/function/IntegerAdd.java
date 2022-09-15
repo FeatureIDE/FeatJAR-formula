@@ -23,6 +23,7 @@ package de.featjar.formula.structure.term.function;
 import de.featjar.formula.tmp.Formulas;
 import de.featjar.formula.structure.term.Term;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Adds the values of two integer terms.
@@ -44,6 +45,11 @@ public class IntegerAdd extends Add {
 
     @Override
     public Class<Long> getType() {
+        return Long.class;
+    }
+
+    @Override
+    public Class<Long> getChildrenType() {
         return Long.class;
     }
 

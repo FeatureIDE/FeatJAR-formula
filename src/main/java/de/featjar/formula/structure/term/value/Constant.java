@@ -1,6 +1,7 @@
 package de.featjar.formula.structure.term.value;
 
 import de.featjar.formula.structure.NonTerminalExpression;
+import de.featjar.formula.structure.TerminalExpression;
 import de.featjar.formula.tmp.Formulas;
 
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class Constant extends NonTerminalExpression implements Value {
+public class Constant extends TerminalExpression implements Value {
     protected Object value;
     protected Class<?> type;
 
@@ -55,7 +56,8 @@ public class Constant extends NonTerminalExpression implements Value {
 
     @Override
     public Object evaluate(List<?> values) {
-        Formulas.assertInstanceOf(getType(), values);
+        if (!getType().isInstance(values))
+            throw new IllegalArgumentException("value not of type " + getType());
         return value;
     }
 

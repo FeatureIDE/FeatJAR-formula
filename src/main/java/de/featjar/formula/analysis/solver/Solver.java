@@ -21,7 +21,7 @@
 package de.featjar.formula.analysis.solver;
 
 import de.featjar.formula.structure.assignment.Assignment;
-import de.featjar.formula.tmp.TermMap;
+import de.featjar.formula.structure.map.TermMap;
 
 /**
  * Solver interface.

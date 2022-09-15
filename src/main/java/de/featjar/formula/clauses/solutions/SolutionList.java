@@ -22,7 +22,7 @@ package de.featjar.formula.clauses.solutions;
 
 import de.featjar.formula.clauses.CNF;
 import de.featjar.formula.clauses.LiteralList;
-import de.featjar.formula.tmp.TermMap;
+import de.featjar.formula.structure.map.TermMap;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;

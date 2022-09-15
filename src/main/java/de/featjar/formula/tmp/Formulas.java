@@ -22,9 +22,10 @@ package de.featjar.formula.tmp;
 
 import de.featjar.formula.io.textual.FormulaFormat;
 import de.featjar.formula.structure.Expression;
+import de.featjar.formula.structure.map.TermMap;
 import de.featjar.formula.tmp.ValueVisitor.UnknownVariableHandling;
 import de.featjar.formula.structure.assignment.Assignment;
-import de.featjar.formula.tmp.TermMap.Variable;
+import de.featjar.formula.structure.map.TermMap.Variable;
 import de.featjar.formula.transform.CNFTransformer;
 import de.featjar.formula.transform.DNFTransformer;
 import de.featjar.formula.transform.NormalForms;
@@ -173,13 +174,5 @@ public class Formulas {
         return values.stream().map(l -> (T) l).reduce(binaryOperator).orElse(null);
     }
 
-    public static void assertInstanceOf(Class<?> type, List<?> values) {
-        if (!values.stream().allMatch(v -> v == null || type.isInstance(v)))
-            throw new AssertionError();
-    }
-
-    public static void assertSize(int size, List<?> values) {
-        if (values.size() != size)
-            throw new AssertionError();
-    }
+    // visitor for replacing all subformulas
 }

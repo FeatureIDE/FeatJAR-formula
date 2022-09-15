@@ -48,6 +48,11 @@ public class RealMultiply extends Multiply {
     }
 
     @Override
+    public Class<Double> getChildrenType() {
+        return Double.class;
+    }
+
+    @Override
     public Double evaluate(List<?> values) {
         return Formulas.reduce(values, (a, b) -> a * b);
     }

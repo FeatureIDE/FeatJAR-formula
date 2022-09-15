@@ -22,6 +22,7 @@ package de.featjar.formula.structure.formula.predicate;
 
 import de.featjar.formula.structure.*;
 import de.featjar.formula.structure.term.Term;
+import de.featjar.formula.structure.term.value.Variable;
 import de.featjar.formula.tmp.Formulas;
 
 import java.util.List;
@@ -53,6 +54,10 @@ public class Literal extends NonTerminalExpression implements UnaryExpression, P
         this(true, term);
     }
 
+    public Literal(String variableName) {
+        this(true, new Variable(variableName));
+    }
+
     @Override
     public boolean isPositive() {
         return isPositive;
@@ -79,8 +84,12 @@ public class Literal extends NonTerminalExpression implements UnaryExpression, P
     }
 
     @Override
+    public Class<Boolean> getChildrenType() {
+        return Boolean.class;
+    }
+
+    @Override
     public Boolean evaluate(List<?> values) {
-        Formulas.assertInstanceOf(Boolean.class, values);
         final Boolean b = (Boolean) values.get(0);
         return b != null ? isPositive == b : null;
     }

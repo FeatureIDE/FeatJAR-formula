@@ -1,6 +1,7 @@
 package de.featjar.formula.structure.term.value;
 
 import de.featjar.formula.structure.NonTerminalExpression;
+import de.featjar.formula.structure.TerminalExpression;
 import de.featjar.formula.tmp.Formulas;
 
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class Variable extends NonTerminalExpression implements Value {
+public class Variable extends TerminalExpression implements Value {
     protected String name;
     protected Class<?> type;
 
@@ -24,6 +25,10 @@ public class Variable extends NonTerminalExpression implements Value {
     public Variable(String name, Class<?> type) {
         this.name = name;
         this.type = type;
+    }
+
+    public Variable(String name) {
+        this(name, Boolean.class);
     }
 
     @Override
@@ -51,7 +56,8 @@ public class Variable extends NonTerminalExpression implements Value {
 
     @Override
     public Object evaluate(List<?> values) {
-        Formulas.assertInstanceOf(getType(), values);
+        if (!getType().isInstance(values))
+            throw new IllegalArgumentException("value not of type " + getType());
         return values.get(0);
     }
 }
