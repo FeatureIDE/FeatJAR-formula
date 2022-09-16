@@ -22,6 +22,10 @@ package de.featjar.formula.structure.term.function;
 
 import de.featjar.formula.structure.term.Term;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.function.BinaryOperator;
+
 /**
  * A function.
  * Functions (i.e., n-ary terms for n > 1) can be applied to terms
@@ -31,4 +35,18 @@ import de.featjar.formula.structure.term.Term;
  * @author Elias Kuiter
  */
 public interface Function extends Term {
+    /**
+     * {@return a list of values reduced to a single value}
+     *
+     * @param values the values
+     * @param binaryOperator the binary operator
+     * @param <T> the type of the value
+     */
+    @SuppressWarnings("unchecked")
+    static <T> T reduce(List<?> values, final BinaryOperator<T> binaryOperator) {
+        if (values.stream().anyMatch(Objects::isNull)) {
+            return null;
+        }
+        return values.stream().map(l -> (T) l).reduce(binaryOperator).orElse(null);
+    }
 }

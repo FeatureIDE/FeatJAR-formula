@@ -23,7 +23,7 @@ package de.featjar.formula.clauses;
 import de.featjar.base.data.Result;
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.tmp.Formulas;
-import de.featjar.formula.structure.assignment.VariableAssignment;
+import de.featjar.formula.assignment.NameAssignment;
 import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.structure.map.TermMap;
 import de.featjar.base.task.Monitor;
@@ -63,7 +63,7 @@ public class FormulaToCNF implements MonitorableFunction<Expression, CNF> {
                 ? termMap
                 : expression.getTermMap().orElseGet(TermMap::new);
         final ClauseList clauses = new ClauseList();
-        final Optional<Object> formulaValue = Formulas.evaluate(expression, new VariableAssignment(mapping));
+        final Optional<Object> formulaValue = Formulas.evaluate(expression, new NameAssignment(mapping));
         if (formulaValue.isPresent()) {
             if (formulaValue.get() == Boolean.FALSE) {
                 clauses.add(new LiteralList());

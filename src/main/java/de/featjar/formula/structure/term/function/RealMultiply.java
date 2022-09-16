@@ -54,7 +54,7 @@ public class RealMultiply extends Multiply {
 
     @Override
     public Double evaluate(List<?> values) {
-        return Formulas.reduce(values, (a, b) -> a * b);
+        return Function.reduce(values, (a, b) -> a * b);
     }
 
     @Override

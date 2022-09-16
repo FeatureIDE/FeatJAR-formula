@@ -30,7 +30,6 @@ import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.formula.transformer.CNFTransformer;
 import de.featjar.formula.visitor.DeMorganApplier;
 import de.featjar.formula.visitor.AndOrSimplifier;
-import de.featjar.formula.visitor.VariableMapSetter;
 import de.featjar.base.io.format.ParseException;
 import de.featjar.base.tree.Trees;
 import java.util.ArrayList;

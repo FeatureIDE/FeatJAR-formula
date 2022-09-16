@@ -23,8 +23,8 @@ package de.featjar.formula.analysis;
 import de.featjar.formula.analysis.solver.RuntimeContradictionException;
 import de.featjar.formula.analysis.solver.Solver;
 import de.featjar.formula.structure.Expression;
-import de.featjar.formula.structure.assignment.Assignment;
-import de.featjar.formula.structure.assignment.IndexAssignment;
+import de.featjar.formula.assignment.Assignment;
+import de.featjar.formula.assignment.IndexAssignment;
 import de.featjar.base.data.Computation;
 import de.featjar.base.data.Result;
 import de.featjar.base.task.Monitor;
@@ -107,14 +107,14 @@ public abstract class Analysis<U, S extends Solver, T> implements Computation<T,
     }
 
     private void updateAssumptions(S solver) {
-        solver.getAssumptions().setAll(assumptions.getAll());
+        solver.getAssumptions().set(assumptions.get());
         solver.getDynamicFormula().push(assumedConstraints);
     }
 
     protected abstract U analyze(S solver, Monitor monitor) throws Exception;
 
     protected void resetSolver(S solver) {
-        solver.getAssumptions().unsetAll(assumptions.getAll());
+        solver.getAssumptions().remove(assumptions.get());
         solver.getDynamicFormula().pop(assumedConstraints.size());
     }
 }

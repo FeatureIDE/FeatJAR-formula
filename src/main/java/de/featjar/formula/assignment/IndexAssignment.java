@@ -18,51 +18,63 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.structure.assignment;
+package de.featjar.formula.assignment;
 
 import de.featjar.base.data.Pair;
-import java.util.HashMap;
-import java.util.List;
+
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class IndexAssignment implements Assignment {
+/**
+ * Assigns values to variable indices.
+ *
+ * @author Sebastian Krieter
+ * @author Elias Kuiter
+ */
+public class IndexAssignment implements Assignment<Integer> {
+    protected final LinkedHashMap<Integer, Object> indexToValue = new LinkedHashMap<>();
 
-    protected final HashMap<Integer, Object> assignments = new HashMap<>();
-
-    @Override
-    public void set(int index, Object assignment) {
-        if (index > 0) {
-            if (assignment == null) {
-                assignments.remove(index);
-            } else {
-                assignments.put(index, assignment);
-            }
+    public IndexAssignment(Object... assignmentPairs) {
+        for (int i = 0; i < assignmentPairs.length; i += 2) {
+            set((Integer) assignmentPairs[i], assignmentPairs[i + 1]);
         }
     }
 
     @Override
-    public Optional<Object> get(int index) {
-        return Optional.ofNullable(assignments.get(index));
-    }
-
-    @Override
-    public List<Pair<Integer, Object>> getAll() {
-        return assignments.entrySet().stream()
+    public List<Pair<Integer, Object>> get() {
+        return indexToValue.entrySet().stream()
                 .map(e -> new Pair<>(e.getKey(), e.getValue()))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public void unsetAll() {
-        assignments.clear();
+    public Optional<Object> get(Integer index) {
+        Objects.requireNonNull(index);
+        return Optional.ofNullable(indexToValue.get(index));
+    }
+
+    @Override
+    public void set(Integer index, Object value) {
+        Objects.requireNonNull(index);
+        if (index > 0) {
+            if (value == null) {
+                indexToValue.remove(index);
+            } else {
+                indexToValue.put(index, value);
+            }
+        }
+    }
+
+    @Override
+    public void clear() {
+        indexToValue.clear();
     }
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
-        for (final Entry<Integer, Object> entry : assignments.entrySet()) {
+        for (final Entry<Integer, Object> entry : indexToValue.entrySet()) {
             sb.append(entry.getKey());
             sb.append(": ");
             sb.append(entry.getValue());

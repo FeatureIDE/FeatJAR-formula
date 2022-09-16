@@ -54,7 +54,7 @@ public class IntegerDivide extends Divide {
 
     @Override
     public Long evaluate(List<?> values) {
-        return Formulas.reduce(values, (a, b) -> a / b);
+        return Function.reduce(values, (a, b) -> a / b);
     }
 
     @Override

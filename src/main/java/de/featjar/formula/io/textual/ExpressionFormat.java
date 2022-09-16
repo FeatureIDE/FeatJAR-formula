@@ -27,9 +27,9 @@ import de.featjar.base.io.format.Format;
 
 import java.util.Optional;
 
-public class FormulaFormat implements Format<Expression> {
+public class ExpressionFormat implements Format<Expression> {
 
-    public static final String ID = FormulaFormat.class.getCanonicalName();
+    public static final String ID = ExpressionFormat.class.getCanonicalName();
 
     @Override
     public Result<Expression> parse(InputMapper inputMapper) {

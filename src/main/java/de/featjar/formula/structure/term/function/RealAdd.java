@@ -54,7 +54,7 @@ public class RealAdd extends Add {
 
     @Override
     public Double evaluate(List<?> values) {
-        return Formulas.reduce(values, Double::sum);
+        return Function.reduce(values, Double::sum);
     }
 
     @Override

@@ -21,8 +21,8 @@
 package de.featjar.assignment;
 
 import de.featjar.formula.structure.Expression;
-import de.featjar.formula.structure.assignment.Assignment;
-import de.featjar.formula.structure.assignment.VariableAssignment;
+import de.featjar.formula.assignment.Assignment;
+import de.featjar.formula.assignment.NameAssignment;
 import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.structure.map.TermMap;
 import de.featjar.formula.structure.formula.connective.And;
@@ -57,7 +57,7 @@ public class FormulaCreator {
     }
 
     public static void testAllAssignments(TermMap map, Consumer<Assignment> testFunction) {
-        final Assignment assignment = new VariableAssignment(map);
+        final Assignment assignment = new NameAssignment(map);
         final int numVariables = map.getVariableCount();
         final int numAssignments = (int) Math.pow(2, numVariables);
         for (int i = 0; i < numAssignments; i++) {

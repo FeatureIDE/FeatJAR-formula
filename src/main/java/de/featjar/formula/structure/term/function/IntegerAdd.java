@@ -55,7 +55,7 @@ public class IntegerAdd extends Add {
 
     @Override
     public Long evaluate(List<?> values) {
-        return Formulas.reduce(values, Long::sum);
+        return Function.reduce(values, Long::sum);
     }
 
     @Override

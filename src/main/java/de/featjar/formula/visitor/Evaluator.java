@@ -20,40 +20,30 @@
  */
 package de.featjar.formula.visitor;
 
+import de.featjar.formula.assignment.NameAssignment;
 import de.featjar.formula.structure.Expression;
-import de.featjar.formula.structure.assignment.Assignment;
+import de.featjar.formula.assignment.Assignment;
 import de.featjar.base.tree.visitor.TreeVisitor;
+import de.featjar.formula.structure.term.value.Variable;
+
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-public class ValueVisitor implements TreeVisitor<Expression, Object> {
-
-    public enum UnknownVariableHandling {
-        ERROR,
-        FALSE,
-        TRUE,
-        NULL
-    }
-
+/**
+ * Given a name assignment, evaluates a formula.
+ *
+ * @author Sebastian Krieter
+ */
+public class Evaluator implements TreeVisitor<Expression, Object> {
     private final LinkedList<Object> values = new LinkedList<>();
 
-    private UnknownVariableHandling unknownVariableHandling = UnknownVariableHandling.ERROR;
-
-    private final Assignment assignment;
+    private final NameAssignment nameAssignment;
     private Boolean defaultBooleanValue;
 
-    public ValueVisitor(Assignment assignment) {
-        this.assignment = assignment;
-    }
-
-    public UnknownVariableHandling getUnknown() {
-        return unknownVariableHandling;
-    }
-
-    public void setUnknown(UnknownVariableHandling unknown) {
-        unknownVariableHandling = unknown;
+    public Evaluator(NameAssignment nameAssignment) {
+        this.nameAssignment = nameAssignment;
     }
 
     public Boolean getDefaultBooleanValue() {
@@ -79,37 +69,19 @@ public class ValueVisitor implements TreeVisitor<Expression, Object> {
         final Expression expression = getCurrentNode(path);
         if (expression instanceof Variable) {
             final Variable variable = (Variable) expression;
-            final int index = variable.getIndex();
-            if (index <= 0) {
-                switch (unknownVariableHandling) {
-                    case ERROR:
-                        throw new IllegalArgumentException(variable.getName());
-                    case NULL:
-                        values.push(null);
-                        break;
-                    case FALSE:
-                        values.push(Boolean.FALSE);
-                        break;
-                    case TRUE:
-                        values.push(Boolean.TRUE);
-                        break;
-                    default:
-                        throw new IllegalStateException(String.valueOf(unknownVariableHandling));
+            final String variableName = variable.getName();
+            final Object value = nameAssignment.get(variableName).orElse(null);
+            if (value != null) {
+                if (variable.getType().isInstance(value)) {
+                    values.push(value);
+                } else {
+                    throw new IllegalArgumentException(String.valueOf(value));
                 }
             } else {
-                final Object value = assignment.get(index).orElse(null);
-                if (value != null) {
-                    if (variable.getType().isInstance(value)) {
-                        values.push(value);
-                    } else {
-                        throw new IllegalArgumentException(String.valueOf(value));
-                    }
+                if (variable.getType() == Boolean.class) {
+                    values.push(defaultBooleanValue);
                 } else {
-                    if (variable.getType() == Boolean.class) {
-                        values.push(defaultBooleanValue);
-                    } else {
-                        values.push(null);
-                    }
+                    values.push(null);
                 }
             }
         } else {

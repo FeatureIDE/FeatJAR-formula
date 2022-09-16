@@ -23,7 +23,7 @@ package de.featjar.io;
 import static de.featjar.io.FormatTest.testLoadAndSave;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import de.featjar.formula.io.textual.FormulaFormat;
+import de.featjar.formula.io.textual.ExpressionFormat;
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.structure.map.TermMap;
@@ -33,7 +33,7 @@ import de.featjar.formula.structure.formula.connective.Or;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests {@link FormulaFormat Formula} format.
+ * Tests {@link ExpressionFormat Formula} format.
  *
  * @author Sebastian Krieter
  */
@@ -60,7 +60,7 @@ public class ExpressionFormatTest {
     }
 
     private static void test(String name) {
-        testLoadAndSave(getFormula(name), name, new FormulaFormat());
+        testLoadAndSave(getFormula(name), name, new ExpressionFormat());
     }
 
     private static Expression getFormula(String name) {
