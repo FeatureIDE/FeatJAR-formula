@@ -20,7 +20,6 @@
  */
 package de.featjar.formula.clauses;
 
-import de.featjar.formula.structure.map.TermMap;
 import de.featjar.base.data.Result;
 import java.io.Serializable;
 import java.util.Collection;
@@ -35,24 +34,22 @@ import java.util.Random;
  *
  * @author Sebastian Krieter
  */
-public class CNF implements Serializable {
-
-    private static final long serialVersionUID = -7716526687669886274L;
+public class CNF {
 
     protected ClauseList clauses;
-    protected TermMap variables;
+    protected VariableMap variables;
 
-    public CNF(TermMap mapping, ClauseList clauses) {
+    public CNF(VariableMap mapping, ClauseList clauses) {
         variables = mapping;
         this.clauses = clauses;
     }
 
-    public CNF(TermMap mapping, List<LiteralList> clauses) {
+    public CNF(VariableMap mapping, List<LiteralList> clauses) {
         variables = mapping;
         this.clauses = new ClauseList(clauses);
     }
 
-    public CNF(TermMap mapping) {
+    public CNF(VariableMap mapping) {
         variables = mapping;
         clauses = new ClauseList();
     }
@@ -69,11 +66,11 @@ public class CNF implements Serializable {
         this.clauses.addAll(clauses);
     }
 
-    public void setVariableMap(TermMap variables) {
+    public void setVariableMap(VariableMap variables) {
         this.variables = variables;
     }
 
-    public TermMap getVariableMap() {
+    public VariableMap getVariableMap() {
         return variables;
     }
 
@@ -111,12 +108,12 @@ public class CNF implements Serializable {
      * @return an adapted cnf, {@code null} if there are old variables names the are
      *         not contained in the new variables.
      */
-    public Result<CNF> adapt(TermMap newTermMap) {
+    public Result<CNF> adapt(VariableMap newTermMap) {
         return clauses.adapt(variables, newTermMap).map(c -> new CNF(newTermMap, c));
     }
 
     public CNF randomize(Random random) {
-        final TermMap newTermMap = variables.clone();
+        final VariableMap newTermMap = (VariableMap) variables.clone();
         newTermMap.randomize(random);
 
         final ClauseList adaptedClauseList =

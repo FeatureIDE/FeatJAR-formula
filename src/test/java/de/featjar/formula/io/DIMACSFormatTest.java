@@ -20,18 +20,15 @@
  */
 package de.featjar.formula.io;
 
+import static de.featjar.formula.structure.Expressions.*;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import de.featjar.formula.io.dimacs.DIMACSFormat;
-import de.featjar.formula.structure.Expression;
-import de.featjar.formula.structure.formula.predicate.Literal;
-import de.featjar.formula.structure.map.TermMap;
-import de.featjar.formula.structure.formula.connective.And;
-import de.featjar.formula.structure.formula.connective.Or;
+import de.featjar.formula.io.dimacs.DIMACSFormulaFormat;
+import de.featjar.formula.structure.formula.Formula;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests {@link DIMACSFormat DIMACS} format.
+ * Tests {@link de.featjar.formula.io.dimacs.DIMACSFormulaFormat DIMACS} format.
  *
  * @author Sebastian Krieter
  */
@@ -93,70 +90,35 @@ public class DIMACSFormatTest {
     }
 
     private static void test(String name) {
-        FormatTest.testLoadAndSave(getFormula(name), name, new DIMACSFormat());
+        FormatTest.testLoadAndSave(getFormula(name), name, new DIMACSFormulaFormat());
     }
 
-    private static Expression getFormula(String name) {
+    private static Formula getFormula(String name) {
         switch (name) {
             case "faulty": {
                 return null;
             }
             case "void": {
-                return new And(new Or());
+                return and(or());
             }
             case "123-n1n2n3": {
-                final TermMap map = new TermMap();
-                final Literal a = map.createLiteral("1");
-                final Literal b = map.createLiteral("2");
-                final Literal c = map.createLiteral("3");
-                return new And(
-                        new Or(a.cloneNode(), b.cloneNode(), c.cloneNode()), new Or(a.invert(), b.invert(), c.invert()));
+                return and(
+                        or(literal("1"), literal("2"), literal("3")),
+                        or(literal(false, "1"), literal(false, "2"), literal(false, "3")));
             }
             case "ABC-nAnBnC": {
-                final TermMap map = new TermMap();
-                final Literal a = map.createLiteral("A");
-                final Literal b = map.createLiteral("B");
-                final Literal c = map.createLiteral("C");
-                return new And(
-                        new Or(a.cloneNode(), b.cloneNode(), c.cloneNode()), new Or(a.invert(), b.invert(), c.invert()));
-            }
-            case "empty-ABC": {
-                final TermMap map = new TermMap();
-                map.addBooleanVariable("A");
-                map.addBooleanVariable("B");
-                map.addBooleanVariable("C");
-                return new And();
-            }
-            case "empty-A2C": {
-                final TermMap map = new TermMap();
-                map.addBooleanVariable("A");
-                map.addBooleanVariable("2");
-                map.addBooleanVariable("C");
-                return new And();
-            }
-            case "empty-A": {
-                final TermMap map = new TermMap();
-                map.addBooleanVariable("A");
-                return new And();
-            }
-            case "empty-1": {
-                final TermMap map = new TermMap();
-                map.addBooleanVariable("1");
-                return new And();
+                return and(
+                        or(literal("a"), literal("b"), literal("c")),
+                        or(literal(false, "a"), literal(false, "b"), literal(false, "c")));
             }
             case "empty": {
-                return new And();
+                return and();
             }
             case "nA": {
-                final TermMap map = new TermMap();
-                final Literal a = new Literal(map.addBooleanVariable("A"));
-                return new And(new Or(a.invert()));
+                return and(or(literal("a").invert()));
             }
             case "nAB": {
-                final TermMap map = new TermMap("A", "B");
-                final Literal a = map.createLiteral("A");
-                final Literal b = map.createLiteral("B");
-                return new And(new Or(a.invert(), b.cloneNode()));
+                return and(or(literal("a").invert(), literal("b")));
             }
             default:
                 fail(name);

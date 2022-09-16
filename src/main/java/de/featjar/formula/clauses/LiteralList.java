@@ -20,16 +20,11 @@
  */
 package de.featjar.formula.clauses;
 
-import de.featjar.base.data.RangeMap.ValueTerm;
-import de.featjar.formula.structure.map.TermMap;
 import de.featjar.base.data.Problem;
 import de.featjar.base.data.Problem.Severity;
 import de.featjar.base.data.Result;
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.Optional;
+
+import java.util.*;
 import java.util.stream.IntStream;
 
 // TODO add methods for adding literals (e.g. addAll, union, ...)
@@ -38,9 +33,7 @@ import java.util.stream.IntStream;
  *
  * @author Sebastian Krieter
  */
-public class LiteralList implements Comparable<LiteralList>, Serializable {
-
-    private static final long serialVersionUID = 8360925003112707082L;
+public class LiteralList implements Comparable<LiteralList> {
 
     public enum Order {
         NATURAL,
@@ -75,11 +68,11 @@ public class LiteralList implements Comparable<LiteralList>, Serializable {
         return getVariables(cnf.getVariableMap());
     }
 
-    public static LiteralList getVariables(TermMap termMap) {
+    public static LiteralList getVariables(VariableMap termMap) {
         return new LiteralList(constructVariableStream(termMap).toArray());
     }
 
-    public static LiteralList getVariables(TermMap termMap, Collection<String> variableNames) {
+    public static LiteralList getVariables(VariableMap termMap, Collection<String> variableNames) {
         return new LiteralList(
                 constructVariableStream(termMap, variableNames).toArray());
     }
@@ -88,27 +81,27 @@ public class LiteralList implements Comparable<LiteralList>, Serializable {
         return getLiterals(cnf.getVariableMap());
     }
 
-    public static LiteralList getLiterals(TermMap variables) {
+    public static LiteralList getLiterals(VariableMap variables) {
         return new LiteralList(constructVariableStream(variables)
                 .flatMap(n -> IntStream.of(-n, n))
                 .toArray());
     }
 
-    public static LiteralList getLiterals(TermMap termMap, Collection<String> variableNames) {
+    public static LiteralList getLiterals(VariableMap termMap, Collection<String> variableNames) {
         return new LiteralList(constructVariableStream(termMap, variableNames)
                 .flatMap(n -> IntStream.of(-n, n))
                 .toArray());
     }
 
-    private static IntStream constructVariableStream(TermMap variables) {
-        return IntStream.rangeClosed(1, variables.getVariableCount());
+    private static IntStream constructVariableStream(VariableMap variables) {
+        return variables.getValidIndexRange().stream().get();
     }
 
-    private static IntStream constructVariableStream(TermMap termMap, Collection<String> variableNames) {
+    private static IntStream constructVariableStream(VariableMap termMap, Collection<String> variableNames) {
         return variableNames.stream()
-                .map(termMap::getVariable)
+                .map(termMap::get)
                 .flatMap(Optional::stream)
-                .mapToInt(ValueTerm::getIndex)
+                .mapToInt(Integer::intValue)
                 .distinct();
     }
 
@@ -652,14 +645,14 @@ public class LiteralList implements Comparable<LiteralList>, Serializable {
         return lengthDiff;
     }
 
-    public Result<LiteralList> adapt(TermMap oldVariables, TermMap newVariables) {
+    public Result<LiteralList> adapt(VariableMap oldVariables, VariableMap newVariables) {
         final int[] oldLiterals = literals;
         final int[] newLiterals = new int[oldLiterals.length];
         for (int i = 0; i < oldLiterals.length; i++) {
             final int l = oldLiterals[i];
-            final Optional<String> name = oldVariables.getVariableName(Math.abs(l));
+            final Optional<String> name = oldVariables.get(Math.abs(l));
             if (name.isPresent()) {
-                final Optional<Integer> index = newVariables.getVariableIndex(name.get());
+                final Optional<Integer> index = newVariables.get(name.get());
                 if (index.isPresent()) {
                     newLiterals[i] = l < 0 ? -index.get() : index.get();
                 } else {
@@ -682,5 +675,31 @@ public class LiteralList implements Comparable<LiteralList>, Serializable {
 
     public String toLiteralString() {
         return Arrays.toString(literals);
+    }
+
+    /**
+     * Compares clauses by the number of literals.
+     *
+     * @author Sebastian Krieter
+     */
+    public static class DescendingLengthComparator implements Comparator<LiteralList> {
+
+        @Override
+        public int compare(LiteralList o1, LiteralList o2) {
+            return o2.getLiterals().length - o1.getLiterals().length;
+        }
+    }
+
+    /**
+     * Compares clauses by the number of literals.
+     *
+     * @author Sebastian Krieter
+     */
+    public static class AscendingLengthComparator implements Comparator<LiteralList> {
+
+        @Override
+        public int compare(LiteralList o1, LiteralList o2) {
+            return o1.getLiterals().length - o2.getLiterals().length;
+        }
     }
 }

@@ -22,6 +22,7 @@ package de.featjar.formula.structure.formula.connective;
 
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.NonTerminalExpression;
+import de.featjar.formula.structure.formula.Formula;
 
 import java.util.List;
 
@@ -35,11 +36,11 @@ public class And extends NonTerminalExpression implements Connective {
     protected And() {
     }
 
-    public And(Expression... expressions) {
-        super(expressions);
+    public And(Formula... formulas) {
+        super(formulas);
     }
 
-    public And(List<? extends Expression> formulas) {
+    public And(List<? extends Formula> formulas) {
         super(formulas);
     }
 

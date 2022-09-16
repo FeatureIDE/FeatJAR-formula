@@ -21,14 +21,13 @@
 package de.featjar.formula.io.xml;
 
 import de.featjar.formula.structure.Expression;
+import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.formula.predicate.Literal;
-import de.featjar.formula.structure.map.TermMap;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.base.io.format.ParseException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+
+import java.util.*;
 import java.util.regex.Pattern;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -39,13 +38,13 @@ import org.w3c.dom.Element;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class XMLFeatureModelFormat extends AbstractXMLFeatureModelFormat<Expression, Literal, Boolean> {
-    protected final List<Expression> constraints = new ArrayList<>();
-    protected final TermMap termMap = new TermMap();
+public class XMLFeatureModelFormulaFormat extends AbstractXMLFeatureModelFormat<Expression, Literal, Boolean> {
+    protected final Set<String> featureLabels = new HashSet<>();
+    protected final List<Formula> constraints = new ArrayList<>();
 
     @Override
-    public XMLFeatureModelFormat getInstance() {
-        return new XMLFeatureModelFormat();
+    public XMLFeatureModelFormulaFormat getInstance() {
+        return new XMLFeatureModelFormulaFormat();
     }
 
     @Override
@@ -63,7 +62,7 @@ public class XMLFeatureModelFormat extends AbstractXMLFeatureModelFormat<Express
         final Element featureModelElement = getDocumentElement(document, FEATURE_MODEL);
         parseFeatureTree(getElement(featureModelElement, STRUCT));
         Optional<Element> constraintsElement = getOptionalElement(featureModelElement, CONSTRAINTS);
-        if (constraintsElement.isPresent()) parseConstraints(constraintsElement.get(), termMap);
+        if (constraintsElement.isPresent()) parseConstraints(constraintsElement.get());
         if (constraints.isEmpty()) {
             return new And();
         } else {
@@ -88,13 +87,12 @@ public class XMLFeatureModelFormat extends AbstractXMLFeatureModelFormat<Express
     protected Literal createFeatureLabel(
             String name, Literal parentFeatureLabel, boolean mandatory, boolean _abstract, boolean hidden)
             throws ParseException {
-        if (termMap.hasVariable(name)) {
+        if (featureLabels.contains(name)) {
             throw new ParseException("Duplicate feature name!");
         } else {
-            termMap.addBooleanVariable(name);
+            featureLabels.add(name);
         }
-
-        Literal literal = termMap.createLiteral(name);
+        Literal literal = new Literal(name);
         if (parentFeatureLabel == null) {
             constraints.add(literal);
         } else {
@@ -132,8 +130,8 @@ public class XMLFeatureModelFormat extends AbstractXMLFeatureModelFormat<Express
     }
 
     @Override
-    protected void addConstraint(Boolean constraintLabel, Expression expression) throws ParseException {
-        constraints.add(expression);
+    protected void addConstraint(Boolean constraintLabel, Formula formula) throws ParseException {
+        constraints.add(formula);
     }
 
     @Override

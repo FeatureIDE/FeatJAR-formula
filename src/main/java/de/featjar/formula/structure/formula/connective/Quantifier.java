@@ -23,6 +23,7 @@ package de.featjar.formula.structure.formula.connective;
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.NonTerminalExpression;
 import de.featjar.formula.structure.UnaryExpression;
+import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.term.value.Variable;
 
 import java.util.List;
@@ -41,8 +42,8 @@ public abstract class Quantifier extends NonTerminalExpression implements Connec
         setBoundVariable(quantifier.boundVariable);
     }
 
-    public Quantifier(Variable boundVariable, Expression expression) {
-        super(expression);
+    public Quantifier(Variable boundVariable, Formula formula) {
+        super(formula);
         setBoundVariable(boundVariable);
     }
 

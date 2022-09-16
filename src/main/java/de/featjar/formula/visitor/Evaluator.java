@@ -20,9 +20,8 @@
  */
 package de.featjar.formula.visitor;
 
-import de.featjar.formula.assignment.NameAssignment;
+import de.featjar.formula.assignment.VariableAssignment;
 import de.featjar.formula.structure.Expression;
-import de.featjar.formula.assignment.Assignment;
 import de.featjar.base.tree.visitor.TreeVisitor;
 import de.featjar.formula.structure.term.value.Variable;
 
@@ -32,18 +31,18 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Given a name assignment, evaluates a formula.
+ * Given a variable assignment, evaluates a formula.
  *
  * @author Sebastian Krieter
  */
 public class Evaluator implements TreeVisitor<Expression, Object> {
     private final LinkedList<Object> values = new LinkedList<>();
 
-    private final NameAssignment nameAssignment;
+    private final VariableAssignment variableAssignment;
     private Boolean defaultBooleanValue;
 
-    public Evaluator(NameAssignment nameAssignment) {
-        this.nameAssignment = nameAssignment;
+    public Evaluator(VariableAssignment variableAssignment) {
+        this.variableAssignment = variableAssignment;
     }
 
     public Boolean getDefaultBooleanValue() {
@@ -70,7 +69,7 @@ public class Evaluator implements TreeVisitor<Expression, Object> {
         if (expression instanceof Variable) {
             final Variable variable = (Variable) expression;
             final String variableName = variable.getName();
-            final Object value = nameAssignment.get(variableName).orElse(null);
+            final Object value = variableAssignment.get(variableName).orElse(null);
             if (value != null) {
                 if (variable.getType().isInstance(value)) {
                     values.push(value);

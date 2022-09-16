@@ -1,8 +1,6 @@
 package de.featjar.formula.structure.term.value;
 
-import de.featjar.formula.structure.NonTerminalExpression;
 import de.featjar.formula.structure.TerminalExpression;
-import de.featjar.formula.tmp.Formulas;
 
 import java.util.List;
 

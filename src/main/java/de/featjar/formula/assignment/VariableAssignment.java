@@ -34,10 +34,10 @@ import java.util.stream.Collectors;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class NameAssignment implements Assignment<String> {
+public class VariableAssignment implements Assignment<String> {
     protected final LinkedHashMap<String, Object> variableNameToValue = new LinkedHashMap<>();
 
-    public NameAssignment(Object... assignmentPairs) {
+    public VariableAssignment(Object... assignmentPairs) {
         for (int i = 0; i < assignmentPairs.length; i += 2) {
             set((String) assignmentPairs[i], assignmentPairs[i + 1]);
         }
@@ -46,7 +46,7 @@ public class NameAssignment implements Assignment<String> {
     @Override
     public List<Pair<String, Object>> get() {
         return variableNameToValue.entrySet().stream()
-                .map(e -> new Pair<>(e.getKey(), e.getValue()))
+                .map(Pair::of)
                 .collect(Collectors.toList());
     }
 

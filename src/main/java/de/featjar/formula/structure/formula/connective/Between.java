@@ -22,6 +22,7 @@ package de.featjar.formula.structure.formula.connective;
 
 import de.featjar.base.data.Range;
 import de.featjar.formula.structure.Expression;
+import de.featjar.formula.structure.formula.Formula;
 
 import java.util.List;
 
@@ -36,8 +37,12 @@ public class Between extends Cardinal {
         super(between);
     }
 
-    public Between(int minimum, int maximum, List<Expression> expressions) {
-        super(Range.of(minimum, maximum), expressions);
+    public Between(int minimum, int maximum, Formula... formulas) {
+        super(Range.of(minimum, maximum), formulas);
+    }
+
+    public Between(int minimum, int maximum, List<Formula> formulas) {
+        super(Range.of(minimum, maximum), formulas);
     }
 
     @Override

@@ -27,18 +27,20 @@ import de.featjar.base.io.format.Format;
 
 import java.util.Optional;
 
+/**
+ * Parses and serializes propositional and first-order expressions.
+ *
+ * @author Sebastian Krieter
+ */
 public class ExpressionFormat implements Format<Expression> {
-
-    public static final String ID = ExpressionFormat.class.getCanonicalName();
-
     @Override
-    public Result<Expression> parse(InputMapper inputMapper) {
-        return new NodeReader().read(inputMapper.get().read().get());
+    public String getName() {
+        return "Expression";
     }
 
     @Override
-    public String serialize(Expression object) {
-        return new NodeWriter().write(object);
+    public Optional<String> getFileExtension() {
+        return Optional.empty();
     }
 
     @Override
@@ -52,17 +54,12 @@ public class ExpressionFormat implements Format<Expression> {
     }
 
     @Override
-    public String getIdentifier() {
-        return ID;
+    public Result<Expression> parse(InputMapper inputMapper) {
+        return new ExpressionParser().parse(inputMapper.get().read().get());
     }
 
     @Override
-    public Optional<String> getFileExtension() {
-        return Optional.of("formula");
-    }
-
-    @Override
-    public String getName() {
-        return "Formula";
+    public String serialize(Expression expression) {
+        return new ExpressionSerializer().serialize(expression);
     }
 }

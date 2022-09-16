@@ -41,7 +41,7 @@ public class ShortSymbols extends Symbols {
                         new Pair<>(Operator.AND, "&"),
                         new Pair<>(Operator.OR, "|"),
                         new Pair<>(Operator.IMPLIES, "=>"),
-                        new Pair<>(Operator.EQUALS, "<=>")),
+                        new Pair<>(Operator.BIIMPLIES, "<=>")),
                 false);
     }
 }

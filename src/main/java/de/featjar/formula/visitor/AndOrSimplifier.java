@@ -20,6 +20,7 @@
  */
 package de.featjar.formula.visitor;
 
+import de.featjar.formula.structure.Expressions;
 import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.formula.predicate.Predicate;
@@ -57,14 +58,14 @@ public class AndOrSimplifier implements TreeVisitor<Formula, Void> {
         final Formula formula = getCurrentNode(path);
         if (formula instanceof Connective) {
             if (formula instanceof And) {
-                if (formula.getChildren().stream().anyMatch(c -> c == Formula.FALSE)) {
-                    formula.setChildren(Collections.singletonList(Formula.FALSE));
+                if (formula.getChildren().stream().anyMatch(c -> c == Expressions.False)) {
+                    formula.setChildren(Collections.singletonList(Expressions.False));
                 } else {
                     formula.flatReplaceChildren(this::mergeAnd);
                 }
             } else if (formula instanceof Or) {
-                if (formula.getChildren().stream().anyMatch(c -> c == Formula.TRUE)) {
-                    formula.setChildren(Collections.singletonList(Formula.TRUE));
+                if (formula.getChildren().stream().anyMatch(c -> c == Expressions.True)) {
+                    formula.setChildren(Collections.singletonList(Expressions.True));
                 } else {
                     formula.flatReplaceChildren(this::mergeOr);
                 }

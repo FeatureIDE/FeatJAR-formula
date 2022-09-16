@@ -22,8 +22,8 @@ package de.featjar.formula.io.textual;
 
 import de.featjar.formula.io.textual.Symbols.Operator;
 import de.featjar.formula.structure.Expression;
+import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.formula.predicate.Problem;
-import de.featjar.formula.structure.map.TermMap;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.BiImplies;
 import de.featjar.formula.structure.formula.connective.Implies;
@@ -33,17 +33,19 @@ import de.featjar.base.data.Problem.Severity;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.format.ParseException;
 import de.featjar.base.io.format.ParseProblem;
+import de.featjar.formula.structure.term.value.Variable;
+
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * This class can be used to parse propositional formulas.
+ * Parses expressions.
+ * Currently only supports a subset of expressions involving {@link And}, {@link Or}, {@link Not}, {@link Implies},
+ * and {@link BiImplies}.
  *
  * @author Dariusz Krolikowski
  * @author David Broneske
@@ -53,7 +55,7 @@ import java.util.regex.Pattern;
  * @author Stefan Krueger
  * @author Sebastian Krieter
  */
-public class NodeReader {
+public class ExpressionParser {
 
     private static final char SPACE = ' ';
     private static final char QUOTE = '\"';
@@ -74,7 +76,7 @@ public class NodeReader {
         MISSING_NAME_RIGHT("Missing feature name or expression on right side: %s"),
         MISSING_OPERATOR("Missing operator: %s");
 
-        private String message;
+        private final String message;
 
         ErrorMessage(String message) {
             this.message = message;
@@ -111,11 +113,8 @@ public class NodeReader {
     private static final Operator[] operators = Operator.values();
 
     static {
-        Collections.sort(Arrays.asList(operators), (o1, o2) -> o2.getPriority() - o1.getPriority());
+        Arrays.sort(operators, (o1, o2) -> o2.getPriority() - o1.getPriority());
     }
-
-    private TermMap map = new TermMap();
-    private boolean hasVariableNames = false;
 
     private Symbols symbols = ShortSymbols.INSTANCE;
 
@@ -123,26 +122,12 @@ public class NodeReader {
     private ErrorHandling ignoreUnparsableSubExpressions = ErrorHandling.THROW;
     private List<de.featjar.base.data.Problem> problemList;
 
-    public TermMap getFeatureNames() {
-        return map;
-    }
-
     public Symbols getSymbols() {
         return symbols;
     }
 
     public void setSymbols(Symbols symbols) {
         this.symbols = symbols;
-    }
-
-    public void setVariableNames(Collection<String> variableNames) {
-        map = new TermMap();
-        if (variableNames == null) {
-            hasVariableNames = false;
-        } else {
-            variableNames.forEach(map::addBooleanVariable);
-            hasVariableNames = true;
-        }
     }
 
     public ErrorHandling ignoresMissingFeatures() {
@@ -161,13 +146,7 @@ public class NodeReader {
         this.ignoreUnparsableSubExpressions = Objects.requireNonNull(ignoreUnparsableSubExpressions);
     }
 
-    /**
-     * Parses a constraint and create a corresponding {@link Expression}.
-     *
-     * @param formulaString The constraint as a string representation
-     * @return The parsed formula
-     */
-    public Result<Expression> read(String formulaString) {
+    public Result<Expression> parse(String formulaString) {
         problemList = new ArrayList<>();
         if (formulaString == null) {
             return Result.empty(new ParseProblem(new ParseException(ErrorMessage.NULL_CONSTRAINT.getMessage(), 0), 0));
@@ -178,7 +157,7 @@ public class NodeReader {
             problemList.add(new ParseProblem(e, 0));
             switch (ignoreUnparsableSubExpressions) {
                 case KEEP:
-                    return Result.of(new Problem(formulaString));
+                    return Result.of(new Problem(new de.featjar.base.data.Problem(formulaString, Severity.ERROR)));
                 case REMOVE:
                 case THROW:
                     return Result.empty(problemList);
@@ -207,7 +186,7 @@ public class NodeReader {
 
                 final Expression expression1, expression2;
                 if (operator == Operator.NOT) {
-                    final String rightSide = source.substring(index + symbol.length(), source.length())
+                    final String rightSide = source.substring(index + symbol.length())
                             .trim();
                     expression1 = null;
                     if (rightSide.isEmpty()) {
@@ -228,7 +207,7 @@ public class NodeReader {
                     if (expression1 == null) {
                         return null;
                     }
-                    final String rightSide = source.substring(index + symbol.length(), source.length())
+                    final String rightSide = source.substring(index + symbol.length())
                             .trim();
                     if (rightSide.isEmpty()) {
                         expression2 = handleInvalidExpression(ErrorMessage.MISSING_NAME_RIGHT, source);
@@ -241,20 +220,20 @@ public class NodeReader {
                 }
 
                 switch (operator) {
-                    case EQUALS: {
-                        return new BiImplies(expression1, expression2);
+                    case BIIMPLIES: {
+                        return new BiImplies((Formula) expression1, (Formula) expression2);
                     }
                     case IMPLIES: {
-                        return new Implies(expression1, expression2);
+                        return new Implies((Formula) expression1, (Formula) expression2);
                     }
                     case OR: {
-                        return new Or(expression1, expression2);
+                        return new Or((Formula) expression1, (Formula) expression2);
                     }
                     case AND: {
-                        return new And(expression1, expression2);
+                        return new And((Formula) expression1, (Formula) expression2);
                     }
                     case NOT: {
-                        return new Not(expression2);
+                        return new Not((Formula) expression2);
                     }
                     case ATLEAST:
                     case ATMOST:
@@ -300,14 +279,7 @@ public class NodeReader {
             featureName = featureName
                     .replace(replacedFeatureNameMarker, featureNameMarker)
                     .replace(replacedSubExpressionMarker, subExpressionMarker);
-            if (hasVariableNames && map.getVariableIndex(featureName).isEmpty()) {
-                return handleInvalidFeatureName(featureName);
-            }
-            if (map.getVariableIndex(featureName).isEmpty()) {
-                map.addBooleanVariable(featureName);
-            }
-
-            return map.createLiteral(featureName);
+            return new Variable(featureName);
         }
     }
 
@@ -324,7 +296,7 @@ public class NodeReader {
         switch (handleError) {
             case KEEP:
                 problemList.add(new ParseProblem(message.getMessage(), 0, Severity.WARNING));
-                return new Problem(message.getMessage());
+                return new Problem(new de.featjar.base.data.Problem(message.getMessage(), Severity.ERROR));
             case REMOVE:
                 problemList.add(new ParseProblem(message.getMessage(), 0, Severity.WARNING));
                 return null;
@@ -406,7 +378,7 @@ public class NodeReader {
         for (int i = 2; i < positionList.size(); i += 2) {
             sb.append(marker);
             sb.append(counter++);
-            sb.append(constraint.substring(positionList.get(i), positionList.get(i + 1)));
+            sb.append(constraint, positionList.get(i), positionList.get(i + 1));
         }
         return sb.toString();
     }

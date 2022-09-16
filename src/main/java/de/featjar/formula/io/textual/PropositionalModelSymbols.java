@@ -39,7 +39,7 @@ public class PropositionalModelSymbols extends Symbols {
                         new Pair<>(Operator.NOT, "!"),
                         new Pair<>(Operator.AND, "&"),
                         new Pair<>(Operator.OR, "|"),
-                        new Pair<>(Operator.EQUALS, "=="),
+                        new Pair<>(Operator.BIIMPLIES, "=="),
                         new Pair<>(Operator.IMPLIES, "=>")),
                 false);
     }

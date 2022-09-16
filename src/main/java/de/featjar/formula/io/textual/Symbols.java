@@ -45,7 +45,7 @@ public class Symbols {
         AND("and", 6),
         OR("or", 5),
         IMPLIES("implies", 4),
-        EQUALS("equals", 3),
+        BIIMPLIES("biimplies", 3),
         CHOOSE("choose", 2),
         ATLEAST("atleast", 2),
         BETWEEN("between", 2),
@@ -54,8 +54,8 @@ public class Symbols {
         FORALL("forall", 1),
         UNKNOWN("?", -1);
 
-        private String defaultName;
-        private int priority;
+        private final String defaultName;
+        private final int priority;
 
         Operator(String defaultName, int priority) {
             this.defaultName = defaultName;
@@ -118,7 +118,7 @@ public class Symbols {
                 return Operator.IMPLIES;
             }
             if (expression instanceof BiImplies) {
-                return Operator.EQUALS;
+                return Operator.BIIMPLIES;
             }
             if (expression instanceof AtLeast) {
                 return Operator.ATLEAST;

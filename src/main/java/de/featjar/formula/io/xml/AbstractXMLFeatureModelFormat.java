@@ -21,9 +21,8 @@
 package de.featjar.formula.io.xml;
 
 import de.featjar.formula.structure.Expression;
-import de.featjar.formula.structure.formula.predicate.Problem;
+import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.formula.predicate.Literal;
-import de.featjar.formula.structure.map.TermMap;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.AtMost;
 import de.featjar.formula.structure.formula.connective.BiImplies;
@@ -92,7 +91,7 @@ public abstract class AbstractXMLFeatureModelFormat<T, U, V> extends XMLFormat<T
 
     protected abstract V createConstraintLabel();
 
-    protected abstract void addConstraint(V constraintLabel, Expression expression) throws ParseException;
+    protected abstract void addConstraint(V constraintLabel, Formula formula) throws ParseException;
 
     protected abstract void addConstraintMetadata(V constraintLabel, Element e) throws ParseException;
 
@@ -191,14 +190,14 @@ public abstract class AbstractXMLFeatureModelFormat<T, U, V> extends XMLFormat<T
         return featureLabel;
     }
 
-    protected void parseConstraints(Element constraintsElement, TermMap map) throws ParseException {
+    protected void parseConstraints(Element constraintsElement) throws ParseException {
         for (final Element child : getElements(constraintsElement.getChildNodes())) {
             final String nodeName = child.getNodeName();
             if (nodeName.equals(RULE)) {
                 try {
                     V constraintLabel = createConstraintLabel();
-                    final List<Expression> parsedConstraints =
-                            parseConstraints(child.getChildNodes(), constraintLabel, map);
+                    final List<Formula> parsedConstraints =
+                            parseConstraints(child.getChildNodes(), constraintLabel);
                     if (parsedConstraints.size() == 1) {
                         addConstraint(constraintLabel, parsedConstraints.get(0));
                         if (child.hasAttributes()) {
@@ -228,10 +227,10 @@ public abstract class AbstractXMLFeatureModelFormat<T, U, V> extends XMLFormat<T
         }
     }
 
-    protected List<Expression> parseConstraints(NodeList nodeList, V parentConstraintLabel, TermMap map)
+    protected List<Formula> parseConstraints(NodeList nodeList, V parentConstraintLabel)
             throws ParseException {
-        final List<Expression> nodes = new ArrayList<>();
-        List<Expression> children;
+        final List<Formula> nodes = new ArrayList<>();
+        List<Formula> children;
         final List<Element> elements = getElements(nodeList);
         for (final Element e : elements) {
             final String nodeName = e.getNodeName();
@@ -247,13 +246,13 @@ public abstract class AbstractXMLFeatureModelFormat<T, U, V> extends XMLFormat<T
                     }
                     break;
                 case DISJ:
-                    nodes.add(new Or(parseConstraints(e.getChildNodes(), null, map)));
+                    nodes.add(new Or(parseConstraints(e.getChildNodes(), null)));
                     break;
                 case CONJ:
-                    nodes.add(new And(parseConstraints(e.getChildNodes(), null, map)));
+                    nodes.add(new And(parseConstraints(e.getChildNodes(), null)));
                     break;
                 case EQ:
-                    children = parseConstraints(e.getChildNodes(), null, map);
+                    children = parseConstraints(e.getChildNodes(), null);
                     if (children.size() == 2) {
                         nodes.add(biImplies(children.get(0), children.get(1)));
                     } else {
@@ -261,7 +260,7 @@ public abstract class AbstractXMLFeatureModelFormat<T, U, V> extends XMLFormat<T
                     }
                     break;
                 case IMP:
-                    children = parseConstraints(e.getChildNodes(), null, map);
+                    children = parseConstraints(e.getChildNodes(), null);
                     if (children.size() == 2) {
                         nodes.add(implies(children.get(0), children.get(1)));
                     } else {
@@ -269,7 +268,7 @@ public abstract class AbstractXMLFeatureModelFormat<T, U, V> extends XMLFormat<T
                     }
                     break;
                 case NOT:
-                    children = parseConstraints(e.getChildNodes(), null, map);
+                    children = parseConstraints(e.getChildNodes(), null);
                     if (children.size() == 1) {
                         nodes.add(new Not(children.get(0)));
                     } else {
@@ -277,12 +276,10 @@ public abstract class AbstractXMLFeatureModelFormat<T, U, V> extends XMLFormat<T
                     }
                     break;
                 case ATMOST1:
-                    nodes.add(atMostOne(parseConstraints(e.getChildNodes(), null, map)));
+                    nodes.add(atMostOne(parseConstraints(e.getChildNodes(), null)));
                     break;
                 case VAR:
-                    nodes.add(map.getLiteral(e.getTextContent())
-                            .map(l -> (Literal) l)
-                            .orElseGet(() -> new Problem(nodeName)));
+                    nodes.add(new Literal(e.getTextContent()));
                     break;
                 default:
                     addParseProblem("Unknown constraint type: " + nodeName, e, de.featjar.base.data.Problem.Severity.WARNING);
@@ -291,23 +288,23 @@ public abstract class AbstractXMLFeatureModelFormat<T, U, V> extends XMLFormat<T
         return nodes;
     }
 
-    protected Expression atMostOne(List<? extends Expression> parseFeatures) {
-        return new AtMost(parseFeatures, 1);
+    protected Formula atMostOne(List<? extends Formula> parseFeatures) {
+        return new AtMost(1, parseFeatures);
     }
 
-    protected Expression biImplies(Expression a, Expression b) {
+    protected Formula biImplies(Formula a, Formula b) {
         return new BiImplies(a, b);
     }
 
-    protected Expression implies(Literal a, Expression b) {
+    protected Formula implies(Literal a, Formula b) {
         return new Implies(a, b);
     }
 
-    protected Expression implies(Expression a, Expression b) {
+    protected Formula implies(Formula a, Formula b) {
         return new Implies(a, b);
     }
 
-    protected Expression implies(Literal f, List<? extends Expression> parseFeatures) {
+    protected Formula implies(Literal f, List<? extends Formula> parseFeatures) {
         return parseFeatures.size() == 1 ? new Implies(f, parseFeatures.get(0)) : new Implies(f, new Or(parseFeatures));
     }
 }

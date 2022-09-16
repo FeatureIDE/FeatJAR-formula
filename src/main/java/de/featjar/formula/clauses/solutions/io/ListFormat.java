@@ -21,8 +21,8 @@
 package de.featjar.formula.clauses.solutions.io;
 
 import de.featjar.formula.clauses.LiteralList;
+import de.featjar.formula.clauses.VariableMap;
 import de.featjar.formula.clauses.solutions.SolutionList;
-import de.featjar.formula.structure.map.TermMap;
 import de.featjar.base.data.Problem.Severity;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.InputMapper;
@@ -80,8 +80,8 @@ public class ListFormat implements Format<SolutionList> {
                     return Result.empty(new ParseProblem("Empty file!", lineNumber, Severity.ERROR));
                 }
                 final String[] names = line.split(";");
-                final TermMap map = new TermMap();
-                Arrays.asList(names).subList(1, names.length).forEach(map::addBooleanVariable);
+                final VariableMap map = VariableMap.empty();
+                Arrays.asList(names).subList(1, names.length).forEach(map::add);
                 configurationList.setVariables(map);
             }
 
@@ -92,7 +92,7 @@ public class ListFormat implements Format<SolutionList> {
                 if ((split.length - 1)
                         != configurationList
                                 .getVariableMap()
-                                .getVariableSignatures()
+                                .getVariableNames()
                                 .size()) {
                     return Result.empty(new ParseProblem(
                             "Number of selections does not match number of features!", lineNumber, Severity.ERROR));
@@ -100,7 +100,7 @@ public class ListFormat implements Format<SolutionList> {
                 final int[] literals = new int
                         [configurationList
                                 .getVariableMap()
-                                .getVariableSignatures()
+                                .getVariableNames()
                                 .size()];
                 for (int i = 1; i < split.length; i++) {
                     literals[i - 1] = split[i].equals("0") ? -i : i;

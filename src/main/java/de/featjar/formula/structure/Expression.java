@@ -23,8 +23,7 @@ package de.featjar.formula.structure;
 import de.featjar.base.io.IO;
 import de.featjar.base.tree.Trees;
 import de.featjar.base.tree.structure.Traversable;
-import de.featjar.formula.assignment.NameAssignment;
-import de.featjar.formula.io.textual.ExpressionFormat;
+import de.featjar.formula.assignment.VariableAssignment;
 import de.featjar.formula.structure.term.value.Constant;
 import de.featjar.formula.structure.term.value.Variable;
 import de.featjar.formula.visitor.Evaluator;
@@ -64,12 +63,19 @@ public interface Expression extends Traversable<Expression> {
     Object evaluate(List<?> values);
 
     /**
-     * {@return the evaluation of this formula on a given name assignment}
+     * {@return the evaluation of this formula on a given variable assignment}
      *
-     * @param nameAssignment the assignment
+     * @param variableAssignment the assignment
      */
-    default Object evaluate(NameAssignment nameAssignment) {
-        return traverse(new Evaluator(nameAssignment)).orElse(null);
+    default Object evaluate(VariableAssignment variableAssignment) {
+        return traverse(new Evaluator(variableAssignment)).orElse(null);
+    }
+
+    /**
+     * {@return the evaluation of this formula on an empty assignment}
+     */
+    default Object evaluate() {
+        return evaluate(new VariableAssignment());
     }
 
     /**
@@ -126,19 +132,20 @@ public interface Expression extends Traversable<Expression> {
     }
 
     /**
-     * {@return a list of all constant names in this expression}
+     * {@return a list of all constant values in this expression}
      */
-    default List<String> getConstantNames() {
-        return getConstantStream().map(Constant::getName).collect(Collectors.toList());
+    default List<Object> getConstantValues() {
+        return getConstantStream().map(Constant::getValue).collect(Collectors.toList());
     }
 
     /**
      * {@return the expression printed as a string}
-     * The string can be parsed using {@link ExpressionFormat}.
+     * The string can be parsed using TODO
      */
+    //{@link ExpressionFormat}.
     default String printParseable() {
         try (final ByteArrayOutputStream s = new ByteArrayOutputStream()) {
-            IO.save(this, s, new ExpressionFormat());
+            IO.save(this, s, null); //todo new ExpressionFormat());
             return s.toString();
         } catch (IOException e) {
             return "";

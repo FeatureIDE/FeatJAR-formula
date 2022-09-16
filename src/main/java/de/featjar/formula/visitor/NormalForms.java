@@ -83,7 +83,7 @@ public class NormalForms {
                 } else if (formula instanceof Or) {
                     formula = new And(formula);
                 } else {
-                    formula.replaceChildren(child -> (child instanceof Literal ? new Or(child) : child));
+                    formula.replaceChildren(child -> (child instanceof Literal ? new Or((Formula) child) : child));
                 }
                 break;
             case DNF:
@@ -92,7 +92,7 @@ public class NormalForms {
                 } else if (formula instanceof And) {
                     formula = new Or(new And(formula));
                 } else {
-                    formula.replaceChildren(child -> (child instanceof Literal ? new And(child) : child));
+                    formula.replaceChildren(child -> (child instanceof Literal ? new And((Formula) child) : child));
                 }
                 break;
         }

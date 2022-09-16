@@ -20,27 +20,28 @@
  */
 package de.featjar.formula.io;
 
-import de.featjar.formula.io.textual.NodeReader;
+import de.featjar.formula.io.textual.ExpressionParser;
 import de.featjar.formula.io.textual.PropositionalModelSymbols;
 import de.featjar.formula.structure.Expression;
+import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.base.data.Problem;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.InputMapper;
 import de.featjar.base.io.format.Format;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class KConfigReaderFormat implements Format<Expression> {
 
-    public static final String ID = KConfigReaderFormat.class.getCanonicalName();
-
+    @SuppressWarnings("unchecked")
     @Override
     public Result<Expression> parse(InputMapper inputMapper) {
         final ArrayList<Problem> problems = new ArrayList<>();
-        final NodeReader nodeReader = new NodeReader();
-        nodeReader.setSymbols(PropositionalModelSymbols.INSTANCE);
+        final ExpressionParser expressionParser = new ExpressionParser();
+        expressionParser.setSymbols(PropositionalModelSymbols.INSTANCE);
         return Result.of(
                 new And(inputMapper
                         .get()
@@ -58,10 +59,10 @@ public class KConfigReaderFormat implements Format<Expression> {
                         .map(l -> l.replace(" ", "_"))
                         .map(l -> l.replace("-", "_"))
                         .map(l -> l.replaceAll("def\\((\\w+)\\)", "$1"))
-                        .map(nodeReader::read) //
+                        .map(expressionParser::parse) //
                         .peek(r -> problems.addAll(r.getProblems()))
                         .filter(Result::isPresent)
-                        .map(Result::get) //
+                        .map(expressionResult -> (Formula) expressionResult.get()) //
                         .collect(Collectors.toList())),
                 problems);
     }
@@ -74,11 +75,6 @@ public class KConfigReaderFormat implements Format<Expression> {
     @Override
     public boolean supportsSerialize() {
         return false;
-    }
-
-    @Override
-    public String getIdentifier() {
-        return ID;
     }
 
     @Override

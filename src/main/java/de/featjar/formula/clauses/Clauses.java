@@ -23,8 +23,8 @@ package de.featjar.formula.clauses;
 import de.featjar.base.Feat;
 import de.featjar.formula.io.FormulaFormats;
 import de.featjar.formula.structure.Expression;
+import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.formula.predicate.Literal;
-import de.featjar.formula.structure.map.TermMap;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.base.data.Store;
@@ -57,8 +57,8 @@ public class Clauses {
                 .toArray());
     }
 
-    public static LiteralList getLiterals(TermMap variables) {
-        return new LiteralList(IntStream.rangeClosed(1, variables.getVariableCount())
+    public static LiteralList getLiterals(VariableMap variables) {
+        return new LiteralList(variables.getValidIndexRange().stream().get()
                 .flatMap(i -> IntStream.of(-i, i))
                 .toArray());
     }
@@ -73,32 +73,32 @@ public class Clauses {
         return clauses.stream().map(LiteralList::negate);
     }
 
-    public static Result<LiteralList> adapt(LiteralList clause, TermMap oldVariables, TermMap newVariables) {
+    public static Result<LiteralList> adapt(LiteralList clause, VariableMap oldVariables, VariableMap newVariables) {
         return clause.adapt(oldVariables, newVariables);
     }
 
-    public static int adapt(int literal, TermMap oldVariables, TermMap newVariables) {
-        final String name = oldVariables.getVariableName(Math.abs(literal)).orElse(null);
-        final int index = newVariables.getVariableIndex(name).orElse(0);
+    public static int adapt(int literal, VariableMap oldVariables, VariableMap newVariables) {
+        final String name = oldVariables.get(Math.abs(literal)).orElse(null);
+        final int index = newVariables.get(name).orElse(0);
         return literal < 0 ? -index : index;
     }
 
-    public static CNF convertToCNF(Expression expression) {
+    public static CNF convertToCNF(Formula expression) {
         return new FormulaToCNF().apply(expression).get();
     }
 
-    public static CNF convertToCNF(Expression expression, TermMap termMap) {
+    public static CNF convertToCNF(Formula expression, VariableMap termMap) {
         final FormulaToCNF function = new FormulaToCNF();
         function.setVariableMapping(termMap);
         return function.apply(expression).get();
     }
 
-    public static CNF convertToDNF(Expression expression) {
+    public static CNF convertToDNF(Formula expression) {
         final CNF cnf = new FormulaToCNF().apply(expression).get();
         return new CNF(cnf.getVariableMap(), convertNF(cnf.getClauses()));
     }
 
-    public static CNF convertToDNF(Expression expression, TermMap termMap) {
+    public static CNF convertToDNF(Formula expression, VariableMap termMap) {
         final FormulaToCNF function = new FormulaToCNF();
         function.setVariableMapping(termMap);
         final CNF cnf = function.apply(expression).get();
@@ -165,33 +165,33 @@ public class Clauses {
         return IO.load(path, FormulaFormats.getInstance()).map(Clauses::convertToCNF);
     }
 
-    public static Result<CNF> load(Path path, Store store) {
-        return store.get(CNFComputation.loader(path));
-    }
+//    public static Result<CNF> load(Path path, Store store) {
+//        return store.get(CNFComputation.loader(path));
+//    }
 
-    public static Store createCache(Path path) {
-        final Store store = new Store();
-        store.set(CNFComputation.loader(path));
-        return store;
-    }
+//    public static Store createCache(Path path) {
+//        final Store store = new Store();
+//        store.set(CNFComputation.loader(path));
+//        return store;
+//    }
+//
+//    public static Store createCache(CNF cnf) {
+//        final Store store = new Store();
+//        store.set(CNFComputation.of(cnf));
+//        return store;
+//    }
 
-    public static Store createCache(CNF cnf) {
-        final Store store = new Store();
-        store.set(CNFComputation.of(cnf));
-        return store;
-    }
-
-    public static Or toOrClause(LiteralList clause, TermMap termMap) {
+    public static Or toOrClause(LiteralList clause, VariableMap termMap) {
         return new Or(toLiterals(clause, termMap));
     }
 
-    public static And toAndClause(LiteralList clause, TermMap termMap) {
+    public static And toAndClause(LiteralList clause, VariableMap termMap) {
         return new And(toLiterals(clause, termMap));
     }
 
-    public static List<Literal> toLiterals(LiteralList clause, TermMap termMap) {
+    public static List<Literal> toLiterals(LiteralList clause, VariableMap termMap) {
         return Arrays.stream(clause.getLiterals())
-                .mapToObj(l -> termMap.createLiteral(Math.abs(l), l > 0))
+                .mapToObj(l -> new Literal(l > 0, String.valueOf(Math.abs(l))))
                 .collect(Collectors.toList());
     }
 }

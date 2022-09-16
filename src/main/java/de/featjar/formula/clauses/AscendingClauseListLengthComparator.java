@@ -18,31 +18,28 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.analysis.solver;
+package de.featjar.formula.clauses;
 
-import de.featjar.formula.analysis.Analysis;
+import java.util.Comparator;
+import java.util.List;
 
 /**
- * Exception thrown when an {@link Analysis analysis} experiences a solver
- * timeout.<br>
- * Doesn't need to be caught explicitly.
+ * Compares list of clauses by the number of literals.
  *
  * @author Sebastian Krieter
  */
-public class RuntimeTimeoutException extends RuntimeException {
+public class AscendingClauseListLengthComparator implements Comparator<List<LiteralList>> {
 
-    public RuntimeTimeoutException() {
+    @Override
+    public int compare(List<LiteralList> o1, List<LiteralList> o2) {
+        return addLengths(o1) - addLengths(o2);
     }
 
-    public RuntimeTimeoutException(String message) {
-        super(message);
-    }
-
-    public RuntimeTimeoutException(Throwable cause) {
-        super(cause);
-    }
-
-    public RuntimeTimeoutException(String message, Throwable cause) {
-        super(message, cause);
+    protected int addLengths(List<LiteralList> o) {
+        int count = 0;
+        for (final LiteralList literalSet : o) {
+            count += literalSet.getLiterals().length;
+        }
+        return count;
     }
 }

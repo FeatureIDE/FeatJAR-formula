@@ -44,7 +44,7 @@ public class IndexAssignment implements Assignment<Integer> {
     @Override
     public List<Pair<Integer, Object>> get() {
         return indexToValue.entrySet().stream()
-                .map(e -> new Pair<>(e.getKey(), e.getValue()))
+                .map(Pair::of)
                 .collect(Collectors.toList());
     }
 

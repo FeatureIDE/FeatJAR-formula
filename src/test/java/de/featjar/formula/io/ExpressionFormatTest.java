@@ -20,16 +20,13 @@
  */
 package de.featjar.formula.io;
 
-import static org.junit.jupiter.api.Assertions.fail;
-
+import de.featjar.base.io.format.Format;
 import de.featjar.formula.io.textual.ExpressionFormat;
-import de.featjar.formula.structure.Expression;
-import de.featjar.formula.structure.formula.predicate.Literal;
-import de.featjar.formula.structure.map.TermMap;
-import de.featjar.formula.structure.formula.connective.And;
-import de.featjar.formula.structure.formula.connective.Not;
-import de.featjar.formula.structure.formula.connective.Or;
+import de.featjar.formula.structure.formula.Formula;
 import org.junit.jupiter.api.Test;
+
+import static de.featjar.formula.structure.Expressions.*;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Tests {@link ExpressionFormat Formula} format.
@@ -59,33 +56,24 @@ public class ExpressionFormatTest {
     }
 
     private static void test(String name) {
-        FormatTest.testLoadAndSave(getFormula(name), name, new ExpressionFormat());
+        FormatTest.testLoadAndSave(getFormula(name), name, (Format) new ExpressionFormat());
     }
 
-    private static Expression getFormula(String name) {
+    private static Formula getFormula(String name) {
         switch (name) {
             case "faulty": {
                 return null;
             }
             case "ABC-nAnBnC": {
-                final TermMap map = new TermMap();
-                final Literal a = map.createLiteral("A");
-                final Literal b = map.createLiteral("B");
-                final Literal c = map.createLiteral("C");
-                return new And(
-                        new Or(a.cloneNode(), new Or(b.cloneNode(), c.cloneNode())),
-                        new Or(new Not(a.cloneNode()), new Or(new Not(b.cloneNode()), new Not(c.cloneNode()))));
+                return and(
+                        or(literal("a"), literal("b"), literal("c")),
+                        or(not(literal("a")), or(not(literal("b")), not(literal("c")))));
             }
             case "nA": {
-                final TermMap map = new TermMap();
-                final Literal a = map.createLiteral("A");
-                return new Not(a.cloneNode());
+                return not(literal("a"));
             }
             case "nAB": {
-                final TermMap map = new TermMap();
-                final Literal a = map.createLiteral("A");
-                final Literal b = map.createLiteral("B");
-                return new Or(new Not(a.cloneNode()), b.cloneNode());
+                return or(not(literal("a")), literal("b"));
             }
             default:
                 fail(name);

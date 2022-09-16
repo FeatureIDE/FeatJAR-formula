@@ -57,6 +57,10 @@ public class Literal extends NonTerminalExpression implements UnaryExpression, P
         this(true, new Variable(variableName));
     }
 
+    public Literal(boolean isPositive, String variableName) {
+        this(isPositive, new Variable(variableName));
+    }
+
     @Override
     public boolean isPositive() {
         return isPositive;

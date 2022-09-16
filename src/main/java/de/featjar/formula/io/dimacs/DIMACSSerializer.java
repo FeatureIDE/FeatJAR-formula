@@ -20,13 +20,13 @@
  */
 package de.featjar.formula.io.dimacs;
 
+import de.featjar.formula.clauses.VariableMap;
 import de.featjar.formula.structure.Expression;
-import de.featjar.formula.tmp.Formulas;
+import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.formula.predicate.Literal;
-import de.featjar.formula.structure.map.TermMap;
 import de.featjar.formula.structure.formula.connective.Or;
 
-public class DimacsWriter {
+public class DIMACSSerializer {
 
     /**
      * Whether the writer should write a variable directory listing the names of the
@@ -34,20 +34,21 @@ public class DimacsWriter {
      */
     private boolean writingVariableDirectory = true;
 
-    private final Expression expression;
-    private TermMap variables;
+    private final Formula formula;
+    private final VariableMap variableMap;
 
     /**
      * Constructs a new instance of this class with the given CNF.
      *
-     * @param expression the formula to transform; not null
+     * @param formula the formula to transform; not null
      * @throws IllegalArgumentException if the input is null or not in CNF
      */
-    public DimacsWriter(Expression expression) throws IllegalArgumentException {
-        if ((expression == null) || !Formulas.isCNF(expression)) {
+    public DIMACSSerializer(Formula formula) throws IllegalArgumentException {
+        if (!formula.isCNF()) {
             throw new IllegalArgumentException();
         }
-        this.expression = Formulas.toCNF(expression).get();
+        this.formula = formula;
+        variableMap = VariableMap.of(formula);
     }
 
     /**
@@ -77,8 +78,7 @@ public class DimacsWriter {
      *
      * @return the transformed CNF; not null
      */
-    public String write() {
-        variables = expression.getTermMap().orElseGet(TermMap::new);
+    public String serialize() {
         final StringBuilder sb = new StringBuilder();
         if (writingVariableDirectory) {
             writeVariableDirectory(sb);
@@ -94,24 +94,20 @@ public class DimacsWriter {
      * @param sb the string builder that builds the document
      */
     private void writeVariableDirectory(StringBuilder sb) {
-        int index = 1;
-        for (final String name : variables.getVariableNames()) {
-            writeVariableDirectoryEntry(sb, index++, name);
-        }
+        variableMap.stream().forEach(p -> writeVariableDirectoryEntry(sb, p.getKey(), p.getValue()));
     }
 
     /**
      * Writes an entry of the variable directory.
      *
      * @param sb       the string builder that builds the document
-     * @param variable variable to list in the entry
      * @param index    index of the variable
      */
     private void writeVariableDirectoryEntry(StringBuilder sb, int index, String name) {
         sb.append(DIMACSConstants.COMMENT_START);
         sb.append(index);
         sb.append(' ');
-        sb.append(String.valueOf(name));
+        sb.append(name);
         sb.append(System.lineSeparator());
     }
 
@@ -125,9 +121,9 @@ public class DimacsWriter {
         sb.append(' ');
         sb.append(DIMACSConstants.CNF);
         sb.append(' ');
-        sb.append(variables.getVariableCount());
+        sb.append(formula.getVariables().size());
         sb.append(' ');
-        sb.append(expression.getChildren().size());
+        sb.append(formula.getChildren().size());
         sb.append(System.lineSeparator());
     }
 
@@ -140,8 +136,8 @@ public class DimacsWriter {
     private void writeClause(StringBuilder sb, Or clause) {
         for (final Expression child : clause.getChildren()) {
             final Literal l = (Literal) child;
-            final Integer index = variables
-                    .getVariableIndex(l.getName())
+            final Integer index = variableMap
+                    .get(l.getName())
                     .orElseThrow(() -> new IllegalArgumentException(l.getName()));
             sb.append(l.isPositive() ? index : -index);
             sb.append(' ');
@@ -156,7 +152,7 @@ public class DimacsWriter {
      * @param sb the string builder that builds the document
      */
     private void writeClauses(StringBuilder sb) {
-        for (final Expression clause : expression.getChildren()) {
+        for (final Expression clause : formula.getChildren()) {
             writeClause(sb, (Or) clause);
         }
     }

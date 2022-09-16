@@ -23,6 +23,7 @@ package de.featjar.formula.structure.formula.connective;
 import de.featjar.base.data.Range;
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.NonTerminalExpression;
+import de.featjar.formula.structure.formula.Formula;
 
 import java.util.List;
 import java.util.Objects;
@@ -37,7 +38,12 @@ import java.util.Objects;
 public abstract class Cardinal extends NonTerminalExpression implements Connective {
     protected Range range;
 
-    protected Cardinal(Range range, List<? extends Expression> formulas) {
+    protected Cardinal(Range range, Formula... formulas) {
+        super(formulas);
+        setRange(range);
+    }
+
+    protected Cardinal(Range range, List<? extends Formula> formulas) {
         super(formulas);
         setRange(range);
     }

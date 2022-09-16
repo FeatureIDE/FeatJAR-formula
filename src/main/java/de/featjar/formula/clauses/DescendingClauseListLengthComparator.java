@@ -18,32 +18,28 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.analysis.solver;
+package de.featjar.formula.clauses;
+
+import java.util.Comparator;
+import java.util.List;
 
 /**
- * Sat solver interface.
+ * Compares list of clauses by the number of literals.
  *
  * @author Sebastian Krieter
  */
-public interface SATSolver extends Solver {
+public class DescendingClauseListLengthComparator implements Comparator<List<LiteralList>> {
 
-    /**
-     * Possible outcomes of a satisfiability solver call.<br>
-     * One of {@code TRUE}, {@code FALSE}, or {@code TIMEOUT}.
-     *
-     * @author Sebastian Krieter
-     */
-    enum SatResult {
-        FALSE,
-        TIMEOUT,
-        TRUE
+    @Override
+    public int compare(List<LiteralList> o1, List<LiteralList> o2) {
+        return addLengths(o2) - addLengths(o1);
     }
 
-    /**
-     * Checks whether there is a satisfying solution considering the clauses of the
-     * solver.
-     *
-     * @return A {@link SatResult}.
-     */
-    SatResult hasSolution();
+    protected int addLengths(List<LiteralList> o) {
+        int count = 0;
+        for (final LiteralList literalSet : o) {
+            count += literalSet.getLiterals().length;
+        }
+        return count;
+    }
 }

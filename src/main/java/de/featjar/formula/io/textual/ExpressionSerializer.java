@@ -38,13 +38,14 @@ import de.featjar.formula.structure.formula.connective.Or;
 import java.util.List;
 
 /**
- * Converts a propositional node to a String object.
+ * Serializes expressions.
+ * Currently only supports a subset of expressions.
  *
  * @author Thomas Thüm
  * @author Timo Günther
  * @author Sebastian Krieter
  */
-public class NodeWriter {
+public class ExpressionSerializer {
 
     /**
      * The type of notation of the formula.
@@ -269,13 +270,13 @@ public class NodeWriter {
      * @param expression the formula to write
      * @return the textual representation; not null
      */
-    public String write(Expression expression) {
+    public String serialize(Expression expression) {
         final StringBuilder sb = new StringBuilder();
         nodeToString(expression, null, sb, -1);
         return sb.toString();
     }
 
-    public void write(Expression expression, StringBuilder sb) {
+    public void serialize(Expression expression, StringBuilder sb) {
         nodeToString(expression, null, sb, -1);
     }
 
@@ -302,8 +303,6 @@ public class NodeWriter {
      * Converts a literal into the specified textual representation.
      *
      * @param l      a literal to convert; not null
-     * @param parent the class of the node's parent; null if not available (i.e. the
-     *               current node is the root node)
      * @param sb     the {@link StringBuilder} containing the textual
      *               representation.
      */
@@ -364,7 +363,7 @@ public class NodeWriter {
      */
     private void operationToString(Connective node, Operator parent, StringBuilder sb, int depth) {
         alignLine(sb, depth);
-        final List<Expression> children = node.getChildren();
+        final List<? extends Expression> children = node.getChildren();
         if (children.size() == 0) {
             sb.append("()");
             return;

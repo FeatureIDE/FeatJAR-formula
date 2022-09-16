@@ -21,6 +21,7 @@
 package de.featjar.formula.structure.formula.connective;
 
 import de.featjar.formula.structure.Expression;
+import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.term.value.Variable;
 
 /**
@@ -35,8 +36,8 @@ public class Exists extends Quantifier {
         super(exists);
     }
 
-    public Exists(Variable boundVariable, Expression expression) {
-        super(boundVariable, expression);
+    public Exists(Variable boundVariable, Formula formula) {
+        super(boundVariable, formula);
     }
 
     @Override

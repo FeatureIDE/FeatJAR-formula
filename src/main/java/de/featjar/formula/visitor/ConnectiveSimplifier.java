@@ -20,8 +20,8 @@
  */
 package de.featjar.formula.visitor;
 
+import de.featjar.formula.structure.Expressions;
 import de.featjar.formula.structure.formula.Formula;
-import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.formula.predicate.Predicate;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.AtLeast;
@@ -90,7 +90,7 @@ public class ConnectiveSimplifier implements TreeVisitor<Formula, Void> {
                 || (formula instanceof Not)) {
             return null;
         }
-        final List<Expression> children = (List<Expression>) formula.getChildren();
+        final List<Formula> children = (List<Formula>) formula.getChildren();
         Formula newFormula;
         if (formula instanceof Implies) {
             newFormula = new Or(new Not(children.get(0)), children.get(1));
@@ -116,41 +116,41 @@ public class ConnectiveSimplifier implements TreeVisitor<Formula, Void> {
         return newFormula;
     }
 
-    private List<Expression> atMostK(List<? extends Expression> elements, int k) {
+    private List<Formula> atMostK(List<? extends Formula> elements, int k) {
         final int n = elements.size();
 
         // return tautology
         if (k <= 0) {
-            return Collections.singletonList(Formula.FALSE);
+            return Collections.singletonList(Expressions.False);
         }
 
         // return contradiction
         if (k > n) {
-            return Collections.singletonList(Formula.TRUE);
+            return Collections.singletonList(Expressions.True);
         }
 
         return groupElements(elements.stream().map(Not::new).collect(Collectors.toList()), k, n);
     }
 
-    private List<Expression> atLeastK(List<? extends Expression> elements, int k) {
+    private List<Formula> atLeastK(List<? extends Formula> elements, int k) {
         final int n = elements.size();
 
         // return tautology
         if (k <= 0) {
-            return Collections.singletonList(Formula.TRUE);
+            return Collections.singletonList(Expressions.True);
         }
 
         // return contradiction
         if (k > n) {
-            return Collections.singletonList(Formula.FALSE);
+            return Collections.singletonList(Expressions.False);
         }
 
         return groupElements(elements, n - k, n);
     }
 
-    private List<Expression> groupElements(List<? extends Expression> elements, int k, final int n) {
-        final List<Expression> groupedElements = new ArrayList<>();
-        final Expression[] clause = new Expression[k + 1];
+    private List<Formula> groupElements(List<? extends Formula> elements, int k, final int n) {
+        final List<Formula> groupedElements = new ArrayList<>();
+        final Formula[] clause = new Formula[k + 1];
         final int[] index = new int[k + 1];
 
         // the position that is currently filled in clause
@@ -167,7 +167,7 @@ public class ConnectiveSimplifier implements TreeVisitor<Formula, Void> {
             } else {
                 clause[level] = elements.get(index[level]);
                 if (level == k) {
-                    final Expression[] clonedClause = new Expression[clause.length];
+                    final Formula[] clonedClause = new Formula[clause.length];
                     System.arraycopy(clause, 0, clonedClause, 0, clause.length);
                     groupedElements.add(new Or(clonedClause));
                 } else {

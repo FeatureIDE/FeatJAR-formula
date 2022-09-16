@@ -31,9 +31,7 @@ import java.util.Optional;
  *
  * @author Sebastian Krieter
  */
-public class DIMACSFormatCNF implements Format<CNF> {
-
-    public static final String ID = DIMACSFormatCNF.class.getCanonicalName();
+public class DIMACSCNFFormat implements Format<CNF> {
 
     @Override
     public String serialize(CNF cnf) {
@@ -56,7 +54,7 @@ public class DIMACSFormatCNF implements Format<CNF> {
         sb.append(' ');
         sb.append(DIMACSConstants.CNF);
         sb.append(' ');
-        sb.append(cnf.getVariableMap().getVariableSignatures().size());
+        sb.append(cnf.getVariableMap().getVariableNames().size());
         sb.append(' ');
         sb.append(cnf.getClauses().size());
         sb.append(System.lineSeparator());
@@ -80,13 +78,8 @@ public class DIMACSFormatCNF implements Format<CNF> {
     }
 
     @Override
-    public DIMACSFormatCNF getInstance() {
+    public DIMACSCNFFormat getInstance() {
         return this;
-    }
-
-    @Override
-    public String getIdentifier() {
-        return ID;
     }
 
     @Override

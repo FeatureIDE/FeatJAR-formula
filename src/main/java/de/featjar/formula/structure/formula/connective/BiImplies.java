@@ -23,6 +23,7 @@ package de.featjar.formula.structure.formula.connective;
 import de.featjar.formula.structure.BinaryExpression;
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.NonTerminalExpression;
+import de.featjar.formula.structure.formula.Formula;
 
 import java.util.List;
 
@@ -37,11 +38,11 @@ public class BiImplies extends NonTerminalExpression implements Connective, Bina
     protected BiImplies() {
     }
 
-    public BiImplies(Expression leftExpression, Expression rightExpression) {
-        super(leftExpression, rightExpression);
+    public BiImplies(Formula leftFormula, Formula rightFormula) {
+        super(leftFormula, rightFormula);
     }
 
-    public BiImplies(List<? extends Expression> formulas) {
+    public BiImplies(List<? extends Formula> formulas) {
         super(formulas);
     }
 

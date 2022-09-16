@@ -42,7 +42,7 @@ public class LogicalSymbols extends Symbols {
                         new Pair<>(Operator.AND, "\u2227"),
                         new Pair<>(Operator.OR, "\u2228"),
                         new Pair<>(Operator.IMPLIES, "\u21D2"),
-                        new Pair<>(Operator.EQUALS, "\u21D4")),
+                        new Pair<>(Operator.BIIMPLIES, "\u21D4")),
                 false);
     }
 }

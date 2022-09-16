@@ -21,8 +21,8 @@
 package de.featjar.formula.clauses.solutions.io;
 
 import de.featjar.formula.clauses.LiteralList;
+import de.featjar.formula.clauses.VariableMap;
 import de.featjar.formula.clauses.solutions.SolutionList;
-import de.featjar.formula.structure.map.TermMap;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.InputMapper;
 import de.featjar.base.io.OutputMapper;
@@ -74,8 +74,8 @@ public class BinaryFormat extends de.featjar.base.io.binary.BinaryFormat<Solutio
             for (int i = 0; i < numberOfVariables; i++) {
                 variableNames.add(readString(inputStream));
             }
-            final TermMap termMap = new TermMap();
-            variableNames.forEach(termMap::addBooleanVariable);
+            final VariableMap termMap = VariableMap.empty();
+            variableNames.forEach(termMap::add);
             final int numberOfSolutions = readInt(inputStream);
             final List<LiteralList> solutionList = new ArrayList<>(numberOfSolutions);
             for (int i = 0; i < numberOfSolutions; i++) {

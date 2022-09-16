@@ -1,8 +1,6 @@
 package de.featjar.formula.structure.term.value;
 
-import de.featjar.formula.structure.NonTerminalExpression;
 import de.featjar.formula.structure.TerminalExpression;
-import de.featjar.formula.tmp.Formulas;
 
 import java.util.List;
 
@@ -23,8 +21,16 @@ public class Constant extends TerminalExpression implements Value {
     }
 
     public Constant(Object value, Class<?> type) {
+        if (!type.isInstance(value))
+            throw new IllegalArgumentException(
+                    String.format("expected value of type %s, got %s", getType(), value.getClass()));
         this.value = value;
         this.type = type;
+    }
+
+    public Constant(Object value) {
+        this.value = value;
+        this.type = value.getClass();
     }
 
     public Object getValue() {
@@ -56,8 +62,6 @@ public class Constant extends TerminalExpression implements Value {
 
     @Override
     public Object evaluate(List<?> values) {
-        if (!getType().isInstance(values))
-            throw new IllegalArgumentException("value not of type " + getType());
         return value;
     }
 

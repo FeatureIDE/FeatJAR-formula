@@ -41,7 +41,7 @@ public class TextualSymbols extends Symbols {
                         new Pair<>(Operator.AND, "and"),
                         new Pair<>(Operator.OR, "or"),
                         new Pair<>(Operator.IMPLIES, "implies"),
-                        new Pair<>(Operator.EQUALS, "iff")),
+                        new Pair<>(Operator.BIIMPLIES, "iff")),
                 true);
     }
 }

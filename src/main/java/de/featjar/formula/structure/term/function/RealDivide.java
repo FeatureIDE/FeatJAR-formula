@@ -20,8 +20,8 @@
  */
 package de.featjar.formula.structure.term.function;
 
-import de.featjar.formula.tmp.Formulas;
 import de.featjar.formula.structure.term.Term;
+
 import java.util.List;
 
 /**

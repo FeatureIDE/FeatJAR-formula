@@ -22,7 +22,6 @@ package de.featjar.formula.io.xml;
 
 import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.Expression;
-import de.featjar.formula.tmp.Formulas;
 import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Not;
@@ -47,10 +46,10 @@ import org.w3c.dom.Element;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class XMLFeatureModelCNFFormat extends XMLFeatureModelFormat {
+public class XMLFeatureModelCNFFormulaFormat extends XMLFeatureModelFormulaFormat {
     @Override
-    public XMLFeatureModelCNFFormat getInstance() {
-        return new XMLFeatureModelCNFFormat();
+    public XMLFeatureModelCNFFormulaFormat getInstance() {
+        return new XMLFeatureModelCNFFormulaFormat();
     }
 
     @Override
@@ -64,56 +63,50 @@ public class XMLFeatureModelCNFFormat extends XMLFeatureModelFormat {
         parseFeatureTree(getElement(featureModelElement, STRUCT));
         Optional<Element> constraintsElement = getOptionalElement(featureModelElement, CONSTRAINTS);
         if (constraintsElement.isPresent()) {
-            parseConstraints(constraintsElement.get(), termMap);
+            parseConstraints(constraintsElement.get());
         }
         return Trees.clone(simplify(new And(constraints)));
     }
 
     @Override
-    protected void addConstraint(Boolean constraintLabel, Expression expression) throws ParseException {
-        Expression transformedExpression = new CNFTransformer().apply(expression)
-                .orElseThrow(p -> new ParseException("failed to transform " + expression));
-        transformedExpression = Formulas.manipulate(transformedExpression, new VariableMapSetter(termMap)); // todo: this
-        // is a
-        // workaround
-        // for weird
-        // variableMap
-        // shenanigans
+    protected void addConstraint(Boolean constraintLabel, Formula formula) throws ParseException {
+        Formula transformedExpression = new CNFTransformer().apply(formula)
+                .orElseThrow(p -> new ParseException("failed to transform " + formula));
         super.addConstraint(constraintLabel, transformedExpression);
     }
 
     @Override
-    protected Expression atMostOne(List<? extends Expression> parseFeatures) {
+    protected Formula atMostOne(List<? extends Formula> parseFeatures) {
         return new And(groupElements(
                 parseFeatures.stream().map(Not::new).collect(Collectors.toList()), 1, parseFeatures.size()));
     }
 
     @Override
-    protected Expression biImplies(Expression a, Expression b) {
+    protected Formula biImplies(Formula a, Formula b) {
         return new And(new Or(new Not(a), b), new Or(new Not(b), a));
     }
 
     @Override
-    protected Expression implies(Literal a, Expression b) {
+    protected Formula implies(Literal a, Formula b) {
         return new Or(a.invert(), b);
     }
 
     @Override
-    protected Expression implies(Expression a, Expression b) {
+    protected Formula implies(Formula a, Formula b) {
         return new Or(new Not(a), b);
     }
 
     @Override
-    protected Expression implies(Literal f, List<? extends Expression> parseFeatures) {
-        final ArrayList<Expression> list = new ArrayList<>(parseFeatures.size() + 1);
+    protected Formula implies(Literal f, List<? extends Formula> parseFeatures) {
+        final ArrayList<Formula> list = new ArrayList<>(parseFeatures.size() + 1);
         list.add(f.invert());
         list.addAll(parseFeatures);
         return new Or(list);
     }
 
-    private List<Expression> groupElements(List<? extends Expression> elements, int k, final int n) {
-        final List<Expression> groupedElements = new ArrayList<>();
-        final Expression[] clause = new Expression[k + 1];
+    private List<Formula> groupElements(List<? extends Formula> elements, int k, final int n) {
+        final List<Formula> groupedElements = new ArrayList<>();
+        final Formula[] clause = new Formula[k + 1];
         final int[] index = new int[k + 1];
 
         // the position that is currently filled in clause
@@ -130,7 +123,7 @@ public class XMLFeatureModelCNFFormat extends XMLFeatureModelFormat {
             } else {
                 clause[level] = elements.get(index[level]);
                 if (level == k) {
-                    final Expression[] clonedClause = new Expression[clause.length];
+                    final Formula[] clonedClause = new Formula[clause.length];
                     Arrays.copyOf(clause, clause.length);
                     for (int i = 0; i < clause.length; i++) {
                         clonedClause[i] = clause[i];

@@ -20,11 +20,12 @@
  */
 package de.featjar.formula.io.dimacs;
 
-import de.featjar.formula.structure.Expression;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.InputMapper;
 import de.featjar.base.io.format.Format;
 import de.featjar.base.io.format.ParseProblem;
+import de.featjar.formula.structure.formula.Formula;
+
 import java.text.ParseException;
 import java.util.Optional;
 
@@ -34,24 +35,22 @@ import java.util.Optional;
  * @author Sebastian Krieter
  * @author Timo G&uuml;nther
  */
-public class DIMACSFormat implements Format<Expression> {
-
-    public static final String ID = DIMACSFormat.class.getCanonicalName();
+public class DIMACSFormulaFormat implements Format<Formula> {
 
     @Override
-    public String serialize(Expression expression) {
-        final DimacsWriter w = new DimacsWriter(expression);
+    public String serialize(Formula formula) {
+        final DIMACSSerializer w = new DIMACSSerializer(formula);
         w.setWritingVariableDirectory(true);
-        return w.write();
+        return w.serialize();
     }
 
     @Override
-    public Result<Expression> parse(InputMapper inputMapper) {
-        final DimacsReader r = new DimacsReader();
+    public Result<Formula> parse(InputMapper inputMapper) {
+        final DIMACSParser r = new DIMACSParser();
         r.setReadingVariableDirectory(true);
         try {
             // TODO use getLines() instead
-            return Result.of(r.read(inputMapper.get().read().get()));
+            return Result.of(r.parse(inputMapper.get().read().get()));
         } catch (final ParseException e) {
             return Result.empty(new ParseProblem(e, e.getErrorOffset()));
         } catch (final Exception e) {
@@ -60,13 +59,8 @@ public class DIMACSFormat implements Format<Expression> {
     }
 
     @Override
-    public DIMACSFormat getInstance() {
+    public DIMACSFormulaFormat getInstance() {
         return this;
-    }
-
-    @Override
-    public String getIdentifier() {
-        return ID;
     }
 
     @Override

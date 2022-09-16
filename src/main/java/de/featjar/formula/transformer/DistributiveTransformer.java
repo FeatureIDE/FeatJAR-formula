@@ -55,7 +55,7 @@ public class DistributiveTransformer implements FormulaTransformer {
 
     private final Formula.NormalForm normalForm;
     private final Class<? extends Connective> clauseClass;
-    private final Function<List<? extends Expression>, Expression> clauseConstructor;
+    private final Function<List<? extends Formula>, Formula> clauseConstructor;
 
     private int maximumNumberOfLiterals = Integer.MAX_VALUE;
 

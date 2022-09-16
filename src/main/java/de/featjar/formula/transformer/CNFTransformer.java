@@ -45,7 +45,7 @@ public class CNFTransformer implements FormulaTransformer {
 
     public final boolean useMultipleThreads = false;
 
-    protected final List<Expression> distributiveClauses;
+    protected final List<Formula> distributiveClauses;
     protected final List<TseitinTransformer.Substitute> tseitinClauses;
     protected boolean useDistributive;
     protected int maximumNumberOfLiterals = Integer.MAX_VALUE;
@@ -79,9 +79,9 @@ public class CNFTransformer implements FormulaTransformer {
         if (newFormula instanceof And) {
             final List<? extends Expression> children = newFormula.getChildren();
             if (useMultipleThreads) {
-                children.parallelStream().forEach(this::transform);
+                children.parallelStream().forEach(child -> transform((Formula) child));
             } else {
-                children.forEach(this::transform);
+                children.forEach(child -> transform((Formula) child));
             }
         } else {
             transform(newFormula);
@@ -92,8 +92,8 @@ public class CNFTransformer implements FormulaTransformer {
         return Result.of(newFormula);
     }
 
-    protected List<? extends Expression> getTransformedClauses() {
-        final List<Expression> transformedClauses = new ArrayList<>(distributiveClauses);
+    protected List<? extends Formula> getTransformedClauses() {
+        final List<Formula> transformedClauses = new ArrayList<>(distributiveClauses);
 
         if (!tseitinClauses.isEmpty()) {
             final HashMap<TseitinTransformer.Substitute, TseitinTransformer.Substitute> combinedTseitinClauses = new HashMap<>();
@@ -121,11 +121,11 @@ public class CNFTransformer implements FormulaTransformer {
         return transformedClauses;
     }
 
-    private void transform(Expression child) {
-        final Expression clonedChild = Trees.clone(child);
-        if (((Formula) clonedChild).isCNF()) {
+    private void transform(Formula child) {
+        final Formula clonedChild = (Formula) Trees.clone(child);
+        if ((clonedChild).isCNF()) {
             if (clonedChild instanceof And) {
-                distributiveClauses.addAll(clonedChild.getChildren());
+                distributiveClauses.addAll((List<? extends Formula>) clonedChild.getChildren());
             } else {
                 distributiveClauses.add(clonedChild);
             }
@@ -133,7 +133,7 @@ public class CNFTransformer implements FormulaTransformer {
             if (useDistributive) {
                 try {
                     distributiveClauses.addAll(
-                            distributive(clonedChild, new CancelableMonitor()).get().getChildren()); // todo .get?
+                            (List<? extends Formula>) distributive(clonedChild, new CancelableMonitor()).get().getChildren()); // todo .get?
                     return;
                 } catch (final DistributiveTransformer.MaximumNumberOfLiteralsExceededException ignored) {
                 }
@@ -142,11 +142,11 @@ public class CNFTransformer implements FormulaTransformer {
         }
     }
 
-    protected Result<Formula> distributive(Expression child, Monitor monitor)
+    protected Result<Formula> distributive(Formula child, Monitor monitor)
             throws DistributiveTransformer.MaximumNumberOfLiteralsExceededException {
         final DistributiveTransformer cnfDistributiveLawTransformer = new DistributiveTransformer(Formula.NormalForm.CNF);
         cnfDistributiveLawTransformer.setMaximumNumberOfLiterals(maximumNumberOfLiterals);
-        return cnfDistributiveLawTransformer.execute((Formula) child, monitor);
+        return cnfDistributiveLawTransformer.execute(child, monitor);
     }
 
     protected Result<List<TseitinTransformer.Substitute>> tseitin(Expression child, Monitor monitor) {

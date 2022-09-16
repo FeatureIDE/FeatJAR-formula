@@ -21,8 +21,8 @@
 package de.featjar.formula.io.dimacs;
 
 import de.featjar.formula.structure.Expression;
+import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.formula.predicate.Literal;
-import de.featjar.formula.structure.map.TermMap;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.base.io.NonEmptyLineIterator;
@@ -40,7 +40,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class DimacsReader {
+public class DIMACSParser {
 
     private static final Pattern commentPattern = Pattern.compile("\\A" + DIMACSConstants.COMMENT + "\\s*(.*)\\Z");
     private static final Pattern problemPattern = Pattern.compile(
@@ -48,8 +48,6 @@ public class DimacsReader {
 
     /** Maps indexes to variables. */
     private final Map<Integer, String> indexVariables = new LinkedHashMap<>();
-
-    private TermMap map;
 
     /**
      * The amount of variables as declared in the problem definition. May differ
@@ -92,14 +90,11 @@ public class DimacsReader {
      * @throws ParseException if the input does not conform to the DIMACS CNF file
      *                        format
      */
-    public Expression read(Reader in) throws ParseException, IOException {
+    public Formula parse(Reader in) throws ParseException, IOException {
         indexVariables.clear();
         variableCount = -1;
         clauseCount = -1;
         readingVariables = readVariableDirectory;
-        if (!readVariableDirectory) {
-            map = new TermMap();
-        }
         try (final BufferedReader reader = new BufferedReader(in)) {
             final NonEmptyLineIterator nonemptyLineIterator = new NonEmptyLineIterator(reader);
             nonemptyLineIterator.get();
@@ -113,8 +108,6 @@ public class DimacsReader {
                 for (int i = 1; i <= variableCount; i++) {
                     indexVariables.putIfAbsent(i, Integer.toString(i));
                 }
-                map = new TermMap();
-                indexVariables.forEach((i, n) -> map.addBooleanVariable(n, i));
             }
 
             final List<Or> clauses = readClauses(nonemptyLineIterator);
@@ -144,7 +137,7 @@ public class DimacsReader {
     }
 
     /**
-     * Reads the input. Calls {@link #read(Reader)}.
+     * Reads the input. Calls {@link #parse(Reader)}.
      *
      * @param in The string to read from.
      * @return a CNF; not null
@@ -152,8 +145,8 @@ public class DimacsReader {
      * @throws ParseException if the input does not conform to the DIMACS CNF file
      *                        format
      */
-    public Expression read(String in) throws ParseException, IOException {
-        return read(new StringReader(in));
+    public Formula parse(String in) throws ParseException, IOException {
+        return parse(new StringReader(in));
     }
 
     /**
@@ -269,16 +262,9 @@ public class DimacsReader {
                 throw new ParseException("Illegal literal", nonemptyLineIterator.getLineCount());
             }
             final Integer key = Math.abs(index);
-            String variableName = indexVariables.get(key);
-            if (variableName == null) {
-                variableName = String.valueOf(key);
-                indexVariables.put(key, variableName);
-            }
-            if (map.getVariableIndex(variableName).isEmpty()) {
-                map.addBooleanVariable(variableName);
-            }
+            String variableName = indexVariables.computeIfAbsent(key, String::valueOf);
             literals[j] =
-                    new Literal(map.getVariableSignature(variableName).get(), index > 0);
+                    new Literal(index > 0, variableName);
         }
         return new Or(literals);
     }

@@ -22,6 +22,7 @@ package de.featjar.formula.structure.formula.connective;
 
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.NonTerminalExpression;
+import de.featjar.formula.structure.formula.Formula;
 
 import java.util.List;
 
@@ -36,11 +37,11 @@ public class Or extends NonTerminalExpression implements Connective {
     protected Or() {
     }
 
-    public Or(Expression... expressions) {
-        super(expressions);
+    public Or(Formula... formulas) {
+        super(formulas);
     }
 
-    public Or(List<? extends Expression> formulas) {
+    public Or(List<? extends Formula> formulas) {
         super(formulas);
     }
 

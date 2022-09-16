@@ -61,9 +61,9 @@ public class DeMorganApplier implements TreeVisitor<Formula, Void> {
             } else if (notChild instanceof Not) {
                 newFormula = (Formula) ((Not) notChild).getExpression();
             } else if (notChild instanceof Or) {
-                newFormula = new And(notChild.getChildren().stream().map(Not::new).collect(Collectors.toList()));
+                newFormula = new And(notChild.getChildren().stream().map(c -> new Not((Formula) c)).collect(Collectors.toList()));
             } else if (notChild instanceof And) {
-                newFormula = new Or(notChild.getChildren().stream().map(Not::new).collect(Collectors.toList()));
+                newFormula = new Or(notChild.getChildren().stream().map(c -> new Not((Formula) c)).collect(Collectors.toList()));
             }
         }
         return newFormula;

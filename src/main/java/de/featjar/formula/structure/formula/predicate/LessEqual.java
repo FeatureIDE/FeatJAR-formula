@@ -25,7 +25,7 @@ import de.featjar.formula.structure.term.Term;
 import java.util.List;
 
 /**
- * Expresses "A <= B" constraints.
+ * Expresses "A &lt;= B" constraints.
  * Evaluates to {@code true} iff the left child evaluates to a smaller or the same value as the right child.
  *
  * @author Sebastian Krieter
