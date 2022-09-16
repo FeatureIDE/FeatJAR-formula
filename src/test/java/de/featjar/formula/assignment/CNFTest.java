@@ -18,7 +18,7 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.assignment;
+package de.featjar.formula.assignment;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

@@ -18,9 +18,8 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.io;
+package de.featjar.formula.io;
 
-import static de.featjar.io.FormatTest.testLoadAndSave;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import de.featjar.formula.io.textual.ExpressionFormat;
@@ -60,7 +59,7 @@ public class ExpressionFormatTest {
     }
 
     private static void test(String name) {
-        testLoadAndSave(getFormula(name), name, new ExpressionFormat());
+        FormatTest.testLoadAndSave(getFormula(name), name, new ExpressionFormat());
     }
 
     private static Expression getFormula(String name) {

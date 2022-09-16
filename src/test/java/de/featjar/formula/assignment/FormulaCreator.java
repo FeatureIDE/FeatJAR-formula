@@ -18,7 +18,7 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.assignment;
+package de.featjar.formula.assignment;
 
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.assignment.Assignment;
