@@ -66,8 +66,8 @@ public class ExpressionFormatTest {
             }
             case "ABC-nAnBnC": {
                 return and(
-                        or(literal("a"), literal("b"), literal("c")),
-                        or(not(literal("a")), or(not(literal("b")), not(literal("c")))));
+                        or(literal("A"), literal("B"), literal("C")),
+                        or(not(literal("A")), or(not(literal("B")), not(literal("C")))));
             }
             case "nA": {
                 return not(literal("a"));

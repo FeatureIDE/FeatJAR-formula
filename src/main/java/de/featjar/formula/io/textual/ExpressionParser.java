@@ -23,6 +23,7 @@ package de.featjar.formula.io.textual;
 import de.featjar.formula.io.textual.Symbols.Operator;
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.formula.Formula;
+import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.structure.formula.predicate.Problem;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.BiImplies;
@@ -279,7 +280,7 @@ public class ExpressionParser {
             featureName = featureName
                     .replace(replacedFeatureNameMarker, featureNameMarker)
                     .replace(replacedSubExpressionMarker, subExpressionMarker);
-            return new Variable(featureName);
+            return new Literal(featureName);
         }
     }
 

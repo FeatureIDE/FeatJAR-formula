@@ -24,6 +24,7 @@ import de.featjar.base.io.IO;
 import de.featjar.base.tree.Trees;
 import de.featjar.base.tree.structure.Traversable;
 import de.featjar.formula.assignment.VariableAssignment;
+import de.featjar.formula.io.textual.ExpressionFormat;
 import de.featjar.formula.structure.term.value.Constant;
 import de.featjar.formula.structure.term.value.Variable;
 import de.featjar.formula.visitor.Evaluator;
@@ -145,7 +146,7 @@ public interface Expression extends Traversable<Expression> {
     //{@link ExpressionFormat}.
     default String printParseable() {
         try (final ByteArrayOutputStream s = new ByteArrayOutputStream()) {
-            IO.save(this, s, null); //todo new ExpressionFormat());
+            IO.save(this, s, new ExpressionFormat());
             return s.toString();
         } catch (IOException e) {
             return "";

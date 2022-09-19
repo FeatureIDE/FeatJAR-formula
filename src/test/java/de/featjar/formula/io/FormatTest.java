@@ -85,7 +85,7 @@ public class FormatTest {
     }
 
     private static List<Path> getFileList(String name, Format<Formula> format) {
-        final String namePattern = Pattern.quote(name) + "_\\d\\d[.]" + format.getFileExtension();
+        final String namePattern = Pattern.quote(name) + "_\\d\\d";
         try {
             final List<Path> fileList = Files.walk(formatsDirectory.resolve(format.getName()))
                     .filter(Files::isRegularFile)
@@ -103,6 +103,8 @@ public class FormatTest {
     }
 
     private static void compareFormulas(final Formula expression1, final Formula expression2) {
+        System.out.println(expression1.print());
+        System.out.println(expression2.print());
         assertEquals(expression1, expression2, "Formulas are different");
     }
 

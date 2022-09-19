@@ -36,7 +36,8 @@ public abstract class NonTerminalExpression extends Tree<Expression> implements 
     // private boolean hasHashCode = false; // todo: move to Tree?
 
     protected NonTerminalExpression(Expression... children) {
-        this(Arrays.asList(children));
+        if (children.length > 0)
+            super.setChildren(Arrays.asList(children));
     }
 
     protected NonTerminalExpression(List<? extends Expression> children) {

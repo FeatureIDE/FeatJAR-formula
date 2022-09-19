@@ -282,12 +282,12 @@ public class ExpressionSerializer {
 
     private void nodeToString(Expression expression, Operator parent, StringBuilder sb, int depth) {
         if (expression == null) {
-            sb.append(String.valueOf(expression));
+            sb.append(expression);
         } else {
             if (expression instanceof Not) {
-                final Expression child = ((Not) expression).getChildren().get(0);
+                final Expression child = expression.getChildren().get(0);
                 if (child instanceof Literal) {
-                    literalToString(((Literal) child).cloneNode().invert(), sb, depth + 1);
+                    literalToString(((Literal) child.cloneTree()).invert(), sb, depth + 1);
                     return;
                 }
             }
@@ -308,7 +308,7 @@ public class ExpressionSerializer {
      */
     private void literalToString(Literal l, StringBuilder sb, int depth) {
         alignLine(sb, depth);
-        final String s = variableToString(l.getName());
+        final String s = variableToString(l.getExpression().getName());
         if (!l.isPositive()) {
             final Notation notation = getNotation();
             switch (notation) {
