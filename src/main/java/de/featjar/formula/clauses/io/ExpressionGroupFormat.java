@@ -36,8 +36,6 @@ import java.util.*;
  */
 public class ExpressionGroupFormat implements Format<List<List<ClauseList>>> {
 
-    public static final String ID = ExpressionGroupFormat.class.getSimpleName();
-
     @Override
     public String serialize(List<List<ClauseList>> expressionGroups) {
         final StringBuilder sb = new StringBuilder();

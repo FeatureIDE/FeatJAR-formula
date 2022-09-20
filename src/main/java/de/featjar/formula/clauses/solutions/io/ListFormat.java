@@ -40,8 +40,6 @@ import java.util.Optional;
  */
 public class ListFormat implements Format<SolutionList> {
 
-    public static final String ID = ListFormat.class.getCanonicalName();
-
     @Override
     public String serialize(SolutionList configurationList) {
         final StringBuilder csv = new StringBuilder();
