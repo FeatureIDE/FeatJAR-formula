@@ -117,11 +117,6 @@ public class ExpressionGroupFormat implements Format<List<List<ClauseList>>> {
     }
 
     @Override
-    public String getIdentifier() {
-        return ID;
-    }
-
-    @Override
     public boolean supportsSerialize() {
         return true;
     }

@@ -122,11 +122,6 @@ public class ListFormat implements Format<SolutionList> {
     }
 
     @Override
-    public String getIdentifier() {
-        return ID;
-    }
-
-    @Override
     public boolean supportsSerialize() {
         return true;
     }
