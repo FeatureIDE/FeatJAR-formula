@@ -135,4 +135,11 @@ public abstract class AbstractAnalysis<T, S extends Solver, I> implements Analys
         solver.getAssumptions().unsetAll(assumptions.getAll());
         solver.getDynamicFormula().pop(assumedConstraints.size());
     }
+
+	@Override
+	public void resetAssumptions() {
+        solver.getAssumptions().unsetAll();
+        solver.getDynamicFormula().clear();
+	}
+
 }
