@@ -20,15 +20,16 @@
  */
 package de.featjar.formula.visitor;
 
+import de.featjar.base.data.Computation;
 import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.base.data.Result;
 import de.featjar.base.tree.Trees;
-import de.featjar.formula.transformer.CNFTransformer;
-import de.featjar.formula.transformer.DNFTransformer;
-import de.featjar.formula.transformer.FormulaTransformer;
+import de.featjar.formula.transformer.ToCNFFormula;
+import de.featjar.formula.transformer.ToDNFFormula;
+import de.featjar.formula.transformer.ToNNFFormula;
 
 /**
  * Tests and transforms formulas for and into normal forms.
@@ -60,18 +61,19 @@ public class NormalForms {
 
     // todo: use computation and store
     public static Result<Formula> toNormalForm(Formula formula, Formula.NormalForm normalForm, boolean clausal) {
-        FormulaTransformer formulaTransformer;
+        Computation<Formula> formulaTransformer;
+        ToNNFFormula nnfFormulaComputation = new ToNNFFormula(Computation.of(formula));
         switch (normalForm) {
             case CNF:
-                formulaTransformer = new CNFTransformer();
+                formulaTransformer = new ToCNFFormula(nnfFormulaComputation); // todo who decides what should get cached?
                 break;
             case DNF:
-                formulaTransformer = new DNFTransformer();
+                formulaTransformer = new ToDNFFormula(nnfFormulaComputation);
                 break;
             default:
                 throw new IllegalStateException(String.valueOf(normalForm));
         }
-        Result<Formula> res = formulaTransformer.apply(formula);
+        Result<Formula> res = formulaTransformer.getResult();
         return res.map(f -> clausal ? toClausalNormalForm(formula, normalForm) : f);
     }
 

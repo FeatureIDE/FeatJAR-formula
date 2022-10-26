@@ -21,25 +21,25 @@
 package de.featjar.formula.analysis.solver;
 
 /**
- * Thrown when a {@link Solver} experiences a timeout.
+ * Thrown when a {@link SATSolver solver} detects an obvious contradiction when adding new clauses.
  * Doesn't need to be caught explicitly.
  *
  * @author Sebastian Krieter
  */
-public class RuntimeTimeoutException extends RuntimeException {
+public class SolverContradictionException extends RuntimeException {
 
-    public RuntimeTimeoutException() {
+    public SolverContradictionException() {
     }
 
-    public RuntimeTimeoutException(String message) {
+    public SolverContradictionException(String message) {
         super(message);
     }
 
-    public RuntimeTimeoutException(Throwable cause) {
+    public SolverContradictionException(Throwable cause) {
         super(cause);
     }
 
-    public RuntimeTimeoutException(String message, Throwable cause) {
+    public SolverContradictionException(String message, Throwable cause) {
         super(message, cause);
     }
 }

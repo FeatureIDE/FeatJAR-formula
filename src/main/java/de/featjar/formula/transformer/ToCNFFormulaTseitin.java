@@ -43,8 +43,8 @@ import java.util.Objects;
  *
  * @author Sebastian Krieter
  */
-public class TseitinTransformer
-        implements MonitorableFunction<Expression, List<TseitinTransformer.Substitute>>, TreeVisitor<Expression, Expression> {
+public class ToCNFFormulaTseitin
+        implements MonitorableFunction<Expression, List<ToCNFFormulaTseitin.Substitute>>, TreeVisitor<Expression, Expression> {
 
     public static class Substitute {
         private final Expression orgExpression;

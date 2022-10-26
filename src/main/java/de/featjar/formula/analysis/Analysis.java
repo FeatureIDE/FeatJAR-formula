@@ -20,85 +20,51 @@
  */
 package de.featjar.formula.analysis;
 
-import de.featjar.base.data.Pair;
-import de.featjar.formula.analysis.solver.RuntimeContradictionException;
-import de.featjar.formula.analysis.solver.Solver;
-import de.featjar.formula.structure.Expression;
-import de.featjar.formula.assignment.Assignment;
-import de.featjar.formula.assignment.IndexAssignment;
 import de.featjar.base.data.Computation;
-import de.featjar.base.data.Result;
-import de.featjar.base.task.Monitor;
-import de.featjar.formula.structure.formula.Formula;
+import de.featjar.base.data.FutureResult;
+import de.featjar.formula.analysis.solver.SolverContradictionException;
+import de.featjar.formula.analysis.solver.Solver;
+import de.featjar.formula.assignment.VariableAssignment;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.Random;
+import java.util.function.Function;
 
 /**
  * Base class for an analysis using any {@link Solver solver}.
  *
- * @param <U> the type of the analysis result
+ * @param <T> the type of the analysis result
  * @param <S> the type of the solver
- * @param <T> the type of the solver input
+ * @param <U> the type the solver operates on
  *
  * @author Sebastian Krieter
  */
-public abstract class Analysis<U, S extends Solver, T> implements Computation<T, U> {
-    protected S solver;
-    protected final Assignment<?> assumptions = new IndexAssignment();
+public abstract class Analysis<T, S extends Solver, U> implements Computation<T> {
+    public static final int DEFAULT_TIMEOUT_IN_MS = 0;
+    public static final int DEFAULT_RANDOM_SEED = 0;
+    protected final Computation<U> inputComputation;
+    protected final Function<U, S> solverFactory; // todo: or use Computation<S>, which then has to be cloned before usage? this requires a general cloning mechanism for computation inputs (T implements Cloneable)
+    protected final VariableAssignment assumptions;
+    protected final long timeoutInMs;
+    protected final Random random;
 
-    public Assignment<?> getAssumptions() {
-        return assumptions;
+    protected Analysis(Computation<U> inputComputation, Function<U, S> solverFactory) {
+        this(inputComputation, solverFactory, new VariableAssignment(), DEFAULT_TIMEOUT_IN_MS, DEFAULT_RANDOM_SEED);
     }
 
-    public void updateAssumptions() {
-        updateAssumptions(this.solver);
+    protected Analysis(Computation<U> inputComputation, Function<U, S> solverFactory, VariableAssignment assumptions, long timeoutInMs, long randomSeed) {
+        this.inputComputation = inputComputation;
+        this.solverFactory = solverFactory;
+        this.assumptions = assumptions;
+        this.timeoutInMs = timeoutInMs;
+        this.random = new Random(randomSeed);
     }
 
-    public void setSolver(S solver) {
-        this.solver = solver;
-    }
-
-    @Override
-    public final Result<U> execute(T input, Monitor monitor) {
-        if (solver == null) {
-            solver = createSolver(input);
-        }
-        return execute(solver, monitor);
-    }
-
-    public Result<U> execute(S solver, Monitor monitor) {
-        if (this.solver == null) {
-            this.solver = solver;
-        }
-        monitor.checkCancel();
-        prepareSolver(solver);
-        try {
-            return Result.of(analyze(solver, monitor));
-        } catch (final Exception e) {
-            return Result.empty(e);
-        } finally {
-            resetSolver(solver);
-        }
-    }
-
-    protected abstract S createSolver(T input) throws RuntimeContradictionException;
-
-    protected void prepareSolver(S solver) {
-        updateAssumptions();
-    }
-
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    private void updateAssumptions(S solver) {
-        solver.getAssumptions().set((Collection) assumptions.get());
-    }
-
-    protected abstract U analyze(S solver, Monitor monitor) throws Exception;
-
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    protected void resetSolver(S solver) {
-        solver.getAssumptions().remove((Collection) assumptions.get());
+    protected FutureResult<S> getSolver() throws SolverContradictionException {
+        return inputComputation.get().thenCompute((input, monitor) -> {
+            S solver = solverFactory.apply(input); // need to clone input? probably note
+            solver.setAssumptions(assumptions);
+            solver.setTimeout(timeoutInMs);
+            return solver;
+        });
     }
 }

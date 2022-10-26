@@ -20,6 +20,7 @@
  */
 package de.featjar.formula.visitor;
 
+import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.Expressions;
 import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.formula.predicate.Predicate;
@@ -75,7 +76,7 @@ public class ConnectiveSimplifier implements TreeVisitor<Formula, Void> {
     @Override
     public TraversalAction lastVisit(List<Formula> path) {
         final Formula formula = getCurrentNode(path);
-        formula.replaceChildren(expression -> replace((Formula) expression));
+        formula.replaceChildren(this::replace);
         if (fail) {
             return TraversalAction.FAIL;
         }
@@ -83,7 +84,7 @@ public class ConnectiveSimplifier implements TreeVisitor<Formula, Void> {
     }
 
     @SuppressWarnings("unchecked")
-    private Formula replace(Formula formula) {
+    private Formula replace(Expression formula) {
         if ((formula instanceof Predicate)
                 || (formula instanceof And)
                 || (formula instanceof Or)

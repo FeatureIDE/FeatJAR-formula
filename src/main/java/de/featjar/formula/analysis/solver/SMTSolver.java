@@ -20,6 +20,8 @@
  */
 package de.featjar.formula.analysis.solver;
 
+import de.featjar.base.data.Result;
+
 /**
  * An SMT (satisfiability modulo theories) solver.
  * Answers optimization queries for a given variable.
@@ -35,11 +37,11 @@ public interface SMTSolver<T, U> extends Solver {
      * {@return the smallest value for a variable to still satisfy the given formula}
      * @param variable the variable to minimize
      */
-    U minimize(T variable);
+    Result<U> minimize(T variable);
 
     /**
      * {@return the largest value for a variable to still satisfy the given formula}
      * @param variable the variable to maximize
      */
-    U maximize(T variable);
+    Result<U> maximize(T variable);
 }

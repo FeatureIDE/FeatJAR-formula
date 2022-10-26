@@ -20,7 +20,8 @@
  */
 package de.featjar.formula.analysis.solver;
 
-import de.featjar.formula.structure.Expression;
+import de.featjar.formula.structure.formula.Formula;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -56,12 +57,12 @@ public abstract class SolverFormula<T> {
         return solverFormulas.get(solverFormulas.size() - 1);
     }
     
-    public abstract List<T> push(Expression solverFormula);
+    public abstract List<T> push(Formula solverFormula);
 
-    public List<T> push(Collection<Expression> solverFormulas) {
+    public List<T> push(Collection<Formula> solverFormulas) {
         int addCount = 0;
         final ArrayList<T> solverFormulaList = new ArrayList<>(solverFormulas.size());
-        for (final Expression solverFormula : solverFormulas) {
+        for (final Formula solverFormula : solverFormulas) {
             try {
                 push(solverFormula);
                 addCount++;

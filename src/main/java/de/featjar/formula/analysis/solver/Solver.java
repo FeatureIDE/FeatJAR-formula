@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.analysis.solver;
 
-import de.featjar.formula.assignment.Assignment;
+import de.featjar.formula.assignment.VariableAssignment;
 import de.featjar.formula.structure.formula.Formula;
 
 /**
@@ -43,11 +43,22 @@ public interface Solver {
     /**
      * {@return additional assumptions this solver should consider}
      */
-    Assignment<?> getAssumptions();
+    VariableAssignment getAssumptions();
+
+    /**
+     * Sets additional assumptions this solver should consider.
+     *
+     * @param assumptions the assumptions in form of a (partial) variable assignment
+     */
+    void setAssumptions(VariableAssignment assumptions) throws SolverContradictionException; // todo: exception needed?
+
+    long getTimeout();
+
+    void setTimeout(long timeoutInMs);
 
     /**
      * Resets any internal state of this solver.
-     * Should be overridden to allow for reusing this solver instance.
+     * Should be overridden to allow for reusing this solver instance. todo: is this a good idea with multithreading? or rather use solverSupplier in Analysis?
      */
     default void reset() {}
 }

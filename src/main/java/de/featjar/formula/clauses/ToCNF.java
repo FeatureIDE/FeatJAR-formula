@@ -20,9 +20,9 @@
  */
 package de.featjar.formula.clauses;
 
+import de.featjar.base.data.Computation;
+import de.featjar.base.data.FutureResult;
 import de.featjar.base.data.Result;
-import de.featjar.base.task.Monitor;
-import de.featjar.base.task.MonitorableFunction;
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.Expressions;
 import de.featjar.formula.structure.formula.Formula;
@@ -36,42 +36,48 @@ import java.util.Objects;
  *
  * @author Sebastian Krieter
  */
-public class FormulaToCNF implements MonitorableFunction<Formula, CNF> {
+public class ToCNF implements Computation<CNF> {
+    protected final Computation<Formula> cnfFormulaComputation;
+    protected boolean keepLiteralOrder;
+    protected VariableMap variableMap;
 
-    private boolean keepLiteralOrder;
-    private VariableMap termMap;
-
-    public static CNF convert(Formula expression) {
-        return new FormulaToCNF().apply(expression).get();
+    public ToCNF(Computation<Formula> cnfFormulaComputation) {
+        this.cnfFormulaComputation = cnfFormulaComputation;
     }
 
-    public static CNF convert(Formula expression, VariableMap termMap) {
-        final FormulaToCNF function = new FormulaToCNF();
-        function.setVariableMapping(termMap);
+    public static Result<CNF> convert(Formula formula) {
+        return Computation.of(formula).then(ToCNF.class).getResult();
+    }
+
+    public static Result<CNF> convert(Formula expression, VariableMap termMap) {
+        final ToCNF function = (ToCNF) Computation.of(expression).then(ToCNF.class);
+        function.setVariableMap(termMap);
         function.setKeepLiteralOrder(true);
-        return function.apply(expression).get();
+        return function.getResult();
     }
 
     @Override
-    public Result<CNF> execute(Formula expression, Monitor monitor) {
-        if (expression == null) {
-            return Result.empty();
-        }
-        final ClauseList clauses = new ClauseList();
-        //final Optional<Object> formulaValue = expression.evaluate();
+    public FutureResult<CNF> compute() {
+        return cnfFormulaComputation.compute().thenComputeResult(((formula, monitor) -> {
+            if (formula == null) {
+                return Result.empty();
+            }
+            final ClauseList clauses = new ClauseList();
+            //final Optional<Object> formulaValue = expression.evaluate();
 //        if (formulaValue.isPresent()) {
 //            if (formulaValue.get() == Boolean.FALSE) {
 //                clauses.add(new LiteralList());
 //            }
 //        } else {
-            final Expression cnf = expression.toCNF().get();
+            final Expression cnf = formula.toCNF().get();
             VariableMap variableMap = VariableMap.of(cnf);
             cnf.getChildren().stream()
                     .map(exp -> getClause(exp, variableMap))
                     .filter(Objects::nonNull)
                     .forEach(clauses::add);
-        //}
-        return Result.of(new CNF(variableMap, clauses));
+            //}
+            return Result.of(new CNF(variableMap, clauses));
+        }));
     }
 
     public boolean isKeepLiteralOrder() {
@@ -82,12 +88,12 @@ public class FormulaToCNF implements MonitorableFunction<Formula, CNF> {
         this.keepLiteralOrder = keepLiteralOrder;
     }
 
-    public VariableMap getVariableMapping() {
-        return termMap;
+    public VariableMap getVariableMap() {
+        return variableMap;
     }
 
-    public void setVariableMapping(VariableMap termMap) {
-        this.termMap = termMap;
+    public void setVariableMap(VariableMap termMap) {
+        this.variableMap = termMap;
     }
 
     private LiteralList getClause(Expression clauseExpression, VariableMap mapping) {

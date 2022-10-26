@@ -20,6 +20,8 @@
  */
 package de.featjar.formula.analysis.solver;
 
+import de.featjar.base.data.Result;
+
 /**
  * A satisfiability solver.
  * Checks whether a given formula has a solution (i.e., whether it is satisfiable).
@@ -27,18 +29,8 @@ package de.featjar.formula.analysis.solver;
  * @author Sebastian Krieter
  */
 public interface SATSolver extends Solver {
-
-    /**
-     * Possible outcomes of a satisfiability solver call.
-     */
-    enum SATResult {
-        TIMEOUT,
-        FALSE,
-        TRUE
-    }
-
     /**
      * {@return whether there is a solution for the given formula}
      */
-    SATResult hasSolution();
+    Result<Boolean> hasSolution();
 }

@@ -18,14 +18,28 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.transformer;
-
-import de.featjar.base.data.Computation;
-import de.featjar.formula.structure.formula.Formula;
+package de.featjar.formula.analysis.solver;
 
 /**
- * Transforms a formula.
+ * Thrown when a {@link Solver} experiences a timeout.
+ * Doesn't need to be caught explicitly.
  *
- * @author Elias Kuiter
+ * @author Sebastian Krieter
  */
-public interface FormulaTransformer extends Computation<Formula, Formula> {}
+public class SolverTimeoutException extends RuntimeException { // todo: return this in Solver as Result.empty(timeout)
+
+    public SolverTimeoutException() {
+    }
+
+    public SolverTimeoutException(String message) {
+        super(message);
+    }
+
+    public SolverTimeoutException(Throwable cause) {
+        super(cause);
+    }
+
+    public SolverTimeoutException(String message, Throwable cause) {
+        super(message, cause);
+    }
+}

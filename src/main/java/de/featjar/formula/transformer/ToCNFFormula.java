@@ -20,6 +20,8 @@
  */
 package de.featjar.formula.transformer;
 
+import de.featjar.base.data.Computation;
+import de.featjar.base.data.FutureResult;
 import de.featjar.base.data.Result;
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.formula.Formula;
@@ -41,16 +43,18 @@ import java.util.List;
  *
  * @author Sebastian Krieter
  */
-public class CNFTransformer implements FormulaTransformer {
+public class ToCNFFormula implements Computation<Formula> {
+    protected final Computation<Formula> nnfFormulaComputation;
 
     public final boolean useMultipleThreads = false;
 
     protected final List<Formula> distributiveClauses;
-    protected final List<TseitinTransformer.Substitute> tseitinClauses;
+    protected final List<ToCNFFormulaTseitin.Substitute> tseitinClauses;
     protected boolean useDistributive;
     protected int maximumNumberOfLiterals = Integer.MAX_VALUE;
 
-    public CNFTransformer() {
+    public ToCNFFormula(Computation<Formula> nnfFormulaComputation) { // precondition: nnf must be given (todo: validate)
+        this.nnfFormulaComputation = nnfFormulaComputation;
         if (useMultipleThreads) {
             distributiveClauses = Collections.synchronizedList(new ArrayList<>());
             tseitinClauses = Collections.synchronizedList(new ArrayList<>());
@@ -65,40 +69,42 @@ public class CNFTransformer implements FormulaTransformer {
     }
 
     @Override
-    public Result<Formula> execute(Formula formula, Monitor monitor) {
-        useDistributive = (maximumNumberOfLiterals > 0);
-        final NormalFormTester normalFormTester = NormalForms.getNormalFormTester(formula, Formula.NormalForm.CNF);
-        if (normalFormTester.isNormalForm()) {
-            if (!normalFormTester.isClausalNormalForm()) {
-                return Result.of(NormalForms.toClausalNormalForm((Formula) Trees.clone(formula), Formula.NormalForm.CNF));
-            } else {
-                return Result.of((Formula) Trees.clone(formula));
+    public FutureResult<Formula> compute() {
+        return nnfFormulaComputation.get().thenComputeResult((formula, monitor) -> {
+            useDistributive = (maximumNumberOfLiterals > 0);
+            final NormalFormTester normalFormTester = NormalForms.getNormalFormTester(formula, Formula.NormalForm.CNF);
+            if (normalFormTester.isNormalForm()) {
+                if (!normalFormTester.isClausalNormalForm()) {
+                    return Result.of(NormalForms.toClausalNormalForm((Formula) Trees.clone(formula), Formula.NormalForm.CNF));
+                } else {
+                    return Result.of((Formula) Trees.clone(formula)); // todo: is it a computation's responsibility to clone its input or not? should the Store do this, or the caller, or thenComputeResult...?
+                }
             }
-        }
-        Formula newFormula = new NNFTransformer().apply((Formula) Trees.clone(formula)).get(); // preferred input computation
-        if (newFormula instanceof And) {
-            final List<? extends Expression> children = newFormula.getChildren();
-            if (useMultipleThreads) {
-                children.parallelStream().forEach(child -> transform((Formula) child));
+            Formula newFormula = (Formula) formula.cloneTree();
+            if (newFormula instanceof And) {
+                final List<? extends Expression> children = newFormula.getChildren();
+                if (useMultipleThreads) {
+                    children.parallelStream().forEach(child -> transform((Formula) child));
+                } else {
+                    children.forEach(child -> transform((Formula) child));
+                }
             } else {
-                children.forEach(child -> transform((Formula) child));
+                transform(newFormula);
             }
-        } else {
-            transform(newFormula);
-        }
 
-        newFormula = new And(getTransformedClauses());
-        newFormula = NormalForms.toClausalNormalForm(newFormula, Formula.NormalForm.CNF);
-        return Result.of(newFormula);
+            newFormula = new And(getTransformedClauses());
+            newFormula = NormalForms.toClausalNormalForm(newFormula, Formula.NormalForm.CNF);
+            return Result.of(newFormula);
+        });
     }
 
     protected List<? extends Formula> getTransformedClauses() {
         final List<Formula> transformedClauses = new ArrayList<>(distributiveClauses);
 
         if (!tseitinClauses.isEmpty()) {
-            final HashMap<TseitinTransformer.Substitute, TseitinTransformer.Substitute> combinedTseitinClauses = new HashMap<>();
-            for (final TseitinTransformer.Substitute tseitinClause : tseitinClauses) {
-                TseitinTransformer.Substitute substitute = combinedTseitinClauses.get(tseitinClause);
+            final HashMap<ToCNFFormulaTseitin.Substitute, ToCNFFormulaTseitin.Substitute> combinedTseitinClauses = new HashMap<>();
+            for (final ToCNFFormulaTseitin.Substitute tseitinClause : tseitinClauses) {
+                ToCNFFormulaTseitin.Substitute substitute = combinedTseitinClauses.get(tseitinClause);
                 if (substitute == null) {
                     combinedTseitinClauses.put(tseitinClause, tseitinClause);
                     final Variable variable = tseitinClause.getVariable();
@@ -112,7 +118,7 @@ public class CNFTransformer implements FormulaTransformer {
                     }
                 }
             }
-            for (final TseitinTransformer.Substitute tseitinClause : combinedTseitinClauses.keySet()) {
+            for (final ToCNFFormulaTseitin.Substitute tseitinClause : combinedTseitinClauses.keySet()) {
                 for (final Expression expression : tseitinClause.getClauses()) {
                     //todo transformedClauses.add(Formulas.manipulate(expression, new VariableMapSetter(termMap)));
                 }
@@ -135,7 +141,7 @@ public class CNFTransformer implements FormulaTransformer {
                     distributiveClauses.addAll(
                             (List<? extends Formula>) distributive(clonedChild, new CancelableMonitor()).get().getChildren()); // todo .get?
                     return;
-                } catch (final DistributiveTransformer.MaximumNumberOfLiteralsExceededException ignored) {
+                } catch (final ToNormalFormFormula.MaximumNumberOfLiteralsExceededException ignored) {
                 }
             }
             tseitinClauses.addAll(tseitin(clonedChild, new CancelableMonitor()).get()); // todo: .get?
@@ -143,14 +149,14 @@ public class CNFTransformer implements FormulaTransformer {
     }
 
     protected Result<Formula> distributive(Formula child, Monitor monitor)
-            throws DistributiveTransformer.MaximumNumberOfLiteralsExceededException {
-        final DistributiveTransformer cnfDistributiveLawTransformer = new DistributiveTransformer(Formula.NormalForm.CNF);
+            throws ToNormalFormFormula.MaximumNumberOfLiteralsExceededException {
+        final ToNormalFormFormula cnfDistributiveLawTransformer = new ToNormalFormFormula(Computation.of(child, monitor), Formula.NormalForm.CNF); // todo: monitor subtask?
         cnfDistributiveLawTransformer.setMaximumNumberOfLiterals(maximumNumberOfLiterals);
-        return cnfDistributiveLawTransformer.execute(child, monitor);
+        return cnfDistributiveLawTransformer.getResult();
     }
 
-    protected Result<List<TseitinTransformer.Substitute>> tseitin(Expression child, Monitor monitor) {
-        final TseitinTransformer tseitinTransformer = new TseitinTransformer();
-        return tseitinTransformer.execute(child, monitor);
+    protected Result<List<ToCNFFormulaTseitin.Substitute>> tseitin(Expression child, Monitor monitor) {
+        final ToCNFFormulaTseitin toTseitinCNFFormula = new ToCNFFormulaTseitin();
+        return toTseitinCNFFormula.execute(child, monitor);
     }
 }

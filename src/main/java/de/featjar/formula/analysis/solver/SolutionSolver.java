@@ -20,7 +20,8 @@
  */
 package de.featjar.formula.analysis.solver;
 
-import java.util.Optional;
+import de.featjar.base.data.Problem;
+import de.featjar.base.data.Result;
 
 /**
  * A satisfiability solver that returns some solution for a given formula.
@@ -34,12 +35,15 @@ public interface SolutionSolver<T> extends SATSolver {
      * {@return the last solution for the given formula found by this solver}
      * Can only be called after a successful {@link #hasSolution()} call.
      */
-    T getSolution();
+    Result<T> getSolution();
 
     /**
      * {@return a solution for the given formula, if any}
      */
-    default Optional<T> findSolution() {
-        return hasSolution() == SATResult.TRUE ? Optional.of(getSolution()) : Optional.empty();
+    default Result<T> findSolution() {
+        return hasSolution()
+                .flatMap(s -> s.equals(true)
+                        ? getSolution()
+                        : Result.empty(new Problem("has no solution", Problem.Severity.ERROR)));
     }
 }

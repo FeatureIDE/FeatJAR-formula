@@ -20,8 +20,9 @@
  */
 package de.featjar.formula.transformer;
 
+import de.featjar.base.data.Computation;
+import de.featjar.base.data.FutureResult;
 import de.featjar.base.data.Result;
-import de.featjar.base.task.Monitor;
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.formula.connective.And;
@@ -38,7 +39,8 @@ import java.util.stream.Collectors;
  *
  * @author Sebastian Krieter
  */
-public class DistributiveTransformer implements FormulaTransformer {
+public class ToNormalFormFormula implements Computation<Formula> {
+    protected final Computation<Formula> nnfFormulaComputation;
 
     public static class MaximumNumberOfLiteralsExceededException extends Exception {
     }
@@ -63,7 +65,8 @@ public class DistributiveTransformer implements FormulaTransformer {
 
     private List<Expression> children;
 
-    public DistributiveTransformer(Formula.NormalForm normalForm) {
+    public ToNormalFormFormula(Computation<Formula> nnfFormulaComputation, Formula.NormalForm normalForm) {
+        this.nnfFormulaComputation = nnfFormulaComputation;
         this.normalForm = normalForm;
         switch (normalForm) {
             case CNF:
@@ -84,54 +87,56 @@ public class DistributiveTransformer implements FormulaTransformer {
     }
 
     @Override
-    public Result<Formula> execute(Formula formula, Monitor monitor) {
-        if (normalForm.equals(Formula.NormalForm.CNF))
-            formula = (formula instanceof And) ? (And) formula : new And(formula);
-        if (normalForm.equals(Formula.NormalForm.DNF))
-            formula = (formula instanceof Or) ? (Or) formula : new Or(formula);
+    public FutureResult<Formula> compute() {
+        return nnfFormulaComputation.get().thenComputeResult((formula, monitor) -> {
+            if (normalForm.equals(Formula.NormalForm.CNF))
+                formula = (formula instanceof And) ? (And) formula : new And(formula);
+            if (normalForm.equals(Formula.NormalForm.DNF))
+                formula = (formula instanceof Or) ? (Or) formula : new Or(formula);
 
-        final ArrayList<PathElement> path = new ArrayList<>();
-        final ArrayDeque<Expression> stack = new ArrayDeque<>();
-        stack.addLast(formula);
-        while (!stack.isEmpty()) {
-            final Expression curNode = stack.getLast();
-            final boolean firstEncounter = path.isEmpty() || (curNode != path.get(path.size() - 1).expression);
-            if (firstEncounter) {
-                if (curNode instanceof Literal) {
-                    final PathElement parent = path.get(path.size() - 1);
-                    parent.newChildren.add(curNode);
-                    stack.removeLast();
-                } else {
-                    path.add(new PathElement(curNode));
-                    curNode.getChildren().forEach(stack::addLast);
-                }
-            } else {
-                final PathElement currentElement = path.remove(path.size() - 1);
-                curNode.setChildren(currentElement.newChildren);
-
-                if (!path.isEmpty()) {
-                    final PathElement parentElement = path.get(path.size() - 1);
-                    parentElement.maxDepth = Math.max(currentElement.maxDepth + 1, parentElement.maxDepth);
-                }
-
-                if ((clauseClass == curNode.getClass()) && (currentElement.maxDepth > 0)) {
-                    final PathElement parentElement = path.get(path.size() - 1);
-                    try {
-                        parentElement.newChildren.addAll(convert(curNode));
-                    } catch (MaximumNumberOfLiteralsExceededException e) {
-                        return Result.empty(e);
+            final ArrayList<PathElement> path = new ArrayList<>();
+            final ArrayDeque<Expression> stack = new ArrayDeque<>();
+            stack.addLast(formula);
+            while (!stack.isEmpty()) {
+                final Expression curNode = stack.getLast();
+                final boolean firstEncounter = path.isEmpty() || (curNode != path.get(path.size() - 1).expression);
+                if (firstEncounter) {
+                    if (curNode instanceof Literal) {
+                        final PathElement parent = path.get(path.size() - 1);
+                        parent.newChildren.add(curNode);
+                        stack.removeLast();
+                    } else {
+                        path.add(new PathElement(curNode));
+                        curNode.getChildren().forEach(stack::addLast);
                     }
-                    parentElement.maxDepth = 1;
                 } else {
+                    final PathElement currentElement = path.remove(path.size() - 1);
+                    curNode.setChildren(currentElement.newChildren);
+
                     if (!path.isEmpty()) {
                         final PathElement parentElement = path.get(path.size() - 1);
-                        parentElement.newChildren.add(curNode);
+                        parentElement.maxDepth = Math.max(currentElement.maxDepth + 1, parentElement.maxDepth);
                     }
+
+                    if ((clauseClass == curNode.getClass()) && (currentElement.maxDepth > 0)) {
+                        final PathElement parentElement = path.get(path.size() - 1);
+                        try {
+                            parentElement.newChildren.addAll(convert(curNode));
+                        } catch (MaximumNumberOfLiteralsExceededException e) {
+                            return Result.empty(e);
+                        }
+                        parentElement.maxDepth = 1;
+                    } else {
+                        if (!path.isEmpty()) {
+                            final PathElement parentElement = path.get(path.size() - 1);
+                            parentElement.newChildren.add(curNode);
+                        }
+                    }
+                    stack.removeLast();
                 }
-                stack.removeLast();
             }
-        }
-        return Result.of(formula);
+            return Result.of(formula);
+        });
     }
 
     @SuppressWarnings("unchecked")

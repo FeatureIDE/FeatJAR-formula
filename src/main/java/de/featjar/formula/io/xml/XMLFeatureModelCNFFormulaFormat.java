@@ -20,13 +20,14 @@
  */
 package de.featjar.formula.io.xml;
 
+import de.featjar.base.data.Computation;
 import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Not;
 import de.featjar.formula.structure.formula.connective.Or;
-import de.featjar.formula.transformer.CNFTransformer;
+import de.featjar.formula.transformer.ToCNFFormula;
 import de.featjar.formula.visitor.DeMorganApplier;
 import de.featjar.formula.visitor.AndOrSimplifier;
 import de.featjar.base.io.format.ParseException;
@@ -41,7 +42,7 @@ import org.w3c.dom.Element;
 
 /**
  * Parses feature model CNF formulas from FeatureIDE XML files. Returns a
- * formula that is already partially in CNF, except for cross-tree constraints.
+ * formula that is already partially in CNF, except for cross-tree constraints. todo: actually, this actively transforms...?
  *
  * @author Sebastian Krieter
  * @author Elias Kuiter
@@ -70,7 +71,7 @@ public class XMLFeatureModelCNFFormulaFormat extends XMLFeatureModelFormulaForma
 
     @Override
     protected void addConstraint(Boolean constraintLabel, Formula formula) throws ParseException {
-        Formula transformedExpression = new CNFTransformer().apply(formula)
+        Formula transformedExpression = Computation.of(formula).then(ToCNFFormula.class).getResult()
                 .orElseThrow(p -> new ParseException("failed to transform " + formula));
         super.addConstraint(constraintLabel, transformedExpression);
     }

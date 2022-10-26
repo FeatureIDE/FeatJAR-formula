@@ -20,8 +20,8 @@
  */
 package de.featjar.formula.transformer;
 
-import de.featjar.base.data.Result;
-import de.featjar.base.task.Monitor;
+import de.featjar.base.data.Computation;
+import de.featjar.base.data.FutureResult;
 import de.featjar.base.tree.Trees;
 import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.visitor.*;
@@ -31,24 +31,32 @@ import de.featjar.formula.visitor.*;
  *
  * @author Elias Kuiter
  */
-public class NNFTransformer implements FormulaTransformer {
+public class ToNNFFormula implements Computation<Formula> {
+    protected final Computation<Formula> formulaComputation;
+
+    public ToNNFFormula(Computation<Formula> formulaComputation) {
+        this.formulaComputation = formulaComputation;
+    }
+
     @Override
-    public Result<Formula> execute(Formula formula, Monitor monitor) {
-        //todo
-        //final NormalFormTester normalFormTester = NormalForms.getNormalFormTester(formula, NormalForms.NormalForm.NNF);
-        if (false) {//normalFormTester.isNormalForm) {
+    public FutureResult<Formula> compute() {
+        return formulaComputation.get().thenCompute((formula, monitor) -> {
+            //todo
+            //final NormalFormTester normalFormTester = NormalForms.getNormalFormTester(formula, NormalForms.NormalForm.NNF);
+            if (false) {//normalFormTester.isNormalForm) {
 //            if (!normalFormTester.isClausalNormalForm()) {
 //                return Result.of(NormalForms.toClausalNF(Trees.clone(expression), NormalForms.NormalForm.DNF));
 //            } else {
 //                return Result.of(Trees.clone(expression));
 //            }
-            return Result.empty();
-        } else {
-            formula = (Formula) formula.cloneTree();
-            Trees.traverse(formula, new ConnectiveSimplifier());
-            Trees.traverse(formula, new DeMorganApplier());
-            Trees.traverse(formula, new AndOrSimplifier());
-            return Result.of(formula);
-        }
+                return null;
+            } else {
+                formula = (Formula) formula.cloneTree();
+                Trees.traverse(formula, new ConnectiveSimplifier());
+                Trees.traverse(formula, new DeMorganApplier());
+                Trees.traverse(formula, new AndOrSimplifier());
+                return formula;
+            }
+        });
     }
 }

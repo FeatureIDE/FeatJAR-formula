@@ -20,6 +20,8 @@
  */
 package de.featjar.formula.analysis.solver;
 
+import de.featjar.base.data.Result;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -38,10 +40,10 @@ public interface MUSSolver<T> extends SATSolver {
     /**
      * {@return a minimal unsatisfiable subset (MUS) for the given formula, if any}
      */
-    Optional<List<T>> getMinimalUnsatisfiableSubset();
+    Result<List<T>> getMinimalUnsatisfiableSubset();
 
     /**
      * {@return all minimal unsatisfiable subsets (MUS) for the given formula}
      */
-    List<List<T>> getAllMinimalUnsatisfiableSubsets();
+    Result<List<List<T>>> getAllMinimalUnsatisfiableSubsets();
 }

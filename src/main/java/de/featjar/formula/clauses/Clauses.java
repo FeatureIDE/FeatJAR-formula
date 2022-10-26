@@ -21,13 +21,12 @@
 package de.featjar.formula.clauses;
 
 import de.featjar.base.Feat;
+import de.featjar.base.data.Computation;
 import de.featjar.formula.io.FormulaFormats;
-import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Or;
-import de.featjar.base.data.Store;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.IO;
 
@@ -67,7 +66,7 @@ public class Clauses {
      * Negates all clauses in the list (applies De Morgan).
      *
      * @param clauses collection of clauses
-     * @return A newly construct {@code ClauseList}.
+     * @return A newly constructed {@code ClauseList}.
      */
     public static Stream<LiteralList> negate(Collection<LiteralList> clauses) {
         return clauses.stream().map(LiteralList::negate);
@@ -84,24 +83,22 @@ public class Clauses {
     }
 
     public static CNF convertToCNF(Formula expression) {
-        return new FormulaToCNF().apply(expression).get();
+        return Computation.of(expression).then(ToCNF.class).getResult().get();
     }
 
     public static CNF convertToCNF(Formula expression, VariableMap termMap) {
-        final FormulaToCNF function = new FormulaToCNF();
-        function.setVariableMapping(termMap);
-        return function.apply(expression).get();
+        final ToCNF function = (ToCNF) Computation.of(expression).then(ToCNF.class);
+        function.setVariableMap(termMap);
+        return function.getResult().get();
     }
 
     public static CNF convertToDNF(Formula expression) {
-        final CNF cnf = new FormulaToCNF().apply(expression).get();
+        final CNF cnf = convertToCNF(expression);
         return new CNF(cnf.getVariableMap(), convertNF(cnf.getClauses()));
     }
 
     public static CNF convertToDNF(Formula expression, VariableMap termMap) {
-        final FormulaToCNF function = new FormulaToCNF();
-        function.setVariableMapping(termMap);
-        final CNF cnf = function.apply(expression).get();
+        final CNF cnf = convertToCNF(expression, new VariableMap());
         return new CNF(termMap, convertNF(cnf.getClauses()));
     }
 
@@ -109,7 +106,7 @@ public class Clauses {
      * Converts CNF to DNF and vice-versa.
      *
      * @param clauses list of clauses
-     * @return A newly construct {@code ClauseList}.
+     * @return A newly constructed {@code ClauseList}.
      */
     public static List<LiteralList> convertNF(List<LiteralList> clauses) {
         final List<LiteralList> convertedClauseList = new ArrayList<>();

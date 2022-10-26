@@ -20,6 +20,8 @@
  */
 package de.featjar.formula.analysis.solver;
 
+import de.featjar.base.data.Result;
+
 import java.math.BigInteger;
 
 /**
@@ -33,5 +35,5 @@ public interface SharpSATSolver extends SATSolver {
     /**
      * {@return the number of solutions for the given formula}
      */
-    BigInteger countSolutions();
+    Result<BigInteger> countSolutions();
 }
