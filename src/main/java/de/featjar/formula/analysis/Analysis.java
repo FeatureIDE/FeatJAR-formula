@@ -59,7 +59,7 @@ public abstract class Analysis<T, S extends Solver, U> implements Computation<T>
         this.random = new Random(randomSeed);
     }
 
-    protected FutureResult<S> getSolver() throws SolverContradictionException {
+    protected FutureResult<S> initializeSolver() throws SolverContradictionException {
         return inputComputation.get().thenCompute((input, monitor) -> {
             S solver = solverFactory.apply(input); // need to clone input? probably note
             solver.setAssumptions(assumptions);
