@@ -42,7 +42,7 @@ public abstract class SolverFormula<T> {
     }
 
     protected SolverFormula(SolverFormula<T> oldFormula) {
-        solverFormulas = new ArrayList<>(oldFormula.solverFormulas);
+        solverFormulas = new ArrayList<>(oldFormula.solverFormulas); // todo clone necessary?
     }
 
     public List<T> get() {

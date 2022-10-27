@@ -68,13 +68,13 @@ public class LiteralList implements Comparable<LiteralList> {
         return getVariables(cnf.getVariableMap());
     }
 
-    public static LiteralList getVariables(VariableMap termMap) {
-        return new LiteralList(constructVariableStream(termMap).toArray());
+    public static LiteralList getVariables(VariableMap variableMap) {
+        return new LiteralList(constructVariableStream(variableMap).toArray());
     }
 
-    public static LiteralList getVariables(VariableMap termMap, Collection<String> variableNames) {
+    public static LiteralList getVariables(VariableMap variableMap, Collection<String> variableNames) {
         return new LiteralList(
-                constructVariableStream(termMap, variableNames).toArray());
+                constructVariableStream(variableMap, variableNames).toArray());
     }
 
     public static LiteralList getLiterals(CNF cnf) {
@@ -87,8 +87,8 @@ public class LiteralList implements Comparable<LiteralList> {
                 .toArray());
     }
 
-    public static LiteralList getLiterals(VariableMap termMap, Collection<String> variableNames) {
-        return new LiteralList(constructVariableStream(termMap, variableNames)
+    public static LiteralList getLiterals(VariableMap variableMap, Collection<String> variableNames) {
+        return new LiteralList(constructVariableStream(variableMap, variableNames)
                 .flatMap(n -> IntStream.of(-n, n))
                 .toArray());
     }
@@ -97,9 +97,9 @@ public class LiteralList implements Comparable<LiteralList> {
         return variables.getValidIndexRange().stream().get();
     }
 
-    private static IntStream constructVariableStream(VariableMap termMap, Collection<String> variableNames) {
+    private static IntStream constructVariableStream(VariableMap variableMap, Collection<String> variableNames) {
         return variableNames.stream()
-                .map(termMap::get)
+                .map(variableMap::get)
                 .flatMap(Optional::stream)
                 .mapToInt(Integer::intValue)
                 .distinct();
