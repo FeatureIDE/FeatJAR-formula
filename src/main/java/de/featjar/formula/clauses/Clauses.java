@@ -86,10 +86,8 @@ public class Clauses {
         return Computation.of(expression).then(ToCNF.class).getResult().get();
     }
 
-    public static CNF convertToCNF(Formula expression, VariableMap termMap) {
-        final ToCNF function = (ToCNF) Computation.of(expression).then(ToCNF.class);
-        function.setVariableMap(termMap);
-        return function.getResult().get();
+    public static CNF convertToCNF(Formula expression, VariableMap variableMap) {
+        return Computation.of(expression).then(ToCNF.class, Computation.of(variableMap)).getResult().get();
     }
 
     public static CNF convertToDNF(Formula expression) {

@@ -38,11 +38,17 @@ import java.util.Objects;
  */
 public class ToCNF implements Computation<CNF> {
     protected final Computation<Formula> cnfFormulaComputation;
-    protected boolean keepLiteralOrder;
-    protected VariableMap variableMap;
+    protected final Computation<VariableMap> variableMapComputation;
+    protected final boolean keepLiteralOrder;
 
     public ToCNF(Computation<Formula> cnfFormulaComputation) {
+        this(cnfFormulaComputation, cnfFormulaComputation.map(VariableMap::of), false);
+    }
+
+    public ToCNF(Computation<Formula> cnfFormulaComputation, Computation<VariableMap> variableMapComputation, boolean keepLiteralOrder) {
         this.cnfFormulaComputation = cnfFormulaComputation;
+        this.variableMapComputation = variableMapComputation;
+        this.keepLiteralOrder = keepLiteralOrder;
     }
 
     public static Result<CNF> convert(Formula formula) {
@@ -50,59 +56,39 @@ public class ToCNF implements Computation<CNF> {
     }
 
     public static Result<CNF> convert(Formula expression, VariableMap termMap) {
-        final ToCNF function = (ToCNF) Computation.of(expression).then(ToCNF.class);
-        function.setVariableMap(termMap);
-        function.setKeepLiteralOrder(true);
-        return function.getResult();
+        return Computation.of(expression).then(ToCNF.class, termMap, true).getResult();
     }
 
     @Override
     public FutureResult<CNF> compute() {
-        return cnfFormulaComputation.compute().thenComputeResult(((formula, monitor) -> {
-            if (formula == null) {
-                return Result.empty();
-            }
-            final ClauseList clauses = new ClauseList();
-            //final Optional<Object> formulaValue = expression.evaluate();
-//        if (formulaValue.isPresent()) {
-//            if (formulaValue.get() == Boolean.FALSE) {
-//                clauses.add(new LiteralList());
-//            }
-//        } else {
-            final Expression cnf = formula.toCNF().get();
-            VariableMap variableMap = VariableMap.of(cnf);
-            cnf.getChildren().stream()
-                    .map(exp -> getClause(exp, variableMap))
-                    .filter(Objects::nonNull)
-                    .forEach(clauses::add);
-            //}
-            return Result.of(new CNF(variableMap, clauses));
-        }));
-    }
-
-    public boolean isKeepLiteralOrder() {
-        return keepLiteralOrder;
-    }
-
-    public void setKeepLiteralOrder(boolean keepLiteralOrder) {
-        this.keepLiteralOrder = keepLiteralOrder;
-    }
-
-    public VariableMap getVariableMap() {
-        return variableMap;
-    }
-
-    public void setVariableMap(VariableMap termMap) {
-        this.variableMap = termMap;
+        return Computation.allOf(cnfFormulaComputation, variableMapComputation)
+                .compute().thenComputeResult(((list, monitor) -> {
+                    Formula formula = (Formula) list.get(0);
+                    VariableMap variableMap = (VariableMap) list.get(1);
+                    final ClauseList clauses = new ClauseList();
+                    final Object formulaValue = formula.evaluate();
+                    if (formulaValue != null) {
+                        if (formulaValue == Boolean.FALSE) {
+                            clauses.add(new LiteralList());
+                        }
+                    } else {
+                        final Expression cnf = formula.toCNF().get();
+                        cnf.getChildren().stream()
+                                .map(exp -> getClause(exp, variableMap))
+                                .filter(Objects::nonNull)
+                                .forEach(clauses::add);
+                    }
+                    return Result.of(new CNF(variableMap, clauses));
+                }));
     }
 
     private LiteralList getClause(Expression clauseExpression, VariableMap mapping) {
         if (clauseExpression instanceof Literal) {
             final Literal literal = (Literal) clauseExpression;
-            final int variable = mapping.get(literal.getName())
+            final int variable = mapping.get(literal.getExpression().getName())
                     .orElseThrow(RuntimeException::new);
             return new LiteralList(
-                    new int[] {literal.isPositive() ? variable : -variable},
+                    new int[]{literal.isPositive() ? variable : -variable},
                     keepLiteralOrder ? LiteralList.Order.UNORDERED : LiteralList.Order.NATURAL);
         } else {
             final List<? extends Expression> clauseChildren = clauseExpression.getChildren();
@@ -113,7 +99,7 @@ public class ToCNF implements Computation<CNF> {
                         .filter(literal -> literal != Expressions.False)
                         .filter(literal -> literal instanceof Literal)
                         .mapToInt(literal -> {
-                            final int variable = mapping.get(literal.getName())
+                            final int variable = mapping.get(((Literal) literal).getExpression().getName())
                                     .orElseThrow(RuntimeException::new);
                             return ((Literal) literal).isPositive() ? variable : -variable;
                         })

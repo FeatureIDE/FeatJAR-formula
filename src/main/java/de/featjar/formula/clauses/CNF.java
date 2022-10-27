@@ -39,18 +39,18 @@ public class CNF {
     protected ClauseList clauses;
     protected VariableMap variables;
 
-    public CNF(VariableMap mapping, ClauseList clauses) {
-        variables = mapping;
+    public CNF(VariableMap variableMap, ClauseList clauses) {
+        variables = variableMap;
         this.clauses = clauses;
     }
 
-    public CNF(VariableMap mapping, List<LiteralList> clauses) {
-        variables = mapping;
+    public CNF(VariableMap variableMap, List<LiteralList> clauses) {
+        variables = variableMap;
         this.clauses = new ClauseList(clauses);
     }
 
-    public CNF(VariableMap mapping) {
-        variables = mapping;
+    public CNF(VariableMap variableMap) {
+        variables = variableMap;
         clauses = new ClauseList();
     }
 
