@@ -42,7 +42,8 @@ public abstract class Analysis<T, S extends Solver, U> implements Computation<T>
     public static final int DEFAULT_TIMEOUT_IN_MS = 0;
     public static final int DEFAULT_RANDOM_SEED = 0;
     protected final Computation<U> inputComputation;
-    protected final Function<U, S> solverFactory; // todo: or use Computation<S>, which then has to be cloned before usage? this requires a general cloning mechanism for computation inputs (T implements Cloneable)
+    protected final Function<U, S> solverFactory; // todo: or use Computation<S>, which then has to be cloned before usage?
+    // this would require a general cloning mechanism for computation inputs (T implements Cloneable)
     protected final VariableAssignment assumptions;
     protected final long timeoutInMs;
     protected final Random random;
@@ -51,6 +52,8 @@ public abstract class Analysis<T, S extends Solver, U> implements Computation<T>
         this(inputComputation, solverFactory, new VariableAssignment(), DEFAULT_TIMEOUT_IN_MS, DEFAULT_RANDOM_SEED);
     }
 
+    // todo: fluent API for defining analysis parameters?
+    // e.g., new Analysis(...).timeout(...).random(...)
     protected Analysis(Computation<U> inputComputation, Function<U, S> solverFactory, VariableAssignment assumptions, long timeoutInMs, long randomSeed) {
         this.inputComputation = inputComputation;
         this.solverFactory = solverFactory;
@@ -62,7 +65,7 @@ public abstract class Analysis<T, S extends Solver, U> implements Computation<T>
     protected FutureResult<S> initializeSolver() throws SolverContradictionException {
         return inputComputation.get().thenCompute((input, monitor) -> {
             S solver = solverFactory.apply(input); // need to clone input? probably note
-            solver.setAssumptions(assumptions);
+            //solver.setAssumptions(assumptions); // todo: ignores assumptions for now
             solver.setTimeout(timeoutInMs);
             return solver;
         });

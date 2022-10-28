@@ -30,6 +30,7 @@ import de.featjar.formula.structure.formula.predicate.Literal;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 /**
  * Several methods concerning {@link Expression} framework.
@@ -37,6 +38,7 @@ import java.util.Objects;
  * @author Sebastian Krieter
  */
 public class ToCNF implements Computation<CNF> {
+    public static final Function<Computation<Formula>, Computation<CNF>> analysis = ToCNF::new;
     protected final Computation<Formula> cnfFormulaComputation;
     protected final Computation<VariableMap> variableMapComputation;
     protected final boolean keepLiteralOrder;
@@ -62,23 +64,25 @@ public class ToCNF implements Computation<CNF> {
     @Override
     public FutureResult<CNF> compute() {
         return Computation.allOf(cnfFormulaComputation, variableMapComputation)
+        //cnfFormulaComputation
                 .compute().thenComputeResult(((list, monitor) -> {
                     Formula formula = (Formula) list.get(0);
-                    VariableMap variableMap = (VariableMap) list.get(1);
+                    //VariableMap variableMap = (VariableMap) list.get(1); //todo
                     final ClauseList clauses = new ClauseList();
-                    final Object formulaValue = formula.evaluate();
-                    if (formulaValue != null) {
-                        if (formulaValue == Boolean.FALSE) {
-                            clauses.add(new LiteralList());
-                        }
-                    } else {
-                        final Expression cnf = formula.toCNF().get();
+                    //final Object formulaValue = formula.evaluate();
+                    final Expression cnf = formula.toCNF().get();
+                    VariableMap of = VariableMap.of(cnf);
+//                    if (formulaValue != null) { //todo
+//                        if (formulaValue == Boolean.FALSE) {
+//                            clauses.add(new LiteralList());
+//                        }
+//                    } else {
                         cnf.getChildren().stream()
-                                .map(exp -> getClause(exp, variableMap))
+                                .map(exp -> getClause(exp, of))
                                 .filter(Objects::nonNull)
                                 .forEach(clauses::add);
-                    }
-                    return Result.of(new CNF(variableMap, clauses));
+                    //}
+                    return Result.of(new CNF(of, clauses));
                 }));
     }
 
