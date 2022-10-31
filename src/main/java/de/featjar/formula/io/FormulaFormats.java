@@ -20,24 +20,11 @@
  */
 package de.featjar.formula.io;
 
-import de.featjar.formula.structure.Expression;
 import de.featjar.base.extension.ExtensionPoint;
 import de.featjar.base.io.format.Format;
 import de.featjar.base.io.format.Formats;
 import de.featjar.formula.structure.formula.Formula;
 
 public class FormulaFormats extends Formats<Formula> {
-
-    private static final FormulaFormats INSTANCE = new FormulaFormats();
-
-    public static FormulaFormats getInstance() {
-        return INSTANCE;
-    }
-
-    private FormulaFormats() {}
-
-    @Override
-    public ExtensionPoint<Format<Formula>> getInstanceAsExtensionPoint() {
-        return INSTANCE;
-    }
+    public FormulaFormats() {}
 }
