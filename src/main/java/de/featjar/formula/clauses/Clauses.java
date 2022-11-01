@@ -151,13 +151,13 @@ public class Clauses {
     }
 
     public static CNF open(Path path) {
-        return IO.load(path, FormulaFormats.getInstance())
+        return IO.load(path, Feat.extensionPoint(FormulaFormats.class))
                 .map(Clauses::convertToCNF)
                 .orElse(p -> Feat.log().problems(p));
     }
 
     public static Result<CNF> load(Path path) {
-        return IO.load(path, FormulaFormats.getInstance()).map(Clauses::convertToCNF);
+        return IO.load(path, Feat.extensionPoint(FormulaFormats.class)).map(Clauses::convertToCNF);
     }
 
 //    public static Result<CNF> load(Path path, Store store) {
