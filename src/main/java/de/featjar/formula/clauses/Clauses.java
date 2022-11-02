@@ -160,22 +160,6 @@ public class Clauses {
         return IO.load(path, Feat.extensionPoint(FormulaFormats.class)).map(Clauses::convertToCNF);
     }
 
-//    public static Result<CNF> load(Path path, Store store) {
-//        return store.get(CNFComputation.loader(path));
-//    }
-
-//    public static Store createCache(Path path) {
-//        final Store store = new Store();
-//        store.set(CNFComputation.loader(path));
-//        return store;
-//    }
-//
-//    public static Store createCache(CNF cnf) {
-//        final Store store = new Store();
-//        store.set(CNFComputation.of(cnf));
-//        return store;
-//    }
-
     public static Or toOrClause(LiteralList clause, VariableMap termMap) {
         return new Or(toLiterals(clause, termMap));
     }
