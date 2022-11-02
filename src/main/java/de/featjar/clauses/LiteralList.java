@@ -283,7 +283,7 @@ public class LiteralList implements Cloneable, Comparable<LiteralList>, Serializ
                 return -1;
             case INDEX:
                 final int index = Math.abs(literal) - 1;
-                return literal == 0 ? -1 : literals[index] == literal ? index : -1;
+                return literal == 0 || index >= literals.length ? -1 : literals[index] == literal ? index : -1;
             case NATURAL:
                 return Arrays.binarySearch(literals, literal);
             default:
