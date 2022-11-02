@@ -38,7 +38,6 @@ import java.util.function.Function;
  * @author Sebastian Krieter
  */
 public class ToCNF implements Computation<CNF> {
-    public static final Function<Computation<Formula>, Computation<CNF>> analysis = ToCNF::new;
     protected final Computation<Formula> cnfFormulaComputation;
     protected final Computation<VariableMap> variableMapComputation;
     protected final boolean keepLiteralOrder;
