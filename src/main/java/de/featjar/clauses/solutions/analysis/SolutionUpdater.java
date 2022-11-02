@@ -22,7 +22,6 @@
  */
 package de.featjar.clauses.solutions.analysis;
 
-import java.util.List;
 import java.util.Optional;
 
 import de.featjar.clauses.LiteralList;
@@ -36,12 +35,8 @@ import de.featjar.clauses.LiteralList;
  */
 public interface SolutionUpdater {
 
-	Optional<LiteralList> complete(LiteralList partialSolution);
-	
-	Optional<LiteralList> complete(LiteralList partialSolution, List<LiteralList> excludeClause);
+	Optional<LiteralList> complete(LiteralList partialSolution, LiteralList... excludeClause);
 
-	default LiteralList update(LiteralList partialSolution) {
-		return partialSolution;
-	}
+	Optional<LiteralList> update(LiteralList partialSolution);
 
 }

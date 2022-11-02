@@ -36,4 +36,24 @@ public interface InteractionFinder {
 
 	List<LiteralList> find(int t, int x);
 
+	void setCore(LiteralList coreDead);
+
+	int getConfigurationCount();
+
+	List<?> getInteractionCounter();
+
+	LiteralList getCore();
+
+	LiteralList merge(List<LiteralList> result);
+
+	boolean verify(LiteralList solution);
+
+	LiteralList complete(LiteralList include, LiteralList... exclude);
+
+	LiteralList update(LiteralList result);
+
+	int getConfigCreationCount();
+
+	int getVerifyCount();
+
 }
