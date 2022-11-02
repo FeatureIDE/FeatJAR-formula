@@ -64,7 +64,7 @@ public class ToCNF implements Computation<CNF> {
     public FutureResult<CNF> compute() {
         return Computation.allOf(cnfFormulaComputation, variableMapComputation)
         //cnfFormulaComputation
-                .compute().thenComputeResult(((list, monitor) -> {
+                .get().thenComputeResult(((list, monitor) -> {
                     Formula formula = (Formula) list.get(0);
                     //VariableMap variableMap = (VariableMap) list.get(1); //todo
                     final ClauseList clauses = new ClauseList();
