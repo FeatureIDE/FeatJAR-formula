@@ -20,23 +20,26 @@
  */
 package de.featjar.formula.io;
 
+import de.featjar.base.data.Problem;
+import de.featjar.base.data.Result;
+import de.featjar.base.io.InputMapper;
+import de.featjar.base.io.format.Format;
 import de.featjar.formula.io.textual.ExpressionParser;
 import de.featjar.formula.io.textual.PropositionalModelSymbols;
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.formula.connective.And;
-import de.featjar.base.data.Problem;
-import de.featjar.base.data.Result;
-import de.featjar.base.io.InputMapper;
-import de.featjar.base.io.format.Format;
+
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Parses feature-model formula files created by KConfigReader.
+ *
+ * @author Elias Kuiter
+ */
 public class KConfigReaderFormat implements Format<Expression> {
 
-    @SuppressWarnings("unchecked")
     @Override
     public Result<Expression> parse(InputMapper inputMapper) {
         final ArrayList<Problem> problems = new ArrayList<>();
@@ -45,11 +48,12 @@ public class KConfigReaderFormat implements Format<Expression> {
         return Result.of(
                 new And(inputMapper
                         .get()
-                        .getLineStream() //
-                        .map(String::trim) //
-                        .filter(l -> !l.isEmpty()) //
-                        .filter(l -> !l.startsWith("#")) //
-                        // fix non-boolean constraints
+                        .getLineStream()
+                        .map(String::trim)
+                        .filter(l -> !l.isEmpty())
+                        .filter(l -> !l.startsWith("#"))
+                        // "convert" non-boolean constraints into boolean constraints
+                        // todo: parse as proper first-order formulas
                         .map(l -> l.replace("=", "_"))
                         .map(l -> l.replace(":", "_"))
                         .map(l -> l.replace(".", "_"))
@@ -59,10 +63,10 @@ public class KConfigReaderFormat implements Format<Expression> {
                         .map(l -> l.replace(" ", "_"))
                         .map(l -> l.replace("-", "_"))
                         .map(l -> l.replaceAll("def\\((\\w+)\\)", "$1"))
-                        .map(expressionParser::parse) //
+                        .map(expressionParser::parse)
                         .peek(r -> problems.addAll(r.getProblems()))
                         .filter(Result::isPresent)
-                        .map(expressionResult -> (Formula) expressionResult.get()) //
+                        .map(expressionResult -> (Formula) expressionResult.get())
                         .collect(Collectors.toList())),
                 problems);
     }

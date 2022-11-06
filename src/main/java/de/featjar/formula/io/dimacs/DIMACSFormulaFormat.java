@@ -27,7 +27,6 @@ import de.featjar.base.io.format.ParseProblem;
 import de.featjar.formula.structure.formula.Formula;
 
 import java.text.ParseException;
-import java.util.Optional;
 
 /**
  * Reads and writes feature models in the DIMACS CNF format.

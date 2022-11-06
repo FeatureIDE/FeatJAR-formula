@@ -20,13 +20,14 @@
  */
 package de.featjar.formula.structure.formula.connective;
 
-import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.term.value.Variable;
 
 /**
  * Expresses "exists X such that A" constraints (i.e., existential quantification).
  * Evaluates to {@code true} iff there is a value of the bound variable such that the formula evaluates to {@code true}.
+ * TODO: not supported by SAT solvers, but there is no error handling implemented, so
+ *  it may cause undefined behavior. same goes for {@link ForAll}.
  *
  * @author Sebastian Krieter
  */

@@ -20,6 +20,7 @@
  */
 package de.featjar.formula.structure.formula.predicate;
 
+import de.featjar.base.data.Problem;
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.TerminalExpression;
 
@@ -27,14 +28,15 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * A placeholder for when an expression cannot be parsed.
+ * A placeholder for a formula that wraps a problem.
+ * May be used for example when an expression cannot be parsed.
  *
  * @author Sebastian Krieter
  */
-public class Problem extends TerminalExpression implements Predicate {
-    private final de.featjar.base.data.Problem problem;
+public class ProblemFormula extends TerminalExpression implements Predicate {
+    private final Problem problem;
 
-    public Problem(de.featjar.base.data.Problem problem) {
+    public ProblemFormula(Problem problem) {
         this.problem = problem;
     }
 
@@ -48,13 +50,18 @@ public class Problem extends TerminalExpression implements Predicate {
     }
 
     @Override
-    public Problem cloneNode() {
-        return new Problem(problem);
+    public ProblemFormula cloneNode() {
+        return new ProblemFormula(problem);
     }
 
     @Override
     public boolean equalsNode(Expression other) {
-        return super.equalsNode(other) && Objects.equals(problem, ((Problem) other).problem);
+        return super.equalsNode(other) && Objects.equals(problem, ((ProblemFormula) other).problem);
+    }
+
+    @Override
+    public int hashCodeNode() {
+        return Objects.hash(super.hashCodeNode(), problem);
     }
 
     @Override

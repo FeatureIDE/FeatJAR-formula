@@ -70,4 +70,9 @@ public abstract class Quantifier extends NonTerminalExpression implements Connec
     public boolean equalsNode(Expression other) {
         return super.equalsNode(other) && Objects.equals(boundVariable, ((Quantifier) other).boundVariable);
     }
+
+    @Override
+    public int hashCodeNode() {
+        return Objects.hash(super.hashCodeNode(), boundVariable);
+    }
 }

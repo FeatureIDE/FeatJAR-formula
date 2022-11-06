@@ -141,9 +141,8 @@ public interface Expression extends Traversable<Expression> {
 
     /**
      * {@return the expression printed as a string}
-     * The string can be parsed using TODO
+     * The string can be parsed using TODO {@link ExpressionFormat}.
      */
-    //{@link ExpressionFormat}.
     default String printParseable() {
         try (final ByteArrayOutputStream s = new ByteArrayOutputStream()) {
             IO.save(this, s, new ExpressionFormat());

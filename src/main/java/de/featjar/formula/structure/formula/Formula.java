@@ -1,7 +1,6 @@
 package de.featjar.formula.structure.formula;
 
 import de.featjar.base.data.Result;
-import de.featjar.base.tree.structure.Traversable;
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.formula.predicate.Predicate;
 import de.featjar.formula.structure.term.value.Variable;

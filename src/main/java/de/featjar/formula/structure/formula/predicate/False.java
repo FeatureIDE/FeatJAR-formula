@@ -20,7 +20,6 @@
  */
 package de.featjar.formula.structure.formula.predicate;
 
-import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.TerminalExpression;
 
 import java.util.List;

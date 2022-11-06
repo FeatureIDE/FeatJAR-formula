@@ -29,7 +29,7 @@ import java.util.Objects;
 
 /**
  * Expresses "A == true" (or A) and "A == false" (or !A) constraints.
- * Evaluates to {@code true} iff its child evaluates to {@link #isPositive}.
+ * Evaluates to {@code true} iff its child evaluates to the polarity given by {@link #isPositive}.
  *
  * @author Sebastian Krieter
  * @author Elias Kuiter
@@ -105,5 +105,10 @@ public class Literal extends NonTerminalExpression implements UnaryExpression, P
     @Override
     public boolean equalsNode(Expression other) {
         return super.equalsNode(other) && isPositive == ((Literal) other).isPositive;
+    }
+
+    @Override
+    public int hashCodeNode() {
+        return Objects.hash(super.hashCodeNode(), isPositive);
     }
 }

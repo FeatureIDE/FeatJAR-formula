@@ -20,11 +20,14 @@
  */
 package de.featjar.formula.io;
 
-import de.featjar.base.extension.ExtensionPoint;
-import de.featjar.base.io.format.Format;
 import de.featjar.base.io.format.Formats;
 import de.featjar.formula.structure.formula.Formula;
 
+/**
+ * Manages formula formats.
+ *
+ * @author Sebastian Krieter
+ */
 public class FormulaFormats extends Formats<Formula> {
     public FormulaFormats() {}
 }

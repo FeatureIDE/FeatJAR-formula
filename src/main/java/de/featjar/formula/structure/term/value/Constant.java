@@ -1,8 +1,10 @@
 package de.featjar.formula.structure.term.value;
 
+import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.TerminalExpression;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A constant.
@@ -61,9 +63,17 @@ public class Constant extends TerminalExpression implements Value {
     }
 
     @Override
+    public boolean equalsNode(Expression other) {
+        return super.equalsNode(other) && Objects.equals(value, ((Constant) other).value);
+    }
+
+    @Override
+    public int hashCodeNode() {
+        return Objects.hash(super.hashCodeNode(), value);
+    }
+
+    @Override
     public Object evaluate(List<?> values) {
         return value;
     }
-
-    //todo override equalsNode with value
 }

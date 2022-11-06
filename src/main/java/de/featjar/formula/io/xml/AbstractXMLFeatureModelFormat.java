@@ -20,24 +20,20 @@
  */
 package de.featjar.formula.io.xml;
 
-import de.featjar.formula.structure.Expression;
-import de.featjar.formula.structure.formula.Formula;
-import de.featjar.formula.structure.formula.predicate.Literal;
-import de.featjar.formula.structure.formula.connective.And;
-import de.featjar.formula.structure.formula.connective.AtMost;
-import de.featjar.formula.structure.formula.connective.BiImplies;
-import de.featjar.formula.structure.formula.connective.Implies;
-import de.featjar.formula.structure.formula.connective.Not;
-import de.featjar.formula.structure.formula.connective.Or;
+import de.featjar.base.data.Problem;
 import de.featjar.base.io.format.ParseException;
 import de.featjar.base.io.xml.XMLFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
+import de.featjar.formula.structure.formula.Formula;
+import de.featjar.formula.structure.formula.connective.*;
+import de.featjar.formula.structure.formula.predicate.Literal;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Implements common behaviors for parsing and writing XML feature model files.
@@ -112,7 +108,7 @@ public abstract class AbstractXMLFeatureModelFormat<T, U, V> extends XMLFormat<T
             }
         } else {
             if (elements.isEmpty()) {
-                addParseProblem("No feature in group!", null, de.featjar.base.data.Problem.Severity.WARNING);
+                addParseProblem("No feature in group!", null, Problem.Severity.WARNING);
             }
         }
         for (final Element e : elements) {
@@ -124,7 +120,7 @@ public abstract class AbstractXMLFeatureModelFormat<T, U, V> extends XMLFormat<T
                     if (parentFeatureLabel != null) {
                         addFeatureMetadata(parentFeatureLabel, e);
                     } else {
-                        addParseProblem("Misplaced metadata element " + nodeName, e, de.featjar.base.data.Problem.Severity.WARNING);
+                        addParseProblem("Misplaced metadata element " + nodeName, e, Problem.Severity.WARNING);
                     }
                     break;
                 case AND:
@@ -150,18 +146,25 @@ public abstract class AbstractXMLFeatureModelFormat<T, U, V> extends XMLFormat<T
                 final org.w3c.dom.Node node = nodeMap.item(i);
                 final String attributeName = node.getNodeName();
                 final String attributeValue = node.getNodeValue();
-                if (attributeName.equals(ABSTRACT)) {
-                    _abstract = attributeValue.equals(TRUE);
-                } else if (attributeName.equals(MANDATORY)) {
-                    mandatory = attributeValue.equals(TRUE);
-                } else if (attributeName.equals(NAME)) {
-                    name = attributeValue;
-                } else if (attributeName.equals(HIDDEN)) {
-                    hidden = attributeValue.equals(TRUE);
-                } else if (attributeName.equals(COORDINATES)) {
-                    // Legacy case, for backwards compatibility
-                } else {
-                    addParseProblem("Unknown feature attribute: " + attributeName, e, de.featjar.base.data.Problem.Severity.WARNING);
+                switch (attributeName) {
+                    case ABSTRACT:
+                        _abstract = attributeValue.equals(TRUE);
+                        break;
+                    case MANDATORY:
+                        mandatory = attributeValue.equals(TRUE);
+                        break;
+                    case NAME:
+                        name = attributeValue;
+                        break;
+                    case HIDDEN:
+                        hidden = attributeValue.equals(TRUE);
+                        break;
+                    case COORDINATES:
+                        // Legacy case, for backwards compatibility
+                        break;
+                    default:
+                        addParseProblem("Unknown feature attribute: " + attributeName, e, Problem.Severity.WARNING);
+                        break;
                 }
             }
         }
@@ -206,23 +209,23 @@ public abstract class AbstractXMLFeatureModelFormat<T, U, V> extends XMLFormat<T
                                 final Node node = nodeMap.item(i);
                                 final String attributeName = node.getNodeName();
                                 if (attributeName.equals(COORDINATES)) {
-                                    // Legacy case, for backwards compatibility
+                                    addParseProblem("ignored coordinates", node, Problem.Severity.WARNING);
                                 } else {
                                     addParseProblem(
                                             "Unknown constraint attribute: " + attributeName,
                                             node,
-                                            de.featjar.base.data.Problem.Severity.WARNING);
+                                            Problem.Severity.WARNING);
                                 }
                             }
                         }
                     } else {
-                        addParseProblem("could not parse constraint node " + nodeName, child, de.featjar.base.data.Problem.Severity.WARNING);
+                        addParseProblem("could not parse constraint node " + nodeName, child, Problem.Severity.WARNING);
                     }
                 } catch (final Exception exception) {
-                    addParseProblem(exception.getMessage(), child, de.featjar.base.data.Problem.Severity.WARNING);
+                    addParseProblem(exception.getMessage(), child, Problem.Severity.WARNING);
                 }
             } else {
-                addParseProblem("Encountered unknown node " + nodeName, child, de.featjar.base.data.Problem.Severity.WARNING);
+                addParseProblem("Encountered unknown node " + nodeName, child, Problem.Severity.WARNING);
             }
         }
     }
@@ -242,7 +245,7 @@ public abstract class AbstractXMLFeatureModelFormat<T, U, V> extends XMLFormat<T
                     if (parentConstraintLabel != null) {
                         addConstraintMetadata(parentConstraintLabel, e);
                     } else {
-                        addParseProblem("Misplaced metadata element " + nodeName, e, de.featjar.base.data.Problem.Severity.WARNING);
+                        addParseProblem("Misplaced metadata element " + nodeName, e, Problem.Severity.WARNING);
                     }
                     break;
                 case DISJ:
@@ -256,7 +259,7 @@ public abstract class AbstractXMLFeatureModelFormat<T, U, V> extends XMLFormat<T
                     if (children.size() == 2) {
                         nodes.add(biImplies(children.get(0), children.get(1)));
                     } else {
-                        addParseProblem("unexpected number of operands for equivalence", e, de.featjar.base.data.Problem.Severity.WARNING);
+                        addParseProblem("unexpected number of operands for equivalence", e, Problem.Severity.WARNING);
                     }
                     break;
                 case IMP:
@@ -264,7 +267,7 @@ public abstract class AbstractXMLFeatureModelFormat<T, U, V> extends XMLFormat<T
                     if (children.size() == 2) {
                         nodes.add(implies(children.get(0), children.get(1)));
                     } else {
-                        addParseProblem("unexpected number of operands for implication", e, de.featjar.base.data.Problem.Severity.WARNING);
+                        addParseProblem("unexpected number of operands for implication", e, Problem.Severity.WARNING);
                     }
                     break;
                 case NOT:
@@ -272,7 +275,7 @@ public abstract class AbstractXMLFeatureModelFormat<T, U, V> extends XMLFormat<T
                     if (children.size() == 1) {
                         nodes.add(new Not(children.get(0)));
                     } else {
-                        addParseProblem("unexpected number of operands for negation", e, de.featjar.base.data.Problem.Severity.WARNING);
+                        addParseProblem("unexpected number of operands for negation", e, Problem.Severity.WARNING);
                     }
                     break;
                 case ATMOST1:
@@ -282,7 +285,7 @@ public abstract class AbstractXMLFeatureModelFormat<T, U, V> extends XMLFormat<T
                     nodes.add(new Literal(e.getTextContent()));
                     break;
                 default:
-                    addParseProblem("Unknown constraint type: " + nodeName, e, de.featjar.base.data.Problem.Severity.WARNING);
+                    addParseProblem("Unknown constraint type: " + nodeName, e, Problem.Severity.WARNING);
             }
         }
         return nodes;

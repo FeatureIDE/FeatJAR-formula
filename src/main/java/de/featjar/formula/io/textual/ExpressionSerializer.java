@@ -282,7 +282,7 @@ public class ExpressionSerializer {
 
     private void nodeToString(Expression expression, Operator parent, StringBuilder sb, int depth) {
         if (expression == null) {
-            sb.append(expression);
+            sb.append((String) null);
         } else {
             if (expression instanceof Not) {
                 final Expression child = expression.getChildren().get(0);
@@ -443,9 +443,7 @@ public class ExpressionSerializer {
             case TREE:
                 if (depth > 0) {
                     sb.append('\n');
-                    for (int i = 0; i < depth; i++) {
-                        sb.append('\t');
-                    }
+                    sb.append("\t".repeat(depth));
                 }
                 break;
             default:

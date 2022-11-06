@@ -88,4 +88,9 @@ public abstract class Cardinal extends NonTerminalExpression implements Connecti
     public boolean equalsNode(Expression other) {
         return super.equalsNode(other) && Objects.equals(range, ((Cardinal) other).range);
     }
+
+    @Override
+    public int hashCodeNode() {
+        return Objects.hash(super.hashCodeNode(), range);
+    }
 }

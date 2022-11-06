@@ -149,7 +149,7 @@ public class ConnectiveSimplifier implements TreeVisitor<Formula, Void> {
         return groupElements(elements, n - k, n);
     }
 
-    private List<Formula> groupElements(List<? extends Formula> elements, int k, final int n) {
+    public static List<Formula> groupElements(List<? extends Formula> elements, int k, final int n) {
         final List<Formula> groupedElements = new ArrayList<>();
         final Formula[] clause = new Formula[k + 1];
         final int[] index = new int[k + 1];

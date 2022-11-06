@@ -20,11 +20,12 @@
  */
 package de.featjar.formula.io.textual;
 
+import de.featjar.base.data.Problem;
 import de.featjar.formula.io.textual.Symbols.Operator;
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.formula.predicate.Literal;
-import de.featjar.formula.structure.formula.predicate.Problem;
+import de.featjar.formula.structure.formula.predicate.ProblemFormula;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.BiImplies;
 import de.featjar.formula.structure.formula.connective.Implies;
@@ -34,7 +35,6 @@ import de.featjar.base.data.Problem.Severity;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.format.ParseException;
 import de.featjar.base.io.format.ParseProblem;
-import de.featjar.formula.structure.term.value.Variable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -88,7 +88,7 @@ public class ExpressionParser {
         }
     }
 
-    private final void throwParsingError(ErrorMessage message, int offset, Object... context) throws ParseException {
+    private void throwParsingError(ErrorMessage message, int offset, Object... context) throws ParseException {
         throw new ParseException(String.format(message.getMessage(), context), offset);
     }
 
@@ -107,7 +107,7 @@ public class ExpressionParser {
     private static final Pattern featureNamePattern = Pattern.compile(Pattern.quote(featureNameMarker) + "\\d+");
 
     private static final Pattern parenthesisPattern = Pattern.compile("\\(([^()]*)\\)");
-    private static final Pattern quotePattern = Pattern.compile("\\\"(.*?)\\\"");
+    private static final Pattern quotePattern = Pattern.compile("\"(.*?)\"");
 
     private static final String symbolPatternString = "\\s*(%s)\\s*";
 
@@ -120,8 +120,8 @@ public class ExpressionParser {
     private Symbols symbols = ShortSymbols.INSTANCE;
 
     private ErrorHandling ignoreMissingFeatures = ErrorHandling.THROW;
-    private ErrorHandling ignoreUnparsableSubExpressions = ErrorHandling.THROW;
-    private List<de.featjar.base.data.Problem> problemList;
+    private ErrorHandling ignoreUnparseableSubExpressions = ErrorHandling.THROW;
+    private List<Problem> problemList;
 
     public Symbols getSymbols() {
         return symbols;
@@ -139,12 +139,12 @@ public class ExpressionParser {
         this.ignoreMissingFeatures = Objects.requireNonNull(ignoreMissingFeatures);
     }
 
-    public ErrorHandling isIgnoreUnparsableSubExpressions() {
-        return ignoreUnparsableSubExpressions;
+    public ErrorHandling isIgnoreUnparseableSubExpressions() {
+        return ignoreUnparseableSubExpressions;
     }
 
-    public void setIgnoreUnparsableSubExpressions(ErrorHandling ignoreUnparsableSubExpressions) {
-        this.ignoreUnparsableSubExpressions = Objects.requireNonNull(ignoreUnparsableSubExpressions);
+    public void setIgnoreUnparseableSubExpressions(ErrorHandling ignoreUnparseableSubExpressions) {
+        this.ignoreUnparseableSubExpressions = Objects.requireNonNull(ignoreUnparseableSubExpressions);
     }
 
     public Result<Expression> parse(String formulaString) {
@@ -156,14 +156,14 @@ public class ExpressionParser {
             return Result.of(parseNode(formulaString));
         } catch (final ParseException e) {
             problemList.add(new ParseProblem(e, 0));
-            switch (ignoreUnparsableSubExpressions) {
+            switch (ignoreUnparseableSubExpressions) {
                 case KEEP:
-                    return Result.of(new Problem(new de.featjar.base.data.Problem(formulaString, Severity.ERROR)));
+                    return Result.of(new ProblemFormula(new Problem(formulaString, Severity.ERROR)));
                 case REMOVE:
                 case THROW:
                     return Result.empty(problemList);
                 default:
-                    throw new IllegalStateException(String.valueOf(ignoreUnparsableSubExpressions));
+                    throw new IllegalStateException(String.valueOf(ignoreUnparseableSubExpressions));
             }
         }
     }
@@ -179,16 +179,16 @@ public class ExpressionParser {
             final String symbol = getSymbols().getSymbol(operator);
             final String symbolPattern = String.format(symbolPatternString, Pattern.quote(symbol));
             final Matcher matcher = Pattern.compile(symbolPattern).matcher(source);
-            while (matcher.find()) {
+            if (matcher.find()) {
                 // 1st symbol occurrence
                 final int index = matcher.start(1);
 
                 // recursion for children nodes
 
                 final Expression expression1, expression2;
+                String substring = source.substring(index + symbol.length());
                 if (operator == Operator.NOT) {
-                    final String rightSide = source.substring(index + symbol.length())
-                            .trim();
+                    final String rightSide = substring.trim();
                     expression1 = null;
                     if (rightSide.isEmpty()) {
                         expression2 = handleInvalidExpression(ErrorMessage.MISSING_NAME, source);
@@ -208,8 +208,7 @@ public class ExpressionParser {
                     if (expression1 == null) {
                         return null;
                     }
-                    final String rightSide = source.substring(index + symbol.length())
-                            .trim();
+                    final String rightSide = substring.trim();
                     if (rightSide.isEmpty()) {
                         expression2 = handleInvalidExpression(ErrorMessage.MISSING_NAME_RIGHT, source);
                     } else {
@@ -289,7 +288,7 @@ public class ExpressionParser {
     }
 
     private Expression handleInvalidExpression(ErrorMessage message, String constraint) throws ParseException {
-        return getInvalidLiteral(message, ignoreUnparsableSubExpressions, constraint);
+        return getInvalidLiteral(message, ignoreUnparseableSubExpressions, constraint);
     }
 
     private Expression getInvalidLiteral(ErrorMessage message, ErrorHandling handleError, String element)
@@ -297,7 +296,7 @@ public class ExpressionParser {
         switch (handleError) {
             case KEEP:
                 problemList.add(new ParseProblem(message.getMessage(), 0, Severity.WARNING));
-                return new Problem(new de.featjar.base.data.Problem(message.getMessage(), Severity.ERROR));
+                return new ProblemFormula(new Problem(message.getMessage(), Severity.ERROR));
             case REMOVE:
                 problemList.add(new ParseProblem(message.getMessage(), 0, Severity.WARNING));
                 return null;

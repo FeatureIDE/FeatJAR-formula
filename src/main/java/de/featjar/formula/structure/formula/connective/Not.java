@@ -20,7 +20,6 @@
  */
 package de.featjar.formula.structure.formula.connective;
 
-import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.NonTerminalExpression;
 import de.featjar.formula.structure.UnaryExpression;
 import de.featjar.formula.structure.formula.Formula;

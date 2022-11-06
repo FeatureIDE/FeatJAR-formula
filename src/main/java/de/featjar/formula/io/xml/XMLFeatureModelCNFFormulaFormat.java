@@ -21,24 +21,25 @@
 package de.featjar.formula.io.xml;
 
 import de.featjar.base.data.Computation;
-import de.featjar.formula.structure.formula.Formula;
+import de.featjar.base.io.format.ParseException;
+import de.featjar.base.tree.Trees;
 import de.featjar.formula.structure.Expression;
-import de.featjar.formula.structure.formula.predicate.Literal;
+import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Not;
 import de.featjar.formula.structure.formula.connective.Or;
+import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.transformer.ToCNFFormula;
-import de.featjar.formula.visitor.DeMorganApplier;
 import de.featjar.formula.visitor.AndOrSimplifier;
-import de.featjar.base.io.format.ParseException;
-import de.featjar.base.tree.Trees;
+import de.featjar.formula.visitor.ConnectiveSimplifier;
+import de.featjar.formula.visitor.DeMorganApplier;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * Parses feature model CNF formulas from FeatureIDE XML files. Returns a
@@ -78,7 +79,7 @@ public class XMLFeatureModelCNFFormulaFormat extends XMLFeatureModelFormulaForma
 
     @Override
     protected Formula atMostOne(List<? extends Formula> parseFeatures) {
-        return new And(groupElements(
+        return new And(ConnectiveSimplifier.groupElements(
                 parseFeatures.stream().map(Not::new).collect(Collectors.toList()), 1, parseFeatures.size()));
     }
 
@@ -103,42 +104,6 @@ public class XMLFeatureModelCNFFormulaFormat extends XMLFeatureModelFormulaForma
         list.add(f.invert());
         list.addAll(parseFeatures);
         return new Or(list);
-    }
-
-    private List<Formula> groupElements(List<? extends Formula> elements, int k, final int n) {
-        final List<Formula> groupedElements = new ArrayList<>();
-        final Formula[] clause = new Formula[k + 1];
-        final int[] index = new int[k + 1];
-
-        // the position that is currently filled in clause
-        int level = 0;
-        index[level] = -1;
-
-        while (level >= 0) {
-            // fill this level with the next element
-            index[level]++;
-            // did we reach the maximum for this level
-            if (index[level] >= (n - (k - level))) {
-                // go to previous level
-                level--;
-            } else {
-                clause[level] = elements.get(index[level]);
-                if (level == k) {
-                    final Formula[] clonedClause = new Formula[clause.length];
-                    Arrays.copyOf(clause, clause.length);
-                    for (int i = 0; i < clause.length; i++) {
-                        clonedClause[i] = clause[i];
-                    }
-                    groupedElements.add(new Or(clonedClause));
-                } else {
-                    // go to next level
-                    level++;
-                    // allow only ascending orders (to prevent from duplicates)
-                    index[level] = index[level - 1];
-                }
-            }
-        }
-        return groupedElements;
     }
 
     private static Formula simplify(Formula formula) {

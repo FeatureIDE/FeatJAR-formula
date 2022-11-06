@@ -32,9 +32,6 @@ import java.util.Objects;
  * @author Sebastian Krieter
  */
 public abstract class NonTerminalExpression extends Tree<Expression> implements Expression {
-    // private int hashCode = 0;
-    // private boolean hasHashCode = false; // todo: move to Tree?
-
     protected NonTerminalExpression(Expression... children) {
         if (children.length > 0)
             super.setChildren(Arrays.asList(children));
@@ -51,23 +48,10 @@ public abstract class NonTerminalExpression extends Tree<Expression> implements 
                 Objects.equals(getType(), other.getType());
     }
 
-    //todo
-//    protected int computeHashCode() {
-//        return Objects.hash(getClass(), getChildrenCount());
-//    }
-
-//    @Override
-//    public int hashCode() {
-//        if (!hasHashCode) {
-//            int tempHashCode = computeHashCode();
-//            for (final Formula child : children) {
-//                tempHashCode += (tempHashCode * 37) + child.hashCode();
-//            }
-//            hashCode = tempHashCode;
-//            hasHashCode = true;
-//        }
-//        return hashCode;
-//    }
+    @Override
+    public int hashCodeNode() {
+        return Objects.hash(getClass(), getName(), getType());
+    }
 
     @Override
     public String toString() {

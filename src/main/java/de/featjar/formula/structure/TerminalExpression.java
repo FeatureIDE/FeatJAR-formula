@@ -37,7 +37,10 @@ public abstract class TerminalExpression extends LeafNode<Expression> implements
                 Objects.equals(getType(), other.getType());
     }
 
-    //todo hashcode
+    @Override
+    public int hashCodeNode() {
+        return Objects.hash(getClass(), getName(), getType());
+    }
 
     @Override
     public String toString() {

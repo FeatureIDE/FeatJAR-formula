@@ -20,23 +20,18 @@
  */
 package de.featjar.formula.io.dimacs;
 
-import de.featjar.formula.structure.Expression;
+import de.featjar.base.io.NonEmptyLineIterator;
 import de.featjar.formula.structure.formula.Formula;
-import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Or;
-import de.featjar.base.io.NonEmptyLineIterator;
+import de.featjar.formula.structure.formula.predicate.Literal;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -51,7 +46,7 @@ public class DIMACSParser {
 
     /**
      * The amount of variables as declared in the problem definition. May differ
-     * from the actual amount of variables found.
+     * from the actual amount of found variables.
      */
     private int variableCount;
     /** The amount of clauses in the problem. */
@@ -196,9 +191,8 @@ public class DIMACSParser {
      * @return all clauses; not null
      * @throws ParseException if the input does not conform to the DIMACS CNF file
      *                        format
-     * @throws IOException
      */
-    private List<Or> readClauses(NonEmptyLineIterator nonemptyLineIterator) throws ParseException, IOException {
+    private List<Or> readClauses(NonEmptyLineIterator nonemptyLineIterator) throws ParseException {
         final LinkedList<String> literalQueue = new LinkedList<>();
         final List<Or> clauses = new ArrayList<>(clauseCount);
         int readClausesCount = 0;

@@ -20,12 +20,10 @@
  */
 package de.featjar.formula.io.textual;
 
-import de.featjar.formula.structure.Expression;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.InputMapper;
 import de.featjar.base.io.format.Format;
-
-import java.util.Optional;
+import de.featjar.formula.structure.Expression;
 
 /**
  * Parses and serializes propositional and first-order expressions.

@@ -88,7 +88,7 @@ public class Symbols {
         }
     }
 
-    private final void setSymbol(Operator operator, String name) {
+    private void setSymbol(Operator operator, String name) {
         symbolToOperator.put(name, operator);
         operatorToSymbol.put(operator, name);
     }

@@ -20,11 +20,10 @@
  */
 package de.featjar.formula.visitor;
 
-import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.formula.Formula;
-import de.featjar.formula.structure.formula.predicate.Predicate;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Or;
+import de.featjar.formula.structure.formula.predicate.Predicate;
 
 import java.util.List;
 
@@ -41,49 +40,11 @@ public class DNFTester extends NormalFormTester {
     public TraversalAction firstVisit(List<Formula> path) {
         final Formula formula = getCurrentNode(path);
         if (formula instanceof Or) {
-            if (path.size() > 1) {
-                isNormalForm = false;
-                isClausalNormalForm = false;
-                return TraversalAction.SKIP_ALL;
-            }
-            for (final Expression child : formula.getChildren()) {
-                if (!(child instanceof And)) {
-                    if (!(child instanceof Predicate)) {
-                        isNormalForm = false;
-                        isClausalNormalForm = false;
-                        return TraversalAction.SKIP_ALL;
-                    }
-                    isClausalNormalForm = false;
-                }
-            }
-            return TraversalAction.CONTINUE;
+            return processLevelOne(path, formula, And.class);
         } else if (formula instanceof And) {
-            if (path.size() > 2) {
-                isNormalForm = false;
-                isClausalNormalForm = false;
-                return TraversalAction.SKIP_ALL;
-            }
-            if (path.size() < 2) {
-                isClausalNormalForm = false;
-            }
-            for (final Expression child : formula.getChildren()) {
-                if (!(child instanceof Predicate)) {
-                    isNormalForm = false;
-                    isClausalNormalForm = false;
-                    return TraversalAction.SKIP_ALL;
-                }
-            }
-            return TraversalAction.CONTINUE;
+            return processLevelTwo(path, formula);
         } else if (formula instanceof Predicate) {
-            if (path.size() > 3) {
-                isNormalForm = false;
-                isClausalNormalForm = false;
-                return TraversalAction.SKIP_ALL;
-            }
-            if (path.size() < 3) {
-                isClausalNormalForm = false;
-            }
-            return TraversalAction.SKIP_CHILDREN;
+            return processLevelThree(path);
         } else {
             isNormalForm = false;
             isClausalNormalForm = false;

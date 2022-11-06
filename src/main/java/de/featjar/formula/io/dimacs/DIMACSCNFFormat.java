@@ -20,11 +20,11 @@
  */
 package de.featjar.formula.io.dimacs;
 
+import de.featjar.base.io.format.Format;
 import de.featjar.formula.clauses.CNF;
 import de.featjar.formula.clauses.LiteralList;
-import de.featjar.base.io.format.Format;
+
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * Serializes a {@link CNF} to a String in DIMACS format.
