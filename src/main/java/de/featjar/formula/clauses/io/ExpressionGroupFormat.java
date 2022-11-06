@@ -107,11 +107,6 @@ public class ExpressionGroupFormat implements Format<List<List<ClauseList>>> {
     }
 
     @Override
-    public Optional<String> getFileExtension() {
-        return Optional.of("expression");
-    }
-
-    @Override
     public ExpressionGroupFormat getInstance() {
         return this;
     }

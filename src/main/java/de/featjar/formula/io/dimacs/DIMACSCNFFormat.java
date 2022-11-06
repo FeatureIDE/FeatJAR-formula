@@ -88,7 +88,7 @@ public class DIMACSCNFFormat implements Format<CNF> {
     }
 
     @Override
-    public Optional<String> getFileExtension() {
-        return Optional.of("dimacs");
+    public String getFileExtension() {
+        return "dimacs";
     }
 }

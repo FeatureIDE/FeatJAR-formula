@@ -79,7 +79,7 @@ public class DIMACSFormulaFormat implements Format<Formula> {
     }
 
     @Override
-    public Optional<String> getFileExtension() {
-        return Optional.of("dimacs");
+    public String getFileExtension() {
+        return "dimacs";
     }
 }

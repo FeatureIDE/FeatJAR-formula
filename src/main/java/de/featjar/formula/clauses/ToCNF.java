@@ -53,7 +53,7 @@ public class ToCNF implements Computation<CNF> {
     }
 
     public static Result<CNF> convert(Formula formula) {
-        return Computation.of(formula).then(ToCNF.class).getResult();
+        return Computation.of(formula).then(ToCNF::new).getResult();
     }
 
     public static Result<CNF> convert(Formula expression, VariableMap termMap) {

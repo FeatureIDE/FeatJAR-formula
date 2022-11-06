@@ -83,7 +83,7 @@ public class Clauses {
     }
 
     public static CNF convertToCNF(Formula expression) {
-        return Computation.of(expression).then(ToCNF.class).getResult().get();
+        return Computation.of(expression).then(ToCNF::new).getResult().get();
     }
 
     public static CNF convertToCNF(Formula expression, VariableMap variableMap) {

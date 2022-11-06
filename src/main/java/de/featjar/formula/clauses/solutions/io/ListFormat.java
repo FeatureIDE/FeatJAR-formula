@@ -112,8 +112,8 @@ public class ListFormat implements Format<SolutionList> {
     }
 
     @Override
-    public Optional<String> getFileExtension() {
-        return Optional.of("csv");
+    public String getFileExtension() {
+        return "csv";
     }
 
     @Override

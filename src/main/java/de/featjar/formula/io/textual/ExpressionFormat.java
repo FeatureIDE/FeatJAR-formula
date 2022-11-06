@@ -39,11 +39,6 @@ public class ExpressionFormat implements Format<Expression> {
     }
 
     @Override
-    public Optional<String> getFileExtension() {
-        return Optional.empty();
-    }
-
-    @Override
     public boolean supportsParse() {
         return true;
     }

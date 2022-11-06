@@ -150,7 +150,9 @@ public class ToCNFFormula implements Computation<Formula> {
 
     protected Result<Formula> distributive(Formula child, Monitor monitor)
             throws ToNormalFormFormula.MaximumNumberOfLiteralsExceededException {
-        final ToNormalFormFormula cnfDistributiveLawTransformer = new ToNormalFormFormula(Computation.of(child, monitor), Formula.NormalForm.CNF); // todo: monitor subtask?
+        final ToNormalFormFormula cnfDistributiveLawTransformer =
+                Computation.of(child, monitor)
+                        .then(c -> new ToNormalFormFormula(c, Formula.NormalForm.CNF)); // todo: monitor subtask?
         cnfDistributiveLawTransformer.setMaximumNumberOfLiterals(maximumNumberOfLiterals);
         return cnfDistributiveLawTransformer.getResult();
     }

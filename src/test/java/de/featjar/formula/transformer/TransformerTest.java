@@ -13,7 +13,7 @@ class TransformerTest {
         //Formula formula = new Implies(new Literal("a"), Expressions.False); // todo: buggy for some reason??
         Formula formula = not(or(literal("a"), literal("b")));
         Computation.of(formula)
-                .then(ToNNFFormula.class)
+                .then(ToNNFFormula::new)
                 .getResult().get().printParseable();
     }
 
@@ -22,9 +22,9 @@ class TransformerTest {
         //Formula formula = new Implies(new Literal("a"), Expressions.False); // todo: buggy for some reason??
         Formula formula = not(or(literal("a"), literal("b")));
         Computation.of(formula)
-                .then(ToNNFFormula.class)
-                .then(ToCNFFormula.class)
-                .then(ToCNF.class)
+                .then(ToNNFFormula::new)
+                .then(ToCNFFormula::new)
+                .then(ToCNF::new)
                 .getResult().get();
     }
 }

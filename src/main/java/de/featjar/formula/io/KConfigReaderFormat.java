@@ -78,8 +78,8 @@ public class KConfigReaderFormat implements Format<Expression> {
     }
 
     @Override
-    public Optional<String> getFileExtension() {
-        return Optional.of("model");
+    public String getFileExtension() {
+        return "model";
     }
 
     @Override

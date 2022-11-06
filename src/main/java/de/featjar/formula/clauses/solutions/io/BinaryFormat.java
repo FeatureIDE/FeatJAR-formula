@@ -93,11 +93,6 @@ public class BinaryFormat extends de.featjar.base.io.binary.BinaryFormat<Solutio
     }
 
     @Override
-    public Optional<String> getFileExtension() {
-        return Optional.empty();
-    }
-
-    @Override
     public BinaryFormat getInstance() {
         return this;
     }

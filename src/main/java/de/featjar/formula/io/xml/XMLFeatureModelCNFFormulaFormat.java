@@ -71,7 +71,7 @@ public class XMLFeatureModelCNFFormulaFormat extends XMLFeatureModelFormulaForma
 
     @Override
     protected void addConstraint(Boolean constraintLabel, Formula formula) throws ParseException {
-        Formula transformedExpression = Computation.of(formula).then(ToCNFFormula.class).getResult()
+        Formula transformedExpression = Computation.of(formula).then(ToCNFFormula::new).getResult()
                 .orElseThrow(p -> new ParseException("failed to transform " + formula));
         super.addConstraint(constraintLabel, transformedExpression);
     }
