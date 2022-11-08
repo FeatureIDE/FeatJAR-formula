@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.io.dimacs;
 
-import de.featjar.formula.clauses.VariableMap;
+import de.featjar.formula.analysis.sat.VariableMap;
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.formula.predicate.Literal;

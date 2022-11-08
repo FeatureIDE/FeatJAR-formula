@@ -47,6 +47,7 @@ import java.util.regex.Pattern;
  * Parses expressions.
  * Currently only supports a subset of expressions involving {@link And}, {@link Or}, {@link Not}, {@link Implies},
  * and {@link BiImplies}.
+ * TODO: write new parser for all expression types
  *
  * @author Dariusz Krolikowski
  * @author David Broneske

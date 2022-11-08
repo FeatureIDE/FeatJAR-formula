@@ -1,7 +1,7 @@
 package de.featjar.formula.transformer;
 
 import de.featjar.base.data.Computation;
-import de.featjar.formula.clauses.ToCNF;
+import de.featjar.formula.analysis.sat.clause.ToCNF;
 import de.featjar.formula.structure.formula.Formula;
 import org.junit.jupiter.api.Test;
 
