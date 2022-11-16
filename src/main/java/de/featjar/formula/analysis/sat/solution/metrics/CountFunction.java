@@ -20,7 +20,8 @@
  */
 package de.featjar.formula.analysis.sat.solution.metrics;
 
-import de.featjar.formula.analysis.sat.solution.SATSolution;
+import de.featjar.formula.analysis.sat.solution.Solution;
+import de.featjar.formula.analysis.sat.solution.SolutionList;
 
 /**
  * Computes the count of some property within a literal array (e.g., number of
@@ -30,7 +31,7 @@ import de.featjar.formula.analysis.sat.solution.SATSolution;
  */
 public interface CountFunction {
 
-    double compute(final SATSolution literals);
+    double compute(final Solution literals);
 
     String getName();
 }

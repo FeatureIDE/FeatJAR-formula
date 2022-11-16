@@ -81,11 +81,11 @@ public class ToCNF implements Computation<CNF> {
                 }));
     }
 
-    protected SATClause getClause(Formula formula, VariableMap variableMap) {
+    protected Clause getClause(Formula formula, VariableMap variableMap) {
         if (formula instanceof Literal) {
             final Literal literal = (Literal) formula;
             final int index = variableMap.get(literal.getExpression().getName()).orElseThrow(RuntimeException::new);
-            return new SATClause(literal.isPositive() ? index : -index);
+            return new Clause(literal.isPositive() ? index : -index);
         } else {
             final List<? extends Expression> children = formula.getChildren();
             if (children.stream().anyMatch(literal -> literal == Expressions.True)) {
@@ -100,7 +100,7 @@ public class ToCNF implements Computation<CNF> {
                             return ((Literal) literal).isPositive() ? variable : -variable;
                         })
                         .toArray();
-                return new SATClause(literals);
+                return new Clause(literals);
             }
         }
     }

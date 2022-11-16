@@ -22,6 +22,7 @@ package de.featjar.formula.analysis.sat.solution;
 
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.sat.VariableMap;
+import de.featjar.formula.analysis.sat.clause.Clause;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -56,8 +57,8 @@ public class DNF {
         this(new SolutionList(), variableMap);
     }
 
-    public DNF(Collection<SATSolution> SATSolutions, VariableMap variableMap) {
-        this(new SolutionList(SATSolutions), variableMap);
+    public DNF(Collection<Solution> solutions, VariableMap variableMap) {
+        this(new SolutionList(solutions), variableMap);
     }
 
     public DNF(SolutionList solutionList, VariableMap variableMap) {
@@ -73,12 +74,12 @@ public class DNF {
         this.solutionList = solutionList;
     }
 
-    public void addSolution(SATSolution SATSolution) {
-        solutionList.add(SATSolution);
+    public void addSolution(Solution solution) {
+        solutionList.add(solution);
     }
 
-    public void addSolutions(Collection<SATSolution> SATSolutions) {
-        solutionList.addAll(SATSolutions);
+    public void addSolutions(Collection<Solution> solutions) {
+        solutionList.addAll(solutions);
     }
 
     public VariableMap getVariableMap() {

@@ -2,11 +2,10 @@ package de.featjar.formula.analysis.sat.solution;
 
 import de.featjar.formula.analysis.sat.clause.CNF;
 import de.featjar.formula.analysis.sat.LiteralList;
-import de.featjar.formula.analysis.solver.Solution;
+import de.featjar.formula.analysis.sat.clause.Clause;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Map;
 
 /**
  * A (partial) solution to a {@link CNF}, implemented as a sorted list of literals.
@@ -19,30 +18,30 @@ import java.util.Map;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class SATSolution extends LiteralList implements Solution<Integer> {
-    public SATSolution(int... integers) {
+public class Solution extends LiteralList {
+    public Solution(int... integers) {
         this(integers, true);
     }
 
-    public SATSolution(int[] integers, boolean sort) {
+    public Solution(int[] integers, boolean sort) {
         super(integers);
         if (sort)
             sort();
     }
 
-    public SATSolution(Collection<Integer> integers) {
+    public Solution(Collection<Integer> integers) {
         super(integers);
         sort();
     }
 
-    public SATSolution(LiteralList literalList) {
+    public Solution(LiteralList literalList) {
         super(literalList);
         sort();
     }
 
     @Override
-    protected SATSolution newSortedIntegerList(int[] integers) {
-        return new SATSolution(integers);
+    protected Solution newSortedIntegerList(int[] integers) {
+        return new Solution(integers);
     }
 
     protected void sort() {
@@ -57,13 +56,13 @@ public class SATSolution extends LiteralList implements Solution<Integer> {
     }
 
     @Override
-    public SATSolution getPositives() {
+    public Solution getPositives() {
         int[] positiveIntegers = Arrays.copyOfRange(integers, integers.length - countPositives(), integers.length);
         return newSortedIntegerList(positiveIntegers);
     }
 
     @Override
-    public SATSolution getNegatives() {
+    public Solution getNegatives() {
         int[] negativeIntegers = Arrays.copyOfRange(integers, 0, countNegatives());
         return newSortedIntegerList(negativeIntegers);
     }
@@ -77,15 +76,5 @@ public class SATSolution extends LiteralList implements Solution<Integer> {
     @Override
     public int indexOfVariable(int integer) {
         return (integer > 0) && (integer < size()) ? (integer - 1) : -1;
-    }
-
-    @Override
-    public Map<Integer, Object> getAll() {
-        return null; // todo
-    }
-
-    @Override
-    public Object get(Integer variable) {
-        return null; // todo
     }
 }

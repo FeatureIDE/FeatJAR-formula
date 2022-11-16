@@ -22,7 +22,8 @@ package de.featjar.formula.analysis.sat.solution.io;
 
 import de.featjar.formula.analysis.sat.VariableMap;
 import de.featjar.formula.analysis.sat.solution.DNF;
-import de.featjar.formula.analysis.sat.solution.SATSolution;
+import de.featjar.formula.analysis.sat.solution.Solution;
+import de.featjar.formula.analysis.sat.solution.SolutionList;
 import de.featjar.base.data.Problem.Severity;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.InputMapper;
@@ -50,7 +51,7 @@ public class ListFormat implements Format<DNF> { // DNFListFormat?
         }
         csv.append('\n');
         int configurationIndex = 0;
-        for (final SATSolution configuration : dnf.getSolutionList().getAll()) {
+        for (final Solution configuration : dnf.getSolutionList().getAll()) {
             csv.append(configurationIndex++);
             final int[] literals = configuration.getIntegers();
             for (int i = 0; i < literals.length; i++) {
@@ -102,7 +103,7 @@ public class ListFormat implements Format<DNF> { // DNFListFormat?
                 for (int i = 1; i < split.length; i++) {
                     literals[i - 1] = split[i].equals("0") ? -i : i;
                 }
-                dnf.addSolution(new SATSolution(literals, false));
+                dnf.addSolution(new Solution(literals, false));
             }
         } catch (final Exception e) {
             return Result.empty(new ParseProblem(e.getMessage(), lineNumber, Severity.ERROR));

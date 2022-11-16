@@ -21,7 +21,7 @@
 package de.featjar.formula.structure.formula.predicate;
 
 import de.featjar.formula.structure.*;
-import de.featjar.formula.structure.term.value.Value;
+import de.featjar.formula.structure.term.Term;
 import de.featjar.formula.structure.term.value.Variable;
 
 import java.util.List;
@@ -42,15 +42,15 @@ public class Literal extends NonTerminalExpression implements UnaryExpression, P
         this.isPositive = literal.isPositive;
     }
 
-    public Literal(boolean isPositive, Value value) {
-        super(value);
+    public Literal(boolean isPositive, Term term) {
+        super(term);
         this.isPositive = isPositive;
-        if (!Objects.equals(value.getType(), Boolean.class))
-            throw new IllegalArgumentException("Boolean literals only accept Boolean values");
+        if (!Objects.equals(term.getType(), Boolean.class))
+            throw new IllegalArgumentException("Boolean literals only accept Boolean terms");
     }
 
-    public Literal(Value value) {
-        this(true, value);
+    public Literal(Term term) {
+        this(true, term);
     }
 
     public Literal(String variableName) {
@@ -72,13 +72,13 @@ public class Literal extends NonTerminalExpression implements UnaryExpression, P
 
     @Override
     public Literal invert() {
-        return new Literal(!isPositive, (Value) getExpression());
+        return new Literal(!isPositive, (Term) getExpression());
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<? extends Value> getChildren() {
-        return (List<? extends Value>) super.getChildren();
+    public List<? extends Term> getChildren() {
+        return (List<? extends Term>) super.getChildren();
     }
 
     @Override

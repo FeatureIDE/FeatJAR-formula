@@ -13,7 +13,7 @@ import java.util.List;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class ClauseList extends LiteralMatrix<ClauseList, SATClause> implements AssumptionList<SATClause> { // todo , ClauseList<Integer>
+public class ClauseList extends LiteralMatrix<ClauseList, Clause> implements AssumptionList<Clause> {
     public ClauseList() {
     }
 
@@ -21,7 +21,7 @@ public class ClauseList extends LiteralMatrix<ClauseList, SATClause> implements 
         super(size);
     }
 
-    public ClauseList(Collection<? extends SATClause> clauses) {
+    public ClauseList(Collection<? extends Clause> clauses) {
         super(clauses);
     }
 
@@ -30,7 +30,7 @@ public class ClauseList extends LiteralMatrix<ClauseList, SATClause> implements 
     }
 
     @Override
-    protected ClauseList newLiteralMatrix(List<SATClause> SATClauses) {
-        return new ClauseList(SATClauses);
+    protected ClauseList newLiteralMatrix(List<Clause> clauses) {
+        return new ClauseList(clauses);
     }
 }

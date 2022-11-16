@@ -18,24 +18,30 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.analysis.sat.solution.metrics;
+package de.featjar.formula.analysis.solver;
 
-import de.featjar.formula.analysis.sat.solution.Solution;
+import de.featjar.base.data.Result;
 
 /**
- * Computes the number of positive literals in a solution.
+ * An SMT (satisfiability modulo theories) solver.
+ * Answers optimization queries for a given variable.
  *
+ * @param <T> the type of the variable to optimize
+ * @param <U> the type of the returned optimization result
+ * @author Joshua Sprey
  * @author Sebastian Krieter
  */
-public class PositiveCount implements CountFunction {
+public interface SMTSolver<T, U> extends Solver {
 
-    @Override
-    public double compute(Solution literals) {
-        return (double) literals.countPositives() / literals.size();
-    }
+    /**
+     * {@return the smallest value for a variable to still satisfy the given formula}
+     * @param variable the variable to minimize
+     */
+    Result<U> minimize(T variable);
 
-    @Override
-    public String getName() {
-        return "Positive";
-    }
+    /**
+     * {@return the largest value for a variable to still satisfy the given formula}
+     * @param variable the variable to maximize
+     */
+    Result<U> maximize(T variable);
 }

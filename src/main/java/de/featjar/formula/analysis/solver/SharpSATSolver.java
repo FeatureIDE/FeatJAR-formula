@@ -18,24 +18,22 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.analysis.sat.solution.metrics;
+package de.featjar.formula.analysis.solver;
 
-import de.featjar.formula.analysis.sat.solution.Solution;
+import de.featjar.base.data.Result;
+
+import java.math.BigInteger;
 
 /**
- * Computes the number of positive literals in a solution.
+ * A #SAT solver (or model counter).
+ * Counts the number of solutions for a formula.
  *
  * @author Sebastian Krieter
  */
-public class PositiveCount implements CountFunction {
+public interface SharpSATSolver extends SATSolver {
 
-    @Override
-    public double compute(Solution literals) {
-        return (double) literals.countPositives() / literals.size();
-    }
-
-    @Override
-    public String getName() {
-        return "Positive";
-    }
+    /**
+     * {@return the number of solutions for the given formula}
+     */
+    Result<BigInteger> countSolutions();
 }
