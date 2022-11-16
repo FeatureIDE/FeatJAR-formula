@@ -21,7 +21,9 @@
 package de.featjar.formula.io.dimacs;
 
 import de.featjar.base.io.format.Format;
+import de.featjar.formula.analysis.bool.BooleanAssignmentList;
 import de.featjar.formula.analysis.bool.BooleanClause;
+import de.featjar.formula.analysis.bool.BooleanClauseList;
 
 import java.util.Objects;
 
@@ -30,10 +32,10 @@ import java.util.Objects;
  *
  * @author Sebastian Krieter
  */
-public class DIMACSCNFFormat implements Format<CNF> {
+public class DIMACSCNFFormat implements Format<BooleanClauseList> {
 
     @Override
-    public String serialize(CNF cnf) {
+    public String serialize(BooleanClauseList cnf) {
         Objects.requireNonNull(cnf);
 
         final StringBuilder sb = new StringBuilder();
@@ -55,11 +57,11 @@ public class DIMACSCNFFormat implements Format<CNF> {
         sb.append(' ');
         sb.append(cnf.getVariableMap().getVariableNames().size());
         sb.append(' ');
-        sb.append(cnf.getClauseList().size());
+        sb.append(cnf.size());
         sb.append(System.lineSeparator());
 
         // Clauses
-        for (final BooleanClause LiteralClause : cnf.getClauseList().getAll()) {
+        for (final BooleanClause LiteralClause : cnf.getAll()) {
             for (final int l : LiteralClause.getIntegers()) {
                 sb.append(l);
                 sb.append(' ');
