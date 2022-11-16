@@ -40,7 +40,6 @@ import java.util.List;
 /**
  * Serializes expressions.
  * Currently only supports a subset of expressions.
- * TODO: write new serializer for all expression types
  *
  * @author Thomas Thüm
  * @author Timo Günther

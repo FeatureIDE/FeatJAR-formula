@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.visitor;
 
-import de.featjar.formula.analysis.Assignment;
+import de.featjar.formula.assignment.VariableAssignment;
 import de.featjar.formula.structure.Expression;
 import de.featjar.base.tree.visitor.TreeVisitor;
 import de.featjar.formula.structure.term.value.Variable;
@@ -38,10 +38,10 @@ import java.util.Optional;
 public class Evaluator implements TreeVisitor<Expression, Object> {
     private final LinkedList<Object> values = new LinkedList<>();
 
-    private final Assignment variableAssignment;
+    private final VariableAssignment variableAssignment;
     private Boolean defaultBooleanValue;
 
-    public Evaluator(Assignment variableAssignment) {
+    public Evaluator(VariableAssignment variableAssignment) {
         this.variableAssignment = variableAssignment;
     }
 

@@ -21,10 +21,8 @@
 package de.featjar.formula.io.dimacs;
 
 import de.featjar.base.io.format.Format;
-import de.featjar.formula.analysis.sat.clause.CNF;
-import de.featjar.formula.analysis.sat.clause.Clause;
-import de.featjar.formula.analysis.sat.clause.ClauseList;
-import de.featjar.formula.analysis.sat.solution.SolutionList;
+import de.featjar.formula.clauses.CNF;
+import de.featjar.formula.clauses.LiteralList;
 
 import java.util.Objects;
 
@@ -58,12 +56,12 @@ public class DIMACSCNFFormat implements Format<CNF> {
         sb.append(' ');
         sb.append(cnf.getVariableMap().getVariableNames().size());
         sb.append(' ');
-        sb.append(cnf.getClauseList().size());
+        sb.append(cnf.getClauses().size());
         sb.append(System.lineSeparator());
 
         // Clauses
-        for (final Clause clause : cnf.getClauseList().getAll()) {
-            for (final int l : clause.getIntegers()) {
+        for (final LiteralList clause : cnf.getClauses()) {
+            for (final int l : clause.getLiterals()) {
                 sb.append(l);
                 sb.append(' ');
             }
