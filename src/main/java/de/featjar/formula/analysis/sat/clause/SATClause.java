@@ -1,11 +1,12 @@
 package de.featjar.formula.analysis.sat.clause;
 
 import de.featjar.formula.analysis.sat.LiteralList;
-import de.featjar.formula.analysis.sat.solution.Solution;
 import de.featjar.formula.analysis.solver.Assumable;
+import de.featjar.formula.analysis.solver.Clause;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -19,30 +20,35 @@ import java.util.Optional;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class Clause extends LiteralList implements Assumable<Integer> {
-    public Clause(int... integers) {
+public class SATClause extends LiteralList implements Assumable<Integer>, Clause<Integer> {
+    public SATClause(int... integers) {
         this(integers, true);
     }
 
-    public Clause(int[] integers, boolean sort) {
+    public SATClause(int[] integers, boolean sort) {
         super(integers);
         if (sort)
             sort();
     }
 
-    public Clause(Collection<Integer> integers) {
+    public SATClause(Collection<Integer> integers) {
         super(integers);
         sort();
     }
 
-    public Clause(LiteralList literalList) {
+    public SATClause(LiteralList literalList) {
         super(literalList);
         sort();
     }
 
     @Override
-    protected Clause newSortedIntegerList(int[] integers) {
-        return new Clause(integers);
+    protected SATClause newSortedIntegerList(int[] integers) {
+        return new SATClause(integers);
+    }
+
+    @Override
+    public Map<Integer, Object> getAll() {
+        return null; // todo
     }
 
     @Override
@@ -83,13 +89,13 @@ public class Clause extends LiteralList implements Assumable<Integer> {
     }
 
     @Override
-    public Clause getPositives() {
+    public SATClause getPositives() {
         int[] positiveIntegers = Arrays.copyOfRange(integers, integers.length - countPositives(), integers.length);
         return newSortedIntegerList(positiveIntegers);
     }
 
     @Override
-    public Clause getNegatives() {
+    public SATClause getNegatives() {
         int[] negativeIntegers = Arrays.copyOfRange(integers, 0, countNegatives());
         return newSortedIntegerList(negativeIntegers);
     }
@@ -100,7 +106,7 @@ public class Clause extends LiteralList implements Assumable<Integer> {
     }
 
     @Override
-    public Clause negate() {
+    public SATClause negate() {
         final int[] negLiterals = new int[integers.length];
                 final int highestIndex = negLiterals.length - 1;
                 for (int i = 0; i < negLiterals.length; i++) {

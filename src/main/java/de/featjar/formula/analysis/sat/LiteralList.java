@@ -3,13 +3,11 @@ package de.featjar.formula.analysis.sat;
 import de.featjar.base.data.IntegerList;
 import de.featjar.base.data.Problem;
 import de.featjar.base.data.Result;
-import de.featjar.formula.analysis.sat.clause.Clause;
-import de.featjar.formula.analysis.sat.solution.Solution;
+import de.featjar.formula.analysis.sat.clause.SATClause;
+import de.featjar.formula.analysis.sat.solution.SATSolution;
+import de.featjar.formula.analysis.solver.Assignment;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.IntStream;
 
 /**
@@ -18,15 +16,15 @@ import java.util.stream.IntStream;
  * or 0, indicating no occurrence, and it may occur multiple times.
  * This class can be used to represent a set of literals for use in a
  * {@link de.featjar.formula.analysis.solver.SATSolver}.
- * For specific use cases, consider using {@link Clause} (a disjunction
- * of literals) or {@link Solution} (a conjunction of literals).
+ * For specific use cases, consider using {@link SATClause} (a disjunction
+ * of literals) or {@link SATSolution} (a conjunction of literals).
  * To link a {@link LiteralList} to a specific {@link VariableMap}, consider using a
  * {@link de.featjar.formula.analysis.sat.clause.CNF}.
  *
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class LiteralList extends IntegerList<LiteralList> {
+public class LiteralList extends IntegerList<LiteralList> implements Assignment<Integer> {
     public LiteralList(int... integers) {
         super(integers);
     }
@@ -188,12 +186,22 @@ public class LiteralList extends IntegerList<LiteralList> {
         return new LiteralList(integers);
     }
 
-    public Clause toClause() {
-        return new Clause(integers);
+    public SATClause toClause() {
+        return new SATClause(integers);
     }
 
-    public Solution toSolution() {
-        return new Solution(integers);
+    public SATSolution toSolution() {
+        return new SATSolution(integers);
+    }
+
+    @Override
+    public Map<Integer, Object> getAll() {
+        return null; // todo
+    }
+
+    @Override
+    public Object get(Integer variable) {
+        return null; // todo
     }
 
     //    /**

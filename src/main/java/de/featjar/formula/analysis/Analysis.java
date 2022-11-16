@@ -37,7 +37,7 @@ import java.util.function.Function;
  *
  * @author Sebastian Krieter
  */
-public abstract class Analysis<T, S extends Solver, U> implements Computation<T> {
+public abstract class Analysis<T, S extends Solver<?, ?>, U> implements Computation<T> {
     public static final int DEFAULT_TIMEOUT_IN_MS = 0;
     public static final int DEFAULT_RANDOM_SEED = 0;
     protected final Computation<U> inputComputation;

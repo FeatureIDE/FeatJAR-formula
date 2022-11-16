@@ -40,7 +40,7 @@ import java.util.Objects;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class CNF {
+public class CNF { // , ClauseList<String>
     protected ClauseList clauseList;
     protected VariableMap variableMap;
 
@@ -56,8 +56,8 @@ public class CNF {
         this(new ClauseList(), variableMap);
     }
 
-    public CNF(Collection<Clause> clauses, VariableMap variableMap) {
-        this(new ClauseList(clauses), variableMap);
+    public CNF(Collection<SATClause> SATClauses, VariableMap variableMap) {
+        this(new ClauseList(SATClauses), variableMap);
     }
 
     public CNF(ClauseList clauseList, VariableMap variableMap) {
@@ -73,12 +73,12 @@ public class CNF {
         this.clauseList = clauseList;
     }
 
-    public void addClause(Clause clause) {
-        clauseList.add(clause);
+    public void addClause(SATClause SATClause) {
+        clauseList.add(SATClause);
     }
 
-    public void addClauses(Collection<Clause> clauses) {
-        clauseList.addAll(clauses);
+    public void addClauses(Collection<SATClause> SATClauses) {
+        clauseList.addAll(SATClauses);
     }
 
     public VariableMap getVariableMap() {
