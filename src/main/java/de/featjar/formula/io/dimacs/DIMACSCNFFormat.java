@@ -28,7 +28,7 @@ import de.featjar.formula.analysis.bool.BooleanClauseList;
 import java.util.Objects;
 
 /**
- * Serializes a {@link CNF} to a String in DIMACS format.
+ * Serializes a {@link BooleanClauseList} to a String in DIMACS format.
  *
  * @author Sebastian Krieter
  */

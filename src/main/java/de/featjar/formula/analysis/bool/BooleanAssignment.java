@@ -215,7 +215,7 @@ public class BooleanAssignment extends IntegerList<BooleanAssignment> implements
     }
 
     @Override
-    public Optional<Object> getVariable(Integer variable) {
+    public Optional<Object> getValue(Integer variable) {
         int index = indexOfVariable(variable);
         if (index < 0)
             return Optional.empty();

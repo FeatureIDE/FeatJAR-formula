@@ -53,7 +53,7 @@ public interface Assignment<T> {
      *
      * @param variable the variable
      */
-    default Optional<Object> getVariable(T variable) {
+    default Optional<Object> getValue(T variable) {
         return Optional.ofNullable(getAll().get(variable));
     }
 
