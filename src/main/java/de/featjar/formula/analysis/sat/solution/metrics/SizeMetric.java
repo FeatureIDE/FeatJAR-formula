@@ -21,6 +21,8 @@
 package de.featjar.formula.analysis.sat.solution.metrics;
 
 import de.featjar.formula.analysis.sat.solution.DNF;
+import de.featjar.formula.analysis.sat.solution.Solution;
+import de.featjar.formula.analysis.sat.solution.SolutionList;
 
 /**
  * Computes the size of a sample.

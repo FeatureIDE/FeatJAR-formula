@@ -20,15 +20,18 @@
  */
 package de.featjar.formula.analysis.solver;
 
-import de.featjar.base.data.Result;
-
 /**
  * A solver that analyzes a given formula.
  *
  * @author Sebastian Krieter
- * @author Elias Kuiter
  */
 public interface Solver {
+
+//    /**
+//     * {@return the formula analyzed by this solver}
+//     */
+//    Formula getFormula();
+
     /**
      * {@return the formula analyzed by this solver in the solver's internal format}
      */
@@ -44,7 +47,7 @@ public interface Solver {
      *
      * @param assumptions the assumptions in form of a (partial) variable assignment
      */
-    void setAssumptionList(AssumptionList<?> assumptionList); // throws SolverContradictionException; // todo: exception needed? maybe put this in the constructor of CNF/DNF?
+    void setAssumptions(Assumable<?> assumptions) throws SolverContradictionException; // todo: exception needed?
 
     long getTimeout();
 
@@ -55,20 +58,4 @@ public interface Solver {
      * Should be overridden to allow for reusing this solver instance. todo: is this a good idea with multithreading? or rather use solverSupplier in Analysis?
      */
     default void reset() {}
-
-
-
-    /**
-     * {@return whether there is a solution for the given formula (i.e., whether it is satisfiable)}
-     */
-    default Result<Boolean> hasSolution() {
-        return Result.empty();
-    }
-
-    /**
-     * {@return whether this format supports {@link #serialize(Object)}}
-     */
-    default boolean supportsHasSolution() {
-        return false;
-    }
 }

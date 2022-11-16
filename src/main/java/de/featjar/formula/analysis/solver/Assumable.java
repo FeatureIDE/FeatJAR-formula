@@ -20,24 +20,21 @@
  */
 package de.featjar.formula.analysis.solver;
 
-import de.featjar.base.data.Pair;
-
-import java.util.List;
 import java.util.Optional;
 
 /**
  * Assumes values for {@link de.featjar.formula.structure.term.value.Variable variables}.
- * Can be used to assume additional facts in any {@link de.featjar.formula.analysis.solver.Solver}.
+ * Can be used to assume additional facts in a {@link de.featjar.formula.analysis.solver.Solver}.
  *
  * @param <T> the index type of the variable
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
 public interface Assumable<T> {
-    /**
-     * {@return all variables and their assigned values in this assumable}
-     */
-    //List<Pair<T, Object>> getAll();
+//    /**
+//     * {@return all variables and their assigned values in this assumable}
+//     */
+//    List<Pair<T, Object>> get();
 
     /**
      * {@return the value assigned to a variable in this assumable}

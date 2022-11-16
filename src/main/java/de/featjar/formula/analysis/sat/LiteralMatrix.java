@@ -70,10 +70,6 @@ public abstract class LiteralMatrix<T extends LiteralMatrix<?, U>, U extends Lit
         return literalLists;
     }
 
-    public boolean isEmpty() {
-        return literalLists.isEmpty();
-    }
-
     public int size() {
         return literalLists.size();
     }

@@ -1,7 +1,6 @@
 package de.featjar.formula.analysis.sat.clause;
 
 import de.featjar.formula.analysis.sat.LiteralList;
-import de.featjar.formula.analysis.sat.solution.Solution;
 import de.featjar.formula.analysis.solver.Assumable;
 
 import java.util.Arrays;
@@ -41,7 +40,7 @@ public class Clause extends LiteralList implements Assumable<Integer> {
     }
 
     @Override
-    protected Clause newSortedIntegerList(int[] integers) {
+    protected LiteralList newSortedIntegerList(int[] integers) {
         return new Clause(integers);
     }
 
@@ -83,13 +82,13 @@ public class Clause extends LiteralList implements Assumable<Integer> {
     }
 
     @Override
-    public Clause getPositives() {
+    public LiteralList getPositives() {
         int[] positiveIntegers = Arrays.copyOfRange(integers, integers.length - countPositives(), integers.length);
         return newSortedIntegerList(positiveIntegers);
     }
 
     @Override
-    public Clause getNegatives() {
+    public LiteralList getNegatives() {
         int[] negativeIntegers = Arrays.copyOfRange(integers, 0, countNegatives());
         return newSortedIntegerList(negativeIntegers);
     }
@@ -100,7 +99,7 @@ public class Clause extends LiteralList implements Assumable<Integer> {
     }
 
     @Override
-    public Clause negate() {
+    public LiteralList negate() {
         final int[] negLiterals = new int[integers.length];
                 final int highestIndex = negLiterals.length - 1;
                 for (int i = 0; i < negLiterals.length; i++) {

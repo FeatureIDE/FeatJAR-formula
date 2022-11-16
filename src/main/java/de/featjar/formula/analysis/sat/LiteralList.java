@@ -184,18 +184,6 @@ public class LiteralList extends IntegerList<LiteralList> {
         return new LiteralList(newLiterals);
     }
 
-    public LiteralList toLiteralList() {
-        return new LiteralList(integers);
-    }
-
-    public Clause toClause() {
-        return new Clause(integers);
-    }
-
-    public Solution toSolution() {
-        return new Solution(integers);
-    }
-
     //    /**
 //     * Sets the value at position i of solution1 to 0 if the value of solution2 at
 //     * position {@code i} is different.
