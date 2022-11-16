@@ -1,6 +1,5 @@
 package de.featjar.formula.structure;
 
-import de.featjar.formula.analysis.Assignment;
 import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.term.Term;
 import de.featjar.formula.structure.term.value.Constant;

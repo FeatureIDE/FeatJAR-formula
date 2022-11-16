@@ -21,52 +21,67 @@
 package de.featjar.formula.analysis;
 
 import de.featjar.base.data.Computation;
-import de.featjar.base.data.FutureResult;
-import de.featjar.formula.analysis.solver.SolverContradictionException;
-import de.featjar.formula.analysis.solver.Solver;
 
+import java.util.Optional;
 import java.util.Random;
-import java.util.function.Function;
 
 /**
- * Base class for an analysis using any {@link Solver solver}.
+ * Base class for an analysis performed by a {@link Solver solver}.
+ * Contains several mixins to control exactly what capabilities a concrete implementation has.
  *
- * @param <T> the type of the analysis result
- * @param <S> the type of the solver
- * @param <U> the type the solver operates on
- *
+ * @param <T> the type of the (primary) analysis input
+ * @param <U> the type of the analysis result
  * @author Sebastian Krieter
+ * @author Elias Kuiter
  */
-public abstract class Analysis<T, S extends Solver<?, ?>, U> implements Computation<T> {
-    public static final int DEFAULT_TIMEOUT_IN_MS = 0;
-    public static final int DEFAULT_RANDOM_SEED = 0;
-    protected final Computation<U> inputComputation;
-    protected final Function<U, S> solverFactory; // todo: or use Computation<S>, which then has to be cloned before usage?
-    // this would require a general cloning mechanism for computation inputs (T implements Cloneable)
-    protected final Assignment assumptions;
-    protected final long timeoutInMs;
-    protected final Random random;
+public interface Analysis<T, U> extends Computation<U> {
+    /**
+     * {@return the input computation for this analysis}
+     */
+    Computation<T> getInputComputation();
 
-    protected Analysis(Computation<U> inputComputation, Function<U, S> solverFactory) {
-        this(inputComputation, solverFactory, new Assignment(), DEFAULT_TIMEOUT_IN_MS, DEFAULT_RANDOM_SEED);
+    /**
+     * A potentially long-running analysis that can be canceled if a given time has passed.
+     *
+     * @param <T> the type of the (primary) analysis input
+     * @param <U> the type of the analysis result
+     */
+    interface WithTimeout<T, U> extends Analysis<T, U> {
+        /**
+         * {@return the timeout of this analysis in milliseconds, if any}
+         */
+        Optional<Integer> getTimeout();
     }
 
-    // todo: fluent API for defining analysis parameters?
-    // e.g., new Analysis(...).timeout(...).random(...)
-    protected Analysis(Computation<U> inputComputation, Function<U, S> solverFactory, Assignment assumptions, long timeoutInMs, long randomSeed) {
-        this.inputComputation = inputComputation;
-        this.solverFactory = solverFactory;
-        this.assumptions = assumptions;
-        this.timeoutInMs = timeoutInMs;
-        this.random = new Random(randomSeed);
+    /**
+     * An analysis that can be passed a list of further assumptions that should be made.
+     *
+     * @param <T> the type of the (primary) analysis input
+     * @param <U> the type of the analysis result
+     * @param <R> the index type of the variables
+     */
+    interface WithAssumptions<T, U, R> extends Analysis<T, U> {
+        /**
+         * {@return the list of the additional assumptions made by this analysis}
+         */
+        ClauseList<R> getAssumptionClauseList();
     }
 
-    protected FutureResult<S> initializeSolver() throws SolverContradictionException {
-        return inputComputation.get().thenCompute((input, monitor) -> {
-            S solver = solverFactory.apply(input); // need to clone input? probably note
-            //solver.setAssumptions(assumptions); // todo: ignores assumptions for now
-            solver.setTimeout(timeoutInMs);
-            return solver;
-        });
+    /**
+     * An analysis that may need to generate pseudorandom numbers.
+     *
+     * @param <T> the type of the (primary) analysis input
+     * @param <U> the type of the analysis result
+     */
+    interface WithRandom<T, U> extends Analysis<T, U> {
+        /**
+         * The default seed for the pseudorandom number generator returned by {@link #getRandom()}, if not specified otherwise.
+         */
+        int DEFAULT_RANDOM_SEED = 0;
+
+        /**
+         * {@return the pseudorandom number generator of this analysis}
+         */
+        Random getRandom();
     }
 }

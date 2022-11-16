@@ -1,8 +1,7 @@
 package de.featjar.formula.structure.formula;
 
 import de.featjar.base.data.Result;
-import de.featjar.formula.analysis.sat.clause.CNF;
-import de.featjar.formula.analysis.sat.clause.ToCNF;
+import de.featjar.formula.analysis.bool.ToLiteralClauseList;
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.formula.predicate.Predicate;
 import de.featjar.formula.structure.term.value.Variable;
@@ -73,7 +72,7 @@ public interface Formula extends Expression {
      * {@return an indexed CNF that is an equi-assignable to this formula}
      */
     default Result<CNF> toCNF() {
-        return toClausalCNFFormula().flatMap(ToCNF::convert);
+        return toClausalCNFFormula().flatMap(ToLiteralClauseList::convert);
     }
 
     /**

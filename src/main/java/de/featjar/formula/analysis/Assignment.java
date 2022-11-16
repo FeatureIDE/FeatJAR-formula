@@ -1,84 +1,87 @@
-/*
- * Copyright (C) 2022 Sebastian Krieter, Elias Kuiter
- *
- * This file is part of formula.
- *
- * formula is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3.0 of the License,
- * or (at your option) any later version.
- *
- * formula is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with formula. If not, see <https://www.gnu.org/licenses/>.
- *
- * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
- */
 package de.featjar.formula.analysis;
 
-import de.featjar.formula.analysis.solver.Assumable;
+import de.featjar.base.data.Pair;
+import de.featjar.formula.analysis.bool.BooleanAssignment;
+import de.featjar.formula.analysis.value.ValueAssignment;
 
-import java.util.LinkedHashMap;
-import java.util.Map.Entry;
-import java.util.Objects;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
- * Assigns values to variable names.
+ * Assigns values to {@link de.featjar.formula.structure.term.value.Variable variables}.
+ * Represents a {@link Clause} or a {@link Solution} in a {@link Solver}.
+ * For a propositional implementation, see {@link BooleanAssignment},
+ * for a first-order implementation, see {@link ValueAssignment}.
  *
+ * @param <T> the index type of the variables
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class Assignment implements Assumable<String> {
-    protected final LinkedHashMap<String, Object> variableNameToValue = new LinkedHashMap<>();
+public interface Assignment<T> {
+    /**
+     * {@return a map of all variable-value pairs in this assignment}
+     * The default implementations of the other methods assume that this map is mutable.
+     * If it is not, the other methods must be overridden accordingly.
+     * Undefined variables (e.g., for partial assignments) are omitted.
+     */
+    Map<T, Object> getAll();
 
-    public Assignment(Object... assignmentPairs) {
-//        for (int i = 0; i < assignmentPairs.length; i += 2) {
-//            set((String) assignmentPairs[i], assignmentPairs[i + 1]);
-//        }
+    /**
+     * {@return the number of variable-value pairs in this assignment}
+     */
+    default int size() {
+        return getAll().size();
     }
 
-//    @Override
-//    public List<Pair<String, Object>> get() {
-//        return variableNameToValue.entrySet().stream()
-//                .map(Pair::of)
-//                .collect(Collectors.toList());
-//    }
-
-    @Override
-    public Optional<Object> get(String variableName) {
-        Objects.requireNonNull(variableName);
-        return Optional.ofNullable(variableNameToValue.get(variableName));
+    /**
+     * {@return whether this assignment is empty}
+     */
+    default boolean isEmpty() {
+        return size() == 0;
     }
 
-//    @Override
-//    public void set(String variableName, Object value) {
-//        Objects.requireNonNull(variableName);
-//        if (value == null) {
-//            variableNameToValue.remove(variableName);
-//        } else {
-//            variableNameToValue.put(variableName, value);
-//        }
+    /**
+     * {@return a stream of variable-value pairs in this assignment}
+     */
+    default Stream<Pair<T, Object>> stream() {
+        return getAll().entrySet().stream().map(Pair::of);
+    }
+
+    /**
+     * {@return the value assigned to the given variable, if any}
+     *
+     * @param variable the variable
+     */
+    default Optional<Object> getVariable(T variable) {
+        return Optional.ofNullable(getAll().get(variable));
+    }
+
+    //todo: should assignments be mutable?
+//    /**
+//     * Assigns a given value to the given variable.
+//     *
+//     * @param variable the variable
+//     * @param value the value
+//     */
+//    default void set(T variable, Object value) {
+//        getAll().put(variable, value);
 //    }
 //
-//    @Override
-//    public void clear() {
-//        variableNameToValue.clear();
+//    /**
+//     * Removes the variable-value pair for the given variable in this assignment.
+//     *
+//     * @param variable the variable
+//     * @return the removed variable's assigned value, if any
+//     */
+//    default Optional<Object> remove(T variable) {
+//        return Optional.ofNullable(getAll().remove(variable));
 //    }
-
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder();
-        for (final Entry<String, Object> entry : variableNameToValue.entrySet()) {
-            sb.append(entry.getKey());
-            sb.append(": ");
-            sb.append(entry.getValue());
-            sb.append("\n");
-        }
-        return sb.toString();
-    }
+//
+//    /**
+//     * Removes all variable-value pairs in this assignment.
+//     */
+//    default void clear() {
+//        getAll().clear();
+//    }
 }

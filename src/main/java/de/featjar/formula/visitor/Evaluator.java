@@ -20,7 +20,6 @@
  */
 package de.featjar.formula.visitor;
 
-import de.featjar.formula.analysis.Assignment;
 import de.featjar.formula.structure.Expression;
 import de.featjar.base.tree.visitor.TreeVisitor;
 import de.featjar.formula.structure.term.value.Variable;
