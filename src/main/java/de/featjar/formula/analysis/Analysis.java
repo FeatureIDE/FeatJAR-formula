@@ -36,44 +36,87 @@ import java.util.Random;
  */
 public interface Analysis<T, U> extends Computation<U> {
     /**
-     * {@return the input computation for this analysis}
+     * {@return the input computation of this analysis}
+     * This analysis uses the result of this computation as its primary input (e.g., the formula to analyze).
      */
     Computation<T> getInputComputation();
 
     /**
-     * A potentially long-running analysis that can be canceled if a given time has passed.
+     * Sets the input computation of this analysis.
      *
-     * @param <T> the type of the (primary) analysis input
-     * @param <U> the type of the analysis result
+     * @param inputComputation the input computation
+     * @return itself
      */
-    interface WithTimeout<T, U> extends Analysis<T, U> {
+    Analysis<T, U> setInputComputation(Computation<T> inputComputation);
+
+    /**
+     * A potentially long-running analysis that can be canceled if a given time has passed.
+     */
+    interface WithTimeout {
         /**
          * {@return the timeout of this analysis in milliseconds, if any}
+         * This analysis terminates with an empty {@link de.featjar.base.data.Result} when it has
+         * not terminated until the timeout passes.
          */
-        Optional<Integer> getTimeout();
+        Optional<Long> getTimeout();
+
+        /**
+         * Sets the timeout of this analysis in milliseconds.
+         *
+         * @param timeout the timeout in milliseconds
+         * @return itself
+         */
+        WithTimeout setTimeout(Long timeout);
     }
 
     /**
-     * An analysis that can be passed a list of further assumptions that should be made.
+     * An analysis that can be passed a further assignment to assume.
      *
-     * @param <T> the type of the (primary) analysis input
-     * @param <U> the type of the analysis result
-     * @param <R> the index type of the variables
+     * @param <T> the type of the assignment
      */
-    interface WithAssumptions<T, U, R> extends Analysis<T, U> {
+    interface WithAssumedAssignment<T extends Assignment<?>> {
         /**
-         * {@return the list of the additional assumptions made by this analysis}
+         * {@return the assignment assumed by this analysis}
+         * This analysis can freely interpret this assignment.
+         * Usually, it is interpreted as a conjunction (i.e., similar to a {@link Solution}).
          */
-        ClauseList<R> getAssumptionClauseList();
+        T getAssumedAssignment();
+
+        /**
+         * Sets the assignment assumed by this analysis.
+         *
+         * @param assignment the assignment
+         * @return itself
+         */
+        WithAssumedAssignment<T> setAssumedAssignment(T assignment);
+    }
+
+    /**
+     * An analysis that can be passed a further list of clauses to assume.
+     *
+     * @param <T> type of the clause list
+     */
+    interface WithAssumedClauseList<T extends AssignmentList<? extends Clause<?>>> {
+        /**
+         * {@return the clause list assumed by this analysis}
+         * This analysis interprets this list of clauses as a conjunction of
+         * disjunctions of literals or equalities (i.e., a CNF).
+         */
+        T getAssumedClauseList();
+
+        /**
+         * Sets the clause list assumed by this analysis.
+         *
+         * @param clauseList the clause list
+         * @return itself
+         */
+        WithAssumedClauseList<T> setAssumedClauseList(T clauseList);
     }
 
     /**
      * An analysis that may need to generate pseudorandom numbers.
-     *
-     * @param <T> the type of the (primary) analysis input
-     * @param <U> the type of the analysis result
      */
-    interface WithRandom<T, U> extends Analysis<T, U> {
+    interface WithRandom {
         /**
          * The default seed for the pseudorandom number generator returned by {@link #getRandom()}, if not specified otherwise.
          */
@@ -83,5 +126,13 @@ public interface Analysis<T, U> extends Computation<U> {
          * {@return the pseudorandom number generator of this analysis}
          */
         Random getRandom();
+
+        /**
+         * Sets the pseudorandom number generator of this analysis.
+         *
+         * @param random the pseudorandom number generator
+         * @return itself
+         */
+        WithRandom setRandom(Random random);
     }
 }

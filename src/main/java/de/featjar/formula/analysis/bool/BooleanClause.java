@@ -37,7 +37,7 @@ public class BooleanClause extends BooleanAssignment implements Clause<Integer> 
     }
 
     @Override
-    protected BooleanClause newSortedIntegerList(int[] integers) {
+    protected BooleanClause newIntegerList(int[] integers) {
         return new BooleanClause(integers);
     }
 
@@ -75,13 +75,13 @@ public class BooleanClause extends BooleanAssignment implements Clause<Integer> 
     @Override
     public BooleanClause getPositives() {
         int[] positiveIntegers = Arrays.copyOfRange(integers, integers.length - countPositives(), integers.length);
-        return newSortedIntegerList(positiveIntegers);
+        return newIntegerList(positiveIntegers);
     }
 
     @Override
     public BooleanClause getNegatives() {
         int[] negativeIntegers = Arrays.copyOfRange(integers, 0, countNegatives());
-        return newSortedIntegerList(negativeIntegers);
+        return newIntegerList(negativeIntegers);
     }
 
     @Override
@@ -96,6 +96,6 @@ public class BooleanClause extends BooleanAssignment implements Clause<Integer> 
                 for (int i = 0; i < negated.length; i++) {
                     negated[highestIndex - i] = -integers[i]; // todo: what does this do?
                 }
-        return newSortedIntegerList(negated);
+        return newIntegerList(negated);
     }
 }

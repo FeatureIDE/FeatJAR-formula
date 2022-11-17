@@ -36,8 +36,7 @@ public class BooleanClauseList extends BooleanAssignmentList<BooleanClauseList, 
     }
 
     @Override
-    protected BooleanClauseList newLiteralMatrix(List<BooleanClause> clauses) {
+    protected BooleanClauseList newAssignmentList(List<BooleanClause> clauses) {
         return new BooleanClauseList(clauses);
     }
-
 }

@@ -20,6 +20,7 @@
  */
 package de.featjar.formula.analysis;
 
+import de.featjar.base.data.Computation;
 import de.featjar.base.extension.Extension;
 import de.featjar.formula.analysis.HasSolutionAnalysis;
 
@@ -29,42 +30,41 @@ import java.util.Optional;
  * Solves problems expressed as logical formulas.
  * Is capable of performing various basic {@link de.featjar.formula.analysis.Analysis analyses}.
  *
- * @param <T> the type of the analysis input
- * @param <U> the index type of the variables
+ * @param <T> the index type of the variables
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public interface Solver<T, U> extends Extension {
+public interface Solver<T> extends Extension {
     /**
      * {@return an analysis that computes whether there is a solution for some given formula, if supported by this solver}
      * Satisfiability solvers support this method.
      */
-    default Optional<HasSolutionAnalysis<T, U>> hasSolutionAnalysis() {
-        return Optional.empty();
+    default HasSolutionAnalysis<?, ?> hasSolutionAnalysis() {
+        return null;
     }
 
     /**
      * {@return an analysis that computes a solution for some given formula, if supported by this solver}
      * Solution solvers support this method.
      */
-    default Optional<Void> getSolutionAnalysis() {
-        return Optional.empty();
+    default GetSolutionAnalysis<?, ?, ?> getSolutionAnalysis() {
+        return null;
     }
 
     /**
      * {@return an analysis that computes the number of solutions for some given formula, if supported by this solver}
      * #SAT (SharpSAT) solvers support this method.
      */
-    default Optional<Void> countSolutionsAnalysis() {
-        return Optional.empty();
+    default CountSolutionsAnalysis<?, ?> countSolutionsAnalysis() {
+        return null;
     }
 
     /**
      * {@return an analysis that computes all solutions for some given formula, if supported by this solver}
      * All-solution (AllSAT) solvers support this method.
      */
-    default Optional<Void> getSolutionsAnalysis() {
-        return Optional.empty();
+    default GetSolutionsAnalysis<?, ?, ?> getSolutionsAnalysis() {
+        return null;
     }
 
     /**
@@ -74,15 +74,15 @@ public interface Solver<T, U> extends Extension {
      * further without becoming satisfiable, thus explaining why the formula is unsatisfiable.
      * This extraction is only possible when the given formula is not satisfiable.
      */
-    default Optional<Void> getMinimalUnsatisfiableSubsetAnalysis() {
-        return Optional.empty();
+    default Void getMinimalUnsatisfiableSubsetAnalysis() {
+        return null;
     }
 
     /**
      * {@return an analysis that computes all minimal unsatisfiable subset (MUS) for some given formula, if supported by this solver}
      */
-    default Optional<Void> getMinimalUnsatisfiableSubsetsAnalysis() {
-        return Optional.empty();
+    default Void getMinimalUnsatisfiableSubsetsAnalysis() {
+        return null;
     }
 
     /**
@@ -91,8 +91,8 @@ public interface Solver<T, U> extends Extension {
      *
      * @param variable the variable to minimize
      */
-    default Optional<Void> minimizeAnalysis(T variable) {
-        return Optional.empty();
+    default Void minimizeAnalysis(T variable) {
+        return null;
     }
 
     /**
@@ -101,7 +101,7 @@ public interface Solver<T, U> extends Extension {
      *
      * @param variable the variable to maximize
      */
-    default Optional<Void> maximizeAnalysis(T variable) {
-        return Optional.empty();
+    default Void maximizeAnalysis(T variable) {
+        return null;
     }
 }

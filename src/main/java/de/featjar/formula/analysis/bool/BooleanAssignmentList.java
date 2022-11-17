@@ -34,39 +34,39 @@ import java.util.*;
  * @author Elias Kuiter
  */
 public abstract class BooleanAssignmentList<T extends BooleanAssignmentList<?, U>, U extends BooleanAssignment> implements AssignmentList<U> {
-    protected final List<U> literalLists;
+    protected final List<U> assignments;
     protected VariableMap variableMap;
 
     public BooleanAssignmentList() {
-        literalLists = new ArrayList<>();
+        assignments = new ArrayList<>();
     }
 
     public BooleanAssignmentList(int size) {
-        literalLists = new ArrayList<>(size);
+        assignments = new ArrayList<>(size);
     }
 
-    public BooleanAssignmentList(Collection<? extends U> literalLists) {
-        this.literalLists = new ArrayList<>(literalLists);
+    public BooleanAssignmentList(Collection<? extends U> assignments) {
+        this.assignments = new ArrayList<>(assignments);
     }
 
     @SuppressWarnings("unchecked")
     public BooleanAssignmentList(BooleanAssignmentList<T, U> other) {
-        literalLists = new ArrayList<>(other.size());
+        assignments = new ArrayList<>(other.size());
         variableMap = other.variableMap.clone();
-        other.stream().map(U::clone).forEach(literalList -> add((U) literalList));
+        other.stream().map(U::clone).forEach(assignment -> add((U) assignment));
     }
 
-    protected abstract T newLiteralMatrix(List<U> literalLists);
+    protected abstract T newAssignmentList(List<U> assignments);
 
     @SuppressWarnings("MethodDoesntCallSuperMethod")
     @Override
     public T clone() {
-        return newLiteralMatrix(literalLists);
+        return newAssignmentList(assignments);
     }
 
     @Override
     public List<U> getAll() {
-        return literalLists;
+        return assignments;
     }
 
     @Override
@@ -74,12 +74,12 @@ public abstract class BooleanAssignmentList<T extends BooleanAssignmentList<?, U
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BooleanAssignmentList<?, ?> that = (BooleanAssignmentList<?, ?>) o;
-        return Objects.equals(literalLists, that.literalLists);
+        return Objects.equals(assignments, that.assignments);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(literalLists);
+        return Objects.hash(assignments);
     }
 
     /**
@@ -87,7 +87,7 @@ public abstract class BooleanAssignmentList<T extends BooleanAssignmentList<?, U
      */
     @SuppressWarnings("unchecked")
     public T negate() {
-        final T negatedLiteralMatrix = newLiteralMatrix(new ArrayList<>());
+        final T negatedLiteralMatrix = newAssignmentList(new ArrayList<>());
         stream().map(U::negate).forEach(literalList -> negatedLiteralMatrix.add((U) literalList));
         return negatedLiteralMatrix;
     }
@@ -102,8 +102,8 @@ public abstract class BooleanAssignmentList<T extends BooleanAssignmentList<?, U
 
     @SuppressWarnings("unchecked")
     protected Result<T> adapt(VariableMap oldVariableMap, VariableMap newVariableMap) {
-        final T adaptedLiteralMatrix = newLiteralMatrix(new ArrayList<>());
-        for (final BooleanAssignment booleanAssignment : literalLists) {
+        final T adaptedLiteralMatrix = newAssignmentList(new ArrayList<>());
+        for (final BooleanAssignment booleanAssignment : assignments) {
             final Result<BooleanAssignment> adapted = booleanAssignment.adapt(oldVariableMap, newVariableMap);
             if (adapted.isEmpty()) {
                 return Result.empty(adapted.getProblems());
@@ -163,7 +163,7 @@ public abstract class BooleanAssignmentList<T extends BooleanAssignmentList<?, U
 
         protected int addLengths(BooleanAssignmentList<?, ?> o) {
             int count = 0;
-            for (final BooleanAssignment literalSet : o.literalLists) {
+            for (final BooleanAssignment literalSet : o.assignments) {
                 count += literalSet.getIntegers().length;
             }
             return count;
@@ -181,7 +181,7 @@ public abstract class BooleanAssignmentList<T extends BooleanAssignmentList<?, U
 
         protected int addLengths(BooleanAssignmentList<?, ?> o) {
             int count = 0;
-            for (final BooleanAssignment literalSet : o.literalLists) {
+            for (final BooleanAssignment literalSet : o.assignments) {
                 count += literalSet.getIntegers().length;
             }
             return count;

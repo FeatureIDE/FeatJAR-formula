@@ -53,8 +53,8 @@ public class BooleanSolutionList extends BooleanAssignmentList<BooleanSolutionLi
     }
 
     @Override
-    protected BooleanSolutionList newLiteralMatrix(List<BooleanSolution> LiteralSolutions) {
-        return new BooleanSolutionList(LiteralSolutions);
+    protected BooleanSolutionList newAssignmentList(List<BooleanSolution> solutions) {
+        return new BooleanSolutionList(solutions);
     }
 
 //    public SortedIntegerList getVariableAssignment(int variable) {

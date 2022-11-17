@@ -5,4 +5,5 @@
 	    <extension id="de.featjar.formula.io.xml.XMLFeatureModelCNFFormulaFormat" />
 	    <extension id="de.featjar.formula.io.KConfigReaderFormat" />
 	</point>
+	<point id="de.featjar.formula.analysis.Solvers" />
 </extensions>

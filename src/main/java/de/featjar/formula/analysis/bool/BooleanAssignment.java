@@ -36,7 +36,7 @@ public class BooleanAssignment extends IntegerList<BooleanAssignment> implements
     }
 
     @Override
-    protected BooleanAssignment newSortedIntegerList(int[] integers) {
+    protected BooleanAssignment newIntegerList(int[] integers) {
         return new BooleanAssignment(integers);
     }
 
@@ -66,7 +66,7 @@ public class BooleanAssignment extends IntegerList<BooleanAssignment> implements
         for (int i = 0; i < negated.length; i++) {
             negated[i] = -integers[i];
         }
-        return newSortedIntegerList(negated);
+        return newIntegerList(negated);
     }
 
     public Optional<BooleanAssignment> clean() { // todo: must this be an optional?
@@ -90,7 +90,7 @@ public class BooleanAssignment extends IntegerList<BooleanAssignment> implements
                 uniqueVarArray[i++] = lit;
             }
         }
-        return Optional.of(newSortedIntegerList(uniqueVarArray));
+        return Optional.of(newIntegerList(uniqueVarArray));
     }
 
     public Result<BooleanAssignment> adapt(VariableMap oldVariableMap, VariableMap newVariableMap) {
@@ -110,7 +110,7 @@ public class BooleanAssignment extends IntegerList<BooleanAssignment> implements
                 return Result.empty(new Problem("No variable with index " + l, Problem.Severity.ERROR));
             }
         }
-        return Result.of(newSortedIntegerList(newIntegers));
+        return Result.of(newIntegerList(newIntegers));
     }
 
     public boolean containsAnyVariable(int... integers) {
@@ -155,7 +155,7 @@ public class BooleanAssignment extends IntegerList<BooleanAssignment> implements
                 newIntegers[j++] = this.integers[i];
             }
         }
-        return newSortedIntegerList(newIntegers);
+        return newIntegerList(newIntegers);
     }
 
     public BooleanAssignment removeAllVariables(BooleanAssignment booleanAssignment) {

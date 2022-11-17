@@ -38,7 +38,7 @@ public class BooleanSolution extends BooleanAssignment implements Solution<Integ
     }
 
     @Override
-    protected BooleanSolution newSortedIntegerList(int[] integers) {
+    protected BooleanSolution newIntegerList(int[] integers) {
         return new BooleanSolution(integers);
     }
 
@@ -51,16 +51,37 @@ public class BooleanSolution extends BooleanAssignment implements Solution<Integ
         hashCode = Arrays.hashCode(this.integers);
     }
 
+    // todo: this is a weird method, maybe refactor?
+    public static int[] resetConflicts(int[] s1, int[] s2) {
+        int[] integers = new int[s1.length];
+        for (int i = 0; i < s1.length; i++) {
+            final int x = s1[i];
+            final int y = s2[i];
+            integers[i] = x != y ? 0 : x;
+        }
+        return integers;
+    }
+
+    public BooleanSolution resetConflicts(BooleanSolution booleanSolution) {
+        List<Integer> integers = new ArrayList<>(size());
+        for (int i = 0; i < size(); i++) {
+            final int x = get(i);
+            final int y = booleanSolution.get(i);
+            integers.set(i, x != y ? 0 : x);
+        }
+        return new BooleanSolution(integers);
+    }
+
     @Override
     public BooleanSolution getPositives() {
         int[] positiveIntegers = Arrays.copyOfRange(integers, integers.length - countPositives(), integers.length);
-        return newSortedIntegerList(positiveIntegers);
+        return newIntegerList(positiveIntegers);
     }
 
     @Override
     public BooleanSolution getNegatives() {
         int[] negativeIntegers = Arrays.copyOfRange(integers, 0, countNegatives());
-        return newSortedIntegerList(negativeIntegers);
+        return newIntegerList(negativeIntegers);
     }
 
     @Override

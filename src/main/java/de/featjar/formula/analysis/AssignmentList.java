@@ -10,9 +10,11 @@ import java.util.stream.Stream;
 
 /**
  * A list of assignments.
- * Represents a {@link ClauseList} or a {@link SolutionList} in a {@link Solver}.
+ * Represents a list of assignments (e.g., {@link Clause clauses} or {@link Solution solutions}) in a {@link Solver}.
  * For a propositional implementation, see {@link BooleanAssignmentList},
  * for a first-order implementation, see {@link ValueAssignmentList}.
+ * If {@code T} refers to a {@link Clause} type, the list usually represents a conjunctive normal form (CNF).
+ * If {@code T} refers to a {@link Solution} type, the list usually represents a disjunctive normal form (DNF).
  *
  * @param <T> the type of the assignment
  * @author Elias Kuiter
@@ -70,18 +72,6 @@ public interface AssignmentList<T extends Assignment<?>> {
     }
 
     /**
-     * Removes the assignment at the given index in this assignment list.
-     *
-     * @param index the index
-     * @return the removed assignment, if any
-     */
-    default Optional<T> remove(int index) {
-        if (index < 0 || index >= size())
-            return Optional.empty();
-        return Optional.of(getAll().remove(index));
-    }
-
-    /**
      * Adds the given assignment to the end of this assignment list.
      *
      * @param assignment the assignment
@@ -100,11 +90,32 @@ public interface AssignmentList<T extends Assignment<?>> {
     }
 
     /**
+     * Adds the given assignments to the end of this assignment list.
+     *
+     * @param assignments the assignments
+     */
+    default void addAll(AssignmentList<T> assignments) {
+        addAll(assignments.getAll());
+    }
+
+    /**
+     * Removes the assignment at the given index in this assignment list.
+     *
+     * @param index the index
+     * @return the removed assignment, if any
+     */
+    default Optional<T> remove(int index) {
+        if (index < 0 || index >= size())
+            return Optional.empty();
+        return Optional.of(getAll().remove(index));
+    }
+
+    /**
      * Removes the last assignment in this assignment list.
      *
      * @return the removed assignment, if any
      */
-    default Optional<T> pop() {
+    default Optional<T> remove() {
         return remove(size() - 1);
     }
 

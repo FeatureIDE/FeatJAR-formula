@@ -20,7 +20,6 @@
  */
 package de.featjar.formula.analysis.metrics;
 
-import de.featjar.formula.analysis.SolutionList;
 import de.featjar.formula.analysis.bool.BooleanSolutionList;
 
 import java.util.List;
