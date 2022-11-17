@@ -2,6 +2,7 @@ package de.featjar.formula.analysis.sat.solution;
 
 import de.featjar.formula.analysis.sat.clause.CNF;
 import de.featjar.formula.analysis.sat.LiteralList;
+import de.featjar.formula.analysis.sat.clause.Clause;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -39,7 +40,7 @@ public class Solution extends LiteralList {
     }
 
     @Override
-    protected LiteralList newSortedIntegerList(int[] integers) {
+    protected Solution newSortedIntegerList(int[] integers) {
         return new Solution(integers);
     }
 
@@ -55,13 +56,13 @@ public class Solution extends LiteralList {
     }
 
     @Override
-    public LiteralList getPositives() {
+    public Solution getPositives() {
         int[] positiveIntegers = Arrays.copyOfRange(integers, integers.length - countPositives(), integers.length);
         return newSortedIntegerList(positiveIntegers);
     }
 
     @Override
-    public LiteralList getNegatives() {
+    public Solution getNegatives() {
         int[] negativeIntegers = Arrays.copyOfRange(integers, 0, countNegatives());
         return newSortedIntegerList(negativeIntegers);
     }

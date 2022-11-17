@@ -29,8 +29,5 @@ import de.featjar.base.data.Result;
  * @author Sebastian Krieter
  */
 public interface SATSolver extends Solver {
-    /**
-     * {@return whether there is a solution for the given formula}
-     */
-    Result<Boolean> hasSolution();
+
 }

@@ -29,7 +29,7 @@ import de.featjar.base.data.Result;
  * @param <T> the type of the returned solution
  * @author Sebastian Krieter
  */
-public interface SolutionSolver<T> extends SATSolver {
+public interface SolutionSolver<T extends Solvable> extends SATSolver { // todo: return a subclass of Solution
 
     /**
      * {@return the last solution for the given formula found by this solver}
