@@ -27,9 +27,9 @@ import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.base.data.Result;
 import de.featjar.base.tree.Trees;
-import de.featjar.formula.transformer.ToCNFFormula;
-import de.featjar.formula.transformer.ToDNFFormula;
-import de.featjar.formula.transformer.ToNNFFormula;
+import de.featjar.formula.transformer.ToCNF;
+import de.featjar.formula.transformer.ToDNF;
+import de.featjar.formula.transformer.ToNNF;
 
 /**
  * Tests and transforms formulas for and into normal forms.
@@ -62,13 +62,13 @@ public class NormalForms {
     // todo: use computation and store
     public static Result<Formula> toNormalForm(Formula formula, Formula.NormalForm normalForm, boolean clausal) {
         Computation<Formula> formulaTransformer;
-        ToNNFFormula nnfFormulaComputation = new ToNNFFormula(Computation.of(formula));
+        ToNNF nnfFormulaComputation = new ToNNF(Computation.of(formula));
         switch (normalForm) {
             case CNF:
-                formulaTransformer = new ToCNFFormula(nnfFormulaComputation); // todo who decides what should get cached?
+                formulaTransformer = new ToCNF(nnfFormulaComputation); // todo who decides what should get cached?
                 break;
             case DNF:
-                formulaTransformer = new ToDNFFormula(nnfFormulaComputation);
+                formulaTransformer = new ToDNF(nnfFormulaComputation);
                 break;
             default:
                 throw new IllegalStateException(String.valueOf(normalForm));

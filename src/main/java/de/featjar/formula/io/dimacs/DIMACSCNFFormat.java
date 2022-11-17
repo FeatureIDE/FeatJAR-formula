@@ -21,20 +21,21 @@
 package de.featjar.formula.io.dimacs;
 
 import de.featjar.base.io.format.Format;
-import de.featjar.formula.analysis.sat.clause.CNF;
-import de.featjar.formula.analysis.sat.clause.SATClause;
+import de.featjar.formula.analysis.bool.BooleanAssignmentList;
+import de.featjar.formula.analysis.bool.BooleanClause;
+import de.featjar.formula.analysis.bool.BooleanClauseList;
 
 import java.util.Objects;
 
 /**
- * Serializes a {@link CNF} to a String in DIMACS format.
+ * Serializes a {@link BooleanClauseList} to a String in DIMACS format.
  *
  * @author Sebastian Krieter
  */
-public class DIMACSCNFFormat implements Format<CNF> {
+public class DIMACSCNFFormat implements Format<BooleanClauseList> {
 
     @Override
-    public String serialize(CNF cnf) {
+    public String serialize(BooleanClauseList cnf) {
         Objects.requireNonNull(cnf);
 
         final StringBuilder sb = new StringBuilder();
@@ -56,12 +57,12 @@ public class DIMACSCNFFormat implements Format<CNF> {
         sb.append(' ');
         sb.append(cnf.getVariableMap().getVariableNames().size());
         sb.append(' ');
-        sb.append(cnf.getClauseList().size());
+        sb.append(cnf.size());
         sb.append(System.lineSeparator());
 
         // Clauses
-        for (final SATClause SATClause : cnf.getClauseList().getAll()) {
-            for (final int l : SATClause.getIntegers()) {
+        for (final BooleanClause LiteralClause : cnf.getAll()) {
+            for (final int l : LiteralClause.getIntegers()) {
                 sb.append(l);
                 sb.append(' ');
             }

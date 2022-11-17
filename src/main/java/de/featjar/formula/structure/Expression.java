@@ -24,6 +24,7 @@ import de.featjar.base.io.IO;
 import de.featjar.base.tree.Trees;
 import de.featjar.base.tree.structure.Traversable;
 import de.featjar.formula.analysis.Assignment;
+import de.featjar.formula.analysis.value.ValueAssignment;
 import de.featjar.formula.io.textual.ExpressionFormat;
 import de.featjar.formula.structure.term.value.Constant;
 import de.featjar.formula.structure.term.value.Variable;
@@ -64,19 +65,19 @@ public interface Expression extends Traversable<Expression> {
     Object evaluate(List<?> values);
 
     /**
-     * {@return the evaluation of this formula on a given variable assignment}
+     * {@return the evaluation of this formula on a given value assignment}
      *
-     * @param variableAssignment the assignment
+     * @param valueAssignment the value assignment
      */
-    default Object evaluate(Assignment variableAssignment) {
-        return traverse(new Evaluator(variableAssignment)).orElse(null);
+    default Object evaluate(ValueAssignment valueAssignment) {
+        return traverse(new Evaluator(valueAssignment)).orElse(null);
     }
 
     /**
-     * {@return the evaluation of this formula on an empty assignment}
+     * {@return the evaluation of this formula on an empty value assignment}
      */
     default Object evaluate() {
-        return evaluate(new Assignment());
+        return evaluate(new ValueAssignment());
     }
 
     /**

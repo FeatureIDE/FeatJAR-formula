@@ -7,6 +7,7 @@ import de.featjar.formula.structure.formula.predicate.*;
 import de.featjar.formula.structure.term.Term;
 import de.featjar.formula.structure.term.function.*;
 import de.featjar.formula.structure.term.value.Constant;
+import de.featjar.formula.structure.term.value.Value;
 import de.featjar.formula.structure.term.value.Variable;
 
 /**
@@ -171,18 +172,18 @@ public class Expressions {
     /**
      * {@return a formula that evaluates to {@code true} iff the given term evaluates to the given polarity}
      * @param isPositive the polarity
-     * @param term the term
+     * @param value the term
      */
-    public static Literal literal(boolean isPositive, Term term) {
-        return new Literal(isPositive, term);
+    public static Literal literal(boolean isPositive, Value value) {
+        return new Literal(isPositive, value);
     }
 
     /**
      * {@return a formula that evaluates to {@code true} iff the given term evaluates to {@code true}}
-     * @param term the term
+     * @param value the term
      */
-    public static Literal literal(Term term) {
-        return new Literal(term);
+    public static Literal literal(Value value) {
+        return new Literal(value);
     }
 
     /**

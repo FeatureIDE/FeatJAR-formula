@@ -73,7 +73,7 @@ public abstract class AbstractXMLFeatureModelFormat<T, U, V> extends XMLFormat<T
     public static final String ABSTRACT = "abstract";
     public static final String HIDDEN = "hidden";
 
-    protected abstract U createFeatureLabel(
+    protected abstract U newFeatureLabel(
             String name, U parentFeatureLabel, boolean mandatory, boolean _abstract, boolean hidden)
             throws ParseException;
 
@@ -85,7 +85,7 @@ public abstract class AbstractXMLFeatureModelFormat<T, U, V> extends XMLFormat<T
 
     protected abstract void addFeatureMetadata(U featureLabel, Element e) throws ParseException;
 
-    protected abstract V createConstraintLabel();
+    protected abstract V newConstraintLabel();
 
     protected abstract void addConstraint(V constraintLabel, Formula formula) throws ParseException;
 
@@ -169,7 +169,7 @@ public abstract class AbstractXMLFeatureModelFormat<T, U, V> extends XMLFormat<T
             }
         }
 
-        U featureLabel = createFeatureLabel(name, parentFeatureLabel, and && mandatory, _abstract, hidden);
+        U featureLabel = newFeatureLabel(name, parentFeatureLabel, and && mandatory, _abstract, hidden);
 
         if (e.hasChildNodes()) {
             final ArrayList<U> featureLabels = parseFeatureTree(e.getChildNodes(), featureLabel, nodeName.equals(AND));
@@ -198,7 +198,7 @@ public abstract class AbstractXMLFeatureModelFormat<T, U, V> extends XMLFormat<T
             final String nodeName = child.getNodeName();
             if (nodeName.equals(RULE)) {
                 try {
-                    V constraintLabel = createConstraintLabel();
+                    V constraintLabel = newConstraintLabel();
                     final List<Formula> parsedConstraints =
                             parseConstraints(child.getChildNodes(), constraintLabel);
                     if (parsedConstraints.size() == 1) {
