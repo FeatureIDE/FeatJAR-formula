@@ -28,6 +28,7 @@ import de.featjar.formula.structure.Expressions;
 import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.formula.predicate.Literal;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 

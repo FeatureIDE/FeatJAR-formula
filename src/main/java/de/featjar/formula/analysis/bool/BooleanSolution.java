@@ -104,4 +104,9 @@ public class BooleanSolution extends BooleanAssignment implements Solution<Integ
     public boolean isEmpty() {
         return size() == 0;
     }
+
+    @Override
+    public String toString() {
+        return "BooleanSolution" + Arrays.toString(integers);
+    }
 }

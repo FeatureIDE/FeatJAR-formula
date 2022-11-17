@@ -20,6 +20,7 @@
  */
 package de.featjar.formula.analysis.bool;
 
+import de.featjar.base.log.IndentFormatter;
 import de.featjar.formula.analysis.value.ValueClauseList;
 import de.featjar.formula.transformer.ToCNF;
 
@@ -57,52 +58,8 @@ public class BooleanSolutionList extends BooleanAssignmentList<BooleanSolutionLi
         return new BooleanSolutionList(solutions);
     }
 
-//    public SortedIntegerList getVariableAssignment(int variable) {
-//        final int[] assignment = new int[solutions.size()];
-//        int index = 0;
-//        for (final SortedIntegerList solution : solutions) {
-//            assignment[index++] = solution.getIntegers()[variable];
-//        }
-//        return new SortedIntegerList(assignment, SortedIntegerList.Order.UNORDERED);
-//    }
-
-//    private String literalToString(int literal) {
-//        final Optional<String> name = variables.get(Math.abs(literal));
-//        return name.isEmpty() ? "?" : (literal > 0 ? "" : "-") + name.get();
-//    }
-//
-//    public String getSolutionsString() {
-//        final StringBuilder sb = new StringBuilder();
-//        for (final SortedIntegerList sortedIntegerList : solutions) {
-//            sb.append("(");
-//            final List<String> literals = Arrays.stream(sortedIntegerList.getIntegers())
-//                    .mapToObj(this::literalToString)
-//                    .filter(Objects::nonNull)
-//                    .collect(Collectors.toList());
-//            for (final String literal : literals) {
-//                sb.append(literal);
-//                sb.append(", ");
-//            }
-//            if (!literals.isEmpty()) {
-//                sb.delete(sb.length() - 2, sb.length());
-//            }
-//            sb.append("), ");
-//        }
-//        if (!solutions.isEmpty()) {
-//            sb.delete(sb.length() - 2, sb.length());
-//        }
-//        return sb.toString();
-//    }
-//
-//    public Stream<SortedIntegerList> getInvalidSolutions(CNF cnf) {
-//        return solutions.stream() //
-//                .filter(s -> cnf.getClauseList().stream() //
-//                        .anyMatch(clause -> s.containsAll(clause.negate())));
-//    }
-//
-//    public Stream<SortedIntegerList> getValidSolutions(CNF cnf) {
-//        return solutions.stream() //
-//                .filter(s -> cnf.getClauseList().stream() //
-//                        .allMatch(clause -> !s.isDisjoint(clause)));
-//    }
+    @Override
+    public String toString() {
+        return IndentFormatter.formatList("BooleanSolutionList", assignments);
+    }
 }

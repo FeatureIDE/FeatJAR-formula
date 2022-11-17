@@ -21,6 +21,7 @@
 package de.featjar.formula.analysis.bool;
 
 import de.featjar.base.data.Result;
+import de.featjar.base.log.IndentFormatter;
 import de.featjar.formula.analysis.AssignmentList;
 
 import java.util.*;
@@ -51,9 +52,8 @@ public abstract class BooleanAssignmentList<T extends BooleanAssignmentList<?, U
 
     @SuppressWarnings("unchecked")
     public BooleanAssignmentList(BooleanAssignmentList<T, U> other) {
-        assignments = new ArrayList<>(other.size());
-        variableMap = other.variableMap.clone();
-        other.stream().map(U::clone).forEach(assignment -> add((U) assignment));
+        assignments = new ArrayList<>(other.getAll());
+        variableMap = other.variableMap != null ? other.variableMap.clone() : null;
     }
 
     protected abstract T newAssignmentList(List<U> assignments);
@@ -120,37 +120,10 @@ public abstract class BooleanAssignmentList<T extends BooleanAssignmentList<?, U
         });
     }
 
-//    public CNF randomize(Random random) {
-//        final VariableMap newTermMap = (VariableMap) variableMap.clone();
-//        newTermMap.randomize(random);
-//
-//        final LiteralMatrix adaptedLiteralMatrix =
-//                clauseList.adapt(variableMap, newTermMap).get();
-//        Collections.shuffle(adaptedLiteralMatrix, random);
-//
-//        return new CNF(newTermMap, adaptedLiteralMatrix);
-//    }
-
-//    public LiteralMatrix<T> convert() {
-//        final LiteralMatrix<T> convertedLiteralMatrix = new LiteralMatrix<>();
-//        convert(this, convertedLiteralMatrix, new int[size()], 0);
-//        return convertedLiteralMatrix;
-//    }
-//
-//    private void convert(LiteralMatrix<T> nf1, LiteralMatrix<T> nf2, int[] literals, int index) {
-//        if (index == nf1.size()) {
-//            final LiteralList literalSet =
-//                    new LiteralList(literals).clean().get();
-//            if (literalSet != null) {
-//                nf2.add(literalSet);
-//            }
-//        } else {
-//            for (final int literal : nf1.get(index).getIntegers()) {
-//                literals[index] = literal;
-//                convert(nf1, nf2, literals, index + 1);
-//            }
-//        }
-//    }
+    @Override
+    public String toString() {
+        return IndentFormatter.formatList("BooleanAssignmentList", assignments);
+    }
 
     /**
      * Compares list of clauses by the number of literals.

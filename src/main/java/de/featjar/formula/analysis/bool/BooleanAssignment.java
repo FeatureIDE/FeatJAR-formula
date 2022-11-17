@@ -223,78 +223,8 @@ public class BooleanAssignment extends IntegerList<BooleanAssignment> implements
         return value == 0 ? Optional.empty() : Optional.of(value > 0);
     }
 
-//    @Override
-//    public void set(Integer variable, Object value) {
-//        int index = indexOfVariable(variable);
-//        if (index < 0)
-//            integers =
-//    }
-//
-//    @Override
-//    public void remove(Integer variable) {
-//
-//    }
-//
-//    @Override
-//    public void clear() {
-//
-//    }
-
-    //    /**
-//     * Sets the value at position i of solution1 to 0 if the value of solution2 at
-//     * position {@code i} is different.
-//     *
-//     * @param solution1 First solution.
-//     * @param solution2 Second solution.
-//     */
-//    public static void resetConflicts(int[] solution1, int[] solution2) {
-//        for (int i = 0; i < solution1.length; i++) {
-//            final int x = solution1[i];
-//            final int y = solution2[i];
-//            if (x != y) {
-//                solution1[i] = 0;
-//            }
-//        }
-//    }
-
-//    public static LiteralIndexList getVariables(CNF cnf) {
-//        return getVariables(cnf.getVariableMap());
-//    }
-//
-//    public static LiteralIndexList getVariables(VariableMap variableMap) {
-//        return new LiteralIndexList(constructVariableStream(variableMap).toArray());
-//    }
-//
-//    public static LiteralIndexList getVariables(VariableMap variableMap, Collection<String> variableNames) {
-//        return new LiteralIndexList(
-//                constructVariableStream(variableMap, variableNames).toArray());
-//    }
-//
-//    public static LiteralIndexList getLiterals(CNF cnf) {
-//        return getLiterals(cnf.getVariableMap());
-//    }
-//
-//    public static LiteralIndexList getLiterals(VariableMap variables) {
-//        return new LiteralIndexList(constructVariableStream(variables)
-//                .flatMap(n -> IntStream.of(-n, n))
-//                .toArray());
-//    }
-//
-//    public static LiteralIndexList getLiterals(VariableMap variableMap, Collection<String> variableNames) {
-//        return new LiteralIndexList(constructVariableStream(variableMap, variableNames)
-//                .flatMap(n -> IntStream.of(-n, n))
-//                .toArray());
-//    }
-//
-//    private static IntStream constructVariableStream(VariableMap variables) {
-//        return variables.getValidIndexRange().stream().get();
-//    }
-//
-//    private static IntStream constructVariableStream(VariableMap variableMap, Collection<String> variableNames) {
-//        return variableNames.stream()
-//                .map(variableMap::get)
-//                .flatMap(Optional::stream)
-//                .mapToInt(Integer::intValue)
-//                .distinct();
-//    }
+    @Override
+    public String toString() {
+        return "BooleanAssignment" + Arrays.toString(integers);
+    }
 }

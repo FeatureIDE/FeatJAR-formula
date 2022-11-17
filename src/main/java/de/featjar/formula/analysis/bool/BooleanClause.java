@@ -98,4 +98,9 @@ public class BooleanClause extends BooleanAssignment implements Clause<Integer> 
                 }
         return newIntegerList(negated);
     }
+
+    @Override
+    public String toString() {
+        return "BooleanClause" + Arrays.toString(integers);
+    }
 }
