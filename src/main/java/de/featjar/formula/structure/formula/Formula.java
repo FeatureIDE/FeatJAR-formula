@@ -1,6 +1,8 @@
 package de.featjar.formula.structure.formula;
 
 import de.featjar.base.data.Result;
+import de.featjar.formula.analysis.sat.clause.CNF;
+import de.featjar.formula.analysis.sat.clause.ToCNF;
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.formula.predicate.Predicate;
 import de.featjar.formula.structure.term.value.Variable;
@@ -63,28 +65,35 @@ public interface Formula extends Expression {
     /**
      * {@return a formula in conjunctive normal form that is an equi-assignable to this formula}
      */
-    default Result<Formula> toCNF() {
+    default Result<Formula> toCNFFormula() { // todo: CNF vs. IndexedCNF? InternalCNF?
         return NormalForms.toNormalForm(this, NormalForm.CNF, false);
+    }
+
+    /**
+     * {@return an indexed CNF that is an equi-assignable to this formula}
+     */
+    default Result<CNF> toCNF() {
+        return toClausalCNFFormula().flatMap(ToCNF::convert);
     }
 
     /**
      * {@return a formula in disjunctive normal form that is an equi-assignable to this formula}
      */
-    default Result<Formula> toDNF() {
+    default Result<Formula> toDNFFormula() {
         return NormalForms.toNormalForm(this, NormalForm.DNF, false);
     }
 
     /**
      * {@return a formula in clausal conjunctive normal form that is an equi-assignable to this formula}
      */
-    default Result<Formula> toClausalCNF() {
+    default Result<Formula> toClausalCNFFormula() {
         return NormalForms.toNormalForm(this, NormalForm.CNF, true);
     }
 
     /**
      * {@return a formula in clausal disjunctive normal form that is an equi-assignable to this formula}
      */
-    default Result<Formula> toClausalDNF() {
+    default Result<Formula> toClausalDNFFormula() {
         return NormalForms.toNormalForm(this, NormalForm.DNF, true);
     }
 

@@ -20,10 +20,6 @@
  */
 package de.featjar.formula.analysis.solver;
 
-import de.featjar.formula.assignment.Assignment;
-import de.featjar.formula.assignment.VariableAssignment;
-import de.featjar.formula.structure.formula.Formula;
-
 /**
  * A solver that analyzes a given formula.
  *
@@ -42,16 +38,16 @@ public interface Solver {
     SolverFormula<?> getSolverFormula();
 
     /**
-     * {@return additional assumptions this solver should consider}
+     * {@return list of additional assumptions that this solver should consider}
      */
-    Assignment<?> getAssumptions(); //todo: Variable or Index Assignment?
+    AssumptionList<?> getAssumptionList();
 
     /**
      * Sets additional assumptions this solver should consider.
      *
      * @param assumptions the assumptions in form of a (partial) variable assignment
      */
-    void setAssumptions(Assignment<?> assumptions) throws SolverContradictionException; // todo: exception needed?
+    void setAssumptions(Assumable<?> assumptions) throws SolverContradictionException; // todo: exception needed?
 
     long getTimeout();
 

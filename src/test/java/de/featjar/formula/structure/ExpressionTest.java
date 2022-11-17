@@ -1,6 +1,6 @@
 package de.featjar.formula.structure;
 
-import de.featjar.formula.assignment.VariableAssignment;
+import de.featjar.formula.analysis.Assignment;
 import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.term.Term;
 import de.featjar.formula.structure.term.value.Constant;
@@ -31,11 +31,11 @@ class ExpressionTest {
 
     @Test
     void evaluate() {
-        assertEquals(true, formula.evaluate(new VariableAssignment("a", false)));
-        assertEquals(false, formula.evaluate(new VariableAssignment("a", true)));
+        assertEquals(true, formula.evaluate(new Assignment("a", false)));
+        assertEquals(false, formula.evaluate(new Assignment("a", true)));
         assertThrows(NullPointerException.class, () -> formula.evaluate()); // todo: fix this?
-        assertEquals(43L, term.evaluate(new VariableAssignment("x", 1L)));
-        assertNull(term.evaluate(new VariableAssignment("x", null)));
+        assertEquals(43L, term.evaluate(new Assignment("x", 1L)));
+        assertNull(term.evaluate(new Assignment("x", null)));
         assertNull(term.evaluate());
     }
 

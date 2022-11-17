@@ -24,7 +24,6 @@ import de.featjar.base.data.Computation;
 import de.featjar.base.data.FutureResult;
 import de.featjar.formula.analysis.solver.SolverContradictionException;
 import de.featjar.formula.analysis.solver.Solver;
-import de.featjar.formula.assignment.VariableAssignment;
 
 import java.util.Random;
 import java.util.function.Function;
@@ -44,17 +43,17 @@ public abstract class Analysis<T, S extends Solver, U> implements Computation<T>
     protected final Computation<U> inputComputation;
     protected final Function<U, S> solverFactory; // todo: or use Computation<S>, which then has to be cloned before usage?
     // this would require a general cloning mechanism for computation inputs (T implements Cloneable)
-    protected final VariableAssignment assumptions;
+    protected final Assignment assumptions;
     protected final long timeoutInMs;
     protected final Random random;
 
     protected Analysis(Computation<U> inputComputation, Function<U, S> solverFactory) {
-        this(inputComputation, solverFactory, new VariableAssignment(), DEFAULT_TIMEOUT_IN_MS, DEFAULT_RANDOM_SEED);
+        this(inputComputation, solverFactory, new Assignment(), DEFAULT_TIMEOUT_IN_MS, DEFAULT_RANDOM_SEED);
     }
 
     // todo: fluent API for defining analysis parameters?
     // e.g., new Analysis(...).timeout(...).random(...)
-    protected Analysis(Computation<U> inputComputation, Function<U, S> solverFactory, VariableAssignment assumptions, long timeoutInMs, long randomSeed) {
+    protected Analysis(Computation<U> inputComputation, Function<U, S> solverFactory, Assignment assumptions, long timeoutInMs, long randomSeed) {
         this.inputComputation = inputComputation;
         this.solverFactory = solverFactory;
         this.assumptions = assumptions;
