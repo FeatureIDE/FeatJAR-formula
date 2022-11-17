@@ -22,8 +22,6 @@ package de.featjar.formula.analysis.sat.solution;
 
 import de.featjar.formula.analysis.sat.LiteralMatrix;
 import de.featjar.formula.analysis.sat.clause.CNF;
-import de.featjar.formula.analysis.sat.clause.Clause;
-import de.featjar.formula.analysis.sat.clause.ClauseList;
 
 import java.util.Collection;
 import java.util.List;
@@ -35,7 +33,7 @@ import java.util.List;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class SolutionList extends LiteralMatrix<SolutionList, Solution> {
+public class SolutionList extends LiteralMatrix<SolutionList, SATSolution> {
     public SolutionList() {
     }
 
@@ -43,7 +41,7 @@ public class SolutionList extends LiteralMatrix<SolutionList, Solution> {
         super(size);
     }
 
-    public SolutionList(Collection<? extends Solution> solutions) {
+    public SolutionList(Collection<? extends SATSolution> solutions) {
         super(solutions);
     }
 
@@ -52,8 +50,8 @@ public class SolutionList extends LiteralMatrix<SolutionList, Solution> {
     }
 
     @Override
-    protected SolutionList newLiteralMatrix(List<Solution> solutions) {
-        return new SolutionList(solutions);
+    protected SolutionList newLiteralMatrix(List<SATSolution> SATSolutions) {
+        return new SolutionList(SATSolutions);
     }
 
 //    public SortedIntegerList getVariableAssignment(int variable) {

@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.analysis.sat.solution.metrics;
 
-import de.featjar.formula.analysis.sat.solution.Solution;
+import de.featjar.formula.analysis.sat.solution.SATSolution;
 
 /**
  * Computes the number of negative literals in a solution.
@@ -30,7 +30,7 @@ import de.featjar.formula.analysis.sat.solution.Solution;
 public class NegativeCount implements CountFunction {
 
     @Override
-    public double compute(Solution literals) {
+    public double compute(SATSolution literals) {
         return (double) literals.countNegatives() / literals.size();
     }
 

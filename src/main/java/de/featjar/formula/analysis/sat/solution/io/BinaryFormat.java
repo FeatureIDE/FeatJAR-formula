@@ -22,7 +22,7 @@ package de.featjar.formula.analysis.sat.solution.io;
 
 import de.featjar.formula.analysis.sat.VariableMap;
 import de.featjar.formula.analysis.sat.solution.DNF;
-import de.featjar.formula.analysis.sat.solution.Solution;
+import de.featjar.formula.analysis.sat.solution.SATSolution;
 import de.featjar.formula.analysis.sat.solution.SolutionList;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.InputMapper;
@@ -52,7 +52,7 @@ public class BinaryFormat extends de.featjar.base.io.binary.BinaryFormat<DNF> { 
         final BitSet bs = new BitSet(names.size());
         final SolutionList solutions = dnf.getSolutionList();
         writeInt(outputStream, solutions.size());
-        for (final Solution configuration : solutions.getAll()) {
+        for (final SATSolution configuration : solutions.getAll()) {
             final int[] literals = configuration.getIntegers();
             for (int i = 0; i < literals.length; i++) {
                 bs.set(i, literals[i] > 0);
@@ -84,7 +84,7 @@ public class BinaryFormat extends de.featjar.base.io.binary.BinaryFormat<DNF> { 
                 for (int j = 0; j < numberOfVariables; j++) {
                     literals[j] = bs.get(j) ? (j + 1) : -(j + 1);
                 }
-                solutionList.add(new Solution(literals, false));
+                solutionList.add(new SATSolution(literals, false));
             }
             return Result.of(new DNF(solutionList, termMap));
         } catch (final IOException e) {
