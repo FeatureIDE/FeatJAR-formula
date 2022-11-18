@@ -29,5 +29,4 @@ import de.featjar.formula.structure.formula.Formula;
  * @author Sebastian Krieter
  */
 public class FormulaFormats extends Formats<Formula> {
-    public FormulaFormats() {}
 }

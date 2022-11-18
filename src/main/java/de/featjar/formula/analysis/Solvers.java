@@ -28,5 +28,4 @@ import de.featjar.base.extension.ExtensionPoint;
  * @author Elias Kuiter
  */
 public class Solvers extends ExtensionPoint<Solver<?>> {
-    public Solvers() {}
 }
