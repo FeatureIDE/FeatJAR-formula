@@ -30,6 +30,7 @@ import java.util.Objects;
  * A non-terminal node in a formula.
  *
  * @author Sebastian Krieter
+ * @author Elias Kuiter
  */
 public abstract class NonTerminalExpression extends Tree<Expression> implements Expression {
     protected NonTerminalExpression(Expression... children) {

@@ -28,6 +28,7 @@ import java.util.Objects;
  * A terminal expression.
  *
  * @author Sebastian Krieter
+ * @author Elias Kuiter
  */
 public abstract class TerminalExpression extends LeafNode<Expression> implements Expression {
     @Override

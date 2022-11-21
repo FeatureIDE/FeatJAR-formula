@@ -40,7 +40,7 @@ public class ProblemFormula extends TerminalExpression implements Predicate {
         this.problem = problem;
     }
 
-    public de.featjar.base.data.Problem getProblem() {
+    public Problem getProblem() {
         return problem;
     }
 
