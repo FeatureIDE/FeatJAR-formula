@@ -18,7 +18,7 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.assumption;
+package de.featjar.formula.todo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

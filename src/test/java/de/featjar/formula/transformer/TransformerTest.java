@@ -21,8 +21,6 @@ class TransformerTest {
 
     public static void traverseAndAssertFormulaEquals(Formula oldFormula, Function<Computation<Formula>, Computation<Formula>> formulaComputationFunction, Formula assertFormula) {
         Formula newFormula = formulaComputationFunction.apply(Computation.of(oldFormula)).getResult().get();
-        System.out.println(oldFormula.print());
-        System.out.println(newFormula.print());
         assertNotEquals(oldFormula, newFormula);
         assertEquals(assertFormula, newFormula);
     }

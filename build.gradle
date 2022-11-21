@@ -12,18 +12,3 @@ license {
         url = 'https://github.com/FeatureIDE/FeatJAR-formula'
     }
 }
-
-sourceSets {
-    main {
-        java {
-            srcDir 'src/main'
-        }
-    }
-    test {
-        java {
-            srcDir 'src/test'
-            exclude '**/assumption/**'
-            exclude '**/io/**'
-        }
-    }
-}
