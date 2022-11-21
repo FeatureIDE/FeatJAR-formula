@@ -30,7 +30,7 @@ import de.featjar.formula.visitor.NormalFormTester;
 import de.featjar.formula.visitor.NormalForms;
 
 /**
- * Transforms a formula into disjunctive normal form.
+ * Transforms a formula into clausal disjunctive normal form.
  *
  * @author Sebastian Krieter
  */
@@ -63,7 +63,7 @@ public class ToDNF implements Computation<Formula> {
                                 .then(c -> new ToNormalForm(c, Formula.NormalForm.DNF));
                 formulaToDistributiveNFFormula.setMaximumNumberOfLiterals(maximumNumberOfLiterals);
                 return formulaToDistributiveNFFormula.getResult()
-                        .map(f -> NormalForms.toClausalNormalForm(f, Formula.NormalForm.DNF));
+                        .map(f -> NormalForms.normalToClausalNormalForm(f, Formula.NormalForm.DNF));
             }
         }));
     }

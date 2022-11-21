@@ -59,12 +59,12 @@ public abstract class NonTerminalExpression extends Tree<Expression> implements 
         if (hasChildren()) {
             final StringBuilder sb = new StringBuilder();
             sb.append(getName());
-            sb.append("[");
+            sb.append("(");
             for (final Expression child : getChildren()) {
                 sb.append(child.getName());
                 sb.append(", ");
             }
-            sb.replace(sb.length() - 2, sb.length(), "]");
+            sb.replace(sb.length() - 2, sb.length(), ")");
             return sb.toString();
         } else {
             return getName();

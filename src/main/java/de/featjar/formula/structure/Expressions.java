@@ -29,6 +29,7 @@ public class Expressions {
 
     /**
      * {@return a formula that evaluates to {@code true} iff all of the given formulas evaluate to {@code true}}
+     *
      * @param formulas the formulas
      */
     public static And and(Formula... formulas) {
@@ -37,6 +38,7 @@ public class Expressions {
 
     /**
      * {@return a formula that evaluates to {@code true} iff at least a given number of the given formulas evaluate to {@code true}}
+     *
      * @param minimum the minimum
      * @param formulas the formulas
      */
@@ -46,6 +48,7 @@ public class Expressions {
 
     /**
      * {@return a formula that evaluates to {@code true} iff at most a given number of the given formulas evaluate to {@code true}}
+     *
      * @param maximum the maximum
      * @param formulas the formulas
      */
@@ -55,6 +58,7 @@ public class Expressions {
 
     /**
      * {@return a formula that evaluates to {@code true} iff the number of the given formulas that evaluate to {@code true} is in a given range}
+     *
      * @param minimum the minimum
      * @param formulas the formulas
      */
@@ -64,6 +68,7 @@ public class Expressions {
 
     /**
      * {@return a formula that evaluates to {@code true} iff both given formulas evaluate to the same value}
+     *
      * @param leftFormula the left formula
      * @param rightFormula the right formula
      */
@@ -73,6 +78,7 @@ public class Expressions {
 
     /**
      * {@return a formula that evaluates to {@code true} iff the number of the given formulas that evaluate to {@code true} is equal to a given number}
+     *
      * @param bound the bound
      * @param formulas the formulas
      */
@@ -82,6 +88,7 @@ public class Expressions {
 
     /**
      * {@return a formula that evaluates to {@code true} iff there is a value of the given bound variable such that the given formula evaluates to {@code true}}
+     *
      * @param boundVariable the bound variable
      * @param formula the formula
      */
@@ -91,6 +98,7 @@ public class Expressions {
 
     /**
      * {@return a formula that evaluates to {@code true} iff for all values of the given bound variable, the given formula evaluates to {@code true}}
+     *
      * @param boundVariable the bound variable
      * @param formula the formula
      */
@@ -101,6 +109,7 @@ public class Expressions {
     /**
      * {@return a formula that evaluates to {@code true} iff the given left formula evaluates to {@code false} or
      * the given right formula evaluates to {@code true}}
+     *
      * @param leftFormula the left formula
      * @param rightFormula the right formula
      */
@@ -110,6 +119,7 @@ public class Expressions {
 
     /**
      * {@return a formula that evaluates to {@code true} iff the given formula evaluates to {@code false}}
+     *
      * @param formula the formula
      */
     public static Not not(Formula formula) {
@@ -118,6 +128,7 @@ public class Expressions {
 
     /**
      * {@return a formula that evaluates to {@code true} iff at least one of the given formulas evaluate to {@code true}}
+     *
      * @param formulas the formulas
      */
     public static Or or(Formula... formulas) {
@@ -126,6 +137,7 @@ public class Expressions {
 
     /**
      * {@return a formula that evaluates to {@code true} iff both given terms evaluate to the same value}
+     *
      * @param leftTerm the left term
      * @param rightTerm the right term
      */
@@ -135,6 +147,7 @@ public class Expressions {
 
     /**
      * {@return a formula that evaluates to {@code true} iff the given left term evaluates to a larger or the same value as the given right term}
+     *
      * @param leftTerm the left term
      * @param rightTerm the right term
      */
@@ -144,6 +157,7 @@ public class Expressions {
 
     /**
      * {@return a formula that evaluates to {@code true} iff the given left term evaluates to a larger value as the given right term}
+     *
      * @param leftTerm the left term
      * @param rightTerm the right term
      */
@@ -153,6 +167,7 @@ public class Expressions {
 
     /**
      * {@return a formula that evaluates to {@code true} iff the given left term evaluates to a smaller or the same value as the given right term}
+     *
      * @param leftTerm the left term
      * @param rightTerm the right term
      */
@@ -162,6 +177,7 @@ public class Expressions {
 
     /**
      * {@return a formula that evaluates to {@code true} iff the given left term evaluates to a smaller value as the given right term}
+     *
      * @param leftTerm the left term
      * @param rightTerm the right term
      */
@@ -171,6 +187,7 @@ public class Expressions {
 
     /**
      * {@return a formula that evaluates to {@code true} iff the given term evaluates to the given polarity}
+     *
      * @param isPositive the polarity
      * @param value the term
      */
@@ -180,6 +197,7 @@ public class Expressions {
 
     /**
      * {@return a formula that evaluates to {@code true} iff the given term evaluates to {@code true}}
+     *
      * @param value the term
      */
     public static Literal literal(Value value) {
@@ -188,6 +206,7 @@ public class Expressions {
 
     /**
      * {@return a formula that evaluates to {@code true} iff the Boolean variable with the given name evaluates to the given polarity}
+     *
      * @param isPositive the polarity
      * @param variableName the variable name
      */
@@ -197,14 +216,16 @@ public class Expressions {
 
     /**
      * {@return a formula that evaluates to {@code true} iff the Boolean variable with the given name evaluates to {@code true}}
-     * @param variableName the variable name
+     *
+     * @param literal the variable name (intentionally not named variableName to avoid inlay hints in IntelliJ IDEA)
      */
-    public static Literal literal(String variableName) {
-        return new Literal(variableName);
+    public static Literal literal(String literal) {
+        return new Literal(literal);
     }
 
     /**
      * {@return a formula that evaluates to {@code true} iff both given terms evaluate to different values}
+     *
      * @param leftTerm the left term
      * @param rightTerm the right term
      */
@@ -214,6 +235,7 @@ public class Expressions {
 
     /**
      * {@return a placeholder for when an expression cannot be parsed due to some given problem}
+     *
      * @param problem the problem
      */
     public static ProblemFormula problemFormula(Problem problem) {
@@ -222,6 +244,7 @@ public class Expressions {
 
     /**
      * {@return a term that adds the values of two integer terms}
+     *
      * @param leftTerm the left term
      * @param rightTerm the right term
      */
@@ -231,6 +254,7 @@ public class Expressions {
 
     /**
      * {@return a term that divides the values of two integer terms}
+     *
      * @param leftTerm the left term
      * @param rightTerm the right term
      */
@@ -240,6 +264,7 @@ public class Expressions {
 
     /**
      * {@return a term that multiplies the values of two integer terms}
+     *
      * @param leftTerm the left term
      * @param rightTerm the right term
      */
@@ -249,6 +274,7 @@ public class Expressions {
 
     /**
      * {@return a term that adds the values of two real terms}
+     *
      * @param leftTerm the left term
      * @param rightTerm the right term
      */
@@ -258,6 +284,7 @@ public class Expressions {
 
     /**
      * {@return a term that divides the values of two real terms}
+     *
      * @param leftTerm the left term
      * @param rightTerm the right term
      */
@@ -267,6 +294,7 @@ public class Expressions {
 
     /**
      * {@return a term that multiplies the values of two real terms}
+     *
      * @param leftTerm the left term
      * @param rightTerm the right term
      */
@@ -276,6 +304,7 @@ public class Expressions {
 
     /**
      * {@return a constant term that evaluates to a given value, the term having the given type}
+     *
      * @param value the value
      * @param type the type
      */
@@ -285,6 +314,7 @@ public class Expressions {
 
     /**
      * {@return a constant term that evaluates to a given value, the term having the type of the given value}
+     *
      * @param value the value
      */
     public static Constant constant(Object value) {
@@ -293,6 +323,7 @@ public class Expressions {
 
     /**
      * {@return a variable term for a given name, the term having the given type}
+     *
      * @param name the name
      * @param type the type
      */
@@ -302,6 +333,7 @@ public class Expressions {
 
     /**
      * {@return a Boolean variable term for a given name}
+     *
      * @param name the name
      */
     public static Variable variable(String name) {

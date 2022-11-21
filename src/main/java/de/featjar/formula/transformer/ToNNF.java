@@ -22,12 +22,13 @@ package de.featjar.formula.transformer;
 
 import de.featjar.base.data.Computation;
 import de.featjar.base.data.FutureResult;
+import de.featjar.base.data.Result;
 import de.featjar.base.tree.Trees;
 import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.visitor.*;
 
 /**
- * Transforms a formula into negation normal form.
+ * Transforms a formula into clausal negation normal form.
  *
  * @author Elias Kuiter
  */
@@ -41,22 +42,12 @@ public class ToNNF implements Computation<Formula> {
     @Override
     public FutureResult<Formula> compute() {
         return formulaComputation.get().thenCompute((formula, monitor) -> {
-            //todo
-            //final NormalFormTester normalFormTester = NormalForms.getNormalFormTester(formula, NormalForms.NormalForm.NNF);
-            if (false) {//normalFormTester.isNormalForm) {
-//            if (!normalFormTester.isClausalNormalForm()) {
-//                return Result.of(NormalForms.toClausalNF(Trees.clone(expression), NormalForms.NormalForm.DNF));
-//            } else {
-//                return Result.of(Trees.clone(expression));
-//            }
-                return null;
-            } else {
-                formula = (Formula) formula.cloneTree();
-                Trees.traverse(formula, new ConnectiveSimplifier());
-                Trees.traverse(formula, new DeMorganApplier());
-                Trees.traverse(formula, new AndOrSimplifier());
-                return formula;
-            }
+            // todo: if already in NNF, do nothing
+            formula = (Formula) formula.cloneTree();
+            Trees.traverse(formula, new ConnectiveSimplifier());
+            Trees.traverse(formula, new DeMorganApplier());
+            Trees.traverse(formula, new AndOrSimplifier());
+            return formula;
         });
     }
 }

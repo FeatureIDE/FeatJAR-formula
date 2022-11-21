@@ -45,7 +45,6 @@ import java.util.stream.Collectors;
  * Simplifies complex connectives using well-known identities.
  * That is, replaces {@link Implies}, {@link BiImplies}, {@link AtLeast}, {@link AtMost}, {@link Between},
  * and {@link Choose} with {@link And}, {@link Or}, and {@link Not}.
- * Does not modify any {@link Quantifier}.
  *
  * @author Sebastian Krieter
  */
@@ -76,7 +75,8 @@ public class ConnectiveSimplifier implements TreeVisitor<Formula, Void> {
     @Override
     public TraversalAction lastVisit(List<Formula> path) {
         final Formula formula = getCurrentNode(path);
-        formula.replaceChildren(this::replace);
+        if (!(formula instanceof Predicate))
+            formula.replaceChildren(this::replace);
         if (fail) {
             return TraversalAction.FAIL;
         }
@@ -111,6 +111,7 @@ public class ConnectiveSimplifier implements TreeVisitor<Formula, Void> {
             final Choose choose = (Choose) formula;
             newFormula = new And(new And(atLeastK(children, choose.getBound())), new And(atMostK(children, choose.getBound())));
         } else {
+            System.out.println(formula.getClass());
             fail = true;
             return null;
         }

@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Transforms a formula into (clausal) conjunctive or disjunctive normal form by introducing Tseitin variables.
+ * Transforms a formula into clausal conjunctive or disjunctive normal form by introducing Tseitin variables.
  *
  * @author Sebastian Krieter
  */

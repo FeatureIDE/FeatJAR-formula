@@ -22,6 +22,15 @@ public class ValueAssignment implements Assignment<String> {
         this.variableValuePairs = variableValuePairs;
     }
 
+    public ValueAssignment(Object... variableValuePairs) {
+        this.variableValuePairs = new HashMap<>();
+        if (variableValuePairs.length % 2 == 1)
+            throw new IllegalArgumentException("expected a list of variable-value pairs for this value assignment");
+        for (int i = 0; i < variableValuePairs.length; i += 2) {
+            this.variableValuePairs.put((String) variableValuePairs[i], variableValuePairs[i + 1]);
+        }
+    }
+
     public ValueAssignment(ValueAssignment valueAssignment) {
         this(new HashMap<>(valueAssignment.variableValuePairs));
     }

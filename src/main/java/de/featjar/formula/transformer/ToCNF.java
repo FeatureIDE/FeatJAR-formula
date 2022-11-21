@@ -39,7 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Transforms a formula into conjunctive normal form.
+ * Transforms a formula into clausal conjunctive normal form.
  *
  * @author Sebastian Krieter
  */
@@ -75,7 +75,7 @@ public class ToCNF implements Computation<Formula> {
             final NormalFormTester normalFormTester = NormalForms.getNormalFormTester(formula, Formula.NormalForm.CNF);
             if (normalFormTester.isNormalForm()) {
                 if (!normalFormTester.isClausalNormalForm()) {
-                    return Result.of(NormalForms.toClausalNormalForm((Formula) Trees.clone(formula), Formula.NormalForm.CNF));
+                    return Result.of(NormalForms.normalToClausalNormalForm((Formula) Trees.clone(formula), Formula.NormalForm.CNF));
                 } else {
                     return Result.of((Formula) Trees.clone(formula)); // todo: is it a computation's responsibility to clone its input or not? should the Store do this, or the caller, or thenComputeResult...?
                 }
@@ -93,7 +93,7 @@ public class ToCNF implements Computation<Formula> {
             }
 
             newFormula = new And(getTransformedClauses());
-            newFormula = NormalForms.toClausalNormalForm(newFormula, Formula.NormalForm.CNF);
+            newFormula = NormalForms.normalToClausalNormalForm(newFormula, Formula.NormalForm.CNF);
             return Result.of(newFormula);
         });
     }

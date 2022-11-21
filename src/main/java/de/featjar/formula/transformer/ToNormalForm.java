@@ -35,7 +35,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * Transforms a formula into (clausal) conjunctive or disjunctive normal form using the distributive law.
+ * Transforms a formula into clausal conjunctive or disjunctive normal form using the distributive law.
  *
  * @author Sebastian Krieter
  */
@@ -78,7 +78,7 @@ public class ToNormalForm implements Computation<Formula> {
                 clauseConstructor = And::new;
                 break;
             default:
-                throw new IllegalStateException(String.valueOf(normalForm));
+                throw new IllegalStateException("unsupported normal form");
         }
     }
 

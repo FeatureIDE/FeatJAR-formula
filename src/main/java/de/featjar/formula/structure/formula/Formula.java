@@ -22,9 +22,10 @@ public interface Formula extends Expression {
      * Normal form of a formula.
      */
     enum NormalForm {
+        NNF,
         CNF,
         DNF
-        // todo: NNF
+        // todo: add other normal forms (e.g., d-dNNF)
     }
 
     default Class<?> getType() {
@@ -32,60 +33,77 @@ public interface Formula extends Expression {
     }
 
     /**
+     * {@return whether this formula is in the given normal form}
+     *
+     * @param normalForm the normal form
+     */
+    default boolean isNormalForm(NormalForm normalForm) {
+        return NormalForms.isNormalForm(this, normalForm);
+    }
+
+    /**
+     * {@return whether this formula is in the given clausal normal form}
+     *
+     * @param normalForm the clausal normal form
+     */
+    default boolean isClausalNormalForm(NormalForm normalForm) {
+        return NormalForms.isClausalNormalForm(this, normalForm);
+    }
+
+    /**
+     * {@return whether this formula is in negation normal form}
+     */
+    default boolean isNNF() {
+        return isNormalForm(NormalForm.NNF);
+    }
+
+    /**
      * {@return whether this formula is in conjunctive normal form}
      */
     default boolean isCNF() {
-        return NormalForms.isNormalForm(this, NormalForm.CNF, false);
+        return isNormalForm(NormalForm.CNF);
     }
 
     /**
      * {@return whether this formula is in disjunctive normal form}
      */
     default boolean isDNF() {
-        return NormalForms.isNormalForm(this, NormalForm.DNF, false);
+        return isNormalForm(NormalForm.DNF);
     }
 
     /**
-     * {@return whether this formula is in clausal conjunctive normal form}
+     * {@return a formula in the given normal form that is equivalent to this formula}
      */
-    default boolean isClausalCNF() {
-        return NormalForms.isNormalForm(this, NormalForm.CNF, true);
+    default Result<Formula> toNormalForm(NormalForm normalForm) {
+        return NormalForms.toNormalForm(this, normalForm, false);
     }
 
     /**
-     * {@return whether this formula is in clausal disjunctive normal form}
+     * {@return a formula in the given clausal normal form that is equivalent to this formula}
      */
-    default boolean isClausalDNF() {
-        return NormalForms.isNormalForm(this, NormalForm.DNF, true);
+    default Result<Formula> toClausalNormalForm(NormalForm normalForm) {
+        return NormalForms.toNormalForm(this, normalForm, true);
     }
-    //todo: computation/store
 
     /**
-     * {@return a formula in conjunctive normal form that is an equi-assignable to this formula}
+     * {@return a formula in clausal negation normal form that is equivalent to this formula}
      */
-    default Result<Formula> toCNF() { // todo: CNF vs. IndexedCNF? InternalCNF?
-        return NormalForms.toNormalForm(this, NormalForm.CNF, false);
+    default Result<Formula> toNNF() {
+        return toClausalNormalForm(NormalForm.NNF);
     }
 
     /**
-     * {@return a formula in disjunctive normal form that is an equi-assignable to this formula}
+     * {@return a formula in clausal conjunctive normal form that is equivalent to this formula}
+     */
+    default Result<Formula> toCNF() {
+        return toClausalNormalForm(NormalForm.CNF);
+    }
+
+    /**
+     * {@return a formula in clausal disjunctive normal form that is equivalent to this formula}
      */
     default Result<Formula> toDNF() {
-        return NormalForms.toNormalForm(this, NormalForm.DNF, false);
-    }
-
-    /**
-     * {@return a formula in clausal conjunctive normal form that is an equi-assignable to this formula}
-     */
-    default Result<Formula> toClausalCNF() {
-        return NormalForms.toNormalForm(this, NormalForm.CNF, true);
-    }
-
-    /**
-     * {@return a formula in clausal disjunctive normal form that is an equi-assignable to this formula}
-     */
-    default Result<Formula> toClausalDNF() {
-        return NormalForms.toNormalForm(this, NormalForm.DNF, true);
+        return toClausalNormalForm(NormalForm.DNF);
     }
 
     // todo: mutate/analyze analogous to FeatureModel?

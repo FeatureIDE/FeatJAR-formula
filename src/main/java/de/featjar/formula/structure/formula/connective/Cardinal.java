@@ -25,6 +25,7 @@ import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.NonTerminalExpression;
 import de.featjar.formula.structure.formula.Formula;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -39,17 +40,21 @@ public abstract class Cardinal extends NonTerminalExpression implements Connecti
     protected Range range;
 
     protected Cardinal(Range range, Formula... formulas) {
-        super(formulas);
-        setRange(range);
+        super();
+        this.range = range;
+        if (formulas.length > 0)
+            super.setChildren(Arrays.asList(formulas));
     }
 
     protected Cardinal(Range range, List<? extends Formula> formulas) {
-        super(formulas);
-        setRange(range);
+        super();
+        this.range = range;
+        if (formulas.size() > 0)
+            super.setChildren(formulas);
     }
 
     protected Cardinal(Cardinal cardinal) {
-        setRange(cardinal.range);
+        this.range = cardinal.range;
     }
 
     protected Range getRange() {

@@ -39,46 +39,40 @@ import de.featjar.formula.transformer.ToNNF;
 public class NormalForms {
 
     public static NormalFormTester getNormalFormTester(Formula formula, Formula.NormalForm normalForm) {
-        NormalFormTester tester;
-        switch (normalForm) {
-            case CNF:
-                tester = new CNFTester();
-                break;
-            case DNF:
-                tester = new DNFTester();
-                break;
-            default:
-                throw new IllegalStateException(String.valueOf(normalForm));
-        }
-        Trees.traverse(formula, tester);
-        return tester;
+        NormalFormTester normalFormTester = normalForm == Formula.NormalForm.NNF
+                ? new NormalFormTester.NNF()
+                : normalForm == Formula.NormalForm.CNF
+                ? new NormalFormTester.CNF()
+                : new NormalFormTester.DNF();
+        Trees.traverse(formula, normalFormTester);
+        return normalFormTester;
     }
 
-    public static boolean isNormalForm(Formula formula, Formula.NormalForm normalForm, boolean clausal) {
-        final NormalFormTester tester = getNormalFormTester(formula, normalForm);
-        return clausal ? tester.isClausalNormalForm() : tester.isNormalForm();
+    public static boolean isNormalForm(Formula formula, Formula.NormalForm normalForm) {
+        return getNormalFormTester(formula, normalForm).isNormalForm();
+    }
+
+    public static boolean isClausalNormalForm(Formula formula, Formula.NormalForm normalForm) {
+        return getNormalFormTester(formula, normalForm).isClausalNormalForm();
     }
 
     // todo: use computation and store
-    public static Result<Formula> toNormalForm(Formula formula, Formula.NormalForm normalForm, boolean clausal) {
-        Computation<Formula> formulaTransformer;
-        ToNNF nnfFormulaComputation = new ToNNF(Computation.of(formula));
-        switch (normalForm) {
-            case CNF:
-                formulaTransformer = new ToCNF(nnfFormulaComputation); // todo who decides what should get cached?
-                break;
-            case DNF:
-                formulaTransformer = new ToDNF(nnfFormulaComputation);
-                break;
-            default:
-                throw new IllegalStateException(String.valueOf(normalForm));
-        }
-        Result<Formula> res = formulaTransformer.getResult();
-        return res.map(f -> clausal ? toClausalNormalForm(formula, normalForm) : f);
+    public static Result<Formula> toNormalForm(Formula formula, Formula.NormalForm normalForm, boolean isClausal) {
+        Computation<Formula> normalFormFormulaComputation = Computation.of(formula)
+                .then(normalForm == Formula.NormalForm.NNF
+                        ? ToNNF::new
+                        : normalForm == Formula.NormalForm.CNF
+                        ? ToCNF::new
+                        : ToDNF::new);
+        Result<Formula> res = normalFormFormulaComputation.getResult();
+        return res.map(f -> isClausal ? normalToClausalNormalForm(formula, normalForm) : f);
     }
 
-    public static Formula toClausalNormalForm(Formula formula, Formula.NormalForm normalForm) {
+    public static Formula normalToClausalNormalForm(Formula formula, Formula.NormalForm normalForm) {
         switch (normalForm) {
+            case NNF:
+                // todo: currently not implemented
+                throw new UnsupportedOperationException();
             case CNF:
                 if (formula instanceof Literal) {
                     formula = new And(new Or(formula));

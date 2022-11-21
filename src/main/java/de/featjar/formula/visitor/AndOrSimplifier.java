@@ -58,12 +58,14 @@ public class AndOrSimplifier implements TreeVisitor<Formula, Void> {
         final Formula formula = getCurrentNode(path);
         if (formula instanceof Connective) {
             if (formula instanceof And) {
+                // todo: False dominates And, which is implemented, but True is neutral and can be removed
                 if (formula.getChildren().stream().anyMatch(c -> c == Expressions.False)) {
                     formula.setChildren(Collections.singletonList(Expressions.False));
                 } else {
                     formula.flatReplaceChildren(this::mergeAnd);
                 }
             } else if (formula instanceof Or) {
+                // todo: True dominates Or, which is implemented, but False is neutral and can be removed
                 if (formula.getChildren().stream().anyMatch(c -> c == Expressions.True)) {
                     formula.setChildren(Collections.singletonList(Expressions.True));
                 } else {
@@ -76,14 +78,14 @@ public class AndOrSimplifier implements TreeVisitor<Formula, Void> {
 
     private List<? extends Expression> mergeAnd(final Expression child) {
         return (child instanceof And)
-                        || (!(child instanceof Predicate) && (child.getChildren().size() == 1))
+                        || (child instanceof Or && (child.getChildren().size() == 1))
                 ? child.getChildren()
                 : null;
     }
 
     private List<? extends Expression> mergeOr(final Expression child) {
         return (child instanceof Or)
-                        || (!(child instanceof Predicate) && (child.getChildren().size() == 1))
+                        || (child instanceof And && (child.getChildren().size() == 1))
                 ? child.getChildren()
                 : null;
     }

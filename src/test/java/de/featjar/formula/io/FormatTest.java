@@ -26,7 +26,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import de.featjar.formula.structure.Expression;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.IO;
 import de.featjar.base.io.format.Format;
@@ -49,8 +48,8 @@ import java.util.stream.Collectors;
  */
 public class FormatTest {
 
-    private static final Path rootDirectory = Paths.get("src/test/resources");
-    private static final Path formatsDirectory = rootDirectory.resolve("formats");
+    public static final Path rootDirectory = Paths.get("src/test/resources");
+    public static final Path formatsDirectory = rootDirectory.resolve("formats");
 
     public static void testLoad(Formula expression1, String name, Format<Formula> format) {
         assertEquals(format.getClass().getCanonicalName(), format.getIdentifier());
@@ -84,6 +83,7 @@ public class FormatTest {
         return IO.load(path, format).get();
     }
 
+    @SuppressWarnings("resource")
     private static List<Path> getFileList(String name, Format<Formula> format) {
         final String namePattern = Pattern.quote(name) + "_\\d\\d";
         try {
@@ -98,7 +98,7 @@ public class FormatTest {
         } catch (final IOException e) {
             e.printStackTrace();
             fail(e.getMessage());
-            return null;
+            throw new RuntimeException();
         }
     }
 
