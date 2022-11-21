@@ -32,6 +32,7 @@ import de.featjar.formula.visitor.Evaluator;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -92,13 +93,19 @@ public interface Expression extends Traversable<Expression> {
     }
 
     /**
-     * {@return a stream of all variables in this expression}
+     * {@return a stream of all unique variables in this expression}
+     * Uniqueness of variables is determined by their names, not their identity.
+     * Thus, only the first instance of a variable with a given name will occur in this stream.
+     * todo: this implementation does not preserve the preorder!
      */
     default Stream<Variable> getVariableStream() {
         return Trees.preOrderStream(this)
                 .filter(e -> e instanceof Variable)
                 .map(e -> (Variable) e)
-                .distinct();
+                .collect(Collectors.groupingBy(Variable::getName))
+                .values()
+                .stream()
+                .flatMap(variables -> variables.stream().limit(1));
     }
 
     /**
@@ -110,9 +117,14 @@ public interface Expression extends Traversable<Expression> {
 
     /**
      * {@return a list of all variable names in this expression}
+     * todo: this implementation does not preserve the preorder!
      */
-    default List<String> getVariableNames() {
-        return getVariableStream().map(Variable::getName).collect(Collectors.toList());
+    default Set<String> getVariableNames() {
+        return Trees.preOrderStream(this)
+                .filter(e -> e instanceof Variable)
+                .map(e -> (Variable) e)
+                .collect(Collectors.groupingBy(Variable::getName))
+                .keySet();
     }
 
     /**

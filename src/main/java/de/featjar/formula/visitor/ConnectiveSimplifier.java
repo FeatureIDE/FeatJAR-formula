@@ -111,7 +111,6 @@ public class ConnectiveSimplifier implements TreeVisitor<Formula, Void> {
             final Choose choose = (Choose) formula;
             newFormula = new And(new And(atLeastK(children, choose.getBound())), new And(atMostK(children, choose.getBound())));
         } else {
-            System.out.println(formula.getClass());
             fail = true;
             return null;
         }

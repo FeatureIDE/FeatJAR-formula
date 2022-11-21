@@ -8,6 +8,7 @@ import de.featjar.formula.structure.term.value.Variable;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static de.featjar.formula.structure.Expressions.*;
@@ -67,8 +68,8 @@ class ExpressionTest {
 
     @Test
     void getVariableNames() {
-        assertEquals(List.of("a"), formula.getVariableNames());
-        assertEquals(List.of("x"), term.getVariableNames());
+        assertEquals(Set.of("a"), formula.getVariableNames());
+        assertEquals(Set.of("x"), term.getVariableNames());
     }
 
     @Test

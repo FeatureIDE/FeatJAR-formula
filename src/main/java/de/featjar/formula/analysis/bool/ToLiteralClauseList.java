@@ -28,7 +28,6 @@ import de.featjar.formula.structure.Expressions;
 import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.formula.predicate.Literal;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -39,15 +38,15 @@ import java.util.Objects;
  * @author Elias Kuiter
  */
 public class ToLiteralClauseList implements Computation<BooleanClauseList> {
-    protected final Computation<Formula> cnfComputation;
+    protected final Computation<Formula> cnfFormulaComputation;
     protected final Computation<VariableMap> variableMapComputation;
 
-    public ToLiteralClauseList(Computation<Formula> cnfComputation) {
-        this(cnfComputation, cnfComputation.map(VariableMap::of));
+    public ToLiteralClauseList(Computation<Formula> cnfFormulaComputation) {
+        this(cnfFormulaComputation, cnfFormulaComputation.map(VariableMap::of));
     }
 
-    public ToLiteralClauseList(Computation<Formula> cnfComputation, Computation<VariableMap> variableMapComputation) {
-        this.cnfComputation = cnfComputation;
+    public ToLiteralClauseList(Computation<Formula> cnfFormulaComputation, Computation<VariableMap> variableMapComputation) {
+        this.cnfFormulaComputation = cnfFormulaComputation;
         this.variableMapComputation = variableMapComputation;
     }
 
@@ -61,7 +60,7 @@ public class ToLiteralClauseList implements Computation<BooleanClauseList> {
 
     @Override
     public FutureResult<BooleanClauseList> compute() {
-        return Computation.allOf(cnfComputation, variableMapComputation)
+        return Computation.allOf(cnfFormulaComputation, variableMapComputation)
                 .get().thenComputeResult(((list, monitor) -> {
                     Formula formula = (Formula) list.get(0);
                     VariableMap variableMap = (VariableMap) list.get(1);
