@@ -34,7 +34,7 @@ class ExpressionTest {
     void evaluate() {
         assertEquals(true, formula.evaluate(new ValueAssignment("a", false)));
         assertEquals(false, formula.evaluate(new ValueAssignment("a", true)));
-        assertThrows(NullPointerException.class, () -> formula.evaluate()); // todo: this should not happen, fix this!
+        assertThrows(NullPointerException.class, () -> formula.evaluate()); // TODO: this should not happen, fix this!
         assertEquals(43L, term.evaluate(new ValueAssignment("x", 1L)));
         assertNull(term.evaluate(new ValueAssignment("x", null)));
         assertNull(term.evaluate());
@@ -92,6 +92,6 @@ class ExpressionTest {
 
     @Test
     void printParseable() {
-        // todo
+        // TODO
     }
 }

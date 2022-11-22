@@ -117,7 +117,7 @@ public abstract class NormalFormTester implements TreeVisitor<Formula, Boolean> 
      * The formula {@code new Not(new Not(new Literal("x")))} is neither in NNF nor in clausal NNF.
      * The formula {@code new Not(new Literal("x"))} is in NNF, but not in clausal NNF.
      * The formula {@code new Literal(false, "x")} is in NNF and in clausal NNF.
-     * todo: is Implies(a, b) in NNF? do we allow complex operators for NNF or not? currently we do
+     * TODO: is Implies(a, b) in NNF? do we allow complex operators for NNF or not? currently we do
      */
     public static class NNF extends NormalFormTester {
 

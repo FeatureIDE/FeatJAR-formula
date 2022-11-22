@@ -12,7 +12,7 @@ class ExpressionsTest {
     @Test
     void _true() {
         assertEquals("true", True.toString());
-        // todo: this throws because the serializer does not support it yet, it should not throw!
+        // TODO: this throws because the serializer does not support it yet, it should not throw!
         assertThrows(ClassCastException.class, () -> assertEquals("", True.printParseable()));
         assertTrue((Boolean) True.evaluate());
         assertTrue((Boolean) or(literal("x"), True).evaluate());
@@ -22,7 +22,7 @@ class ExpressionsTest {
     @Test
     void _false() {
         assertEquals("false", False.toString());
-        // todo: this throws because the serializer does not support it yet, it should not throw!
+        // TODO: this throws because the serializer does not support it yet, it should not throw!
         assertThrows(ClassCastException.class, () -> assertEquals("", False.printParseable()));
         assertFalse((Boolean) False.evaluate());
         assertFalse((Boolean) and(literal("x"), False).evaluate());
@@ -38,8 +38,8 @@ class ExpressionsTest {
         assertNull(and.evaluate(new ValueAssignment("x", true)));
         assertTrue((Boolean) and.evaluate(new ValueAssignment("x", true, "y", true)));
         assertFalse((Boolean) and.evaluate(new ValueAssignment("x", true, "y", false)));
-        assertThrows(NullPointerException.class, and::evaluate); // todo: this throws, but it should return null!
+        assertThrows(NullPointerException.class, and::evaluate); // TODO: this throws, but it should return null!
     }
 
-    // todo: tests for other operators
+    // TODO: tests for other operators
 }

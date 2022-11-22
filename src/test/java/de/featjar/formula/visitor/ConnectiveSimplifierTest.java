@@ -27,5 +27,5 @@ class ConnectiveSimplifierTest {
                 reference(and(or(not(literal("x")), not(literal("y")), not(literal("z"))))));
     }
 
-    // todo: test other operators
+    // TODO: test other operators
 }

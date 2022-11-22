@@ -94,7 +94,7 @@ public class BooleanClause extends BooleanAssignment implements Clause<Integer> 
         final int[] negated = new int[integers.length];
                 final int highestIndex = negated.length - 1;
                 for (int i = 0; i < negated.length; i++) {
-                    negated[highestIndex - i] = -integers[i]; // todo: what does this do?
+                    negated[highestIndex - i] = -integers[i]; // TODO: what does this do?
                 }
         return newIntegerList(negated);
     }

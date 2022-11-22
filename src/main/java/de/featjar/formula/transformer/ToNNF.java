@@ -42,7 +42,7 @@ public class ToNNF implements Computation<Formula> {
     @Override
     public FutureResult<Formula> compute() {
         return formulaComputation.get().thenComputeResult((formula, monitor) -> {
-            // todo: if already in NNF, do nothing
+            // TODO: if already in NNF, should do nothing (this requires the NNF tester to be revised, as it allows complex connectives right now)
             return Reference.mutateClone(formula,
                     reference -> Trees.traverse(reference, new ConnectiveSimplifier())
                             .flatMap(unit -> Trees.traverse(reference, new DeMorganApplier()))

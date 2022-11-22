@@ -44,7 +44,7 @@ public class IntegerAdd extends Add {
 
     @Override
     public Class<Long> getType() {
-        return Long.class; // todo: unintuitive that IntegerAdd requires Long, not Integer (same for real)
+        return Long.class; // TODO: unintuitive that IntegerAdd requires Long, not Integer (same for real)
     }
 
     @Override

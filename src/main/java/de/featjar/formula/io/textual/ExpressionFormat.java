@@ -29,7 +29,9 @@ import de.featjar.formula.structure.Expression;
  * Parses and serializes propositional and first-order expressions.
  *
  * @author Sebastian Krieter
+ * @deprecated does not work reliably at the moment
  */
+@Deprecated
 public class ExpressionFormat implements Format<Expression> {
     @Override
     public String getName() {
@@ -52,7 +54,7 @@ public class ExpressionFormat implements Format<Expression> {
     }
 
     @Override
-    public String serialize(Expression expression) {
-        return new ExpressionSerializer().serialize(expression);
+    public Result<String> serialize(Expression expression) {
+        return Result.of(new ExpressionSerializer().serialize(expression));
     }
 }

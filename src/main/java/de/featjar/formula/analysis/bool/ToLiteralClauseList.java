@@ -55,7 +55,7 @@ public class ToLiteralClauseList implements Computation<BooleanClauseList> {
     }
 
     public static Result<BooleanClauseList> convert(Formula formula, VariableMap variableMap) {
-        return Computation.of(formula).then(ToLiteralClauseList.class, variableMap, true).getResult();
+        return Computation.of(formula).then(c -> new ToLiteralClauseList(c, Computation.of(variableMap))).getResult();
     }
 
     @Override
@@ -66,7 +66,7 @@ public class ToLiteralClauseList implements Computation<BooleanClauseList> {
                     VariableMap variableMap = (VariableMap) list.get(1);
                     final BooleanClauseList clauses = new BooleanClauseList();
                     //final Object formulaValue = formula.evaluate();
-//                    if (formulaValue != null) { //todo
+//                    if (formulaValue != null) { //TODO
 //                        if (formulaValue == Boolean.FALSE) {
 //                            clauses.add(new LiteralList());
 //                        }

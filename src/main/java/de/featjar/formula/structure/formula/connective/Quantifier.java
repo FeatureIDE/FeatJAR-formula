@@ -34,7 +34,9 @@ import java.util.Objects;
  * Evaluates to {@code true} iff there is a value of the bound variable such that the formula evaluates to {@code true}.
  *
  * @author Sebastian Krieter
+ * @deprecated currently not supported by any meaningful operations
  */
+@Deprecated
 public abstract class Quantifier extends NonTerminalExpression implements Connective, UnaryExpression {
     protected Variable boundVariable;
 
@@ -58,12 +60,12 @@ public abstract class Quantifier extends NonTerminalExpression implements Connec
 
     @Override
     public Object evaluate(List<?> values) {
-        return null; // todo
+        return null; // TODO
     }
 
     @Override
     public Quantifier cloneNode() {
-        throw new IllegalStateException(); // todo
+        throw new IllegalStateException(); // TODO
     }
 
     @Override

@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
 
 /**
  * Parses feature model CNF formulas from FeatureIDE XML files. Returns a
- * formula that is already partially in CNF, except for cross-tree constraints. todo: actually, this actively transforms...?
+ * formula that is already partially in CNF, except for cross-tree constraints. TODO: actually, this actively transforms...?
  *
  * @author Sebastian Krieter
  * @author Elias Kuiter
@@ -107,7 +107,7 @@ public class XMLFeatureModelCNFFormulaFormat extends XMLFeatureModelFormulaForma
     }
 
     private static Formula simplify(Formula formula) {
-        // todo: error handling
+        // TODO: error handling
         Trees.traverse(formula, new DeMorganApplier());
         Trees.traverse(formula, new AndOrSimplifier());
         return formula;

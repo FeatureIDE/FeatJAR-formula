@@ -7,7 +7,7 @@ import static de.featjar.formula.structure.Expressions.*;
 class ToDNFTest {
     //@Test
     public void toDNF() {
-        // todo: currently buggy
+        // TODO: currently buggy
         TransformerTest.traverseAndAssertFormulaEquals(
                 and(or(literal("a"), literal("b")), or(literal("c"))),
                 ToDNF::new,

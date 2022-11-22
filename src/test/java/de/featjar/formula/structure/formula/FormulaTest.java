@@ -59,21 +59,21 @@ class FormulaTest {
 
     @Test
     void toCNF() {
-        // todo
+        // TODO
     }
 
     @Test
     void toDNF() {
-        // todo
+        // TODO
     }
 
     @Test
     void toClausalCNF() {
-        // todo
+        // TODO
     }
 
     @Test
     void toClausalDNF() {
-        // todo
+        // TODO
     }
 }

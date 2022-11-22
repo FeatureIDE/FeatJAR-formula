@@ -34,7 +34,7 @@ import org.junit.jupiter.api.Test;
  */
 public class DIMACSFormatTest {
 
-    // todo: something is wrong with the Dimacs Serializer, go figure :-)
+    // TODO: something is wrong with the Dimacs Serializer, go figure :-)
 //    @Test
 //    public void DIMACS_123_n1n2n3() {
 //        test("123-n1n2n3");

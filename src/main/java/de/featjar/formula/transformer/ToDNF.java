@@ -33,7 +33,9 @@ import de.featjar.formula.visitor.NormalForms;
  * Transforms a formula into clausal disjunctive normal form.
  *
  * @author Sebastian Krieter
+ * @deprecated does not currently work
  */
+@Deprecated
 public class ToDNF implements Computation<Formula> {
     protected final Computation<Formula> nnfFormulaComputation;
     protected int maximumNumberOfLiterals;

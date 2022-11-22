@@ -52,7 +52,7 @@ class AndOrSimplifierTest {
         VisitorTest.traverseAndAssertFormulaEquals(
                 or(literal("x"), True),
                 new AndOrSimplifier(),
-                or(True)); // todo: this could even be implemented more strict by simplifying to True
+                or(True)); // TODO: this could even be implemented more strict by simplifying to True
     }
 
     @Test
@@ -60,6 +60,6 @@ class AndOrSimplifierTest {
         VisitorTest.traverseAndAssertFormulaEquals(
                 and(literal("x"), False),
                 new AndOrSimplifier(),
-                and(False)); // todo: this could even be implemented more strict by simplifying to True
+                and(False)); // TODO: this could even be implemented more strict by simplifying to True
     }
 }

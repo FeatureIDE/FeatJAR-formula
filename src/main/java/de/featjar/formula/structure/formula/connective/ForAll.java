@@ -28,7 +28,9 @@ import de.featjar.formula.structure.term.value.Variable;
  * Evaluates to {@code true} iff, for all values of the bound variable, the formula evaluates to {@code true}.
  *
  * @author Sebastian Krieter
+ * @deprecated currently not supported by any meaningful operations
  */
+@Deprecated
 public class ForAll extends Quantifier {
 
     protected ForAll(ForAll forAll) {

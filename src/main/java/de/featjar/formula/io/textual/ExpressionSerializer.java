@@ -45,7 +45,9 @@ import java.util.List;
  * @author Thomas Thüm
  * @author Timo Günther
  * @author Sebastian Krieter
+ * @deprecated does not work reliably at the moment
  */
+@Deprecated
 public class ExpressionSerializer {
 
     /**

@@ -96,7 +96,7 @@ public interface Expression extends Traversable<Expression> {
      * {@return a stream of all unique variables in this expression}
      * Uniqueness of variables is determined by their names, not their identity.
      * Thus, only the first instance of a variable with a given name will occur in this stream.
-     * todo: this implementation does not preserve the preorder!
+     * TODO: this implementation does not preserve the preorder!
      */
     default Stream<Variable> getVariableStream() {
         return Trees.preOrderStream(this)
@@ -117,7 +117,7 @@ public interface Expression extends Traversable<Expression> {
 
     /**
      * {@return a list of all variable names in this expression}
-     * todo: this implementation does not preserve the preorder!
+     * TODO: this implementation does not preserve the preorder!
      */
     default Set<String> getVariableNames() {
         return Trees.preOrderStream(this)

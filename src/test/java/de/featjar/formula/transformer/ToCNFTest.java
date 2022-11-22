@@ -22,7 +22,7 @@ class ToCNFTest {
         TransformerTest.traverseAndAssertSameFormula(and(or(literal("a"), literal("b")), or(literal("c"))), ToCNF::new);
     }
 
-    // todo: currently broken, as ToNormalForm is not deterministic (probably due to usage of Set<>)
+    // TODO: currently broken, as ToNormalForm is not deterministic (probably due to usage of Set<>)
     //@Test
     public void toCNF() {
         TransformerTest.traverseAndAssertFormulaEquals(
@@ -50,8 +50,8 @@ class ToCNFTest {
         Formula finalFormula = formula;
         formula = Feat.apply(featJAR ->
                 Computation.of(finalFormula)
-                        .then(ToNNF.class)
-                        .then(ToCNF.class)
+                        .then(ToNNF::new)
+                        .then(ToCNF::new)
                         .getResult().get());
         assertEquals(and(
                 or(literal("Root")),

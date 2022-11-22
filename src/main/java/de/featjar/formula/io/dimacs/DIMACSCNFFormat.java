@@ -20,8 +20,8 @@
  */
 package de.featjar.formula.io.dimacs;
 
+import de.featjar.base.data.Result;
 import de.featjar.base.io.format.Format;
-import de.featjar.formula.analysis.bool.BooleanAssignmentList;
 import de.featjar.formula.analysis.bool.BooleanClause;
 import de.featjar.formula.analysis.bool.BooleanClauseList;
 
@@ -35,7 +35,7 @@ import java.util.Objects;
 public class DIMACSCNFFormat implements Format<BooleanClauseList> {
 
     @Override
-    public String serialize(BooleanClauseList cnf) {
+    public Result<String> serialize(BooleanClauseList cnf) {
         Objects.requireNonNull(cnf);
 
         final StringBuilder sb = new StringBuilder();

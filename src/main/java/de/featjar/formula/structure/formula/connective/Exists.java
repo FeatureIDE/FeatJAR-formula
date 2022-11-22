@@ -30,9 +30,11 @@ import de.featjar.formula.structure.term.value.Variable;
  *  it may cause undefined behavior. same goes for {@link ForAll}.
  *
  * @author Sebastian Krieter
+ * @deprecated currently not supported by any meaningful operations
  */
+@Deprecated
 public class Exists extends Quantifier {
-    //todo: rewrite CNFSlicer to work on a QBF
+    //TODO: rewrite CNFSlicer to work on a QBF
     protected Exists(Exists exists) {
         super(exists);
     }

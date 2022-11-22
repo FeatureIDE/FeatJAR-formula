@@ -57,7 +57,7 @@ public interface Assignment<T> {
         return Optional.ofNullable(getAll().get(variable));
     }
 
-    //todo: should assignments be mutable?
+    //TODO: should assignments be mutable?
 //    /**
 //     * Assigns a given value to the given variable.
 //     *

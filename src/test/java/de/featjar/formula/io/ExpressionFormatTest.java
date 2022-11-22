@@ -35,12 +35,12 @@ import static org.junit.jupiter.api.Assertions.fail;
  */
 public class ExpressionFormatTest {
 
-    //@Test //todo
+    //@Test //TODO
     public void Formula_ABC_nAnBnC() {
         test("ABC-nAnBnC");
     }
 
-    //@Test //todo
+    //@Test //TODO
     public void Formula_empty() {
         test("faulty");
     }

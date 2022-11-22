@@ -37,7 +37,7 @@ import java.text.ParseException;
 public class DIMACSFormulaFormat implements Format<Formula> {
 
     @Override
-    public String serialize(Formula formula) {
+    public Result<String> serialize(Formula formula) {
         final DIMACSSerializer w = new DIMACSSerializer(formula);
         w.setWritingVariableDirectory(true);
         return w.serialize();

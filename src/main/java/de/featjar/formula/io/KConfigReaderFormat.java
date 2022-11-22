@@ -37,7 +37,9 @@ import java.util.stream.Collectors;
  * Parses feature-model formula files created by KConfigReader.
  *
  * @author Elias Kuiter
+ * @deprecated this is currently mostly a hack and should be parsed properly as first-order formulas
  */
+@Deprecated
 public class KConfigReaderFormat implements Format<Expression> {
 
     @Override
@@ -53,7 +55,7 @@ public class KConfigReaderFormat implements Format<Expression> {
                         .filter(l -> !l.isEmpty())
                         .filter(l -> !l.startsWith("#"))
                         // "convert" non-boolean constraints into boolean constraints
-                        // todo: parse as proper first-order formulas
+                        // TODO: parse as proper first-order formulas
                         .map(l -> l.replace("=", "_"))
                         .map(l -> l.replace(":", "_"))
                         .map(l -> l.replace(".", "_"))

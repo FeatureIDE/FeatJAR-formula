@@ -69,7 +69,7 @@ public class BooleanAssignment extends IntegerList<BooleanAssignment> implements
         return newIntegerList(negated);
     }
 
-    public Optional<BooleanAssignment> clean() { // todo: must this be an optional?
+    public Optional<BooleanAssignment> clean() { // TODO: must this be an optional?
         final LinkedHashSet<Integer> newIntegerSet = new LinkedHashSet<>();
 
         for (final int integer : integers) {

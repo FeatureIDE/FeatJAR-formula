@@ -42,7 +42,9 @@ import java.util.Objects;
  * Transforms a formula into clausal conjunctive or disjunctive normal form by introducing Tseitin variables.
  *
  * @author Sebastian Krieter
+ * @deprecated does not currently work, still meant for old VariableMap
  */
+@Deprecated
 public class ToCNFTseitin
         implements MonitorableFunction<Expression, List<ToCNFTseitin.Substitute>>, TreeVisitor<Expression, Expression> {
 

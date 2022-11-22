@@ -53,7 +53,7 @@ public class ToCNF implements Computation<Formula> {
     protected boolean useDistributive;
     protected int maximumNumberOfLiterals = Integer.MAX_VALUE;
 
-    public ToCNF(Computation<Formula> nnfFormulaComputation) { // precondition: nnf must be given (todo: validate)
+    public ToCNF(Computation<Formula> nnfFormulaComputation) { // precondition: nnf must be given (TODO: validate)
         this.nnfFormulaComputation = nnfFormulaComputation;
         if (useMultipleThreads) {
             distributiveClauses = Collections.synchronizedList(new ArrayList<>());
@@ -77,7 +77,7 @@ public class ToCNF implements Computation<Formula> {
                 if (!normalFormTester.isClausalNormalForm()) {
                     return Result.of(NormalForms.normalToClausalNormalForm((Formula) Trees.clone(formula), Formula.NormalForm.CNF));
                 } else {
-                    return Result.of((Formula) Trees.clone(formula)); // todo: is it a computation's responsibility to clone its input or not? should the Store do this, or the caller, or thenComputeResult...?
+                    return Result.of((Formula) Trees.clone(formula)); // TODO: is it a computation's responsibility to clone its input or not? should the Store do this, or the caller, or thenComputeResult...?
                 }
             }
             Formula newFormula = (Formula) formula.cloneTree();
@@ -109,18 +109,18 @@ public class ToCNF implements Computation<Formula> {
                     combinedTseitinClauses.put(tseitinClause, tseitinClause);
                     final Variable variable = tseitinClause.getVariable();
                     if (variable != null) {
-                        //todo variable.setName(termMap.addBooleanVariable().getName());
+                        //TODO variable.setName(termMap.addBooleanVariable().getName());
                     }
                 } else {
                     final Variable variable = substitute.getVariable();
                     if (variable != null) {
-                        //todo tseitinClause.getVariable().rename(variable.getName());
+                        //TODO tseitinClause.getVariable().rename(variable.getName());
                     }
                 }
             }
             for (final ToCNFTseitin.Substitute tseitinClause : combinedTseitinClauses.keySet()) {
                 for (final Expression expression : tseitinClause.getClauses()) {
-                    //todo transformedClauses.add(Formulas.manipulate(expression, new VariableMapSetter(termMap)));
+                    //TODO transformedClauses.add(Formulas.manipulate(expression, new VariableMapSetter(termMap)));
                 }
             }
         }
@@ -139,12 +139,12 @@ public class ToCNF implements Computation<Formula> {
             if (useDistributive) {
                 try {
                     distributiveClauses.addAll(
-                            (List<? extends Formula>) distributive(clonedChild, new CancelableMonitor()).get().getChildren()); // todo .get?
+                            (List<? extends Formula>) distributive(clonedChild, new CancelableMonitor()).get().getChildren()); // TODO .get?
                     return;
                 } catch (final ToNormalForm.MaximumNumberOfLiteralsExceededException ignored) {
                 }
             }
-            tseitinClauses.addAll(tseitin(clonedChild, new CancelableMonitor()).get()); // todo: .get?
+            tseitinClauses.addAll(tseitin(clonedChild, new CancelableMonitor()).get()); // TODO: .get?
         }
     }
 
@@ -152,7 +152,7 @@ public class ToCNF implements Computation<Formula> {
             throws ToNormalForm.MaximumNumberOfLiteralsExceededException {
         final ToNormalForm cnfDistributiveLawTransformer =
                 Computation.of(child, monitor)
-                        .then(c -> new ToNormalForm(c, Formula.NormalForm.CNF)); // todo: monitor subtask?
+                        .then(c -> new ToNormalForm(c, Formula.NormalForm.CNF)); // TODO: monitor subtask?
         cnfDistributiveLawTransformer.setMaximumNumberOfLiterals(maximumNumberOfLiterals);
         return cnfDistributiveLawTransformer.getResult();
     }

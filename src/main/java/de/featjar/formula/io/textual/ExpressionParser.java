@@ -56,7 +56,9 @@ import java.util.regex.Pattern;
  * @author Florian Proksch
  * @author Stefan Krueger
  * @author Sebastian Krieter
+ * @deprecated does not work reliably at the moment
  */
+@Deprecated
 public class ExpressionParser {
 
     private static final char SPACE = ' ';

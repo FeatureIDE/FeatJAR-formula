@@ -51,7 +51,7 @@ public class BooleanSolution extends BooleanAssignment implements Solution<Integ
         hashCode = Arrays.hashCode(this.integers);
     }
 
-    // todo: this is a weird method, maybe refactor?
+    // TODO: this is a weird method, maybe refactor?
     public static int[] resetConflicts(int[] s1, int[] s2) {
         int[] integers = new int[s1.length];
         for (int i = 0; i < s1.length; i++) {

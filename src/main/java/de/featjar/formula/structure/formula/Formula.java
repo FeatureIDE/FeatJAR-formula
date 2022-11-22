@@ -25,7 +25,7 @@ public interface Formula extends Expression {
         NNF,
         CNF,
         DNF
-        // todo: add other normal forms (e.g., d-dNNF)
+        // TODO: add other normal forms (e.g., d-dNNF)
     }
 
     default Class<?> getType() {
@@ -106,5 +106,5 @@ public interface Formula extends Expression {
         return toClausalNormalForm(NormalForm.DNF);
     }
 
-    // todo: mutate/analyze analogous to FeatureModel?
+    // TODO: mutate/analyze analogous to FeatureModel?
 }

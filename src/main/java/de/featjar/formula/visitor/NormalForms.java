@@ -56,7 +56,7 @@ public class NormalForms {
         return getNormalFormTester(formula, normalForm).isClausalNormalForm();
     }
 
-    // todo: use computation and store
+    // TODO: use computation and store
     public static Result<Formula> toNormalForm(Formula formula, Formula.NormalForm normalForm, boolean isClausal) {
         Computation<Formula> normalFormFormulaComputation = Computation.of(formula)
                 .then(normalForm == Formula.NormalForm.NNF
@@ -71,7 +71,7 @@ public class NormalForms {
     public static Formula normalToClausalNormalForm(Formula formula, Formula.NormalForm normalForm) {
         switch (normalForm) {
             case NNF:
-                // todo: currently not implemented
+                // TODO: currently not implemented
                 throw new UnsupportedOperationException();
             case CNF:
                 if (formula instanceof Literal) {

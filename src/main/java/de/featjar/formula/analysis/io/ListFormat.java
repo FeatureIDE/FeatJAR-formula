@@ -39,7 +39,7 @@ import java.util.List;
 public class ListFormat implements Format<BooleanAssignmentList<?, ?>> {
 
     @Override
-    public String serialize(BooleanAssignmentList<?, ?> dnf) {
+    public Result<String> serialize(BooleanAssignmentList<?, ?> dnf) {
         final StringBuilder csv = new StringBuilder();
         csv.append("Configuration");
         final List<String> names = dnf.getVariableMap().getVariableNames();

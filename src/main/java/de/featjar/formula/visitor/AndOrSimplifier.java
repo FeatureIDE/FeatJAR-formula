@@ -20,21 +20,18 @@
  */
 package de.featjar.formula.visitor;
 
-import de.featjar.base.data.Problem;
 import de.featjar.base.data.Result;
+import de.featjar.base.tree.visitor.TreeVisitor;
+import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.Expressions;
 import de.featjar.formula.structure.formula.Formula;
-import de.featjar.formula.structure.Expression;
-import de.featjar.formula.structure.formula.connective.Reference;
-import de.featjar.formula.structure.formula.predicate.Predicate;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Connective;
 import de.featjar.formula.structure.formula.connective.Or;
-import de.featjar.base.tree.visitor.TreeVisitor;
+import de.featjar.formula.structure.formula.predicate.Predicate;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Merges nested {@link And} and {@link Or} connectives and reduces
@@ -61,14 +58,14 @@ public class AndOrSimplifier implements TreeVisitor<Formula, Result.Unit> {
         final Formula formula = getCurrentNode(path);
         if (formula instanceof Connective) {
             if (formula instanceof And) {
-                // todo: False dominates And, which is implemented, but True is neutral and can be removed
+                // TODO: False dominates And, which is implemented, but True is neutral and can be removed
                 if (formula.getChildren().stream().anyMatch(c -> c == Expressions.False)) {
                     formula.setChildren(Collections.singletonList(Expressions.False));
                 } else {
                     formula.flatReplaceChildren(this::mergeAnd);
                 }
             } else if (formula instanceof Or) {
-                // todo: True dominates Or, which is implemented, but False is neutral and can be removed
+                // TODO: True dominates Or, which is implemented, but False is neutral and can be removed
                 if (formula.getChildren().stream().anyMatch(c -> c == Expressions.True)) {
                     formula.setChildren(Collections.singletonList(Expressions.True));
                 } else {
