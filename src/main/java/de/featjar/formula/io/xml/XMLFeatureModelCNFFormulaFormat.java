@@ -107,6 +107,7 @@ public class XMLFeatureModelCNFFormulaFormat extends XMLFeatureModelFormulaForma
     }
 
     private static Formula simplify(Formula formula) {
+        // todo: error handling
         Trees.traverse(formula, new DeMorganApplier());
         Trees.traverse(formula, new AndOrSimplifier());
         return formula;

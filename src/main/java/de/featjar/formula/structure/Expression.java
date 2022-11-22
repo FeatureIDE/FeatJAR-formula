@@ -70,7 +70,7 @@ public interface Expression extends Traversable<Expression> {
      * @param valueAssignment the value assignment
      */
     default Object evaluate(ValueAssignment valueAssignment) {
-        return traverse(new Evaluator(valueAssignment)).orElse(null);
+        return traverse(new Evaluator(valueAssignment)).get();
     }
 
     /**

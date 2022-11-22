@@ -12,8 +12,9 @@ import de.featjar.formula.structure.term.value.Variable;
 
 /**
  * Creates expressions in propositional or first-order logic.
- * Wraps constructors conveniently to allow for a static import using
+ * Wraps constructors conveniently to allow for a static on-demand import using
  * {@code import static de.featjar.formula.structure.Expressions.*;}.
+ * Some parameters are intentionally named after their containing method to avoid inlay hints in IntelliJ IDEA.
  *
  * @author Elias Kuiter
  */
@@ -136,6 +137,15 @@ public class Expressions {
     }
 
     /**
+     * {@return a reference to a formula that evaluates to {@code true} iff the given formula evaluates to {@code true}}
+     *
+     * @param formula the formula
+     */
+    public static Reference reference(Formula formula) {
+        return new Reference(formula);
+    }
+
+    /**
      * {@return a formula that evaluates to {@code true} iff both given terms evaluate to the same value}
      *
      * @param leftTerm the left term
@@ -207,17 +217,17 @@ public class Expressions {
     /**
      * {@return a formula that evaluates to {@code true} iff the Boolean variable with the given name evaluates to the given polarity}
      *
-     * @param isPositive the polarity
-     * @param variableName the variable name
+     * @param l1 the polarity
+     * @param l2 the variable name
      */
-    public static Literal literal(boolean isPositive, String variableName) {
-        return new Literal(isPositive, variableName);
+    public static Literal literal(boolean l1, String l2) {
+        return new Literal(l1, l2);
     }
 
     /**
      * {@return a formula that evaluates to {@code true} iff the Boolean variable with the given name evaluates to {@code true}}
      *
-     * @param literal the variable name (intentionally not named variableName to avoid inlay hints in IntelliJ IDEA)
+     * @param literal the variable name
      */
     public static Literal literal(String literal) {
         return new Literal(literal);

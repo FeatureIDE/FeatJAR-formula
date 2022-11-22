@@ -8,29 +8,23 @@ class ConnectiveSimplifierTest {
 
     @Test
     void doesNotSimplifyAndOrNot() {
-        VisitorTest.traverseAndAssertSameFormula(and(literal("x"), not(literal("y"))), new ConnectiveSimplifier());
+        VisitorTest.traverseAndAssertSameFormula(reference(and(literal("x"), not(literal("y")))), new ConnectiveSimplifier());
     }
 
     @Test
-    void simplifiesNestedImplies() {
+    void simplifiesImplies() {
         VisitorTest.traverseAndAssertFormulaEquals(
-                and(implies(literal("x"), literal("y"))),
+                reference(implies(literal("x"), literal("y"))),
                 new ConnectiveSimplifier(),
-                and(or(not(literal("x")), literal("y"))));
-    }
-
-    // todo: this does not do anything right now (because the tree visitor does not modify the current node), but logically, it should also be simplified!
-    @Test
-    void doesNotSimplifyRootImplies() {
-        VisitorTest.traverseAndAssertSameFormula(implies(literal("x"), literal("y")), new ConnectiveSimplifier());
+                reference(or(not(literal("x")), literal("y"))));
     }
 
     @Test
-    void simplifiesNestedAtMostK() {
+    void simplifiesAtMostK() {
         VisitorTest.traverseAndAssertFormulaEquals(
-                and(atMost(2, literal("x"), literal("y"), literal("z"))),
+                reference(atMost(2, literal("x"), literal("y"), literal("z"))),
                 new ConnectiveSimplifier(),
-                and(and(or(not(literal("x")), not(literal("y")), not(literal("z"))))));
+                reference(and(or(not(literal("x")), not(literal("y")), not(literal("z"))))));
     }
 
     // todo: test other operators

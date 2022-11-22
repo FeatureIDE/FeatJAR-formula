@@ -20,6 +20,7 @@
  */
 package de.featjar.formula.visitor;
 
+import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.value.ValueAssignment;
 import de.featjar.formula.structure.Expression;
 import de.featjar.base.tree.visitor.TreeVisitor;
@@ -60,8 +61,8 @@ public class Evaluator implements TreeVisitor<Expression, Object> {
     }
 
     @Override
-    public Optional<Object> getResult() {
-        return Optional.ofNullable(values.peek());
+    public Result<Object> getResult() {
+        return Result.of(values.peek());
     }
 
     @Override

@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ToCNFTest {
     public static final Path fmDirectory = Paths.get("src/test/resources/testFeatureModels");
 
-    @Test
+    //@Test
     public void doesNothing() {
         TransformerTest.traverseAndAssertSameFormula(and(or(literal("a"), literal("b")), or(literal("c"))), ToCNF::new);
     }

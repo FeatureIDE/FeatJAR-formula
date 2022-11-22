@@ -5,11 +5,6 @@ import org.junit.jupiter.api.Test;
 import static de.featjar.formula.structure.Expressions.*;
 
 class ToDNFTest {
-    @Test
-    public void doesNothing() {
-        TransformerTest.traverseAndAssertSameFormula(or(and(literal("a"), literal("b")), and(literal("c"))), ToDNF::new);
-    }
-
     //@Test
     public void toDNF() {
         // todo: currently buggy

@@ -20,25 +20,18 @@
  */
 package de.featjar.formula.visitor;
 
+import de.featjar.base.data.Problem;
+import de.featjar.base.data.Result;
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.Expressions;
 import de.featjar.formula.structure.formula.Formula;
+import de.featjar.formula.structure.formula.connective.*;
 import de.featjar.formula.structure.formula.predicate.Predicate;
-import de.featjar.formula.structure.formula.connective.And;
-import de.featjar.formula.structure.formula.connective.AtLeast;
-import de.featjar.formula.structure.formula.connective.AtMost;
-import de.featjar.formula.structure.formula.connective.Between;
-import de.featjar.formula.structure.formula.connective.BiImplies;
-import de.featjar.formula.structure.formula.connective.Choose;
-import de.featjar.formula.structure.formula.connective.Connective;
-import de.featjar.formula.structure.formula.connective.Implies;
-import de.featjar.formula.structure.formula.connective.Not;
-import de.featjar.formula.structure.formula.connective.Or;
-import de.featjar.formula.structure.formula.connective.Quantifier;
 import de.featjar.base.tree.visitor.TreeVisitor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -48,13 +41,18 @@ import java.util.stream.Collectors;
  *
  * @author Sebastian Krieter
  */
-public class ConnectiveSimplifier implements TreeVisitor<Formula, Void> {
+public class ConnectiveSimplifier implements TreeVisitor<Formula, Result.Unit> {
 
     private boolean fail;
 
     @Override
     public void reset() {
         fail = false;
+    }
+
+    @Override
+    public Optional<Problem> nodeValidator(List<Formula> path) {
+        return rootValidator(path, root -> root instanceof Reference, "expected formula reference");
     }
 
     @Override
@@ -180,5 +178,10 @@ public class ConnectiveSimplifier implements TreeVisitor<Formula, Void> {
             }
         }
         return groupedElements;
+    }
+
+    @Override
+    public Result<Result.Unit> getResult() {
+        return Result.unit();
     }
 }

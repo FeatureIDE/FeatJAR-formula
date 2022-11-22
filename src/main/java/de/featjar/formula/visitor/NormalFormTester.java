@@ -20,6 +20,7 @@
  */
 package de.featjar.formula.visitor;
 
+import de.featjar.base.data.Result;
 import de.featjar.base.tree.visitor.TreeVisitor;
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.formula.Formula;
@@ -49,8 +50,8 @@ public abstract class NormalFormTester implements TreeVisitor<Formula, Boolean> 
     }
 
     @Override
-    public Optional<Boolean> getResult() {
-        return Optional.of(isNormalForm);
+    public Result<Boolean> getResult() {
+        return Result.of(isNormalForm);
     }
 
     public boolean isNormalForm() {

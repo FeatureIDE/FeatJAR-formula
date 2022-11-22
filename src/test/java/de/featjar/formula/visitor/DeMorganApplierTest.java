@@ -7,36 +7,30 @@ import static de.featjar.formula.structure.Expressions.*;
 class DeMorganApplierTest {
     @Test
     void doesNothingForNNF() {
-        VisitorTest.traverseAndAssertSameFormula(and(literal("x"), literal(false, "y")), new DeMorganApplier());
+        VisitorTest.traverseAndAssertSameFormula(reference(and(literal("x"), literal(false, "y"))), new DeMorganApplier());
     }
 
     @Test
     void eliminatesNotBeforeLiteral() {
         VisitorTest.traverseAndAssertFormulaEquals(
-                and(literal("x"), not(literal("y"))),
+                reference(and(literal("x"), not(literal("y")))),
                 new DeMorganApplier(),
-                and(literal("x"), literal(false, "y")));
-    }
-
-    // todo: this does not do anything right now (because the tree visitor does not modify the current node), but logically, it should also be simplified!
-    @Test
-    void doesNotEliminateNotBeforeAndNotNested() {
-        VisitorTest.traverseAndAssertSameFormula(not(and(literal("x"), literal("y"))), new DeMorganApplier());
+                reference(and(literal("x"), literal(false, "y"))));
     }
 
     @Test
-    void eliminatesNotBeforeAndNested() {
+    void eliminatesNotBeforeAnd() {
         VisitorTest.traverseAndAssertFormulaEquals(
-                and(not(and(literal("x"), literal("y")))),
+                reference(not(and(literal("x"), literal("y")))),
                 new DeMorganApplier(),
-                and(or(literal(false, "x"), literal(false, "y"))));
+                reference(or(literal(false, "x"), literal(false, "y"))));
     }
 
     @Test
-    void eliminatesNotBeforeAndAndBeforeLiteralNested() {
+    void eliminatesNotBeforeAndAndBeforeLiteral() {
         VisitorTest.traverseAndAssertFormulaEquals(
-                and(not(and(literal("x"), not(literal("y"))))),
+                reference(not(and(literal("x"), not(literal("y"))))),
                 new DeMorganApplier(),
-                and(or(literal(false, "x"), literal(true, "y"))));
+                reference(or(literal(false, "x"), literal(true, "y"))));
     }
 }

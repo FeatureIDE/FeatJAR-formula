@@ -20,9 +20,12 @@
  */
 package de.featjar.formula.visitor;
 
+import de.featjar.base.data.Problem;
+import de.featjar.base.data.Result;
 import de.featjar.formula.structure.Expressions;
 import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.Expression;
+import de.featjar.formula.structure.formula.connective.Reference;
 import de.featjar.formula.structure.formula.predicate.Predicate;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Connective;
@@ -31,6 +34,7 @@ import de.featjar.base.tree.visitor.TreeVisitor;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Merges nested {@link And} and {@link Or} connectives and reduces
@@ -39,8 +43,7 @@ import java.util.List;
  *
  * @author Sebastian Krieter
  */
-public class AndOrSimplifier implements TreeVisitor<Formula, Void> {
-
+public class AndOrSimplifier implements TreeVisitor<Formula, Result.Unit> {
     @Override
     public TraversalAction firstVisit(List<Formula> path) {
         final Formula formula = getCurrentNode(path);
@@ -88,5 +91,10 @@ public class AndOrSimplifier implements TreeVisitor<Formula, Void> {
                         || (child instanceof And && (child.getChildren().size() == 1))
                 ? child.getChildren()
                 : null;
+    }
+
+    @Override
+    public Result<Result.Unit> getResult() {
+        return Result.unit();
     }
 }

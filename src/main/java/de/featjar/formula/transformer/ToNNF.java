@@ -22,9 +22,9 @@ package de.featjar.formula.transformer;
 
 import de.featjar.base.data.Computation;
 import de.featjar.base.data.FutureResult;
-import de.featjar.base.data.Result;
 import de.featjar.base.tree.Trees;
 import de.featjar.formula.structure.formula.Formula;
+import de.featjar.formula.structure.formula.connective.Reference;
 import de.featjar.formula.visitor.*;
 
 /**
@@ -41,13 +41,12 @@ public class ToNNF implements Computation<Formula> {
 
     @Override
     public FutureResult<Formula> compute() {
-        return formulaComputation.get().thenCompute((formula, monitor) -> {
+        return formulaComputation.get().thenComputeResult((formula, monitor) -> {
             // todo: if already in NNF, do nothing
-            formula = (Formula) formula.cloneTree();
-            Trees.traverse(formula, new ConnectiveSimplifier());
-            Trees.traverse(formula, new DeMorganApplier());
-            Trees.traverse(formula, new AndOrSimplifier());
-            return formula;
+            return Reference.mutateClone(formula,
+                    reference -> Trees.traverse(reference, new ConnectiveSimplifier())
+                            .flatMap(unit -> Trees.traverse(reference, new DeMorganApplier()))
+                            .flatMap(unit -> Trees.traverse(reference, new AndOrSimplifier())));
         });
     }
 }
