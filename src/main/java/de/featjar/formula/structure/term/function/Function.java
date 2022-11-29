@@ -33,7 +33,9 @@ import java.util.function.BinaryOperator;
  *
  * @author Sebastian Krieter
  * @author Elias Kuiter
+ * @deprecated currently not supported by any meaningful operations
  */
+@Deprecated
 public interface Function extends Term {
     /**
      * {@return a list of values reduced to a single value}

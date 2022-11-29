@@ -40,7 +40,7 @@ public class DIMACSFormulaFormat implements Format<Formula> {
     public Result<String> serialize(Formula formula) {
         final DIMACSSerializer w = new DIMACSSerializer(formula);
         w.setWritingVariableDirectory(true);
-        return w.serialize();
+        return Result.of(w.serialize());
     }
 
     @Override

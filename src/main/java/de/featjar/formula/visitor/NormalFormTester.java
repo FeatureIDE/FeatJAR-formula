@@ -24,11 +24,13 @@ import de.featjar.base.data.Result;
 import de.featjar.base.tree.visitor.TreeVisitor;
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.formula.Formula;
-import de.featjar.formula.structure.formula.connective.*;
+import de.featjar.formula.structure.formula.connective.And;
+import de.featjar.formula.structure.formula.connective.Connective;
+import de.featjar.formula.structure.formula.connective.Not;
+import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.formula.structure.formula.predicate.Predicate;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Tests whether a formula is in (clausal) normal form.
@@ -117,7 +119,7 @@ public abstract class NormalFormTester implements TreeVisitor<Formula, Boolean> 
      * The formula {@code new Not(new Not(new Literal("x")))} is neither in NNF nor in clausal NNF.
      * The formula {@code new Not(new Literal("x"))} is in NNF, but not in clausal NNF.
      * The formula {@code new Literal(false, "x")} is in NNF and in clausal NNF.
-     * TODO: is Implies(a, b) in NNF? do we allow complex operators for NNF or not? currently we do
+     * TODO: is Implies(a, b) in NNF? do we allow complex operators for NNF or not? currently we do.
      */
     public static class NNF extends NormalFormTester {
 

@@ -28,7 +28,9 @@ import java.util.List;
  * Adds the values of two integer terms.
  *
  * @author Sebastian Krieter
+ * @deprecated currently not supported by any meaningful operations
  */
+@Deprecated
 public class IntegerAdd extends Add {
 
     protected IntegerAdd() {

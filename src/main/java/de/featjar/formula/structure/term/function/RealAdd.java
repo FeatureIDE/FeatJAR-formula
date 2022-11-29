@@ -27,7 +27,9 @@ import java.util.List;
  * Adds the values of two real terms.
  *
  * @author Sebastian Krieter
+ * @deprecated currently not supported by any meaningful operations
  */
+@Deprecated
 public class RealAdd extends Add {
 
     protected RealAdd() {

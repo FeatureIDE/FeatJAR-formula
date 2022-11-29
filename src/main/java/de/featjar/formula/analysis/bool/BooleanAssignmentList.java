@@ -50,7 +50,6 @@ public abstract class BooleanAssignmentList<T extends BooleanAssignmentList<?, U
         this.assignments = new ArrayList<>(assignments);
     }
 
-    @SuppressWarnings("unchecked")
     public BooleanAssignmentList(BooleanAssignmentList<T, U> other) {
         assignments = new ArrayList<>(other.getAll());
         variableMap = other.variableMap != null ? other.variableMap.clone() : null;

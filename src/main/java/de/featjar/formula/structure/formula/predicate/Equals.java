@@ -29,7 +29,9 @@ import java.util.List;
  * Evaluates to {@code true} iff both children evaluate to the same value.
  *
  * @author Sebastian Krieter
+ * @deprecated currently not supported by any meaningful operations
  */
+@Deprecated
 public class Equals extends NonTerminalExpression implements BinaryPredicate, InvertiblePredicate {
 
     protected Equals() {

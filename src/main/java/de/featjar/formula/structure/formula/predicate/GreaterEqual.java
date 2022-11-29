@@ -29,7 +29,9 @@ import java.util.List;
  * Evaluates to {@code true} iff the left child evaluates to a larger or the same value as the right child.
  *
  * @author Sebastian Krieter
+ * @deprecated currently not supported by any meaningful operations
  */
+@Deprecated
 public class GreaterEqual extends NonTerminalExpression implements BinaryPredicate, InvertiblePredicate {
     protected GreaterEqual() {
     }

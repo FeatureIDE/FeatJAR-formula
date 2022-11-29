@@ -12,7 +12,9 @@ import java.util.Objects;
  *
  * @author Sebastian Krieter
  * @author Elias Kuiter
+ * @deprecated currently not supported by any meaningful operations
  */
+@Deprecated
 public class Constant extends TerminalExpression implements Value {
     protected Object value;
     protected Class<?> type;

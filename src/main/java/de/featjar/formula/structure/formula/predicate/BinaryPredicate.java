@@ -28,7 +28,9 @@ import java.util.List;
  * A binary predicate.
  *
  * @author Elias Kuiter
+ * @deprecated currently not supported by any meaningful operations
  */
+@Deprecated
 public interface BinaryPredicate extends Predicate, BinaryExpression {
     @SuppressWarnings("rawtypes")
     @Override

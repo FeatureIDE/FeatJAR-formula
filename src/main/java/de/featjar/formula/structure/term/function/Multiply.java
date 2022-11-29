@@ -30,7 +30,9 @@ import java.util.List;
  * Multiplies the values of two terms.
  *
  * @author Sebastian Krieter
+ * @deprecated currently not supported by any meaningful operations
  */
+@Deprecated
 public abstract class Multiply extends NonTerminalExpression implements Function, BinaryExpression {
     protected Multiply() {
     }

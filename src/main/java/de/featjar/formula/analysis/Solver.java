@@ -20,11 +20,7 @@
  */
 package de.featjar.formula.analysis;
 
-import de.featjar.base.data.Computation;
 import de.featjar.base.extension.Extension;
-import de.featjar.formula.analysis.HasSolutionAnalysis;
-
-import java.util.Optional;
 
 /**
  * Solves problems expressed as logical formulas.

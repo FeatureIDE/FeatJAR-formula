@@ -29,7 +29,9 @@ import java.util.List;
  * Evaluates to {@code true} iff the left child evaluates to a larger value as the right child.
  *
  * @author Sebastian Krieter
+ * @deprecated currently not supported by any meaningful operations
  */
+@Deprecated
 public class GreaterThan extends NonTerminalExpression implements BinaryPredicate, InvertiblePredicate {
     protected GreaterThan() {
     }

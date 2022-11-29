@@ -70,7 +70,7 @@ public class DIMACSCNFFormat implements Format<BooleanClauseList> {
             sb.append(System.lineSeparator());
         }
 
-        return sb.toString();
+        return Result.of(sb.toString());
     }
 
     @Override

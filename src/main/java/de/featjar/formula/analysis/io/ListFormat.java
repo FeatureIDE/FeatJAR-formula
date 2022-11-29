@@ -58,7 +58,7 @@ public class ListFormat implements Format<BooleanAssignmentList<?, ?>> {
             }
             csv.append('\n');
         }
-        return csv.toString();
+        return Result.of(csv.toString());
     }
 
     @Override

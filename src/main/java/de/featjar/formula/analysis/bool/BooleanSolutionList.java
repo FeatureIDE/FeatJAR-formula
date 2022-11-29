@@ -21,8 +21,6 @@
 package de.featjar.formula.analysis.bool;
 
 import de.featjar.base.log.IndentFormatter;
-import de.featjar.formula.analysis.value.ValueClauseList;
-import de.featjar.formula.transformer.ToCNF;
 
 import java.util.Collection;
 import java.util.List;

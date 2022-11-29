@@ -21,15 +21,14 @@
 package de.featjar.formula.visitor;
 
 import de.featjar.base.data.Result;
+import de.featjar.base.tree.visitor.TreeVisitor;
 import de.featjar.formula.analysis.value.ValueAssignment;
 import de.featjar.formula.structure.Expression;
-import de.featjar.base.tree.visitor.TreeVisitor;
 import de.featjar.formula.structure.term.value.Variable;
 
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Given a variable assignment, evaluates a formula.

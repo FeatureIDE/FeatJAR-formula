@@ -56,7 +56,6 @@ public class NormalForms {
         return getNormalFormTester(formula, normalForm).isClausalNormalForm();
     }
 
-    // TODO: use computation and store
     public static Result<Formula> toNormalForm(Formula formula, Formula.NormalForm normalForm, boolean isClausal) {
         Computation<Formula> normalFormFormulaComputation = Computation.of(formula)
                 .then(normalForm == Formula.NormalForm.NNF
