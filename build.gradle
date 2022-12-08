@@ -9,6 +9,6 @@ dependencies {
 license {
     ext {
         author = 'Sebastian Krieter, Elias Kuiter'
-        url = 'https://github.com/FeatJAR/formula'
+        url = 'https://github.com/FeatureIDE/FeatJAR-formula'
     }
 }

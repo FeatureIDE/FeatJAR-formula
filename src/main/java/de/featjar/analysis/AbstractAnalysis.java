@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with formula. If not, see <https://www.gnu.org/licenses/>.
  *
- * See <https://github.com/FeatJAR/formula> for further information.
+ * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
 package de.featjar.analysis;
 
@@ -132,6 +132,12 @@ public abstract class AbstractAnalysis<T, S extends Solver, I> implements Analys
     protected abstract T analyze(S solver, InternalMonitor monitor) throws Exception;
 
     protected void resetSolver(S solver) {
+        solver.getAssumptions().unsetAll(assumptions.getAll());
+        solver.getDynamicFormula().pop(assumedConstraints.size());
+    }
+
+    @Override
+    public void resetAssumptions() {
         solver.getAssumptions().unsetAll(assumptions.getAll());
         solver.getDynamicFormula().pop(assumedConstraints.size());
     }
