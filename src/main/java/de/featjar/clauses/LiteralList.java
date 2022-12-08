@@ -283,7 +283,7 @@ public class LiteralList implements Cloneable, Comparable<LiteralList>, Serializ
                 return -1;
             case INDEX:
                 final int index = Math.abs(literal) - 1;
-                return literal == 0 ? -1 : literals[index] == literal ? index : -1;
+                return literal == 0 || index >= literals.length ? -1 : literals[index] == literal ? index : -1;
             case NATURAL:
                 return Arrays.binarySearch(literals, literal);
             default:
@@ -670,6 +670,22 @@ public class LiteralList implements Cloneable, Comparable<LiteralList>, Serializ
             }
         }
         return Result.of(new LiteralList(newLiterals, order, true));
+    }
+    
+    public LiteralList adapt2(VariableMap oldVariables, VariableMap newVariables) {
+        final int[] oldLiterals = literals;
+        final int[] newLiterals = new int[newVariables.getVariableCount() + 1];
+        for (int i = 0; i < oldLiterals.length; i++) {
+            final int l = oldLiterals[i];
+            final Optional<String> name = oldVariables.getVariableName(Math.abs(l));
+            if (name.isPresent()) {
+                final Optional<Integer> index = newVariables.getVariableIndex(name.get());
+                if (index.isPresent()) {
+                    newLiterals[index.get()] = l < 0 ? -index.get() : index.get();
+                }
+            }
+        }
+        return new LiteralList(newLiterals, order, true);
     }
 
     public String toBinaryString() {
