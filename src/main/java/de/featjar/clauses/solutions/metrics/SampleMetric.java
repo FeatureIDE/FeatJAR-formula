@@ -21,7 +21,6 @@
 package de.featjar.clauses.solutions.metrics;
 
 import de.featjar.clauses.solutions.SolutionList;
-import java.util.List;
 
 /**
  * Calculates a certain coverage for a given sample.
@@ -31,15 +30,6 @@ import java.util.List;
 public interface SampleMetric {
 
     double get(SolutionList sample);
-
-    default double[] get(List<SolutionList> sampleList) {
-        final double[] values = new double[sampleList.size()];
-        int index = 0;
-        for (final SolutionList solution : sampleList) {
-            values[index++] = get(solution);
-        }
-        return values;
-    }
 
     String getName();
 }

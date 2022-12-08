@@ -671,7 +671,7 @@ public class LiteralList implements Cloneable, Comparable<LiteralList>, Serializ
         }
         return Result.of(new LiteralList(newLiterals, order, true));
     }
-    
+
     public LiteralList adapt2(VariableMap oldVariables, VariableMap newVariables) {
         final int[] oldLiterals = literals;
         final int[] newLiterals = new int[newVariables.getVariableCount() + 1];

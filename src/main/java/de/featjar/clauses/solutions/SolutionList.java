@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -70,6 +71,12 @@ public class SolutionList implements Serializable {
         return variables;
     }
 
+    public void adapt2(VariableMap newVariables) {
+        for (ListIterator<LiteralList> iterator = solutions.listIterator(); iterator.hasNext(); ) {
+            iterator.set(iterator.next().adapt2(variables, newVariables));
+        }
+    }
+
     public List<LiteralList> getSolutions() {
         return solutions;
     }
@@ -78,7 +85,7 @@ public class SolutionList implements Serializable {
         return solutions.get(index);
     }
 
-    public LiteralList getVaraibleAssingment(int variable) {
+    public LiteralList getVariableAssingment(int variable) {
         final int[] assignment = new int[solutions.size()];
         int index = 0;
         for (final LiteralList solution : solutions) {
