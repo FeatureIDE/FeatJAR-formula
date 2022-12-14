@@ -48,7 +48,7 @@ public class LiteralList implements Cloneable, Comparable<LiteralList>, Serializ
         UNORDERED,
     }
 
-    protected final int[] literals;
+    protected int[] literals;
 
     private int hashCode;
 
@@ -186,14 +186,15 @@ public class LiteralList implements Cloneable, Comparable<LiteralList>, Serializ
     private void sortLiterals(Order newOrder) {
         switch (newOrder) {
             case INDEX:
-                final int[] sortedLiterals = new int[literals.length];
+                final int[] sortedLiterals =
+                        new int[Arrays.stream(literals).map(Math::abs).max().orElse(0)];
                 for (int i = 0; i < literals.length; i++) {
                     final int literal = literals[i];
                     if (literal != 0) {
                         sortedLiterals[Math.abs(literal) - 1] = literal;
                     }
                 }
-                System.arraycopy(sortedLiterals, 0, literals, 0, literals.length);
+                literals = sortedLiterals;
                 break;
             case NATURAL:
                 Arrays.sort(literals);
@@ -293,16 +294,19 @@ public class LiteralList implements Cloneable, Comparable<LiteralList>, Serializ
 
     public int indexOfVariable(int variable) {
         switch (order) {
-            case INDEX:
-                return (variable > 0) && (variable < size()) ? (variable - 1) : -1;
+            case INDEX: {
+                final int i = variable - 1;
+                return (variable > 0) && (variable < size()) && literals[i] != 0 ? i : -1;
+            }
             case UNORDERED:
-            case NATURAL:
+            case NATURAL: {
                 for (int i = 0; i < literals.length; i++) {
                     if (Math.abs(literals[i]) == variable) {
                         return i;
                     }
                 }
                 return -1;
+            }
             default:
                 throw new AssertionError(order);
         }
