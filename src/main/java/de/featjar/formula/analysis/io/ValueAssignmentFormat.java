@@ -1,0 +1,97 @@
+/*
+ * Copyright (C) 2022 Sebastian Krieter, Elias Kuiter
+ *
+ * This file is part of formula.
+ *
+ * formula is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3.0 of the License,
+ * or (at your option) any later version.
+ *
+ * formula is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with formula. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
+ */
+package de.featjar.formula.analysis.io;
+
+import de.featjar.base.data.Problem;
+import de.featjar.base.data.Problem.Severity;
+import de.featjar.base.data.Result;
+import de.featjar.base.io.InputMapper;
+import de.featjar.base.io.format.Format;
+import de.featjar.base.io.format.ParseProblem;
+import de.featjar.formula.analysis.bool.*;
+import de.featjar.formula.analysis.value.ValueAssignment;
+
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+/**
+ * TODO
+ *
+ * @author Elias Kuiter
+ */
+public class ValueAssignmentFormat implements Format<ValueAssignment> {
+    protected final Function<Map<String, Object>, ValueAssignment> constructor;
+
+    public ValueAssignmentFormat() {
+        this(ValueAssignment::new);
+    }
+
+    public ValueAssignmentFormat(Function<Map<String, Object>, ValueAssignment> constructor) {
+        this.constructor = constructor;
+    }
+
+    // todo: serialize
+
+    @Override
+    public Result<ValueAssignment> parse(InputMapper inputMapper) {
+        Map<String, Object> variableValuePairs = new HashMap<>();
+        for (String variableValuePair : inputMapper.get().getLineStream()
+                .collect(Collectors.joining(","))
+                .split(",")) {
+            String[] parts = variableValuePair.split("=");
+            if (parts.length == 0 || parts.length > 2)
+                return Result.empty(new Problem("expected variable-value pair, got " + variableValuePair, Severity.ERROR));
+            else if (parts.length == 1) {
+                String variable = parts[0].trim();
+                if (variable.startsWith("-"))
+                    variableValuePairs.put(variable.substring(1), false);
+                else
+                    variableValuePairs.put(variable, true);
+            } else
+                variableValuePairs.put(parts[0].trim(), parseValue(parts[1].trim()));
+        }
+        return Result.of(constructor.apply(variableValuePairs));
+    }
+
+    public static Object parseValue(String s) {
+        if (s == null || s.equalsIgnoreCase("null"))
+            return null;
+        else if (s.equalsIgnoreCase("true"))
+            return true;
+        else if (s.equalsIgnoreCase("false"))
+            return false;
+        else if (s.toLowerCase().endsWith("f") || s.toLowerCase().endsWith("d"))
+            return Double.valueOf(s);
+        else
+            return Long.valueOf(s);
+    }
+
+    @Override
+    public boolean supportsParse() {
+        return true;
+    }
+
+    @Override
+    public String getName() {
+        return "ValueAssignment";
+    }
+}

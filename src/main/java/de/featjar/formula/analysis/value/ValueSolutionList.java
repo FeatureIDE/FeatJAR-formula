@@ -49,7 +49,7 @@ public class ValueSolutionList extends ValueAssignmentList<ValueSolutionList, Va
     }
 
     @Override
-    protected ValueSolutionList newLiteralMatrix(List<ValueSolution> LiteralSolutions) {
+    protected ValueSolutionList newAssignmentList(List<ValueSolution> LiteralSolutions) {
         return new ValueSolutionList(LiteralSolutions);
     }
 

@@ -37,33 +37,33 @@ import java.util.Objects;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class ToLiteralClauseList implements Computation<BooleanClauseList> {
+public class ToBooleanClauseList implements Computation<BooleanClauseList> {
     protected final Computation<Formula> cnfFormulaComputation;
     protected final Computation<VariableMap> variableMapComputation;
 
-    public ToLiteralClauseList(Computation<Formula> cnfFormulaComputation) {
-        this(cnfFormulaComputation, cnfFormulaComputation.map(VariableMap::of));
+    public ToBooleanClauseList(Computation<Formula> cnfFormulaComputation) {
+        this(cnfFormulaComputation, cnfFormulaComputation.mapResult(VariableMap::of));
     }
 
-    public ToLiteralClauseList(Computation<Formula> cnfFormulaComputation, Computation<VariableMap> variableMapComputation) {
+    public ToBooleanClauseList(Computation<Formula> cnfFormulaComputation, Computation<VariableMap> variableMapComputation) {
         this.cnfFormulaComputation = cnfFormulaComputation;
         this.variableMapComputation = variableMapComputation;
     }
 
     public static Result<BooleanClauseList> convert(Formula formula) {
-        return Computation.of(formula).then(ToLiteralClauseList::new).getResult();
+        return Computation.of(formula).then(ToBooleanClauseList::new).getResult();
     }
 
     public static Result<BooleanClauseList> convert(Formula formula, VariableMap variableMap) {
-        return Computation.of(formula).then(c -> new ToLiteralClauseList(c, Computation.of(variableMap))).getResult();
+        return Computation.of(formula).then(c -> new ToBooleanClauseList(c, Computation.of(variableMap))).getResult();
     }
 
     @Override
     public FutureResult<BooleanClauseList> compute() {
         return Computation.allOf(cnfFormulaComputation, variableMapComputation)
-                .get().thenComputeResult(((list, monitor) -> {
-                    Formula formula = (Formula) list.get(0);
-                    VariableMap variableMap = (VariableMap) list.get(1);
+                .get().thenComputeResult(((pair, monitor) -> {
+                    Formula formula = pair.getKey();
+                    VariableMap variableMap = pair.getValue();
                     final BooleanClauseList clauses = new BooleanClauseList();
                     //final Object formulaValue = formula.evaluate();
 //                    if (formulaValue != null) { //TODO

@@ -52,12 +52,12 @@ public abstract class ValueAssignmentList<T extends ValueAssignmentList<?, U>, U
         other.stream().map(U::clone).forEach(predicateList -> add((U) predicateList));
     }
 
-    protected abstract T newLiteralMatrix(List<U> literalLists);
+    protected abstract T newAssignmentList(List<U> literalLists);
 
     @SuppressWarnings("MethodDoesntCallSuperMethod")
     @Override
     public T clone() {
-        return newLiteralMatrix(literalLists);
+        return newAssignmentList(literalLists);
     }
 
     @Override

@@ -79,11 +79,6 @@ public class DIMACSCNFFormat implements Format<BooleanClauseList> {
     }
 
     @Override
-    public DIMACSCNFFormat getInstance() {
-        return this;
-    }
-
-    @Override
     public String getName() {
         return "DIMACS";
     }

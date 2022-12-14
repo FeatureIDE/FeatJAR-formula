@@ -2,15 +2,10 @@ package de.featjar.formula.transformer;
 
 import de.featjar.base.data.Computation;
 import de.featjar.base.data.Result;
-import de.featjar.base.tree.Trees;
-import de.featjar.base.tree.visitor.TreeVisitor;
-import de.featjar.formula.analysis.bool.ToLiteralClauseList;
 import de.featjar.formula.structure.formula.Formula;
-import org.junit.jupiter.api.Test;
 
 import java.util.function.Function;
 
-import static de.featjar.formula.structure.Expressions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TransformerTest {

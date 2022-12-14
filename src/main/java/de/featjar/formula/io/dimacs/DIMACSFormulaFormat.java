@@ -58,11 +58,6 @@ public class DIMACSFormulaFormat implements Format<Formula> {
     }
 
     @Override
-    public DIMACSFormulaFormat getInstance() {
-        return this;
-    }
-
-    @Override
     public boolean supportsSerialize() {
         return true;
     }

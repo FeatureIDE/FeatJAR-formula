@@ -102,10 +102,6 @@ public class ExpressionGroupFormat implements Format<List<List<BooleanAssignment
 //        return Result.of(expressionGroups);
 //    }
 //
-    @Override
-    public ExpressionGroupFormat getInstance() {
-        return this;
-    }
 
     @Override
     public boolean supportsSerialize() {

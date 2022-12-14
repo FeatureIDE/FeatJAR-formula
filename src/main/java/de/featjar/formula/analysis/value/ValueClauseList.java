@@ -30,7 +30,7 @@ public class ValueClauseList extends ValueAssignmentList<ValueClauseList, ValueC
     }
 
     @Override
-    protected ValueClauseList newLiteralMatrix(List<ValueClause> clauses) {
+    protected ValueClauseList newAssignmentList(List<ValueClause> clauses) {
         return new ValueClauseList(clauses);
     }
 

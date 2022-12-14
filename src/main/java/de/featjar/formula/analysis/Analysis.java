@@ -39,7 +39,7 @@ public interface Analysis<T, U> extends Computation<U> {
      * {@return the input computation of this analysis}
      * This analysis uses the result of this computation as its primary input (e.g., the formula to analyze).
      */
-    Computation<T> getInputComputation();
+    Computation<T> getInput();
 
     /**
      * Sets the input computation of this analysis.
@@ -47,7 +47,52 @@ public interface Analysis<T, U> extends Computation<U> {
      * @param inputComputation the input computation
      * @return itself
      */
-    Analysis<T, U> setInputComputation(Computation<T> inputComputation);
+    Analysis<T, U> setInput(Computation<T> inputComputation);
+
+    /**
+     * An analysis that can be passed a further assignment to assume.
+     *
+     * @param <T> the type of the assignment
+     */
+    interface WithAssumedAssignment<T extends Assignment<?>> {
+        /**
+         * {@return a computation for the assignment assumed by this analysis}
+         * This analysis can freely interpret this assignment.
+         * Usually, it is interpreted as a conjunction (i.e., similar to a {@link Solution}).
+         */
+        Computation<T> getAssumedAssignment();
+
+        /**
+         * Sets the computation for the assignment assumed by this analysis.
+         *
+         * @param assignmentComputation the assignment computation
+         * @return itself
+         */
+        WithAssumedAssignment<T> setAssumedAssignment(Computation<T> assignmentComputation);
+    }
+
+    /**
+     * An analysis that can be passed a further list of clauses to assume.
+     * Generalizes {@link WithAssumedAssignment}, but is not supported by each analysis.
+     *
+     * @param <T> type of the clause list
+     */
+    interface WithAssumedClauseList<T extends AssignmentList<? extends Clause<?>>> {
+        /**
+         * {@return the computation for the clause list assumed by this analysis}
+         * This analysis interprets this list of clauses as a conjunction of
+         * disjunctions of literals or equalities (i.e., a CNF).
+         */
+        Computation<T> getAssumedClauseList();
+
+        /**
+         * Sets the computation for the clause list assumed by this analysis.
+         *
+         * @param clauseListComputation the clause list computation
+         * @return itself
+         */
+        WithAssumedClauseList<T> setAssumedClauseList(Computation<T> clauseListComputation);
+    }
 
     /**
      * A potentially long-running analysis that can be canceled if a given time has passed.
@@ -63,54 +108,10 @@ public interface Analysis<T, U> extends Computation<U> {
         /**
          * Sets the timeout of this analysis in milliseconds.
          *
-         * @param timeout the timeout in milliseconds
+         * @param timeout the timeout in milliseconds, if any
          * @return itself
          */
         WithTimeout setTimeout(Long timeout);
-    }
-
-    /**
-     * An analysis that can be passed a further assignment to assume.
-     *
-     * @param <T> the type of the assignment
-     */
-    interface WithAssumedAssignment<T extends Assignment<?>> {
-        /**
-         * {@return the assignment assumed by this analysis}
-         * This analysis can freely interpret this assignment.
-         * Usually, it is interpreted as a conjunction (i.e., similar to a {@link Solution}).
-         */
-        T getAssumedAssignment();
-
-        /**
-         * Sets the assignment assumed by this analysis.
-         *
-         * @param assignment the assignment
-         * @return itself
-         */
-        WithAssumedAssignment<T> setAssumedAssignment(T assignment);
-    }
-
-    /**
-     * An analysis that can be passed a further list of clauses to assume.
-     *
-     * @param <T> type of the clause list
-     */
-    interface WithAssumedClauseList<T extends AssignmentList<? extends Clause<?>>> {
-        /**
-         * {@return the clause list assumed by this analysis}
-         * This analysis interprets this list of clauses as a conjunction of
-         * disjunctions of literals or equalities (i.e., a CNF).
-         */
-        T getAssumedClauseList();
-
-        /**
-         * Sets the clause list assumed by this analysis.
-         *
-         * @param clauseList the clause list
-         * @return itself
-         */
-        WithAssumedClauseList<T> setAssumedClauseList(T clauseList);
     }
 
     /**
@@ -120,7 +121,7 @@ public interface Analysis<T, U> extends Computation<U> {
         /**
          * The default seed for the pseudorandom number generator returned by {@link #getRandom()}, if not specified otherwise.
          */
-        int DEFAULT_RANDOM_SEED = 0;
+        long DEFAULT_RANDOM_SEED = 0;
 
         /**
          * {@return the pseudorandom number generator of this analysis}
@@ -134,5 +135,18 @@ public interface Analysis<T, U> extends Computation<U> {
          * @return itself
          */
         WithRandom setRandom(Random random);
+
+        /**
+         * Sets the pseudorandom number generator of this analysis based on a given seed.
+         * Uses Java's default PRNG implementation.
+         * If no seed is given, uses the default seed.
+         *
+         * @param seed the seed
+         * @return itself
+         */
+        default WithRandom setRandom(Long seed) {
+            setRandom(new Random(seed != null ? seed : DEFAULT_RANDOM_SEED));
+            return this;
+        }
     }
 }

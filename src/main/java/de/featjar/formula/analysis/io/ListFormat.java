@@ -115,11 +115,6 @@ public class ListFormat implements Format<BooleanAssignmentList<?, ?>> {
     }
 
     @Override
-    public ListFormat getInstance() {
-        return this;
-    }
-
-    @Override
     public boolean supportsSerialize() {
         return true;
     }

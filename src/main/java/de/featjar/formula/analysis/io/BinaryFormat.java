@@ -92,11 +92,6 @@ public class BinaryFormat extends de.featjar.base.io.binary.BinaryFormat<Boolean
     }
 
     @Override
-    public BinaryFormat getInstance() {
-        return this;
-    }
-
-    @Override
     public boolean supportsSerialize() {
         return true;
     }

@@ -86,9 +86,9 @@ public abstract class BooleanAssignmentList<T extends BooleanAssignmentList<?, U
      */
     @SuppressWarnings("unchecked")
     public T negate() {
-        final T negatedLiteralMatrix = newAssignmentList(new ArrayList<>());
-        stream().map(U::negate).forEach(literalList -> negatedLiteralMatrix.add((U) literalList));
-        return negatedLiteralMatrix;
+        final T negatedAssignmentList = newAssignmentList(new ArrayList<>());
+        stream().map(U::negate).forEach(literalList -> negatedAssignmentList.add((U) literalList));
+        return negatedAssignmentList;
     }
 
     public VariableMap getVariableMap() {
@@ -101,15 +101,15 @@ public abstract class BooleanAssignmentList<T extends BooleanAssignmentList<?, U
 
     @SuppressWarnings("unchecked")
     protected Result<T> adapt(VariableMap oldVariableMap, VariableMap newVariableMap) {
-        final T adaptedLiteralMatrix = newAssignmentList(new ArrayList<>());
+        final T adaptedAssignmentList = newAssignmentList(new ArrayList<>());
         for (final BooleanAssignment booleanAssignment : assignments) {
             final Result<BooleanAssignment> adapted = booleanAssignment.adapt(oldVariableMap, newVariableMap);
             if (adapted.isEmpty()) {
                 return Result.empty(adapted.getProblems());
             }
-            adaptedLiteralMatrix.add((U) adapted.get());
+            adaptedAssignmentList.add((U) adapted.get());
         }
-        return Result.of(adaptedLiteralMatrix);
+        return Result.of(adaptedAssignmentList);
     }
 
     public Result<T> adapt(VariableMap variableMap) {
