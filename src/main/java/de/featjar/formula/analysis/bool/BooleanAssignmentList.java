@@ -36,7 +36,7 @@ import java.util.*;
  */
 public abstract class BooleanAssignmentList<T extends BooleanAssignmentList<?, U>, U extends BooleanAssignment> implements AssignmentList<U> {
     protected final List<U> assignments;
-    protected VariableMap variableMap;
+    protected VariableMap variableMap; // todo: not null!
 
     public BooleanAssignmentList() {
         assignments = new ArrayList<>();

@@ -44,6 +44,6 @@ public class ValueClauseList extends ValueAssignmentList<ValueClauseList, ValueC
 
     @Override
     public String toString() {
-        return String.format("ValueAssignment[%s]", print());
+        return String.format("ValueClauseList[%s]", print());
     }
 }
