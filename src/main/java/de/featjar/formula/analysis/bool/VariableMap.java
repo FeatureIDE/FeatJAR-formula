@@ -63,6 +63,15 @@ public class VariableMap extends RangeMap<String> {
         return new VariableMap(this);
     }
 
+    public String print() {
+        return stream().map(pair -> String.format("%d <-> %s", pair.getKey(), pair.getValue())).collect(Collectors.joining(", "));
+    }
+
+    @Override
+    public String toString() {
+        return String.format("VariableMap[%s]", print());
+    }
+
     protected <T extends BooleanAssignment> Result<T> toBoolean(ValueAssignment valueAssignment, Function<List<Integer>, T> constructor) {
         List<Integer> integers = new ArrayList<>();
         List<Problem> problems = new ArrayList<>();
