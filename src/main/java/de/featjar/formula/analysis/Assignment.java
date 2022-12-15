@@ -4,6 +4,7 @@ import de.featjar.base.data.Pair;
 import de.featjar.formula.analysis.bool.BooleanAssignment;
 import de.featjar.formula.analysis.value.ValueAssignment;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -20,12 +21,12 @@ import java.util.stream.Stream;
  */
 public interface Assignment<T> {
     /**
-     * {@return a map of all variable-value pairs in this assignment}
+     * {@return an ordered map of all variable-value pairs in this assignment}
      * The default implementations of the other methods assume that this map is mutable.
      * If it is not, the other methods must be overridden accordingly.
      * Undefined variables (e.g., for partial assignments) are omitted.
      */
-    Map<T, Object> getAll();
+    LinkedHashMap<T, Object> getAll();
 
     /**
      * {@return the number of variable-value pairs in this assignment}

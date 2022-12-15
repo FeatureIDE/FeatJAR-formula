@@ -1,6 +1,8 @@
 package de.featjar.formula.analysis.bool;
 
+import de.featjar.base.data.Result;
 import de.featjar.base.log.IndentFormatter;
+import de.featjar.formula.analysis.value.ValueAssignment;
 import de.featjar.formula.analysis.value.ValueClauseList;
 import de.featjar.formula.transformer.ToCNF;
 
@@ -41,8 +43,16 @@ public class BooleanClauseList extends BooleanAssignmentList<BooleanClauseList, 
         return new BooleanClauseList(clauses);
     }
 
+    public Result<ValueClauseList> toValue() {
+        return variableMap.toValue(this);
+    }
+
+    public String print() {
+        return VariableMap.toAnonymousValue(this).getAndLogProblems().print();
+    }
+
     @Override
     public String toString() {
-        return IndentFormatter.formatList("BooleanClauseList", assignments);
+        return String.format("BooleanClauseList[%s]", print());
     }
 }

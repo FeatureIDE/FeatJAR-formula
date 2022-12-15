@@ -20,6 +20,11 @@
  */
 package de.featjar.formula.analysis.value;
 
+import de.featjar.base.data.Result;
+import de.featjar.formula.analysis.bool.BooleanClauseList;
+import de.featjar.formula.analysis.bool.BooleanSolutionList;
+import de.featjar.formula.analysis.bool.VariableMap;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -51,6 +56,15 @@ public class ValueSolutionList extends ValueAssignmentList<ValueSolutionList, Va
     @Override
     protected ValueSolutionList newAssignmentList(List<ValueSolution> LiteralSolutions) {
         return new ValueSolutionList(LiteralSolutions);
+    }
+
+    public Result<BooleanSolutionList> toBoolean(VariableMap variableMap) {
+        return variableMap.toBoolean(this);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("ValueSolutionList[%s]", print());
     }
 
 //    public SortedIntegerList getVariableAssignment(int variable) {

@@ -119,11 +119,6 @@ public abstract class BooleanAssignmentList<T extends BooleanAssignmentList<?, U
         });
     }
 
-    @Override
-    public String toString() {
-        return IndentFormatter.formatList("BooleanAssignmentList", assignments);
-    }
-
     /**
      * Compares list of clauses by the number of literals.
      */

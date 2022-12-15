@@ -1,5 +1,9 @@
 package de.featjar.formula.analysis.value;
 
+import de.featjar.base.data.Result;
+import de.featjar.formula.analysis.bool.BooleanClauseList;
+import de.featjar.formula.analysis.bool.VariableMap;
+import de.featjar.formula.analysis.io.ValueSolutionListFormat;
 import de.featjar.formula.transformer.ToCNF;
 
 import java.util.Collection;
@@ -34,4 +38,12 @@ public class ValueClauseList extends ValueAssignmentList<ValueClauseList, ValueC
         return new ValueClauseList(clauses);
     }
 
+    public Result<BooleanClauseList> toBoolean(VariableMap variableMap) {
+        return variableMap.toBoolean(this);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("ValueAssignment[%s]", print());
+    }
 }

@@ -20,7 +20,10 @@
  */
 package de.featjar.formula.analysis.bool;
 
+import de.featjar.base.data.Result;
 import de.featjar.base.log.IndentFormatter;
+import de.featjar.formula.analysis.value.ValueClauseList;
+import de.featjar.formula.analysis.value.ValueSolutionList;
 
 import java.util.Collection;
 import java.util.List;
@@ -56,8 +59,16 @@ public class BooleanSolutionList extends BooleanAssignmentList<BooleanSolutionLi
         return new BooleanSolutionList(solutions);
     }
 
+    public Result<ValueSolutionList> toValue() {
+        return variableMap.toValue(this);
+    }
+
+    public String print() {
+        return VariableMap.toAnonymousValue(this).getAndLogProblems().print();
+    }
+
     @Override
     public String toString() {
-        return IndentFormatter.formatList("BooleanSolutionList", assignments);
+        return String.format("BooleanSolutionList[%s]", print());
     }
 }

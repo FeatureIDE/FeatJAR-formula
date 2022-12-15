@@ -118,8 +118,8 @@ public class VariableMap extends RangeMap<String> {
         return toBoolean(valueSolutionList, BooleanSolutionList::new, BooleanSolution::new);
     }
 
-    protected <T extends ValueAssignment> Result<T> toValue(BooleanAssignment booleanAssignment, Function<Map<String, Object>, T> constructor) {
-        Map<String, Object> variableValuePairs = new HashMap<>();
+    protected <T extends ValueAssignment> Result<T> toValue(BooleanAssignment booleanAssignment, Function<LinkedHashMap<String, Object>, T> constructor) {
+        LinkedHashMap<String, Object> variableValuePairs = new LinkedHashMap<>();
         List<Problem> problems = new ArrayList<>();
         for (int integer : booleanAssignment.getIntegers()) {
             int index = Math.abs(integer);
@@ -147,7 +147,7 @@ public class VariableMap extends RangeMap<String> {
 
     protected <T extends ValueAssignmentList<?, U>, U extends ValueAssignment> Result<T> toValue(
             BooleanAssignmentList<?, ?> booleanAssignmentList,
-            Supplier<T> listConstructor, Function<Map<String, Object>, U> constructor) {
+            Supplier<T> listConstructor, Function<LinkedHashMap<String, Object>, U> constructor) {
         T valueAssignmentList = listConstructor.get();
         List<Problem> problems = new ArrayList<>();
         for (BooleanAssignment booleanAssignment : booleanAssignmentList.getAll()) {
@@ -165,5 +165,49 @@ public class VariableMap extends RangeMap<String> {
 
     public Result<ValueSolutionList> toValue(BooleanSolutionList booleanSolutionList) {
         return toValue(booleanSolutionList, ValueSolutionList::new, ValueSolution::new);
+    }
+
+    protected static <T extends ValueAssignment> Result<T> toAnonymousValue(BooleanAssignment booleanAssignment, Function<LinkedHashMap<String, Object>, T> constructor) {
+        LinkedHashMap<String, Object> variableValuePairs = new LinkedHashMap<>();
+        List<Problem> problems = new ArrayList<>();
+        for (int integer : booleanAssignment.getIntegers()) {
+            int index = Math.abs(integer);
+            variableValuePairs.put(String.valueOf(index), integer > 0);
+        }
+        return Result.of(constructor.apply(variableValuePairs), problems);
+    }
+
+    public static Result<ValueAssignment> toAnonymousValue(BooleanAssignment booleanAssignment) {
+        return toAnonymousValue(booleanAssignment, ValueAssignment::new);
+    }
+
+    public static Result<ValueClause> toAnonymousValue(BooleanClause booleanClause) {
+        return toAnonymousValue(booleanClause, ValueClause::new);
+    }
+
+    public static Result<ValueSolution> toAnonymousValue(BooleanSolution booleanSolution) {
+        return toAnonymousValue(booleanSolution, ValueSolution::new);
+    }
+
+    protected static <T extends ValueAssignmentList<?, U>, U extends ValueAssignment> Result<T> toAnonymousValue(
+            BooleanAssignmentList<?, ?> booleanAssignmentList,
+            Supplier<T> listConstructor, Function<LinkedHashMap<String, Object>, U> constructor) {
+        T valueAssignmentList = listConstructor.get();
+        List<Problem> problems = new ArrayList<>();
+        for (BooleanAssignment booleanAssignment : booleanAssignmentList.getAll()) {
+            Result<U> valueAssignment = toAnonymousValue(booleanAssignment, constructor);
+            problems.addAll(valueAssignment.getProblems());
+            if (valueAssignment.isPresent())
+                valueAssignmentList.add(valueAssignment.get());
+        }
+        return Result.of(valueAssignmentList, problems);
+    }
+
+    public static Result<ValueClauseList> toAnonymousValue(BooleanClauseList booleanClauseList) {
+        return toAnonymousValue(booleanClauseList, ValueClauseList::new, ValueClause::new);
+    }
+
+    public static Result<ValueSolutionList> toAnonymousValue(BooleanSolutionList booleanSolutionList) {
+        return toAnonymousValue(booleanSolutionList, ValueSolutionList::new, ValueSolution::new);
     }
 }

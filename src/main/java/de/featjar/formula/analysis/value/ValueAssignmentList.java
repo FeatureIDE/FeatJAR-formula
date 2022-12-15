@@ -20,8 +20,16 @@
  */
 package de.featjar.formula.analysis.value;
 
+import de.featjar.base.data.Result;
+import de.featjar.base.io.IO;
+import de.featjar.base.io.format.Format;
 import de.featjar.formula.analysis.AssignmentList;
+import de.featjar.formula.analysis.bool.BooleanClauseList;
+import de.featjar.formula.analysis.bool.VariableMap;
+import de.featjar.formula.analysis.io.ValueAssignmentFormat;
+import de.featjar.formula.analysis.io.ValueAssignmentListFormat;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -76,5 +84,13 @@ public abstract class ValueAssignmentList<T extends ValueAssignmentList<?, U>, U
     @Override
     public int hashCode() {
         return Objects.hash(literalLists);
+    }
+
+    public String print() {
+        try {
+            return IO.print(this, new ValueAssignmentListFormat<>());
+        } catch (IOException e) {
+            return e.toString();
+        }
     }
 }

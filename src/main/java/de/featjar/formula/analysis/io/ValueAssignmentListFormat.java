@@ -31,6 +31,7 @@ import de.featjar.formula.analysis.value.ValueClause;
 import de.featjar.formula.analysis.value.ValueClauseList;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -42,22 +43,31 @@ import java.util.stream.Collectors;
  *
  * @author Elias Kuiter
  */
-abstract public class ValueAssignmentListFormat<T extends ValueAssignmentList<?, U>, U extends ValueAssignment> implements Format<T> {
+public class ValueAssignmentListFormat<T extends ValueAssignmentList<?, U>, U extends ValueAssignment> implements Format<T> {
     protected final Supplier<T> listConstructor;
-    protected final Function<Map<String, Object>, ValueAssignment> constructor;
     protected final ValueAssignmentFormat valueAssignmentFormat;
 
-    public ValueAssignmentListFormat(Supplier<T> listConstructor, Function<Map<String, Object>, ValueAssignment> constructor) {
+    public ValueAssignmentListFormat() {
+        this(null, null);
+    }
+
+    public ValueAssignmentListFormat(Supplier<T> listConstructor, Function<LinkedHashMap<String, Object>, ValueAssignment> constructor) {
         this.listConstructor = listConstructor;
-        this.constructor = constructor;
         this.valueAssignmentFormat = new ValueAssignmentFormat(constructor);
     }
 
-    // todo: serialize
+    @Override
+    public Result<String> serialize(T valueAssignmentList) {
+        return Result.of(valueAssignmentList.getAll().stream()
+                .map(ValueAssignment::print)
+                .collect(Collectors.joining("; ")));
+    }
 
     @SuppressWarnings("unchecked")
     @Override
     public Result<T> parse(InputMapper inputMapper) {
+        if (listConstructor == null || valueAssignmentFormat == null)
+            return Result.empty(new Problem("cannot parse unknown value assignment", Problem.Severity.ERROR));
         T valueAssignmentList = listConstructor.get();
         List<Problem> problems = new ArrayList<>();
         for (String valueClause : inputMapper.get().getLineStream()
@@ -69,6 +79,11 @@ abstract public class ValueAssignmentListFormat<T extends ValueAssignmentList<?,
                 valueAssignmentList.add((U) valueAssignment.get());
         }
         return Result.of(valueAssignmentList, problems);
+    }
+
+    @Override
+    public boolean supportsSerialize() {
+        return true;
     }
 
     @Override

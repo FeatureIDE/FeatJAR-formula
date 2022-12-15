@@ -3,8 +3,12 @@ package de.featjar.formula.analysis.bool;
 import de.featjar.base.data.IntegerList;
 import de.featjar.base.data.Problem;
 import de.featjar.base.data.Result;
+import de.featjar.base.io.IO;
 import de.featjar.formula.analysis.Assignment;
+import de.featjar.formula.analysis.io.ValueAssignmentFormat;
+import de.featjar.formula.analysis.value.ValueAssignment;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.IntStream;
 
@@ -192,9 +196,13 @@ public class BooleanAssignment extends IntegerList<BooleanAssignment> implements
         return new BooleanSolution(integers);
     }
 
+    public Result<? extends ValueAssignment> toValue(VariableMap variableMap) {
+        return variableMap.toValue(this);
+    }
+
     @Override
-    public Map<Integer, Object> getAll() {
-        Map<Integer, Object> map = new HashMap<>();
+    public LinkedHashMap<Integer, Object> getAll() {
+        LinkedHashMap<Integer, Object> map = new LinkedHashMap<>();
         for (int integer : integers) {
             if (integer > 0)
                 map.put(integer, true);
@@ -223,8 +231,12 @@ public class BooleanAssignment extends IntegerList<BooleanAssignment> implements
         return value == 0 ? Optional.empty() : Optional.of(value > 0);
     }
 
+    public String print() {
+        return VariableMap.toAnonymousValue(this).getAndLogProblems().print();
+    }
+
     @Override
     public String toString() {
-        return "BooleanAssignment" + Arrays.toString(integers);
+        return String.format("BooleanAssignment[%s]", print());
     }
 }

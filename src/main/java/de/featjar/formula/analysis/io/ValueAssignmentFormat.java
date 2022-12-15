@@ -39,21 +39,32 @@ import java.util.stream.Collectors;
  * @author Elias Kuiter
  */
 public class ValueAssignmentFormat implements Format<ValueAssignment> {
-    protected final Function<Map<String, Object>, ValueAssignment> constructor;
+    protected final Function<LinkedHashMap<String, Object>, ValueAssignment> constructor;
 
     public ValueAssignmentFormat() {
         this(ValueAssignment::new);
     }
 
-    public ValueAssignmentFormat(Function<Map<String, Object>, ValueAssignment> constructor) {
+    public ValueAssignmentFormat(Function<LinkedHashMap<String, Object>, ValueAssignment> constructor) {
         this.constructor = constructor;
     }
 
-    // todo: serialize
+    @Override
+    public Result<String> serialize(ValueAssignment valueAssignment) {
+        return Result.of(valueAssignment.getAll().entrySet().stream()
+                .map(e -> {
+                    String variable = e.getKey();
+                    Object value = e.getValue();
+                    if (value instanceof Boolean)
+                        return String.format("%s%s", ((Boolean) value) ? "" : "-", variable);
+                    return String.format("%s = %s", variable, value);
+                })
+                .collect(Collectors.joining(", ")));
+    }
 
     @Override
     public Result<ValueAssignment> parse(InputMapper inputMapper) {
-        Map<String, Object> variableValuePairs = new HashMap<>();
+        LinkedHashMap<String, Object> variableValuePairs = new LinkedHashMap<>();
         for (String variableValuePair : inputMapper.get().getLineStream()
                 .collect(Collectors.joining(","))
                 .split(",")) {
@@ -83,6 +94,11 @@ public class ValueAssignmentFormat implements Format<ValueAssignment> {
             return Double.valueOf(s);
         else
             return Long.valueOf(s);
+    }
+
+    @Override
+    public boolean supportsSerialize() {
+        return true;
     }
 
     @Override

@@ -1,7 +1,11 @@
 package de.featjar.formula.analysis.bool;
 
+import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.Solver;
 import de.featjar.formula.analysis.Solution;
+import de.featjar.formula.analysis.value.ValueClause;
+import de.featjar.formula.analysis.value.ValueSolution;
+import de.featjar.formula.analysis.value.ValueSolutionList;
 
 import java.util.*;
 
@@ -106,7 +110,12 @@ public class BooleanSolution extends BooleanAssignment implements Solution<Integ
     }
 
     @Override
+    public Result<ValueSolution> toValue(VariableMap variableMap) {
+        return variableMap.toValue(this);
+    }
+
+    @Override
     public String toString() {
-        return "BooleanSolution" + Arrays.toString(integers);
+        return String.format("BooleanSolution[%s]", print());
     }
 }
