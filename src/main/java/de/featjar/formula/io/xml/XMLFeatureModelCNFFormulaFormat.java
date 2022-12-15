@@ -30,6 +30,7 @@ import de.featjar.formula.structure.formula.connective.Not;
 import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.transformer.ToCNF;
+import de.featjar.formula.transformer.ToNNF;
 import de.featjar.formula.visitor.AndOrSimplifier;
 import de.featjar.formula.visitor.ConnectiveSimplifier;
 import de.featjar.formula.visitor.DeMorganApplier;
@@ -72,7 +73,7 @@ public class XMLFeatureModelCNFFormulaFormat extends XMLFeatureModelFormulaForma
 
     @Override
     protected void addConstraint(Boolean constraintLabel, Formula formula) throws ParseException {
-        Formula transformedExpression = Computation.of(formula).then(ToCNF::new).getResult()
+        Formula transformedExpression = Computation.of(formula).then(ToNNF::new).then(ToCNF::new).getResult()
                 .orElseThrow(p -> new ParseException("failed to transform " + formula));
         super.addConstraint(constraintLabel, transformedExpression);
     }
