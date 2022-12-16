@@ -125,4 +125,14 @@ public interface AssignmentList<T extends Assignment<?>> {
     default void clear() {
         getAll().clear();
     }
+
+    /**
+     * {@return a clause list with the same contents of this assignment list}
+     */
+    AssignmentList<?> toClauseList();
+
+    /**
+     * {@return a solution list with the same contents of this assignment list}
+     */
+    AssignmentList<?> toSolutionList();
 }

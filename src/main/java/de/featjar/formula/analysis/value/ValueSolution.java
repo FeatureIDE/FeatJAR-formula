@@ -1,15 +1,14 @@
 package de.featjar.formula.analysis.value;
 
+import de.featjar.base.data.Computation;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.Solution;
 import de.featjar.formula.analysis.Solver;
 import de.featjar.formula.analysis.bool.BooleanClause;
 import de.featjar.formula.analysis.bool.BooleanSolution;
-import de.featjar.formula.analysis.bool.VariableMap;
+import de.featjar.formula.analysis.mapping.VariableMap;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * A (partial) value solution; that is, a conjunction of equalities.
@@ -38,6 +37,12 @@ public class ValueSolution extends ValueAssignment implements Solution<String> {
     @Override
     public Result<BooleanSolution> toBoolean(VariableMap variableMap) {
         return variableMap.toBoolean(this);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Computation<BooleanSolution> toBoolean(Computation<VariableMap> variableMapComputation) {
+        return (Computation<BooleanSolution>) super.toBoolean(variableMapComputation);
     }
 
     @Override

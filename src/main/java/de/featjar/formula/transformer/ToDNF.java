@@ -62,7 +62,7 @@ public class ToDNF implements Computation<Formula> {
                 formula = (Formula) Trees.clone(formula);
                 ToNormalForm formulaToDistributiveNFFormula =
                         Computation.of((formula instanceof Or) ? formula : new Or(formula), monitor)
-                                .then(c -> new ToNormalForm(c, Formula.NormalForm.DNF));
+                                .map(c -> new ToNormalForm(c, Formula.NormalForm.DNF));
                 formulaToDistributiveNFFormula.setMaximumNumberOfLiterals(maximumNumberOfLiterals);
                 return formulaToDistributiveNFFormula.getResult()
                         .map(f -> NormalForms.normalToClausalNormalForm(f, Formula.NormalForm.DNF));

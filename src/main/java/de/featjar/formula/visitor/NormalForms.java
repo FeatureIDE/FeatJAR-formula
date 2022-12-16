@@ -58,7 +58,7 @@ public class NormalForms {
 
     public static Result<Formula> toNormalForm(Formula formula, Formula.NormalForm normalForm, boolean isClausal) {
         Computation<Formula> normalFormFormulaComputation = Computation.of(formula)
-                .then(normalForm == Formula.NormalForm.NNF
+                .map(normalForm == Formula.NormalForm.NNF
                         ? ToNNF::new
                         : normalForm == Formula.NormalForm.CNF
                         ? ToCNF::new

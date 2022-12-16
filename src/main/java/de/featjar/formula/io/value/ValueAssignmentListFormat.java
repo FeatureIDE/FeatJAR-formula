@@ -18,7 +18,7 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.analysis.io;
+package de.featjar.formula.io.value;
 
 import de.featjar.base.data.Problem;
 import de.featjar.base.data.Result;
@@ -27,13 +27,10 @@ import de.featjar.base.io.InputMapper;
 import de.featjar.base.io.format.Format;
 import de.featjar.formula.analysis.value.ValueAssignment;
 import de.featjar.formula.analysis.value.ValueAssignmentList;
-import de.featjar.formula.analysis.value.ValueClause;
-import de.featjar.formula.analysis.value.ValueClauseList;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;

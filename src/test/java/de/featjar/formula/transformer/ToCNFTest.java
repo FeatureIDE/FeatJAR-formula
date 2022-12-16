@@ -5,7 +5,6 @@ import de.featjar.base.data.Computation;
 import de.featjar.base.io.IO;
 import de.featjar.formula.io.FormulaFormats;
 import de.featjar.formula.structure.formula.Formula;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
@@ -50,8 +49,8 @@ class ToCNFTest {
         Formula finalFormula = formula;
         formula = Feat.apply(featJAR ->
                 Computation.of(finalFormula)
-                        .then(ToNNF::new)
-                        .then(ToCNF::new)
+                        .map(ToNNF::new)
+                        .map(ToCNF::new)
                         .getResult().get());
         assertEquals(and(
                 or(literal("Root")),

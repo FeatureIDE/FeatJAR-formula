@@ -20,14 +20,9 @@
  */
 package de.featjar.formula.analysis.value;
 
-import de.featjar.base.data.Result;
 import de.featjar.base.io.IO;
-import de.featjar.base.io.format.Format;
 import de.featjar.formula.analysis.AssignmentList;
-import de.featjar.formula.analysis.bool.BooleanClauseList;
-import de.featjar.formula.analysis.bool.VariableMap;
-import de.featjar.formula.analysis.io.ValueAssignmentFormat;
-import de.featjar.formula.analysis.io.ValueAssignmentListFormat;
+import de.featjar.formula.io.value.ValueAssignmentListFormat;
 
 import java.io.IOException;
 import java.util.*;
@@ -39,7 +34,7 @@ import java.util.*;
  * @param <T> the type of the literal list
  * @author Elias Kuiter
  */
-public abstract class ValueAssignmentList<T extends ValueAssignmentList<?, U>, U extends ValueAssignment> implements AssignmentList<U> {
+public abstract class ValueAssignmentList<T extends ValueAssignmentList<?, U>, U extends ValueAssignment> implements AssignmentList<U>, ValueRepresentation {
     protected final List<U> literalLists;
 
     public ValueAssignmentList() {
@@ -50,14 +45,12 @@ public abstract class ValueAssignmentList<T extends ValueAssignmentList<?, U>, U
         literalLists = new ArrayList<>(size);
     }
 
-    public ValueAssignmentList(Collection<? extends U> literalLists) {
-        this.literalLists = new ArrayList<>(literalLists);
+    public ValueAssignmentList(ValueAssignmentList<T, U> other) {
+        this(other.literalLists);
     }
 
-    @SuppressWarnings("unchecked")
-    public ValueAssignmentList(ValueAssignmentList<T, U> other) {
-        literalLists = new ArrayList<>(other.size());
-        other.stream().map(U::clone).forEach(predicateList -> add((U) predicateList));
+    public ValueAssignmentList(Collection<? extends U> literalLists) {
+        this.literalLists = new ArrayList<>(literalLists);
     }
 
     protected abstract T newAssignmentList(List<U> literalLists);

@@ -22,7 +22,11 @@ package de.featjar.formula.analysis.bool;
 
 import de.featjar.base.data.Computation;
 import de.featjar.base.data.FutureResult;
+import de.featjar.base.data.Pair;
 import de.featjar.base.data.Result;
+import de.featjar.formula.analysis.Analysis;
+import de.featjar.formula.analysis.mapping.VariableMap;
+import de.featjar.formula.analysis.value.ValueClauseList;
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.Expressions;
 import de.featjar.formula.structure.formula.Formula;
@@ -37,33 +41,17 @@ import java.util.Objects;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class ToBooleanClauseList implements Computation<BooleanClauseList> {
-    protected final Computation<Formula> cnfFormulaComputation;
-    protected final Computation<VariableMap> variableMapComputation;
+public class ToBooleanClauseList implements Computation.Pair<BooleanClauseList, VariableMap> {
+    protected Computation<Formula> cnfFormulaComputation;
 
     public ToBooleanClauseList(Computation<Formula> cnfFormulaComputation) {
-        this(cnfFormulaComputation, cnfFormulaComputation.mapResult(VariableMap::of));
-    }
-
-    public ToBooleanClauseList(Computation<Formula> cnfFormulaComputation, Computation<VariableMap> variableMapComputation) {
         this.cnfFormulaComputation = cnfFormulaComputation;
-        this.variableMapComputation = variableMapComputation;
-    }
-
-    public static Result<BooleanClauseList> convert(Formula formula) {
-        return Computation.of(formula).then(ToBooleanClauseList::new).getResult();
-    }
-
-    public static Result<BooleanClauseList> convert(Formula formula, VariableMap variableMap) {
-        return Computation.of(formula).then(c -> new ToBooleanClauseList(c, Computation.of(variableMap))).getResult();
     }
 
     @Override
-    public FutureResult<BooleanClauseList> compute() {
-        return Computation.allOf(cnfFormulaComputation, variableMapComputation)
-                .get().thenComputeResult(((pair, monitor) -> {
-                    Formula formula = pair.getKey();
-                    VariableMap variableMap = pair.getValue();
+    public FutureResult<de.featjar.base.data.Pair<BooleanClauseList, VariableMap>> compute() {
+        return cnfFormulaComputation.get().thenComputeResult(((formula, monitor) -> {
+                    VariableMap variableMap = VariableMap.of(formula);
                     final BooleanClauseList clauses = new BooleanClauseList();
                     //final Object formulaValue = formula.evaluate();
 //                    if (formulaValue != null) { //TODO
@@ -77,8 +65,7 @@ public class ToBooleanClauseList implements Computation<BooleanClauseList> {
                                 .forEach(clauses::add);
                     //}
                     BooleanClauseList clauseList = new BooleanClauseList(clauses);
-                    clauseList.setVariableMap(variableMap);
-                    return Result.of(clauseList);
+                    return Result.of(new de.featjar.base.data.Pair<>(clauseList, variableMap));
                 }));
     }
 

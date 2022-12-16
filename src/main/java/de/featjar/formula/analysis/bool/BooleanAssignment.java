@@ -1,14 +1,13 @@
 package de.featjar.formula.analysis.bool;
 
+import de.featjar.base.data.Computation;
 import de.featjar.base.data.IntegerList;
 import de.featjar.base.data.Problem;
 import de.featjar.base.data.Result;
-import de.featjar.base.io.IO;
 import de.featjar.formula.analysis.Assignment;
-import de.featjar.formula.analysis.io.ValueAssignmentFormat;
+import de.featjar.formula.analysis.mapping.VariableMap;
 import de.featjar.formula.analysis.value.ValueAssignment;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.IntStream;
 
@@ -26,7 +25,7 @@ import java.util.stream.IntStream;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class BooleanAssignment extends IntegerList<BooleanAssignment> implements Assignment<Integer> {
+public class BooleanAssignment extends IntegerList<BooleanAssignment> implements Assignment<Integer>, BooleanRepresentation {
     public BooleanAssignment(int... integers) {
         super(integers);
     }
@@ -184,20 +183,29 @@ public class BooleanAssignment extends IntegerList<BooleanAssignment> implements
         return new BooleanAssignment(newIntegers);
     }
 
+    @Override
     public BooleanAssignment toAssignment() {
         return new BooleanAssignment(integers);
     }
 
+    @Override
     public BooleanClause toClause() {
         return new BooleanClause(integers);
     }
 
+    @Override
     public BooleanSolution toSolution() {
         return new BooleanSolution(integers);
     }
 
+    @Override
     public Result<? extends ValueAssignment> toValue(VariableMap variableMap) {
         return variableMap.toValue(this);
+    }
+
+    @Override
+    public Computation<? extends ValueAssignment> toValue(Computation<VariableMap> variableMapComputation) {
+        return variableMapComputation.mapResult(variableMap -> toValue(variableMap).get());
     }
 
     @Override

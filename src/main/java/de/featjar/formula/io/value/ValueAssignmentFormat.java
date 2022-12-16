@@ -18,7 +18,7 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.analysis.io;
+package de.featjar.formula.io.value;
 
 import de.featjar.base.data.Problem;
 import de.featjar.base.data.Problem.Severity;

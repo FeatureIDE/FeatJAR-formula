@@ -1,16 +1,17 @@
 package de.featjar.formula.analysis.value;
 
+import de.featjar.base.data.Computation;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.IO;
 import de.featjar.formula.analysis.Assignment;
 import de.featjar.formula.analysis.bool.BooleanAssignment;
-import de.featjar.formula.analysis.bool.VariableMap;
-import de.featjar.formula.analysis.io.ValueAssignmentFormat;
+import de.featjar.formula.analysis.bool.BooleanRepresentation;
+import de.featjar.formula.analysis.mapping.VariableMap;
+import de.featjar.formula.io.value.ValueAssignmentFormat;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * Assigns values of any type to string-identified {@link de.featjar.formula.structure.term.value.Variable variables}.
@@ -18,7 +19,7 @@ import java.util.Map;
  *
  * @author Elias Kuiter
  */
-public class ValueAssignment implements Assignment<String> {
+public class ValueAssignment implements Assignment<String>, ValueRepresentation {
     final LinkedHashMap<String, Object> variableValuePairs;
 
     public ValueAssignment() {
@@ -42,16 +43,29 @@ public class ValueAssignment implements Assignment<String> {
         this(new HashMap<>(valueAssignment.variableValuePairs));
     }
 
+    @Override
     public ValueAssignment toAssignment() {
         return new ValueAssignment(variableValuePairs);
     }
 
+    @Override
     public ValueClause toClause() {
         return new ValueClause(variableValuePairs);
     }
 
+    @Override
     public ValueSolution toSolution() {
         return new ValueSolution(variableValuePairs);
+    }
+
+    @Override
+    public Result<? extends BooleanAssignment> toBoolean(VariableMap variableMap) {
+        return variableMap.toBoolean(this);
+    }
+
+    @Override
+    public Computation<? extends BooleanAssignment> toBoolean(Computation<VariableMap> variableMapComputation) {
+        return variableMapComputation.mapResult(variableMap -> toBoolean(variableMap).get());
     }
 
     @Override
@@ -71,10 +85,6 @@ public class ValueAssignment implements Assignment<String> {
         } catch (IOException e) {
             return e.toString();
         }
-    }
-
-    public Result<? extends BooleanAssignment> toBoolean(VariableMap variableMap) {
-        return variableMap.toBoolean(this);
     }
 
     @Override

@@ -1,13 +1,15 @@
 package de.featjar.formula.analysis.bool;
 
+import de.featjar.base.data.Computation;
 import de.featjar.base.data.Result;
-import de.featjar.base.log.IndentFormatter;
+import de.featjar.formula.analysis.mapping.VariableMap;
 import de.featjar.formula.analysis.value.ValueAssignment;
 import de.featjar.formula.analysis.value.ValueClauseList;
 import de.featjar.formula.transformer.ToCNF;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A list of Boolean clauses.
@@ -43,8 +45,24 @@ public class BooleanClauseList extends BooleanAssignmentList<BooleanClauseList, 
         return new BooleanClauseList(clauses);
     }
 
-    public Result<ValueClauseList> toValue() {
+    @Override
+    public BooleanClauseList toClauseList() {
+        return new BooleanClauseList(assignments);
+    }
+
+    @Override
+    public BooleanSolutionList toSolutionList() {
+        return new BooleanSolutionList(assignments.stream().map(BooleanClause::toSolution).collect(Collectors.toList()));
+    }
+
+    @Override
+    public Result<ValueClauseList> toValue(VariableMap variableMap) {
         return variableMap.toValue(this);
+    }
+
+    @Override
+    public Computation<ValueClauseList> toValue(Computation<VariableMap> variableMapComputation) {
+        return variableMapComputation.mapResult(variableMap -> toValue(variableMap).get());
     }
 
     public String print() {

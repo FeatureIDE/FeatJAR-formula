@@ -5,7 +5,6 @@ import de.featjar.formula.analysis.bool.BooleanAssignment;
 import de.featjar.formula.analysis.value.ValueAssignment;
 
 import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -58,31 +57,18 @@ public interface Assignment<T> {
         return Optional.ofNullable(getAll().get(variable));
     }
 
-    //TODO: should assignments be mutable?
-//    /**
-//     * Assigns a given value to the given variable.
-//     *
-//     * @param variable the variable
-//     * @param value the value
-//     */
-//    default void set(T variable, Object value) {
-//        getAll().put(variable, value);
-//    }
-//
-//    /**
-//     * Removes the variable-value pair for the given variable in this assignment.
-//     *
-//     * @param variable the variable
-//     * @return the removed variable's assigned value, if any
-//     */
-//    default Optional<Object> remove(T variable) {
-//        return Optional.ofNullable(getAll().remove(variable));
-//    }
-//
-//    /**
-//     * Removes all variable-value pairs in this assignment.
-//     */
-//    default void clear() {
-//        getAll().clear();
-//    }
+    /**
+     * {@return an assignment with the same contents of this assignment}
+     */
+    Assignment<T> toAssignment();
+
+    /**
+     * {@return a clause with the same contents of this assignment}
+     */
+    Clause<T> toClause();
+
+    /**
+     * {@return a solution with the same contents of this assignment}
+     */
+    Solution<T> toSolution();
 }

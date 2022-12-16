@@ -20,13 +20,15 @@
  */
 package de.featjar.formula.analysis.value;
 
+import de.featjar.base.data.Computation;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.bool.BooleanClauseList;
 import de.featjar.formula.analysis.bool.BooleanSolutionList;
-import de.featjar.formula.analysis.bool.VariableMap;
+import de.featjar.formula.analysis.mapping.VariableMap;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A list of value solutions.
@@ -45,12 +47,12 @@ public class ValueSolutionList extends ValueAssignmentList<ValueSolutionList, Va
         super(size);
     }
 
-    public ValueSolutionList(Collection<? extends ValueSolution> solutions) {
-        super(solutions);
-    }
-
     public ValueSolutionList(ValueSolutionList other) {
         super(other);
+    }
+
+    public ValueSolutionList(Collection<? extends ValueSolution> solutions) {
+        super(solutions);
     }
 
     @Override
@@ -58,13 +60,29 @@ public class ValueSolutionList extends ValueAssignmentList<ValueSolutionList, Va
         return new ValueSolutionList(LiteralSolutions);
     }
 
+    @Override
+    public String toString() {
+        return String.format("ValueSolutionList[%s]", print());
+    }
+
+    @Override
+    public ValueClauseList toClauseList() {
+        return new ValueClauseList(literalLists.stream().map(ValueSolution::toClause).collect(Collectors.toList()));
+    }
+
+    @Override
+    public ValueSolutionList toSolutionList() {
+        return new ValueSolutionList(literalLists);
+    }
+
+    @Override
     public Result<BooleanSolutionList> toBoolean(VariableMap variableMap) {
         return variableMap.toBoolean(this);
     }
 
     @Override
-    public String toString() {
-        return String.format("ValueSolutionList[%s]", print());
+    public Computation<BooleanSolutionList> toBoolean(Computation<VariableMap> variableMapComputation) {
+        return variableMapComputation.mapResult(variableMap -> toBoolean(variableMap).get());
     }
 
 //    public SortedIntegerList getVariableAssignment(int variable) {

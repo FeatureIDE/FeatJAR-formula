@@ -20,8 +20,6 @@
  */
 package de.featjar.formula.analysis.bool;
 
-import de.featjar.base.data.Result;
-import de.featjar.base.log.IndentFormatter;
 import de.featjar.formula.analysis.AssignmentList;
 
 import java.util.*;
@@ -34,9 +32,8 @@ import java.util.*;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public abstract class BooleanAssignmentList<T extends BooleanAssignmentList<?, U>, U extends BooleanAssignment> implements AssignmentList<U> {
+public abstract class BooleanAssignmentList<T extends BooleanAssignmentList<?, U>, U extends BooleanAssignment> implements AssignmentList<U>, BooleanRepresentation {
     protected final List<U> assignments;
-    protected VariableMap variableMap; // todo: not null!
 
     public BooleanAssignmentList() {
         assignments = new ArrayList<>();
@@ -52,7 +49,6 @@ public abstract class BooleanAssignmentList<T extends BooleanAssignmentList<?, U
 
     public BooleanAssignmentList(BooleanAssignmentList<T, U> other) {
         assignments = new ArrayList<>(other.getAll());
-        variableMap = other.variableMap != null ? other.variableMap.clone() : null;
     }
 
     protected abstract T newAssignmentList(List<U> assignments);
@@ -89,34 +85,6 @@ public abstract class BooleanAssignmentList<T extends BooleanAssignmentList<?, U
         final T negatedAssignmentList = newAssignmentList(new ArrayList<>());
         stream().map(U::negate).forEach(literalList -> negatedAssignmentList.add((U) literalList));
         return negatedAssignmentList;
-    }
-
-    public VariableMap getVariableMap() {
-        return variableMap;
-    }
-
-    public void setVariableMap(VariableMap variableMap) {
-        this.variableMap = variableMap;
-    }
-
-    @SuppressWarnings("unchecked")
-    protected Result<T> adapt(VariableMap oldVariableMap, VariableMap newVariableMap) {
-        final T adaptedAssignmentList = newAssignmentList(new ArrayList<>());
-        for (final BooleanAssignment booleanAssignment : assignments) {
-            final Result<BooleanAssignment> adapted = booleanAssignment.adapt(oldVariableMap, newVariableMap);
-            if (adapted.isEmpty()) {
-                return Result.empty(adapted.getProblems());
-            }
-            adaptedAssignmentList.add((U) adapted.get());
-        }
-        return Result.of(adaptedAssignmentList);
-    }
-
-    public Result<T> adapt(VariableMap variableMap) {
-        return adapt(this.variableMap, variableMap).map(clauseList -> {
-            clauseList.setVariableMap(variableMap);
-            return clauseList;
-        });
     }
 
     /**

@@ -1,11 +1,12 @@
 package de.featjar.formula.analysis.bool;
 
+import de.featjar.base.data.Computation;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.Solver;
 import de.featjar.formula.analysis.Solution;
+import de.featjar.formula.analysis.mapping.VariableMap;
 import de.featjar.formula.analysis.value.ValueClause;
 import de.featjar.formula.analysis.value.ValueSolution;
-import de.featjar.formula.analysis.value.ValueSolutionList;
 
 import java.util.*;
 
@@ -112,6 +113,12 @@ public class BooleanSolution extends BooleanAssignment implements Solution<Integ
     @Override
     public Result<ValueSolution> toValue(VariableMap variableMap) {
         return variableMap.toValue(this);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Computation<ValueSolution> toValue(Computation<VariableMap> variableMapComputation) {
+        return (Computation<ValueSolution>) super.toValue(variableMapComputation);
     }
 
     @Override

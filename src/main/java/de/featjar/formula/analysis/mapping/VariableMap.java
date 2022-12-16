@@ -1,9 +1,10 @@
-package de.featjar.formula.analysis.bool;
+package de.featjar.formula.analysis.mapping;
 
 import de.featjar.base.data.Pair;
 import de.featjar.base.data.Problem;
 import de.featjar.base.data.RangeMap;
 import de.featjar.base.data.Result;
+import de.featjar.formula.analysis.bool.*;
 import de.featjar.formula.analysis.value.*;
 import de.featjar.formula.structure.Expression;
 
@@ -27,6 +28,10 @@ public class VariableMap extends RangeMap<String> {
         super(expression.getVariableNames());
     }
 
+    protected VariableMap(ValueRepresentation valueRepresentation) {
+        super(valueRepresentation.getVariableNames());
+    }
+
     public VariableMap(VariableMap variableMap) {
         super(variableMap.getObjects());
     }
@@ -38,7 +43,11 @@ public class VariableMap extends RangeMap<String> {
      * @param expression the expression
      */
     public static VariableMap of(Expression expression) {
-       return new VariableMap(expression);
+        return new VariableMap(expression);
+    }
+
+    public static VariableMap of(ValueRepresentation valueRepresentation) {
+        return new VariableMap(valueRepresentation);
     }
 
     public static VariableMap empty() {
@@ -108,7 +117,6 @@ public class VariableMap extends RangeMap<String> {
             ValueAssignmentList<?, ?> valueAssignmentList,
             Supplier<T> listConstructor, Function<List<Integer>, U> constructor) {
         T booleanAssignmentList = listConstructor.get();
-        booleanAssignmentList.setVariableMap(this);
         List<Problem> problems = new ArrayList<>();
         for (ValueAssignment valueAssignment : valueAssignmentList.getAll()) {
             Result<U> booleanAssignment = toBoolean(valueAssignment, constructor);
@@ -219,4 +227,26 @@ public class VariableMap extends RangeMap<String> {
     public static Result<ValueSolutionList> toAnonymousValue(BooleanSolutionList booleanSolutionList) {
         return toAnonymousValue(booleanSolutionList, ValueSolutionList::new, ValueSolution::new);
     }
+
+    /*
+    @SuppressWarnings("unchecked")
+    protected Result<T> adapt(VariableMap oldVariableMap, VariableMap newVariableMap) {
+        final T adaptedAssignmentList = newAssignmentList(new ArrayList<>());
+        for (final BooleanAssignment booleanAssignment : assignments) {
+            final Result<BooleanAssignment> adapted = booleanAssignment.adapt(oldVariableMap, newVariableMap);
+            if (adapted.isEmpty()) {
+                return Result.empty(adapted.getProblems());
+            }
+            adaptedAssignmentList.add((U) adapted.get());
+        }
+        return Result.of(adaptedAssignmentList);
+    }
+
+    public Result<T> adapt(VariableMap variableMap) {
+        return adapt(this.variableMap, variableMap).map(clauseList -> {
+            clauseList.setVariableMap(variableMap);
+            return clauseList;
+        });
+    }
+     */
 }

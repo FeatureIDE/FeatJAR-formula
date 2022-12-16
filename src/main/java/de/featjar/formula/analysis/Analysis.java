@@ -21,9 +21,14 @@
 package de.featjar.formula.analysis;
 
 import de.featjar.base.data.Computation;
+import de.featjar.base.data.FutureResult;
+import de.featjar.base.data.Pair;
+import de.featjar.base.data.Result;
 
 import java.util.Optional;
 import java.util.Random;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * Base class for an analysis performed by a {@link Solver solver}.
@@ -148,5 +153,75 @@ public interface Analysis<T, U> extends Computation<U> {
             setRandom(new Random(seed != null ? seed : DEFAULT_RANDOM_SEED));
             return this;
         }
+    }
+
+    interface Unfold<T, U, V> extends Analysis<T, Pair<U, V>> {
+        @Override
+        FutureResult<Pair<U, V>> compute();
+
+        default Analysis<T, U> getFirst() {
+            return new Analysis<>() {
+
+
+                @Override
+                public Computation<T> getInput() {
+                    return Unfold.this.getInput();
+                }
+
+                @Override
+                public Analysis<T, U> setInput(Computation<T> inputComputation) {
+                    this.inputComputation = inputComputation;
+                    return this;
+                }
+
+                @Override
+                public FutureResult<U> compute() {
+                    return null;
+                }
+            }
+        }
+
+        default Analysis<T, V> getSecond() {
+
+        }
+    }
+
+    interface Fold<T, U, V> extends Analysis<Pair<T, U>, V> {
+
+    }
+
+    class Lift<T, U, V> implements Analysis<Pair<T, U>, Pair<T, V>> {
+        protected final BiFunction<T, U, Analysis<U, V>> analysisFunction;
+        protected Computation<Pair<T, U>> inputComputation;
+
+        public Lift(BiFunction<T, U, Analysis<U, V>> analysisFunction, Computation<Pair<T, U>> inputComputation) {
+            this.analysisFunction = analysisFunction;
+            this.inputComputation = inputComputation;
+        }
+
+        @Override
+        public Computation<Pair<T, U>> getInput() {
+            return inputComputation;
+        }
+
+        @Override
+        public Analysis<Pair<T, U>, Pair<T, V>> setInput(Computation<Pair<T, U>> inputComputation) {
+            this.inputComputation = inputComputation;
+            return this;
+        }
+
+        @Override
+        public FutureResult<Pair<T, V>> compute() {
+            return inputComputation.get().thenComputeResult(((pair, monitor) -> {
+                T t = pair.getKey();
+                U u = pair.getValue();
+                Result<V> vResult = analysisFunction.apply(t, u).compute().get();
+                return vResult.map(v -> new Pair<>(t, v));
+            }));
+        }
+    }
+
+    static <T, U, V> Function<Computation<Pair<T, U>>, Lift<T, U, V>> lift(BiFunction<T, Computation<U>, Analysis<U, V>> analysisFunction) {
+        return inputComputation -> new Lift<>(analysisFunction, inputComputation);
     }
 }

@@ -18,24 +18,24 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.analysis.io;
+package de.featjar.formula.io.value;
 
-import de.featjar.formula.analysis.value.ValueSolution;
-import de.featjar.formula.analysis.value.ValueSolutionList;
+import de.featjar.formula.analysis.value.ValueClause;
+import de.featjar.formula.analysis.value.ValueClauseList;
 
 /**
  * TODO
  *
  * @author Elias Kuiter
  */
-public class ValueSolutionListFormat extends ValueAssignmentListFormat<ValueSolutionList, ValueSolution> {
+public class ValueClauseListFormat extends ValueAssignmentListFormat<ValueClauseList, ValueClause> {
 
-    public ValueSolutionListFormat() {
-        super(ValueSolutionList::new, ValueSolution::new);
+    public ValueClauseListFormat() {
+        super(ValueClauseList::new, ValueClause::new);
     }
 
     @Override
     public String getName() {
-        return "ValueSolutionList";
+        return "ValueClauseList";
     }
 }

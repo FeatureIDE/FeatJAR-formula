@@ -1,8 +1,10 @@
 package de.featjar.formula.analysis.bool;
 
+import de.featjar.base.data.Computation;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.Solver;
 import de.featjar.formula.analysis.Clause;
+import de.featjar.formula.analysis.mapping.VariableMap;
 import de.featjar.formula.analysis.value.ValueAssignment;
 import de.featjar.formula.analysis.value.ValueClause;
 
@@ -105,6 +107,12 @@ public class BooleanClause extends BooleanAssignment implements Clause<Integer> 
     @Override
     public Result<ValueClause> toValue(VariableMap variableMap) {
         return variableMap.toValue(this);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Computation<ValueClause> toValue(Computation<VariableMap> variableMapComputation) {
+        return (Computation<ValueClause>) super.toValue(variableMapComputation);
     }
 
     @Override

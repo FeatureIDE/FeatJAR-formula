@@ -20,13 +20,16 @@
  */
 package de.featjar.formula.analysis.bool;
 
+import de.featjar.base.data.Computation;
 import de.featjar.base.data.Result;
-import de.featjar.base.log.IndentFormatter;
+import de.featjar.formula.analysis.mapping.VariableMap;
 import de.featjar.formula.analysis.value.ValueClauseList;
+import de.featjar.formula.analysis.value.ValueSolution;
 import de.featjar.formula.analysis.value.ValueSolutionList;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A list of Boolean solutions.
@@ -59,8 +62,24 @@ public class BooleanSolutionList extends BooleanAssignmentList<BooleanSolutionLi
         return new BooleanSolutionList(solutions);
     }
 
-    public Result<ValueSolutionList> toValue() {
+    @Override
+    public BooleanClauseList toClauseList() {
+        return new BooleanClauseList(assignments.stream().map(BooleanSolution::toClause).collect(Collectors.toList()));
+    }
+
+    @Override
+    public BooleanSolutionList toSolutionList() {
+        return new BooleanSolutionList(assignments);
+    }
+
+    @Override
+    public Result<ValueSolutionList> toValue(VariableMap variableMap) {
         return variableMap.toValue(this);
+    }
+
+    @Override
+    public Computation<ValueSolutionList> toValue(Computation<VariableMap> variableMapComputation) {
+        return variableMapComputation.mapResult(variableMap -> toValue(variableMap).get());
     }
 
     public String print() {

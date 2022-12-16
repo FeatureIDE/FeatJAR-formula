@@ -18,7 +18,7 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.analysis.io;
+package de.featjar.formula.io;
 
 import de.featjar.formula.analysis.bool.BooleanAssignmentList;
 import de.featjar.base.io.format.Format;
