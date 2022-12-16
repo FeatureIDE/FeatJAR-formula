@@ -87,6 +87,14 @@ public abstract class BooleanAssignmentList<T extends BooleanAssignmentList<?, U
         return negatedAssignmentList;
     }
 
+    //assumes that the maximum index corresponds to the number of variables
+    public int getVariableCount() {
+        return assignments.stream()
+                .flatMapToInt(assignment -> Arrays.stream(assignment.getIntegers()))
+                .max()
+                .orElse(0);
+    }
+
     /**
      * Compares list of clauses by the number of literals.
      */

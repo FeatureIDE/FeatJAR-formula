@@ -1,4 +1,4 @@
-package de.featjar.formula.analysis.mapping;
+package de.featjar.formula.analysis;
 
 import de.featjar.base.data.Pair;
 import de.featjar.base.data.Problem;

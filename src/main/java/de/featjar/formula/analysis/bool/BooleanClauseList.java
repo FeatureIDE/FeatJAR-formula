@@ -2,8 +2,7 @@ package de.featjar.formula.analysis.bool;
 
 import de.featjar.base.data.Computation;
 import de.featjar.base.data.Result;
-import de.featjar.formula.analysis.mapping.VariableMap;
-import de.featjar.formula.analysis.value.ValueAssignment;
+import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.value.ValueClauseList;
 import de.featjar.formula.transformer.ToCNF;
 

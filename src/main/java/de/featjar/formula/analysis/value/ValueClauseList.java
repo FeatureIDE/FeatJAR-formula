@@ -3,7 +3,7 @@ package de.featjar.formula.analysis.value;
 import de.featjar.base.data.Computation;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.bool.BooleanClauseList;
-import de.featjar.formula.analysis.mapping.VariableMap;
+import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.transformer.ToCNF;
 
 import java.util.Collection;

@@ -4,9 +4,8 @@ import de.featjar.base.data.Computation;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.Solution;
 import de.featjar.formula.analysis.Solver;
-import de.featjar.formula.analysis.bool.BooleanClause;
 import de.featjar.formula.analysis.bool.BooleanSolution;
-import de.featjar.formula.analysis.mapping.VariableMap;
+import de.featjar.formula.analysis.VariableMap;
 
 import java.util.LinkedHashMap;
 

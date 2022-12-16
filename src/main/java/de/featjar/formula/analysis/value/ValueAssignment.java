@@ -5,13 +5,13 @@ import de.featjar.base.data.Result;
 import de.featjar.base.io.IO;
 import de.featjar.formula.analysis.Assignment;
 import de.featjar.formula.analysis.bool.BooleanAssignment;
-import de.featjar.formula.analysis.bool.BooleanRepresentation;
-import de.featjar.formula.analysis.mapping.VariableMap;
+import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.io.value.ValueAssignmentFormat;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Set;
 
 /**
  * Assigns values of any type to string-identified {@link de.featjar.formula.structure.term.value.Variable variables}.
@@ -66,6 +66,11 @@ public class ValueAssignment implements Assignment<String>, ValueRepresentation 
     @Override
     public Computation<? extends BooleanAssignment> toBoolean(Computation<VariableMap> variableMapComputation) {
         return variableMapComputation.mapResult(variableMap -> toBoolean(variableMap).get());
+    }
+
+    @Override
+    public Set<String> getVariableNames() {
+        return variableValuePairs.keySet();
     }
 
     @Override

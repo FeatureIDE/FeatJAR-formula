@@ -26,6 +26,7 @@ import de.featjar.formula.io.value.ValueAssignmentListFormat;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * A list of value assignments.
@@ -64,6 +65,13 @@ public abstract class ValueAssignmentList<T extends ValueAssignmentList<?, U>, U
     @Override
     public List<U> getAll() {
         return literalLists;
+    }
+
+    @Override
+    public Set<String> getVariableNames() {
+        return literalLists.stream().map(ValueAssignment::getVariableNames)
+                .flatMap(Set::stream)
+                .collect(Collectors.toSet());
     }
 
     @Override

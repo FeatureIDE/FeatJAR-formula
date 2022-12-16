@@ -4,8 +4,7 @@ import de.featjar.base.data.Computation;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.Solver;
 import de.featjar.formula.analysis.Solution;
-import de.featjar.formula.analysis.mapping.VariableMap;
-import de.featjar.formula.analysis.value.ValueClause;
+import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.value.ValueSolution;
 
 import java.util.*;
