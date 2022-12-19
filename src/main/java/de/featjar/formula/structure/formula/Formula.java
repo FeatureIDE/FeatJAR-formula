@@ -12,7 +12,6 @@ import de.featjar.formula.structure.term.value.Variable;
 import de.featjar.formula.visitor.NormalForms;
 
 import java.util.LinkedHashSet;
-import java.util.Set;
 
 /**
  * A well-formed formula.

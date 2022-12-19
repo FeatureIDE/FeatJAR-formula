@@ -35,7 +35,7 @@ import de.featjar.formula.visitor.NormalForms;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -103,7 +103,7 @@ public class ComputeCNFFormula implements Computation<Formula> {
         final List<Formula> transformedClauses = new ArrayList<>(distributiveClauses);
 
         if (!tseitinClauses.isEmpty()) {
-            final HashMap<ComputeTseitinCNFFormula.Substitute, ComputeTseitinCNFFormula.Substitute> combinedTseitinClauses = new HashMap<>();
+            final LinkedHashMap<ComputeTseitinCNFFormula.Substitute, ComputeTseitinCNFFormula.Substitute> combinedTseitinClauses = new LinkedHashMap<>();
             for (final ComputeTseitinCNFFormula.Substitute tseitinClause : tseitinClauses) {
                 ComputeTseitinCNFFormula.Substitute substitute = combinedTseitinClauses.get(tseitinClause);
                 if (substitute == null) {

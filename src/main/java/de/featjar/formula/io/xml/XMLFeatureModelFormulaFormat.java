@@ -39,7 +39,7 @@ import org.w3c.dom.Element;
  * @author Elias Kuiter
  */
 public class XMLFeatureModelFormulaFormat extends AbstractXMLFeatureModelFormat<Expression, Literal, Boolean> {
-    protected final Set<String> featureLabels = new HashSet<>();
+    protected final LinkedHashSet<String> featureLabels = new LinkedHashSet<>();
     protected final List<Formula> constraints = new ArrayList<>();
 
     @Override

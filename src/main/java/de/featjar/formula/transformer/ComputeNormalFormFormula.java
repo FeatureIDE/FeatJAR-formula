@@ -145,7 +145,7 @@ public class ComputeNormalFormFormula implements Computation<Formula> {
             return null;
         } else {
             numberOfLiterals = 0;
-            final ArrayList<Set<Literal>> newClauseList = new ArrayList<>();
+            final ArrayList<LinkedHashSet<Literal>> newClauseList = new ArrayList<>();
             children = new ArrayList<>(child.getChildren());
             children.sort(Comparator.comparingInt(c -> c.getChildren().size()));
             convertNF(newClauseList, new LinkedHashSet<>(children.size() << 1), 0);
@@ -154,10 +154,10 @@ public class ComputeNormalFormFormula implements Computation<Formula> {
             newClauseList.sort(Comparator.comparingInt(Set::size));
             final int lastIndex = newClauseList.size();
             for (int i = 0; i < lastIndex; i++) {
-                final Set<Literal> set = newClauseList.get(i);
+                final LinkedHashSet<Literal> set = newClauseList.get(i);
                 if (set != null) {
                     for (int j = i + 1; j < lastIndex; j++) {
-                        final Set<Literal> set2 = newClauseList.get(j);
+                        final LinkedHashSet<Literal> set2 = newClauseList.get(j);
                         if (set2 != null) {
                             if (set2.containsAll(set)) {
                                 newClauseList.set(j, null);
@@ -171,10 +171,10 @@ public class ComputeNormalFormFormula implements Computation<Formula> {
         }
     }
 
-    private void convertNF(List<Set<Literal>> clauses, LinkedHashSet<Literal> literals, int index)
+    private void convertNF(List<LinkedHashSet<Literal>> clauses, LinkedHashSet<Literal> literals, int index)
             throws MaximumNumberOfLiteralsExceededException {
         if (index == children.size()) {
-            final HashSet<Literal> newClause = new HashSet<>(literals);
+            final LinkedHashSet<Literal> newClause = new LinkedHashSet<>(literals);
             numberOfLiterals += newClause.size();
             if (numberOfLiterals > maximumNumberOfLiterals) {
                 throw new MaximumNumberOfLiteralsExceededException();

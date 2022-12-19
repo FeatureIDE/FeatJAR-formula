@@ -20,6 +20,7 @@
  */
 package de.featjar.formula.analysis.value;
 
+import de.featjar.base.data.Sets;
 import de.featjar.base.io.IO;
 import de.featjar.formula.analysis.AssignmentList;
 import de.featjar.formula.io.value.ValueAssignmentListFormat;
@@ -70,7 +71,7 @@ public abstract class ValueAssignmentList<T extends ValueAssignmentList<?, U>, U
     @Override
     public LinkedHashSet<String> getVariableNames() {
         return literalLists.stream().map(ValueAssignment::getVariableNames)
-                .flatMap(Set::stream).collect(Collectors.toCollection(LinkedHashSet::new));
+                .flatMap(LinkedHashSet::stream).collect(Sets.toSet());
     }
 
     @Override

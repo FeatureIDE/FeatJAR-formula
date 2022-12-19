@@ -9,10 +9,8 @@ import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.io.value.ValueAssignmentFormat;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.Set;
 
 /**
  * Assigns values of any type to string-identified {@link de.featjar.formula.structure.term.value.Variable variables}.
@@ -41,7 +39,7 @@ public class ValueAssignment implements Assignment<String>, ValueRepresentation 
     }
 
     public ValueAssignment(ValueAssignment valueAssignment) {
-        this(new HashMap<>(valueAssignment.variableValuePairs));
+        this(new LinkedHashMap<>(valueAssignment.variableValuePairs));
     }
 
     @Override

@@ -42,7 +42,7 @@ public class DIMACSParser {
             "\\A\\s*" + DIMACSConstants.PROBLEM + "\\s+" + DIMACSConstants.CNF + "\\s+(\\d+)\\s+(\\d+)");
 
     /** Maps indexes to variables. */
-    private final Map<Integer, String> indexVariables = new LinkedHashMap<>();
+    private final LinkedHashMap<Integer, String> indexVariables = new LinkedHashMap<>();
 
     /**
      * The amount of variables as declared in the problem definition. May differ

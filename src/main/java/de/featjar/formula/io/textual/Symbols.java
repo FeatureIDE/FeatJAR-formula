@@ -20,23 +20,12 @@
  */
 package de.featjar.formula.io.textual;
 
-import de.featjar.formula.structure.Expression;
-import de.featjar.formula.structure.formula.connective.And;
-import de.featjar.formula.structure.formula.connective.AtLeast;
-import de.featjar.formula.structure.formula.connective.AtMost;
-import de.featjar.formula.structure.formula.connective.Between;
-import de.featjar.formula.structure.formula.connective.BiImplies;
-import de.featjar.formula.structure.formula.connective.Choose;
-import de.featjar.formula.structure.formula.connective.Connective;
-import de.featjar.formula.structure.formula.connective.Exists;
-import de.featjar.formula.structure.formula.connective.ForAll;
-import de.featjar.formula.structure.formula.connective.Implies;
-import de.featjar.formula.structure.formula.connective.Not;
-import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.base.data.Pair;
+import de.featjar.formula.structure.Expression;
+import de.featjar.formula.structure.formula.connective.*;
+
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedHashMap;
 
 public class Symbols {
 
@@ -67,8 +56,8 @@ public class Symbols {
         }
     }
 
-    private final Map<String, Operator> symbolToOperator = new HashMap<>();
-    private final Map<Operator, String> operatorToSymbol = new HashMap<>();
+    private final LinkedHashMap<String, Operator> symbolToOperator = new LinkedHashMap<>();
+    private final LinkedHashMap<Operator, String> operatorToSymbol = new LinkedHashMap<>();
 
     private final boolean textual;
 

@@ -6,7 +6,6 @@ import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.bool.BooleanRepresentation;
 
 import java.util.LinkedHashSet;
-import java.util.Set;
 
 public interface ValueRepresentation {
     /**
