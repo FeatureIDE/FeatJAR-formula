@@ -11,6 +11,7 @@ import de.featjar.formula.structure.formula.predicate.Predicate;
 import de.featjar.formula.structure.term.value.Variable;
 import de.featjar.formula.visitor.NormalForms;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -114,7 +115,7 @@ public interface Formula extends Expression, ValueRepresentation {
     }
 
     @Override
-    default Set<String> getVariableNames() {
+    default LinkedHashSet<String> getVariableNames() {
         return Expression.super.getVariableNames();
     }
 

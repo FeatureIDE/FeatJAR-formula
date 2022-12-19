@@ -36,6 +36,7 @@ import de.featjar.formula.visitor.Evaluator;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -122,14 +123,13 @@ public interface Expression extends Traversable<Expression> {
 
     /**
      * {@return a list of all variable names in this expression}
-     * TODO: this implementation does not preserve the preorder!
      */
-    default Set<String> getVariableNames() {
-        return Trees.preOrderStream(this)
+    default LinkedHashSet<String> getVariableNames() {
+        return new LinkedHashSet<>(Trees.preOrderStream(this)
                 .filter(e -> e instanceof Variable)
                 .map(e -> (Variable) e)
                 .collect(Collectors.groupingBy(Variable::getName))
-                .keySet();
+                .keySet());
     }
 
     /**

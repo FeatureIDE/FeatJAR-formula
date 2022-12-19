@@ -5,6 +5,7 @@ import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.bool.BooleanRepresentation;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 public interface ValueRepresentation {
@@ -19,5 +20,5 @@ public interface ValueRepresentation {
 
     Computation<? extends BooleanRepresentation> toBoolean(Computation<VariableMap> variableMap); // todo: lift instead using Computations.async?
 
-    Set<String> getVariableNames(); // todo: preserve order?
+    LinkedHashSet<String> getVariableNames();
 }

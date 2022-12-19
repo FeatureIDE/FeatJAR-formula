@@ -68,10 +68,9 @@ public abstract class ValueAssignmentList<T extends ValueAssignmentList<?, U>, U
     }
 
     @Override
-    public Set<String> getVariableNames() {
+    public LinkedHashSet<String> getVariableNames() {
         return literalLists.stream().map(ValueAssignment::getVariableNames)
-                .flatMap(Set::stream)
-                .collect(Collectors.toSet());
+                .flatMap(Set::stream).collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     @Override

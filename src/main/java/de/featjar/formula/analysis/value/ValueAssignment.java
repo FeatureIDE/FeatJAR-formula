@@ -11,6 +11,7 @@ import de.featjar.formula.io.value.ValueAssignmentFormat;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -69,8 +70,8 @@ public class ValueAssignment implements Assignment<String>, ValueRepresentation 
     }
 
     @Override
-    public Set<String> getVariableNames() {
-        return variableValuePairs.keySet();
+    public LinkedHashSet<String> getVariableNames() {
+        return new LinkedHashSet<>(variableValuePairs.keySet());
     }
 
     @Override
