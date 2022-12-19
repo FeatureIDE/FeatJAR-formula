@@ -15,5 +15,5 @@ public interface BooleanRepresentation {
      */
     Result<? extends ValueRepresentation> toValue(VariableMap variableMap);
 
-    Computation<? extends ValueRepresentation> toValue(Computation<VariableMap> variableMapComputation);
+    Computation<? extends ValueRepresentation> toValue(Computation<VariableMap> variableMap);
 }

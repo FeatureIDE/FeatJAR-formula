@@ -32,16 +32,16 @@ import de.featjar.formula.visitor.*;
  *
  * @author Elias Kuiter
  */
-public class ToNNF implements Computation<Formula> {
-    protected final Computation<Formula> formulaComputation;
+public class ComputeNNFFormula implements Computation<Formula> {
+    protected final Computation<Formula> formula;
 
-    public ToNNF(Computation<Formula> formulaComputation) {
-        this.formulaComputation = formulaComputation;
+    public ComputeNNFFormula(Computation<Formula> formula) {
+        this.formula = formula;
     }
 
     @Override
     public FutureResult<Formula> compute() {
-        return formulaComputation.get().thenComputeResult((formula, monitor) -> {
+        return formula.get().thenComputeResult((formula, monitor) -> {
             // TODO: if already in NNF, should do nothing (this requires the NNF tester to be revised, as it allows complex connectives right now)
             return Reference.mutateClone(formula,
                     reference -> Trees.traverse(reference, new ConnectiveSimplifier())

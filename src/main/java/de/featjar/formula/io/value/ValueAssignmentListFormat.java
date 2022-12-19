@@ -43,6 +43,7 @@ import java.util.stream.Collectors;
 public class ValueAssignmentListFormat<T extends ValueAssignmentList<?, U>, U extends ValueAssignment> implements Format<T> {
     protected final Supplier<T> listConstructor;
     protected final ValueAssignmentFormat valueAssignmentFormat;
+    //todo: serialize as CSV, parse as CSV
 
     public ValueAssignmentListFormat() {
         this(null, null);

@@ -17,7 +17,7 @@ public interface ValueRepresentation {
      */
     Result<? extends BooleanRepresentation> toBoolean(VariableMap variableMap);
 
-    Computation<? extends BooleanRepresentation> toBoolean(Computation<VariableMap> variableMapComputation);
+    Computation<? extends BooleanRepresentation> toBoolean(Computation<VariableMap> variableMap); // todo: lift instead using Computations.async?
 
-    Set<String> getVariableNames();
+    Set<String> getVariableNames(); // todo: preserve order?
 }

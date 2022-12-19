@@ -40,8 +40,8 @@ public class ValueClause extends ValueAssignment implements Clause<String> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public Computation<BooleanClause> toBoolean(Computation<VariableMap> variableMapComputation) {
-        return (Computation<BooleanClause>) super.toBoolean(variableMapComputation);
+    public Computation<BooleanClause> toBoolean(Computation<VariableMap> variableMap) {
+        return (Computation<BooleanClause>) super.toBoolean(variableMap);
     }
 
     @Override

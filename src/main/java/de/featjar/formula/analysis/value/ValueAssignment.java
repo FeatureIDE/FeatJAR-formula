@@ -64,8 +64,8 @@ public class ValueAssignment implements Assignment<String>, ValueRepresentation 
     }
 
     @Override
-    public Computation<? extends BooleanAssignment> toBoolean(Computation<VariableMap> variableMapComputation) {
-        return variableMapComputation.mapResult(variableMap -> toBoolean(variableMap).get());
+    public Computation<? extends BooleanAssignment> toBoolean(Computation<VariableMap> variableMap) {
+        return variableMap.mapResult(v -> toBoolean(v).get());
     }
 
     @Override

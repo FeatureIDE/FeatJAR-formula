@@ -40,6 +40,8 @@ import java.util.function.Function;
  * @author Elias Kuiter
  */
 public interface Analysis<T, U> extends Computation<U> {
+    // todo: allow reporting of partial results (e.g., for generating samples)
+
     /**
      * {@return the input computation of this analysis}
      * This analysis uses the result of this computation as its primary input (e.g., the formula to analyze).
@@ -49,10 +51,10 @@ public interface Analysis<T, U> extends Computation<U> {
     /**
      * Sets the input computation of this analysis.
      *
-     * @param inputComputation the input computation
+     * @param input the input computation
      * @return itself
      */
-    Analysis<T, U> setInput(Computation<T> inputComputation);
+    Analysis<T, U> setInput(Computation<T> input);
 
     /**
      * An analysis that can be passed a further assignment to assume.
@@ -70,10 +72,10 @@ public interface Analysis<T, U> extends Computation<U> {
         /**
          * Sets the computation for the assignment assumed by this analysis.
          *
-         * @param assignmentComputation the assignment computation
+         * @param assignment the assignment computation
          * @return itself
          */
-        WithAssumedAssignment<T> setAssumedAssignment(Computation<T> assignmentComputation);
+        WithAssumedAssignment<T> setAssumedAssignment(Computation<T> assignment);
     }
 
     /**
@@ -93,16 +95,16 @@ public interface Analysis<T, U> extends Computation<U> {
         /**
          * Sets the computation for the clause list assumed by this analysis.
          *
-         * @param clauseListComputation the clause list computation
+         * @param clauseList the clause list computation
          * @return itself
          */
-        WithAssumedClauseList<T> setAssumedClauseList(Computation<T> clauseListComputation);
+        WithAssumedClauseList<T> setAssumedClauseList(Computation<T> clauseList);
     }
 
     /**
      * A potentially long-running analysis that can be canceled if a given time has passed.
      */
-    interface WithTimeout {
+    interface WithTimeout { // todo: how to handle partial results?
         /**
          * {@return the timeout of this analysis in milliseconds, if any}
          * This analysis terminates with an empty {@link de.featjar.base.data.Result} when it has

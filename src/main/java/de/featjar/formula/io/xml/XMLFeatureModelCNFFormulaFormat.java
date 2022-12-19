@@ -21,6 +21,7 @@
 package de.featjar.formula.io.xml;
 
 import de.featjar.base.data.Computation;
+import de.featjar.base.data.Computations;
 import de.featjar.base.io.format.ParseException;
 import de.featjar.base.tree.Trees;
 import de.featjar.formula.structure.Expression;
@@ -29,8 +30,8 @@ import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Not;
 import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.formula.structure.formula.predicate.Literal;
-import de.featjar.formula.transformer.ToCNF;
-import de.featjar.formula.transformer.ToNNF;
+import de.featjar.formula.transformer.ComputeCNFFormula;
+import de.featjar.formula.transformer.ComputeNNFFormula;
 import de.featjar.formula.visitor.AndOrSimplifier;
 import de.featjar.formula.visitor.ConnectiveSimplifier;
 import de.featjar.formula.visitor.DeMorganApplier;
@@ -41,6 +42,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static de.featjar.base.data.Computations.*;
 
 /**
  * Parses feature model CNF formulas from FeatureIDE XML files. Returns a
@@ -73,7 +76,7 @@ public class XMLFeatureModelCNFFormulaFormat extends XMLFeatureModelFormulaForma
 
     @Override
     protected void addConstraint(Boolean constraintLabel, Formula formula) throws ParseException {
-        Formula transformedExpression = Computation.of(formula).map(ToNNF::new).map(ToCNF::new).getResult()
+        Formula transformedExpression = async(formula).map(ComputeNNFFormula::new).map(ComputeCNFFormula::new).getResult()
                 .orElseThrow(p -> new ParseException("failed to transform " + formula));
         super.addConstraint(constraintLabel, transformedExpression);
     }

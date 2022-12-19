@@ -27,9 +27,11 @@ import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.base.data.Result;
 import de.featjar.base.tree.Trees;
-import de.featjar.formula.transformer.ToCNF;
-import de.featjar.formula.transformer.ToDNF;
-import de.featjar.formula.transformer.ToNNF;
+import de.featjar.formula.transformer.ComputeCNFFormula;
+import de.featjar.formula.transformer.ComputeDNFFormula;
+import de.featjar.formula.transformer.ComputeNNFFormula;
+
+import static de.featjar.base.data.Computations.async;
 
 /**
  * Tests and transforms formulas for and into normal forms.
@@ -57,13 +59,13 @@ public class NormalForms {
     }
 
     public static Result<Formula> toNormalForm(Formula formula, Formula.NormalForm normalForm, boolean isClausal) {
-        Computation<Formula> normalFormFormulaComputation = Computation.of(formula)
+        Computation<Formula> normalFormFormula = async(formula)
                 .map(normalForm == Formula.NormalForm.NNF
-                        ? ToNNF::new
+                        ? ComputeNNFFormula::new
                         : normalForm == Formula.NormalForm.CNF
-                        ? ToCNF::new
-                        : ToDNF::new);
-        Result<Formula> res = normalFormFormulaComputation.getResult();
+                        ? ComputeCNFFormula::new
+                        : ComputeDNFFormula::new);
+        Result<Formula> res = normalFormFormula.getResult();
         return res.map(f -> isClausal ? normalToClausalNormalForm(formula, normalForm) : f);
     }
 

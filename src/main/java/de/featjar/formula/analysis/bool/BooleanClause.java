@@ -110,8 +110,8 @@ public class BooleanClause extends BooleanAssignment implements Clause<Integer> 
 
     @SuppressWarnings("unchecked")
     @Override
-    public Computation<ValueClause> toValue(Computation<VariableMap> variableMapComputation) {
-        return (Computation<ValueClause>) super.toValue(variableMapComputation);
+    public Computation<ValueClause> toValue(Computation<VariableMap> variableMap) {
+        return (Computation<ValueClause>) super.toValue(variableMap);
     }
 
     @Override

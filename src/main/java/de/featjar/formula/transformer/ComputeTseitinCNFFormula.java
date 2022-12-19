@@ -45,8 +45,8 @@ import java.util.Objects;
  * @deprecated does not currently work, still meant for old VariableMap
  */
 @Deprecated
-public class ToCNFTseitin
-        implements MonitorableFunction<Expression, List<ToCNFTseitin.Substitute>>, TreeVisitor<Expression, Expression> {
+public class ComputeTseitinCNFFormula
+        implements MonitorableFunction<Expression, List<ComputeTseitinCNFFormula.Substitute>>, TreeVisitor<Expression, Expression> {
 
     public static class Substitute {
         private final Expression orgExpression;

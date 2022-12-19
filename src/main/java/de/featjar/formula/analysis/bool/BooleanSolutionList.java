@@ -76,8 +76,8 @@ public class BooleanSolutionList extends BooleanAssignmentList<BooleanSolutionLi
     }
 
     @Override
-    public Computation<ValueSolutionList> toValue(Computation<VariableMap> variableMapComputation) {
-        return variableMapComputation.mapResult(variableMap -> toValue(variableMap).get());
+    public Computation<ValueSolutionList> toValue(Computation<VariableMap> variableMap) {
+        return variableMap.mapResult(v -> toValue(v).get());
     }
 
     public String print() {

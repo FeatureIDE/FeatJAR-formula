@@ -24,10 +24,6 @@ public class VariableMap extends RangeMap<String> {
     public VariableMap() {
     }
 
-    protected VariableMap(Expression expression) {
-        super(expression.getVariableNames());
-    }
-
     protected VariableMap(ValueRepresentation valueRepresentation) {
         super(valueRepresentation.getVariableNames());
     }
@@ -37,15 +33,11 @@ public class VariableMap extends RangeMap<String> {
     }
 
     /**
-     * Creates a variable map from an expression.
+     * Creates a variable map from a value representation (e.g., an expression).
      * Indices are numbered by the occurrence of variables in a preorder traversal.
      *
-     * @param expression the expression
+     * @param valueRepresentation the value representation
      */
-    public static VariableMap of(Expression expression) {
-        return new VariableMap(expression);
-    }
-
     public static VariableMap of(ValueRepresentation valueRepresentation) {
         return new VariableMap(valueRepresentation);
     }

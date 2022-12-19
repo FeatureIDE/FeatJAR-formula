@@ -40,8 +40,8 @@ public class ValueSolution extends ValueAssignment implements Solution<String> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public Computation<BooleanSolution> toBoolean(Computation<VariableMap> variableMapComputation) {
-        return (Computation<BooleanSolution>) super.toBoolean(variableMapComputation);
+    public Computation<BooleanSolution> toBoolean(Computation<VariableMap> variableMap) {
+        return (Computation<BooleanSolution>) super.toBoolean(variableMap);
     }
 
     @Override

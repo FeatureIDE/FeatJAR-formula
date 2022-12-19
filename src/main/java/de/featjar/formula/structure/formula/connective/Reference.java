@@ -24,6 +24,7 @@ import de.featjar.base.data.Result;
 import de.featjar.formula.structure.NonTerminalExpression;
 import de.featjar.formula.structure.UnaryExpression;
 import de.featjar.formula.structure.formula.Formula;
+import de.featjar.formula.transformer.ComputeNNFFormula;
 
 import java.util.List;
 import java.util.function.Function;
@@ -35,7 +36,7 @@ import java.util.function.Function;
  * However, having a {@link Reference} at the top level of a formula helps with mutation:
  * For example, when transforming the formula {@code new Implies(new Literal("a"), new Literal("b"))}
  * into its negation normal form {@code new Or(new Literal(false, "a"), new Literal("b"))} with
- * {@link de.featjar.formula.transformer.ToNNF}, the top-level {@link Implies} needs to be replaced
+ * {@link ComputeNNFFormula}, the top-level {@link Implies} needs to be replaced
  * by a top-level {@link Or}, so the entire formula has to be passed by reference.
  * By wrapping the formula in a {@link Reference}, such a mutation becomes possible;
  * without a {@link Reference}, it must be cloned instead.

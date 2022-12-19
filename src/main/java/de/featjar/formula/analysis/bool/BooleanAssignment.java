@@ -204,8 +204,8 @@ public class BooleanAssignment extends IntegerList<BooleanAssignment> implements
     }
 
     @Override
-    public Computation<? extends ValueAssignment> toValue(Computation<VariableMap> variableMapComputation) {
-        return variableMapComputation.mapResult(variableMap -> toValue(variableMap).get());
+    public Computation<? extends ValueAssignment> toValue(Computation<VariableMap> variableMap) {
+        return variableMap.mapResult(v -> toValue(v).get());
     }
 
     @Override

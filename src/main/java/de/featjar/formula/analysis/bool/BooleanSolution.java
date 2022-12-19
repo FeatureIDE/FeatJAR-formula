@@ -116,8 +116,8 @@ public class BooleanSolution extends BooleanAssignment implements Solution<Integ
 
     @SuppressWarnings("unchecked")
     @Override
-    public Computation<ValueSolution> toValue(Computation<VariableMap> variableMapComputation) {
-        return (Computation<ValueSolution>) super.toValue(variableMapComputation);
+    public Computation<ValueSolution> toValue(Computation<VariableMap> variableMap) {
+        return (Computation<ValueSolution>) super.toValue(variableMap);
     }
 
     @Override

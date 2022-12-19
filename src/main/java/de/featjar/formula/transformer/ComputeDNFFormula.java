@@ -36,12 +36,12 @@ import de.featjar.formula.visitor.NormalForms;
  * @deprecated does not currently work
  */
 @Deprecated
-public class ToDNF implements Computation<Formula> {
-    protected final Computation<Formula> nnfFormulaComputation;
+public class ComputeDNFFormula implements Computation<Formula> {
+    protected final Computation<Formula> nnfFormula;
     protected int maximumNumberOfLiterals;
 
-    public ToDNF(Computation<Formula> nnfFormulaComputation) {
-        this.nnfFormulaComputation = nnfFormulaComputation;
+    public ComputeDNFFormula(Computation<Formula> nnfFormula) {
+        this.nnfFormula = nnfFormula;
     }
 
     public void setMaximumNumberOfLiterals(int maximumNumberOfLiterals) {
@@ -50,7 +50,7 @@ public class ToDNF implements Computation<Formula> {
 
     @Override
     public FutureResult<Formula> compute() {
-        return nnfFormulaComputation.get().thenComputeResult(((formula, monitor) -> {
+        return nnfFormula.get().thenComputeResult(((formula, monitor) -> {
             final NormalFormTester normalFormTester = NormalForms.getNormalFormTester(formula, Formula.NormalForm.DNF);
             if (normalFormTester.isNormalForm()) {
                 if (!normalFormTester.isClausalNormalForm()) {
@@ -60,9 +60,9 @@ public class ToDNF implements Computation<Formula> {
                 }
             } else {
                 formula = (Formula) Trees.clone(formula);
-                ToNormalForm formulaToDistributiveNFFormula =
+                ComputeNormalFormFormula formulaToDistributiveNFFormula =
                         Computation.of((formula instanceof Or) ? formula : new Or(formula), monitor)
-                                .map(c -> new ToNormalForm(c, Formula.NormalForm.DNF));
+                                .map(c -> new ComputeNormalFormFormula(c, Formula.NormalForm.DNF));
                 formulaToDistributiveNFFormula.setMaximumNumberOfLiterals(maximumNumberOfLiterals);
                 return formulaToDistributiveNFFormula.getResult()
                         .map(f -> NormalForms.normalToClausalNormalForm(f, Formula.NormalForm.DNF));

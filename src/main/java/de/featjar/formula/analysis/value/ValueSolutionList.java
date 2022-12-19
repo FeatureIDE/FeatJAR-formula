@@ -80,8 +80,8 @@ public class ValueSolutionList extends ValueAssignmentList<ValueSolutionList, Va
     }
 
     @Override
-    public Computation<BooleanSolutionList> toBoolean(Computation<VariableMap> variableMapComputation) {
-        return variableMapComputation.mapResult(variableMap -> toBoolean(variableMap).get());
+    public Computation<BooleanSolutionList> toBoolean(Computation<VariableMap> variableMap) {
+        return variableMap.mapResult(v -> toBoolean(v).get());
     }
 
 //    public SortedIntegerList getVariableAssignment(int variable) {

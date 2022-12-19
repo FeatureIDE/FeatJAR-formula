@@ -1,10 +1,17 @@
 package de.featjar.formula.structure.formula;
 
+import de.featjar.base.data.Computation;
 import de.featjar.base.data.Result;
+import de.featjar.formula.analysis.VariableMap;
+import de.featjar.formula.analysis.bool.BooleanRepresentation;
+import de.featjar.formula.analysis.bool.ComputeBooleanRepresentation;
+import de.featjar.formula.analysis.value.ValueRepresentation;
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.formula.predicate.Predicate;
 import de.featjar.formula.structure.term.value.Variable;
 import de.featjar.formula.visitor.NormalForms;
+
+import java.util.Set;
 
 /**
  * A well-formed formula.
@@ -17,7 +24,7 @@ import de.featjar.formula.visitor.NormalForms;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public interface Formula extends Expression {
+public interface Formula extends Expression, ValueRepresentation {
     /**
      * Normal form of a formula.
      */
@@ -104,6 +111,22 @@ public interface Formula extends Expression {
      */
     default Result<Formula> toDNF() {
         return toClausalNormalForm(NormalForm.DNF);
+    }
+
+    @Override
+    default Set<String> getVariableNames() {
+        return Expression.super.getVariableNames();
+    }
+
+    @Override
+    default Result<? extends BooleanRepresentation> toBoolean(VariableMap variableMap) {
+        return ComputeBooleanRepresentation.OfFormula.toBooleanClauseList(this, variableMap);
+    }
+
+    @Override
+    default Computation<? extends BooleanRepresentation> toBoolean(Computation<VariableMap> variableMap) {
+        return variableMap.mapResult(v -> toBoolean(v).get());
+
     }
 
     // TODO: mutate/analyze analogous to FeatureModel?

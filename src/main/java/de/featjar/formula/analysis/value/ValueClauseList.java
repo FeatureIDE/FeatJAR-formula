@@ -4,7 +4,7 @@ import de.featjar.base.data.Computation;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.bool.BooleanClauseList;
 import de.featjar.formula.analysis.VariableMap;
-import de.featjar.formula.transformer.ToCNF;
+import de.featjar.formula.transformer.ComputeCNFFormula;
 
 import java.util.Collection;
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  * A list of value clauses.
  * Typically used to express a conjunctive normal form.
  * Compared to a {@link de.featjar.formula.structure.formula.Formula} in CNF (e.g., computed with
- * {@link ToCNF}), a {@link ValueClauseList} is a more low-level representation.
+ * {@link ComputeCNFFormula}), a {@link ValueClauseList} is a more low-level representation.
  *
  * @author Elias Kuiter
  */
@@ -45,8 +45,8 @@ public class ValueClauseList extends ValueAssignmentList<ValueClauseList, ValueC
     }
 
     @Override
-    public Computation<BooleanClauseList> toBoolean(Computation<VariableMap> variableMapComputation) {
-        return variableMapComputation.mapResult(variableMap -> toBoolean(variableMap).get());
+    public Computation<BooleanClauseList> toBoolean(Computation<VariableMap> variableMap) {
+        return variableMap.mapResult(v -> toBoolean(v).get());
     }
 
     @Override

@@ -42,19 +42,20 @@ import java.util.List;
  * Transforms a formula into clausal conjunctive normal form.
  *
  * @author Sebastian Krieter
+ * @author Elias Kuiter
  */
-public class ToCNF implements Computation<Formula> {
-    protected final Computation<Formula> nnfFormulaComputation;
+public class ComputeCNFFormula implements Computation<Formula> {
+    protected final Computation<Formula> nnfFormula;
 
     public final boolean useMultipleThreads = false;
 
     protected final List<Formula> distributiveClauses;
-    protected final List<ToCNFTseitin.Substitute> tseitinClauses;
+    protected final List<ComputeTseitinCNFFormula.Substitute> tseitinClauses;
     protected boolean useDistributive;
     protected int maximumNumberOfLiterals = Integer.MAX_VALUE;
 
-    public ToCNF(Computation<Formula> nnfFormulaComputation) { // precondition: nnf must be given (TODO: validate)
-        this.nnfFormulaComputation = nnfFormulaComputation;
+    public ComputeCNFFormula(Computation<Formula> nnfFormula) { // precondition: nnf must be given (TODO: validate)
+        this.nnfFormula = nnfFormula;
         if (useMultipleThreads) {
             distributiveClauses = Collections.synchronizedList(new ArrayList<>());
             tseitinClauses = Collections.synchronizedList(new ArrayList<>());
@@ -70,7 +71,7 @@ public class ToCNF implements Computation<Formula> {
 
     @Override
     public FutureResult<Formula> compute() {
-        return nnfFormulaComputation.get().thenComputeResult((formula, monitor) -> {
+        return nnfFormula.get().thenComputeResult((formula, monitor) -> {
             useDistributive = (maximumNumberOfLiterals > 0);
             final NormalFormTester normalFormTester = NormalForms.getNormalFormTester(formula, Formula.NormalForm.CNF);
             if (normalFormTester.isNormalForm()) {
@@ -102,9 +103,9 @@ public class ToCNF implements Computation<Formula> {
         final List<Formula> transformedClauses = new ArrayList<>(distributiveClauses);
 
         if (!tseitinClauses.isEmpty()) {
-            final HashMap<ToCNFTseitin.Substitute, ToCNFTseitin.Substitute> combinedTseitinClauses = new HashMap<>();
-            for (final ToCNFTseitin.Substitute tseitinClause : tseitinClauses) {
-                ToCNFTseitin.Substitute substitute = combinedTseitinClauses.get(tseitinClause);
+            final HashMap<ComputeTseitinCNFFormula.Substitute, ComputeTseitinCNFFormula.Substitute> combinedTseitinClauses = new HashMap<>();
+            for (final ComputeTseitinCNFFormula.Substitute tseitinClause : tseitinClauses) {
+                ComputeTseitinCNFFormula.Substitute substitute = combinedTseitinClauses.get(tseitinClause);
                 if (substitute == null) {
                     combinedTseitinClauses.put(tseitinClause, tseitinClause);
                     final Variable variable = tseitinClause.getVariable();
@@ -118,7 +119,7 @@ public class ToCNF implements Computation<Formula> {
                     }
                 }
             }
-            for (final ToCNFTseitin.Substitute tseitinClause : combinedTseitinClauses.keySet()) {
+            for (final ComputeTseitinCNFFormula.Substitute tseitinClause : combinedTseitinClauses.keySet()) {
                 for (final Expression expression : tseitinClause.getClauses()) {
                     //TODO transformedClauses.add(Formulas.manipulate(expression, new VariableMapSetter(termMap)));
                 }
@@ -141,7 +142,7 @@ public class ToCNF implements Computation<Formula> {
                     distributiveClauses.addAll(
                             (List<? extends Formula>) distributive(clonedChild, new CancelableMonitor()).get().getChildren()); // TODO .get?
                     return;
-                } catch (final ToNormalForm.MaximumNumberOfLiteralsExceededException ignored) {
+                } catch (final ComputeNormalFormFormula.MaximumNumberOfLiteralsExceededException ignored) {
                 }
             }
             tseitinClauses.addAll(tseitin(clonedChild, new CancelableMonitor()).get()); // TODO: .get?
@@ -149,16 +150,16 @@ public class ToCNF implements Computation<Formula> {
     }
 
     protected Result<Formula> distributive(Formula child, Monitor monitor)
-            throws ToNormalForm.MaximumNumberOfLiteralsExceededException {
-        final ToNormalForm cnfDistributiveLawTransformer =
+            throws ComputeNormalFormFormula.MaximumNumberOfLiteralsExceededException {
+        final ComputeNormalFormFormula cnfDistributiveLawTransformer =
                 Computation.of(child, monitor)
-                        .map(c -> new ToNormalForm(c, Formula.NormalForm.CNF)); // TODO: monitor subtask?
+                        .map(c -> new ComputeNormalFormFormula(c, Formula.NormalForm.CNF)); // TODO: monitor subtask?
         cnfDistributiveLawTransformer.setMaximumNumberOfLiterals(maximumNumberOfLiterals);
         return cnfDistributiveLawTransformer.getResult();
     }
 
-    protected Result<List<ToCNFTseitin.Substitute>> tseitin(Expression child, Monitor monitor) {
-        final ToCNFTseitin toTseitinCNFFormula = new ToCNFTseitin();
+    protected Result<List<ComputeTseitinCNFFormula.Substitute>> tseitin(Expression child, Monitor monitor) {
+        final ComputeTseitinCNFFormula toTseitinCNFFormula = new ComputeTseitinCNFFormula();
         return toTseitinCNFFormula.execute(child, monitor);
     }
 }

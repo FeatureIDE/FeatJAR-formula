@@ -39,8 +39,8 @@ import java.util.stream.Collectors;
  *
  * @author Sebastian Krieter
  */
-public class ToNormalForm implements Computation<Formula> {
-    protected final Computation<Formula> nnfFormulaComputation;
+public class ComputeNormalFormFormula implements Computation<Formula> {
+    protected final Computation<Formula> nnfFormula;
 
     public static class MaximumNumberOfLiteralsExceededException extends Exception {
     }
@@ -65,8 +65,8 @@ public class ToNormalForm implements Computation<Formula> {
 
     private List<Expression> children;
 
-    public ToNormalForm(Computation<Formula> nnfFormulaComputation, Formula.NormalForm normalForm) {
-        this.nnfFormulaComputation = nnfFormulaComputation;
+    public ComputeNormalFormFormula(Computation<Formula> nnfFormula, Formula.NormalForm normalForm) {
+        this.nnfFormula = nnfFormula;
         this.normalForm = normalForm;
         switch (normalForm) {
             case CNF:
@@ -88,7 +88,7 @@ public class ToNormalForm implements Computation<Formula> {
 
     @Override
     public FutureResult<Formula> compute() {
-        return nnfFormulaComputation.get().thenComputeResult((formula, monitor) -> {
+        return nnfFormula.get().thenComputeResult((formula, monitor) -> {
             if (normalForm.equals(Formula.NormalForm.CNF))
                 formula = (formula instanceof And) ? (And) formula : new And(formula);
             if (normalForm.equals(Formula.NormalForm.DNF))
