@@ -4,16 +4,16 @@ import org.junit.jupiter.api.Test;
 
 import static de.featjar.formula.structure.Expressions.*;
 
-class ComputeNNFFormulaTest {
+class TransformNNFFormulaTest {
     @Test
     public void toNNF() {
         TransformerTest.traverseAndAssertFormulaEquals(
                 implies(literal("a"), False),
-                ComputeNNFFormula::new,
+                TransformNNFFormula::new,
                 or(literal(false, "a"), False));
         TransformerTest.traverseAndAssertFormulaEquals(
                 not(or(literal("a"), literal("b"))),
-                ComputeNNFFormula::new,
+                TransformNNFFormula::new,
                 and(literal(false, "a"), literal(false, "b")));
     }
 }

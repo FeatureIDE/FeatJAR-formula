@@ -20,9 +20,9 @@
  */
 package de.featjar.formula.transformer;
 
-import de.featjar.base.data.Computation;
-import de.featjar.base.data.FutureResult;
+import de.featjar.base.computation.*;
 import de.featjar.base.data.Result;
+import de.featjar.base.tree.structure.Traversable;
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.term.value.Variable;
@@ -44,18 +44,20 @@ import java.util.List;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class ComputeCNFFormula implements Computation<Formula> {
-    protected final Computation<Formula> nnfFormula;
+public class TransformCNFFormula extends Computation<Formula> implements Transformation<Formula> {
+    protected static final Dependency<Formula> NNF_FORMULA = newDependency();
 
-    public final boolean useMultipleThreads = false;
+    protected int maximumNumberOfLiterals = Integer.MAX_VALUE; //todo: pass as dependent computation
+    public final boolean useMultipleThreads = false; //todo: pass as dependent computation
 
     protected final List<Formula> distributiveClauses;
     protected final List<ComputeTseitinCNFFormula.Substitute> tseitinClauses;
     protected boolean useDistributive;
-    protected int maximumNumberOfLiterals = Integer.MAX_VALUE;
 
-    public ComputeCNFFormula(Computation<Formula> nnfFormula) { // precondition: nnf must be given (TODO: validate)
-        this.nnfFormula = nnfFormula;
+    public TransformCNFFormula(Computable<Formula> nnfFormula) { // precondition: nnf must be given (TODO: validate)
+        dependOn(NNF_FORMULA);
+        setInput(nnfFormula);
+        //this.maximumNumberOfLiterals = maximumNumberOfLiterals;
         if (useMultipleThreads) {
             distributiveClauses = Collections.synchronizedList(new ArrayList<>());
             tseitinClauses = Collections.synchronizedList(new ArrayList<>());
@@ -65,13 +67,14 @@ public class ComputeCNFFormula implements Computation<Formula> {
         }
     }
 
-    public void setMaximumNumberOfLiterals(int maximumNumberOfLiterals) {
-        this.maximumNumberOfLiterals = maximumNumberOfLiterals;
+    @Override
+    public Dependency<Formula> getInputDependency() {
+        return NNF_FORMULA;
     }
 
     @Override
     public FutureResult<Formula> compute() {
-        return nnfFormula.get().thenComputeResult((formula, monitor) -> {
+        return getInput().get().thenComputeResult((formula, monitor) -> {
             useDistributive = (maximumNumberOfLiterals > 0);
             final NormalFormTester normalFormTester = NormalForms.getNormalFormTester(formula, Formula.NormalForm.CNF);
             if (normalFormTester.isNormalForm()) {
@@ -152,7 +155,7 @@ public class ComputeCNFFormula implements Computation<Formula> {
     protected Result<Formula> distributive(Formula child, Monitor monitor)
             throws ComputeNormalFormFormula.MaximumNumberOfLiteralsExceededException {
         final ComputeNormalFormFormula cnfDistributiveLawTransformer =
-                Computation.of(child, monitor)
+                Computable.of(child, monitor)
                         .map(c -> new ComputeNormalFormFormula(c, Formula.NormalForm.CNF)); // TODO: monitor subtask?
         cnfDistributiveLawTransformer.setMaximumNumberOfLiterals(maximumNumberOfLiterals);
         return cnfDistributiveLawTransformer.getResult();
@@ -161,5 +164,10 @@ public class ComputeCNFFormula implements Computation<Formula> {
     protected Result<List<ComputeTseitinCNFFormula.Substitute>> tseitin(Expression child, Monitor monitor) {
         final ComputeTseitinCNFFormula toTseitinCNFFormula = new ComputeTseitinCNFFormula();
         return toTseitinCNFFormula.execute(child, monitor);
+    }
+
+    @Override
+    public Traversable<Computable<?>> cloneNode() {
+        return new TransformCNFFormula(getInput());
     }
 }

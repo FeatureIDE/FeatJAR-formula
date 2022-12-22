@@ -20,9 +20,9 @@
  */
 package de.featjar.formula.transformer;
 
-import de.featjar.base.data.Computation;
-import de.featjar.base.data.FutureResult;
+import de.featjar.base.computation.*;
 import de.featjar.base.data.Result;
+import de.featjar.base.tree.structure.Traversable;
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.formula.connective.And;
@@ -39,8 +39,8 @@ import java.util.stream.Collectors;
  *
  * @author Sebastian Krieter
  */
-public class ComputeNormalFormFormula implements Computation<Formula> {
-    protected final Computation<Formula> nnfFormula;
+public class ComputeNormalFormFormula extends Computation<Formula> implements Transformation<Formula> {
+    protected static final Dependency<Formula> NNF_FORMULA = newDependency();
 
     public static class MaximumNumberOfLiteralsExceededException extends Exception {
     }
@@ -55,7 +55,7 @@ public class ComputeNormalFormFormula implements Computation<Formula> {
         }
     }
 
-    private final Formula.NormalForm normalForm;
+    private final Formula.NormalForm normalForm; //todo: input as dependency
     private final Class<? extends Connective> clauseClass;
     private final Function<List<? extends Formula>, Formula> clauseConstructor;
 
@@ -65,8 +65,9 @@ public class ComputeNormalFormFormula implements Computation<Formula> {
 
     private List<Expression> children;
 
-    public ComputeNormalFormFormula(Computation<Formula> nnfFormula, Formula.NormalForm normalForm) {
-        this.nnfFormula = nnfFormula;
+    public ComputeNormalFormFormula(Computable<Formula> nnfFormula, Formula.NormalForm normalForm) {
+        dependOn(NNF_FORMULA);
+        setInput(nnfFormula);
         this.normalForm = normalForm;
         switch (normalForm) {
             case CNF:
@@ -82,13 +83,18 @@ public class ComputeNormalFormFormula implements Computation<Formula> {
         }
     }
 
+    @Override
+    public Dependency<Formula> getInputDependency() {
+        return NNF_FORMULA;
+    }
+
     public void setMaximumNumberOfLiterals(int maximumNumberOfLiterals) {
         this.maximumNumberOfLiterals = maximumNumberOfLiterals;
     }
 
     @Override
     public FutureResult<Formula> compute() {
-        return nnfFormula.get().thenComputeResult((formula, monitor) -> {
+        return getInput().get().thenComputeResult((formula, monitor) -> {
             if (normalForm.equals(Formula.NormalForm.CNF))
                 formula = (formula instanceof And) ? (And) formula : new And(formula);
             if (normalForm.equals(Formula.NormalForm.DNF))
@@ -236,5 +242,10 @@ public class ComputeNormalFormFormula implements Computation<Formula> {
 
     public int getMaximumNumberOfLiterals() {
         return maximumNumberOfLiterals;
+    }
+
+    @Override
+    public Traversable<Computable<?>> cloneNode() {
+        return new ComputeNormalFormFormula(getInput(), normalForm);
     }
 }

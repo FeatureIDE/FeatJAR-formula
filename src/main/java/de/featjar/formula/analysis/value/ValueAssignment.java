@@ -1,6 +1,6 @@
 package de.featjar.formula.analysis.value;
 
-import de.featjar.base.data.Computation;
+import de.featjar.base.computation.Computable;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.IO;
 import de.featjar.formula.analysis.Assignment;
@@ -63,8 +63,8 @@ public class ValueAssignment implements Assignment<String>, ValueRepresentation 
     }
 
     @Override
-    public Computation<? extends BooleanAssignment> toBoolean(Computation<VariableMap> variableMap) {
-        return variableMap.mapResult(v -> toBoolean(v).get());
+    public Computable<? extends BooleanAssignment> toBoolean(Computable<VariableMap> variableMap) {
+        return variableMap.mapResult(ValueAssignment.class, "toBoolean", v -> toBoolean(v).get());
     }
 
     @Override

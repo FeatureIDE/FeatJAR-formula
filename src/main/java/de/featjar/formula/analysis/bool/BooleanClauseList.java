@@ -1,10 +1,10 @@
 package de.featjar.formula.analysis.bool;
 
-import de.featjar.base.data.Computation;
+import de.featjar.base.computation.Computable;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.value.ValueClauseList;
-import de.featjar.formula.transformer.ComputeCNFFormula;
+import de.featjar.formula.transformer.TransformCNFFormula;
 
 import java.util.Collection;
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  * A list of Boolean clauses.
  * Typically used to express a conjunctive normal form.
  * Compared to a {@link de.featjar.formula.structure.formula.Formula} in CNF (e.g., computed with
- * {@link ComputeCNFFormula}), a {@link ValueClauseList} is a more low-level representation.
+ * {@link TransformCNFFormula}), a {@link ValueClauseList} is a more low-level representation.
  * A Boolean clause list only contains indices into a {@link VariableMap}, which links
  * a {@link BooleanClauseList} to the {@link de.featjar.formula.structure.term.value.Variable variables}
  * in the original {@link de.featjar.formula.structure.formula.Formula}.
@@ -60,8 +60,8 @@ public class BooleanClauseList extends BooleanAssignmentList<BooleanClauseList, 
     }
 
     @Override
-    public Computation<ValueClauseList> toValue(Computation<VariableMap> variableMap) {
-        return variableMap.mapResult(v -> toValue(v).get());
+    public Computable<ValueClauseList> toValue(Computable<VariableMap> variableMap) {
+        return variableMap.mapResult(BooleanClauseList.class, "toValue", v -> toValue(v).get());
     }
 
     public String print() {

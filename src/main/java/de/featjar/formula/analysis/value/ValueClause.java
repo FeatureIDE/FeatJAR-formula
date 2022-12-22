@@ -1,6 +1,6 @@
 package de.featjar.formula.analysis.value;
 
-import de.featjar.base.data.Computation;
+import de.featjar.base.computation.Computable;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.Clause;
 import de.featjar.formula.analysis.Solver;
@@ -40,8 +40,8 @@ public class ValueClause extends ValueAssignment implements Clause<String> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public Computation<BooleanClause> toBoolean(Computation<VariableMap> variableMap) {
-        return (Computation<BooleanClause>) super.toBoolean(variableMap);
+    public Computable<BooleanClause> toBoolean(Computable<VariableMap> variableMap) {
+        return (Computable<BooleanClause>) super.toBoolean(variableMap);
     }
 
     @Override

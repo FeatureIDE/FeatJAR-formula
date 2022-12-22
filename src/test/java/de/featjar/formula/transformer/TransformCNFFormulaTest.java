@@ -1,7 +1,7 @@
 package de.featjar.formula.transformer;
 
 import de.featjar.base.Feat;
-import de.featjar.base.data.Computation;
+import de.featjar.base.computation.Computable;
 import de.featjar.base.io.IO;
 import de.featjar.formula.io.FormulaFormats;
 import de.featjar.formula.structure.formula.Formula;
@@ -13,12 +13,12 @@ import java.nio.file.Paths;
 import static de.featjar.formula.structure.Expressions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-class ComputeCNFFormulaTest {
+class TransformCNFFormulaTest {
     public static final Path fmDirectory = Paths.get("src/test/resources/testFeatureModels");
 
     //@Test
     public void doesNothing() {
-        TransformerTest.traverseAndAssertSameFormula(and(or(literal("a"), literal("b")), or(literal("c"))), ComputeCNFFormula::new);
+        TransformerTest.traverseAndAssertSameFormula(and(or(literal("a"), literal("b")), or(literal("c"))), TransformCNFFormula::new);
     }
 
     // TODO: currently broken, as ToNormalForm is not deterministic (probably due to usage of Set<>)
@@ -26,11 +26,11 @@ class ComputeCNFFormulaTest {
     public void toCNF() {
         TransformerTest.traverseAndAssertFormulaEquals(
                 or(and(literal("a"), literal("b")), and(literal("c"))),
-                ComputeCNFFormula::new,
+                TransformCNFFormula::new,
                 and(or(literal("c"), literal("b")), or(literal("c"), literal("a"))));
         TransformerTest.traverseAndAssertFormulaEquals(
                 or(and(literal("a"), literal("b")), literal("c")),
-                ComputeCNFFormula::new,
+                TransformCNFFormula::new,
                 and(or(literal("c"), literal("b")), or(literal("a"), literal("c"))));
     }
 
@@ -38,7 +38,7 @@ class ComputeCNFFormulaTest {
     void basic() {
         Formula formula =
                 Feat.apply(featJAR ->
-                        Computation.of(IO.load(fmDirectory.resolve("basic.xml"), Feat.extensionPoint(FormulaFormats.class)).get())
+                        Computable.of(IO.load(fmDirectory.resolve("basic.xml"), Feat.extensionPoint(FormulaFormats.class)).get())
                                 .getResult().get());
         assertEquals(and(
                 literal("Root"),
@@ -48,9 +48,9 @@ class ComputeCNFFormulaTest {
                 literal("B")), formula);
         Formula finalFormula = formula;
         formula = Feat.apply(featJAR ->
-                Computation.of(finalFormula)
-                        .map(ComputeNNFFormula::new)
-                        .map(ComputeCNFFormula::new)
+                Computable.of(finalFormula)
+                        .map(TransformNNFFormula::new)
+                        .map(TransformCNFFormula::new)
                         .getResult().get());
         assertEquals(and(
                 or(literal("Root")),

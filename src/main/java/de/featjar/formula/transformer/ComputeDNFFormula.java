@@ -20,9 +20,9 @@
  */
 package de.featjar.formula.transformer;
 
-import de.featjar.base.data.Computation;
-import de.featjar.base.data.FutureResult;
+import de.featjar.base.computation.*;
 import de.featjar.base.data.Result;
+import de.featjar.base.tree.structure.Traversable;
 import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.base.tree.Trees;
@@ -36,12 +36,18 @@ import de.featjar.formula.visitor.NormalForms;
  * @deprecated does not currently work
  */
 @Deprecated
-public class ComputeDNFFormula implements Computation<Formula> {
-    protected final Computation<Formula> nnfFormula;
+public class ComputeDNFFormula extends Computation<Formula> implements Transformation<Formula> {
+    protected static final Dependency<Formula> NNF_FORMULA = newDependency();
     protected int maximumNumberOfLiterals;
 
-    public ComputeDNFFormula(Computation<Formula> nnfFormula) {
-        this.nnfFormula = nnfFormula;
+    public ComputeDNFFormula(Computable<Formula> nnfFormula) {
+        dependOn(NNF_FORMULA);
+        setInput(nnfFormula);
+    }
+
+    @Override
+    public Dependency<Formula> getInputDependency() {
+        return NNF_FORMULA;
     }
 
     public void setMaximumNumberOfLiterals(int maximumNumberOfLiterals) {
@@ -50,7 +56,7 @@ public class ComputeDNFFormula implements Computation<Formula> {
 
     @Override
     public FutureResult<Formula> compute() {
-        return nnfFormula.get().thenComputeResult(((formula, monitor) -> {
+        return getInput().get().thenComputeResult(((formula, monitor) -> {
             final NormalFormTester normalFormTester = NormalForms.getNormalFormTester(formula, Formula.NormalForm.DNF);
             if (normalFormTester.isNormalForm()) {
                 if (!normalFormTester.isClausalNormalForm()) {
@@ -61,12 +67,17 @@ public class ComputeDNFFormula implements Computation<Formula> {
             } else {
                 formula = (Formula) Trees.clone(formula);
                 ComputeNormalFormFormula formulaToDistributiveNFFormula =
-                        Computation.of((formula instanceof Or) ? formula : new Or(formula), monitor)
+                        Computable.of((formula instanceof Or) ? formula : new Or(formula), monitor)
                                 .map(c -> new ComputeNormalFormFormula(c, Formula.NormalForm.DNF));
                 formulaToDistributiveNFFormula.setMaximumNumberOfLiterals(maximumNumberOfLiterals);
                 return formulaToDistributiveNFFormula.getResult()
                         .map(f -> NormalForms.normalToClausalNormalForm(f, Formula.NormalForm.DNF));
             }
         }));
+    }
+
+    @Override
+    public Traversable<Computable<?>> cloneNode() {
+        return new ComputeDNFFormula(getInput());
     }
 }

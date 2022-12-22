@@ -21,10 +21,10 @@
 package de.featjar.formula.analysis.bool;
 
 import de.featjar.base.Feat;
-import de.featjar.base.data.Computation;
-import de.featjar.base.data.FutureResult;
+import de.featjar.base.computation.*;
 import de.featjar.base.data.Pair;
 import de.featjar.base.data.Result;
+import de.featjar.base.tree.structure.Traversable;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.value.*;
 import de.featjar.formula.structure.Expression;
@@ -34,6 +34,7 @@ import de.featjar.formula.structure.formula.predicate.Literal;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 /**
  * Transforms a formula, which is assumed to be in conjunctive normal form, into an indexed CNF representation.
@@ -41,17 +42,25 @@ import java.util.Objects;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public abstract class ComputeBooleanRepresentation<T extends ValueRepresentation, U extends BooleanRepresentation> implements Computation<Pair<U, VariableMap>> {
-    protected Computation<T> valueRepresentation;
+public abstract class ComputeBooleanRepresentation<T extends ValueRepresentation, U extends BooleanRepresentation>
+        extends Computation<Pair<U, VariableMap>> implements Analysis<T, Pair<U, VariableMap>> {
+    protected final static Dependency<?> VALUE_REPRESENTATION = newDependency();
 
-    public ComputeBooleanRepresentation(Computation<T> valueRepresentation) {
-        this.valueRepresentation = valueRepresentation;
+    public ComputeBooleanRepresentation(Computable<T> valueRepresentation) {
+        dependOn(VALUE_REPRESENTATION);
+        setInput(valueRepresentation);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Dependency<T> getInputDependency() {
+        return (Dependency<T>) VALUE_REPRESENTATION;
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public FutureResult<Pair<U, VariableMap>> compute() {
-        return valueRepresentation.get().thenComputeResult(((t, monitor) -> {
+        return getInput().get().thenComputeResult(((t, monitor) -> {
             Feat.log().debug("initializing variable map for " + t.getClass().getName());
             VariableMap variableMap = VariableMap.of(t);
             Feat.log().debug(variableMap);
@@ -60,25 +69,40 @@ public abstract class ComputeBooleanRepresentation<T extends ValueRepresentation
     }
 
     public static class OfAssignment extends ComputeBooleanRepresentation<ValueAssignment, BooleanAssignment> {
-        public OfAssignment(Computation<ValueAssignment> valueRepresentation) {
+        public OfAssignment(Computable<ValueAssignment> valueRepresentation) {
             super(valueRepresentation);
+        }
+
+        @Override
+        public Traversable<Computable<?>> cloneNode() {
+            return new OfAssignment(getInput());
         }
     }
 
     public static class OfClause extends ComputeBooleanRepresentation<ValueClause, BooleanClause> {
-        public OfClause(Computation<ValueClause> valueRepresentation) {
+        public OfClause(Computable<ValueClause> valueRepresentation) {
             super(valueRepresentation);
+        }
+
+        @Override
+        public Traversable<Computable<?>> cloneNode() {
+            return new OfClause(getInput());
         }
     }
 
     public static class OfSolution extends ComputeBooleanRepresentation<ValueSolution, BooleanSolution> {
-        public OfSolution(Computation<ValueSolution> valueRepresentation) {
+        public OfSolution(Computable<ValueSolution> valueRepresentation) {
             super(valueRepresentation);
+        }
+
+        @Override
+        public Traversable<Computable<?>> cloneNode() {
+            return new OfSolution(getInput());
         }
     }
 
-    public static class OfFormula extends ComputeBooleanRepresentation<Formula, BooleanClauseList> {
-        public OfFormula(Computation<Formula> valueRepresentation) {
+    public static class OfFormula extends ComputeBooleanRepresentation<Formula, BooleanClauseList> { // todo: assumption: is in CNF
+        public OfFormula(Computable<Formula> valueRepresentation) {
             super(valueRepresentation);
         }
 
@@ -120,6 +144,11 @@ public abstract class ComputeBooleanRepresentation<T extends ValueRepresentation
                     return new BooleanClause(literals);
                 }
             }
+        }
+
+        @Override
+        public Traversable<Computable<?>> cloneNode() {
+            return new OfFormula(getInput());
         }
     }
 }

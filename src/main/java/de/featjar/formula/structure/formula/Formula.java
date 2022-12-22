@@ -1,8 +1,9 @@
 package de.featjar.formula.structure.formula;
 
-import de.featjar.base.data.Computation;
+import de.featjar.base.computation.Computable;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.VariableMap;
+import de.featjar.formula.analysis.bool.BooleanAssignment;
 import de.featjar.formula.analysis.bool.BooleanRepresentation;
 import de.featjar.formula.analysis.bool.ComputeBooleanRepresentation;
 import de.featjar.formula.analysis.value.ValueRepresentation;
@@ -124,8 +125,8 @@ public interface Formula extends Expression, ValueRepresentation {
     }
 
     @Override
-    default Computation<? extends BooleanRepresentation> toBoolean(Computation<VariableMap> variableMap) {
-        return variableMap.mapResult(v -> toBoolean(v).get());
+    default Computable<? extends BooleanRepresentation> toBoolean(Computable<VariableMap> variableMap) {
+        return variableMap.mapResult(Formula.class, "toBoolean", v -> toBoolean(v).get());
 
     }
 

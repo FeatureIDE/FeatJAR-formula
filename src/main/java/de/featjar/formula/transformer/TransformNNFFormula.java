@@ -20,9 +20,9 @@
  */
 package de.featjar.formula.transformer;
 
-import de.featjar.base.data.Computation;
-import de.featjar.base.data.FutureResult;
+import de.featjar.base.computation.*;
 import de.featjar.base.tree.Trees;
+import de.featjar.base.tree.structure.Traversable;
 import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.formula.connective.Reference;
 import de.featjar.formula.visitor.*;
@@ -32,21 +32,32 @@ import de.featjar.formula.visitor.*;
  *
  * @author Elias Kuiter
  */
-public class ComputeNNFFormula implements Computation<Formula> {
-    protected final Computation<Formula> formula;
+public class TransformNNFFormula extends Computation<Formula> implements Transformation<Formula> {
+    protected static final Dependency<Formula> FORMULA = newDependency();
 
-    public ComputeNNFFormula(Computation<Formula> formula) {
-        this.formula = formula;
+    public TransformNNFFormula(Computable<Formula> formula) {
+        dependOn(FORMULA);
+        setInput(formula);
+    }
+
+    @Override
+    public Dependency<Formula> getInputDependency() {
+        return FORMULA;
     }
 
     @Override
     public FutureResult<Formula> compute() {
-        return formula.get().thenComputeResult((formula, monitor) -> {
+        return getInput().compute().thenComputeResult((formula, monitor) -> {
             // TODO: if already in NNF, should do nothing (this requires the NNF tester to be revised, as it allows complex connectives right now)
             return Reference.mutateClone(formula,
                     reference -> Trees.traverse(reference, new ConnectiveSimplifier())
                             .flatMap(unit -> Trees.traverse(reference, new DeMorganApplier()))
                             .flatMap(unit -> Trees.traverse(reference, new AndOrSimplifier())));
         });
+    }
+
+    @Override
+    public Traversable<Computable<?>> cloneNode() {
+        return new TransformNNFFormula(getInput());
     }
 }

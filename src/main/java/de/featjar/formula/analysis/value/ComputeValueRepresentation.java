@@ -20,10 +20,10 @@
  */
 package de.featjar.formula.analysis.value;
 
-import de.featjar.base.data.Computation;
-import de.featjar.base.data.FutureResult;
+import de.featjar.base.computation.*;
 import de.featjar.base.data.Pair;
 import de.featjar.base.data.Result;
+import de.featjar.base.tree.structure.Traversable;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.bool.*;
 
@@ -32,17 +32,25 @@ import de.featjar.formula.analysis.bool.*;
  *
  * @author Elias Kuiter
  */
-public abstract class ComputeValueRepresentation<T extends BooleanRepresentation, U extends ValueRepresentation> implements Computation<U> {
-    protected Computation<Pair<T, VariableMap>> booleanRepresentation;
+public abstract class ComputeValueRepresentation<T extends BooleanRepresentation, U extends ValueRepresentation>
+        extends Computation<U> implements Analysis<Pair<T, VariableMap>, U> {
+    protected final static Dependency<?> VALUE_REPRESENTATION = newDependency();
 
-    public ComputeValueRepresentation(Computation<Pair<T, VariableMap>> booleanRepresentation) {
-        this.booleanRepresentation = booleanRepresentation;
+    public ComputeValueRepresentation(Computable<Pair<T, VariableMap>> valueRepresentation) {
+        dependOn(VALUE_REPRESENTATION);
+        setInput(valueRepresentation);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Dependency<Pair<T, VariableMap>> getInputDependency() {
+        return (Dependency<Pair<T, VariableMap>>) VALUE_REPRESENTATION;
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public FutureResult<U> compute() {
-        return booleanRepresentation.get().thenComputeResult(((pair, monitor) -> {
+        return getInput().get().thenComputeResult(((pair, monitor) -> {
                     T t = pair.getKey();
                     VariableMap variableMap = pair.getValue();
                     return (Result<U>) t.toValue(variableMap);
@@ -50,32 +58,57 @@ public abstract class ComputeValueRepresentation<T extends BooleanRepresentation
     }
 
     public static class OfAssignment extends ComputeValueRepresentation<BooleanAssignment, ValueAssignment> {
-        public OfAssignment(Computation<Pair<BooleanAssignment, VariableMap>> booleanRepresentation) {
+        public OfAssignment(Computable<Pair<BooleanAssignment, VariableMap>> booleanRepresentation) {
             super(booleanRepresentation);
+        }
+
+        @Override
+        public Traversable<Computable<?>> cloneNode() {
+            return new OfAssignment(getInput());
         }
     }
 
     public static class OfClause extends ComputeValueRepresentation<BooleanClause, ValueClause> {
-        public OfClause(Computation<Pair<BooleanClause, VariableMap>> booleanRepresentation) {
+        public OfClause(Computable<Pair<BooleanClause, VariableMap>> booleanRepresentation) {
             super(booleanRepresentation);
+        }
+
+        @Override
+        public Traversable<Computable<?>> cloneNode() {
+            return new OfClause(getInput());
         }
     }
 
     public static class OfSolution extends ComputeValueRepresentation<BooleanSolution, ValueSolution> {
-        public OfSolution(Computation<Pair<BooleanSolution, VariableMap>> booleanRepresentation) {
+        public OfSolution(Computable<Pair<BooleanSolution, VariableMap>> booleanRepresentation) {
             super(booleanRepresentation);
+        }
+
+        @Override
+        public Traversable<Computable<?>> cloneNode() {
+            return new OfSolution(getInput());
         }
     }
 
     public static class OfClauseList extends ComputeValueRepresentation<BooleanClauseList, ValueClauseList> {
-        public OfClauseList(Computation<Pair<BooleanClauseList, VariableMap>> booleanRepresentation) {
+        public OfClauseList(Computable<Pair<BooleanClauseList, VariableMap>> booleanRepresentation) {
             super(booleanRepresentation);
+        }
+
+        @Override
+        public Traversable<Computable<?>> cloneNode() {
+            return new OfClauseList(getInput());
         }
     }
 
     public static class OfSolutionList extends ComputeValueRepresentation<BooleanSolutionList, ValueSolutionList> {
-        public OfSolutionList(Computation<Pair<BooleanSolutionList, VariableMap>> booleanRepresentation) {
+        public OfSolutionList(Computable<Pair<BooleanSolutionList, VariableMap>> booleanRepresentation) {
             super(booleanRepresentation);
+        }
+
+        @Override
+        public Traversable<Computable<?>> cloneNode() {
+            return new OfSolutionList(getInput());
         }
     }
 }

@@ -20,18 +20,18 @@
  */
 package de.featjar.formula.visitor;
 
-import de.featjar.base.data.Computation;
+import de.featjar.base.computation.Computable;
 import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.base.data.Result;
 import de.featjar.base.tree.Trees;
-import de.featjar.formula.transformer.ComputeCNFFormula;
+import de.featjar.formula.transformer.TransformCNFFormula;
 import de.featjar.formula.transformer.ComputeDNFFormula;
-import de.featjar.formula.transformer.ComputeNNFFormula;
+import de.featjar.formula.transformer.TransformNNFFormula;
 
-import static de.featjar.base.data.Computations.async;
+import static de.featjar.base.computation.Computations.async;
 
 /**
  * Tests and transforms formulas for and into normal forms.
@@ -59,11 +59,11 @@ public class NormalForms {
     }
 
     public static Result<Formula> toNormalForm(Formula formula, Formula.NormalForm normalForm, boolean isClausal) {
-        Computation<Formula> normalFormFormula = async(formula)
+        Computable<Formula> normalFormFormula = async(formula)
                 .map(normalForm == Formula.NormalForm.NNF
-                        ? ComputeNNFFormula::new
+                        ? TransformNNFFormula::new
                         : normalForm == Formula.NormalForm.CNF
-                        ? ComputeCNFFormula::new
+                        ? TransformCNFFormula::new
                         : ComputeDNFFormula::new);
         Result<Formula> res = normalFormFormula.getResult();
         return res.map(f -> isClausal ? normalToClausalNormalForm(formula, normalForm) : f);

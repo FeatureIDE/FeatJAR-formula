@@ -1,6 +1,6 @@
 package de.featjar.formula.analysis.bool;
 
-import de.featjar.base.data.Computation;
+import de.featjar.base.computation.Computable;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.Solver;
 import de.featjar.formula.analysis.Solution;
@@ -116,8 +116,8 @@ public class BooleanSolution extends BooleanAssignment implements Solution<Integ
 
     @SuppressWarnings("unchecked")
     @Override
-    public Computation<ValueSolution> toValue(Computation<VariableMap> variableMap) {
-        return (Computation<ValueSolution>) super.toValue(variableMap);
+    public Computable<ValueSolution> toValue(Computable<VariableMap> variableMap) {
+        return (Computable<ValueSolution>) super.toValue(variableMap);
     }
 
     @Override

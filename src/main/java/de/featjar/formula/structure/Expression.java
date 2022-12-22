@@ -20,15 +20,10 @@
  */
 package de.featjar.formula.structure;
 
-import de.featjar.base.data.Computation;
 import de.featjar.base.io.IO;
 import de.featjar.base.tree.Trees;
 import de.featjar.base.tree.structure.Traversable;
-import de.featjar.formula.analysis.VariableMap;
-import de.featjar.formula.analysis.bool.BooleanRepresentation;
-import de.featjar.formula.analysis.bool.ComputeBooleanRepresentation;
 import de.featjar.formula.analysis.value.ValueAssignment;
-import de.featjar.formula.analysis.value.ValueRepresentation;
 import de.featjar.formula.io.textual.ExpressionFormat;
 import de.featjar.formula.structure.term.value.Constant;
 import de.featjar.formula.structure.term.value.Variable;

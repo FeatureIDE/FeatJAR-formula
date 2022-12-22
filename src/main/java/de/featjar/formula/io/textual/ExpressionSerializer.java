@@ -288,7 +288,7 @@ public class ExpressionSerializer {
             sb.append((String) null);
         } else {
             if (expression instanceof Not) {
-                final Expression child = expression.getChildren().get(0);
+                final Expression child = expression.getFirstChild().orElse(null);
                 if (child instanceof Literal) {
                     literalToString(((Literal) child.cloneTree()).invert(), sb, depth + 1);
                     return;

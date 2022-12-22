@@ -20,8 +20,9 @@
  */
 package de.featjar.formula.analysis.value;
 
-import de.featjar.base.data.Computation;
+import de.featjar.base.computation.Computable;
 import de.featjar.base.data.Result;
+import de.featjar.formula.analysis.bool.BooleanAssignment;
 import de.featjar.formula.analysis.bool.BooleanSolutionList;
 import de.featjar.formula.analysis.VariableMap;
 
@@ -80,8 +81,8 @@ public class ValueSolutionList extends ValueAssignmentList<ValueSolutionList, Va
     }
 
     @Override
-    public Computation<BooleanSolutionList> toBoolean(Computation<VariableMap> variableMap) {
-        return variableMap.mapResult(v -> toBoolean(v).get());
+    public Computable<BooleanSolutionList> toBoolean(Computable<VariableMap> variableMap) {
+        return variableMap.mapResult(ValueSolutionList.class, "toBoolean", v -> toBoolean(v).get());
     }
 
 //    public SortedIntegerList getVariableAssignment(int variable) {

@@ -1,12 +1,13 @@
 package de.featjar.formula.analysis.bool;
 
-import de.featjar.base.data.Computation;
+import de.featjar.base.computation.Computable;
 import de.featjar.base.data.IntegerList;
 import de.featjar.base.data.Problem;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.Assignment;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.value.ValueAssignment;
+import de.featjar.formula.analysis.value.ValueClauseList;
 
 import java.util.*;
 import java.util.stream.IntStream;
@@ -204,8 +205,8 @@ public class BooleanAssignment extends IntegerList<BooleanAssignment> implements
     }
 
     @Override
-    public Computation<? extends ValueAssignment> toValue(Computation<VariableMap> variableMap) {
-        return variableMap.mapResult(v -> toValue(v).get());
+    public Computable<? extends ValueAssignment> toValue(Computable<VariableMap> variableMap) {
+        return variableMap.mapResult(BooleanAssignment.class, "toBoolean", v -> toValue(v).get());
     }
 
     @Override

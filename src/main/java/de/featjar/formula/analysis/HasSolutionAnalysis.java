@@ -1,5 +1,8 @@
 package de.featjar.formula.analysis;
 
+import de.featjar.base.computation.Analysis;
+import de.featjar.base.computation.Computable;
+
 /**
  * Computes whether there is a solution for a given formula.
  * Allows setting an optional timeout.
@@ -11,6 +14,6 @@ package de.featjar.formula.analysis;
  */
 public interface HasSolutionAnalysis<T, U extends Assignment<?>> extends
         Analysis<T, Boolean>,
-        Analysis.WithTimeout,
-        Analysis.WithAssumedAssignment<U> {
+        Computable.WithTimeout,
+        FormulaAnalysis.WithAssumedAssignment<U> {
 }
