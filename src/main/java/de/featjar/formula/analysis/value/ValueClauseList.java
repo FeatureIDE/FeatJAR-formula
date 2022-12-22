@@ -45,9 +45,10 @@ public class ValueClauseList extends AValueAssignmentList<ValueClauseList, Value
         return variableMap.toBoolean(this);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public IComputation<BooleanClauseList> toBoolean(IComputation<VariableMap> variableMap) {
-        return variableMap.mapResult(ValueClauseList.class, "toBoolean", v -> toBoolean(v).get());
+        return (IComputation<BooleanClauseList>) super.toBoolean(variableMap);
     }
 
     @Override

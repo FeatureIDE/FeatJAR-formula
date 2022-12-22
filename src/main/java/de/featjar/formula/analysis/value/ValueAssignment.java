@@ -63,9 +63,10 @@ public class ValueAssignment implements IAssignment<String>, IValueRepresentatio
         return variableMap.toBoolean(this);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public IComputation<? extends BooleanAssignment> toBoolean(IComputation<VariableMap> variableMap) {
-        return variableMap.mapResult(ValueAssignment.class, "toBoolean", v -> toBoolean(v).get());
+        return (IComputation<? extends BooleanAssignment>) IValueRepresentation.super.toBoolean(variableMap);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package de.featjar.formula.analysis;
 
 import de.featjar.base.computation.IAnalysis;
-import de.featjar.base.computation.IComputation;
+import de.featjar.base.computation.ITimeoutDependency;
 
 /**
  * Computes all solutions for a given formula.
@@ -16,6 +16,6 @@ import de.featjar.base.computation.IComputation;
  */
 public interface IGetSolutionsAnalysis<T, U extends IAssignmentList<? extends ISolution<?>>, R extends IAssignment<?>> extends
         IAnalysis<T, U>,
-        IComputation.WithTimeout,
-        IFormulaAnalysis.WithAssumedAssignment<R> {
+        ITimeoutDependency,
+        IAssumedAssignmentDependency<R> {
 }

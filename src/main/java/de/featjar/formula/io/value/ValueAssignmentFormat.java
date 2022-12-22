@@ -23,7 +23,7 @@ package de.featjar.formula.io.value;
 import de.featjar.base.data.Problem;
 import de.featjar.base.data.Problem.Severity;
 import de.featjar.base.data.Result;
-import de.featjar.base.io.AInputMapper;
+import de.featjar.base.io.input.AInputMapper;
 import de.featjar.base.io.format.IFormat;
 import de.featjar.formula.analysis.value.ValueAssignment;
 

@@ -60,9 +60,10 @@ public class BooleanClauseList extends ABooleanAssignmentList<BooleanClauseList,
         return variableMap.toValue(this);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public IComputation<ValueClauseList> toValue(IComputation<VariableMap> variableMap) {
-        return variableMap.mapResult(BooleanClauseList.class, "toValue", v -> toValue(v).get());
+        return (IComputation<ValueClauseList>) super.toValue(variableMap);
     }
 
     public String print() {

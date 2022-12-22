@@ -42,10 +42,10 @@ public class NormalForms {
 
     public static ANormalFormTester getNormalFormTester(IFormula formula, IFormula.NormalForm normalForm) {
         ANormalFormTester normalFormTester = normalForm == IFormula.NormalForm.NNF
-                ? new ANormalFormTester.NNF()
+                ? new NNFTester()
                 : normalForm == IFormula.NormalForm.CNF
-                ? new ANormalFormTester.CNF()
-                : new ANormalFormTester.DNF();
+                ? new CNFTester()
+                : new DNFTester();
         Trees.traverse(formula, normalFormTester);
         return normalFormTester;
     }

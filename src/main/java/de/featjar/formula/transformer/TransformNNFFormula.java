@@ -47,7 +47,7 @@ public class TransformNNFFormula extends AComputation<IFormula> implements ITran
 
     @Override
     public FutureResult<IFormula> compute() {
-        return getInput().compute().thenComputeResult((formula, monitor) -> {
+        return getInput().get().thenComputeResult((formula, monitor) -> {
             // TODO: if already in NNF, should do nothing (this requires the NNF tester to be revised, as it allows complex connectives right now)
             return Reference.mutateClone(formula,
                     reference -> Trees.traverse(reference, new ConnectiveSimplifier())

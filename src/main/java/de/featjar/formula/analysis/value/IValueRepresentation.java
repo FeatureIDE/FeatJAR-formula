@@ -17,7 +17,11 @@ public interface IValueRepresentation {
      */
     Result<? extends IBooleanRepresentation> toBoolean(VariableMap variableMap);
 
-    IComputation<? extends IBooleanRepresentation> toBoolean(IComputation<VariableMap> variableMap); // todo: lift instead using Computations.async?
+    default IComputation<? extends IBooleanRepresentation> toBoolean(IComputation<VariableMap> variableMap) {
+        return IComputation.of(IComputation.of(this), variableMap)
+                .mapResult(IValueRepresentation.class, "toBoolean",
+                        pair -> pair.getKey().toBoolean(pair.getValue()).get());
+    }
 
     LinkedHashSet<String> getVariableNames();
 }

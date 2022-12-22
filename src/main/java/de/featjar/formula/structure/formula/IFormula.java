@@ -3,8 +3,9 @@ package de.featjar.formula.structure.formula;
 import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.VariableMap;
+import de.featjar.formula.analysis.bool.BooleanClauseList;
+import de.featjar.formula.analysis.bool.ComputeBooleanRepresentationOfFormula;
 import de.featjar.formula.analysis.bool.IBooleanRepresentation;
-import de.featjar.formula.analysis.bool.AComputeBooleanRepresentation;
 import de.featjar.formula.analysis.value.IValueRepresentation;
 import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.formula.connective.AQuantifier;
@@ -121,13 +122,14 @@ public interface IFormula extends IExpression, IValueRepresentation {
     }
 
     @Override
-    default Result<? extends IBooleanRepresentation> toBoolean(VariableMap variableMap) {
-        return AComputeBooleanRepresentation.OfFormula.toBooleanClauseList(this, variableMap);
+    default Result<BooleanClauseList> toBoolean(VariableMap variableMap) {
+        return ComputeBooleanRepresentationOfFormula.toBooleanClauseList(this, variableMap);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    default IComputation<? extends IBooleanRepresentation> toBoolean(IComputation<VariableMap> variableMap) {
-        return variableMap.mapResult(IFormula.class, "toBoolean", v -> toBoolean(v).get());
+    default IComputation<BooleanClauseList> toBoolean(IComputation<VariableMap> variableMap) {
+        return (IComputation<BooleanClauseList>) IValueRepresentation.super.toBoolean(variableMap);
 
     }
 

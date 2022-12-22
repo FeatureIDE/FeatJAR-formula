@@ -8,6 +8,7 @@ import de.featjar.formula.analysis.IAssignment;
 import de.featjar.formula.analysis.ISolver;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.value.ValueAssignment;
+import de.featjar.formula.analysis.value.ValueClause;
 
 import java.util.*;
 import java.util.stream.IntStream;
@@ -204,9 +205,10 @@ public class BooleanAssignment extends AIntegerList<BooleanAssignment> implement
         return variableMap.toValue(this);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public IComputation<? extends ValueAssignment> toValue(IComputation<VariableMap> variableMap) {
-        return variableMap.mapResult(BooleanAssignment.class, "toBoolean", v -> toValue(v).get());
+        return (IComputation<? extends ValueAssignment>) IBooleanRepresentation.super.toValue(variableMap);
     }
 
     @Override

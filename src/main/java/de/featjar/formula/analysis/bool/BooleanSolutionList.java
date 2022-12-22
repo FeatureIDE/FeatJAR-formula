@@ -76,9 +76,10 @@ public class BooleanSolutionList extends ABooleanAssignmentList<BooleanSolutionL
         return variableMap.toValue(this);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public IComputation<ValueSolutionList> toValue(IComputation<VariableMap> variableMap) {
-        return variableMap.mapResult(ValueSolutionList.class, "toValue", v -> toValue(v).get());
+        return (IComputation<ValueSolutionList>) super.toValue(variableMap);
     }
 
     public String print() {

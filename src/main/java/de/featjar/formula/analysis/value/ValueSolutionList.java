@@ -80,9 +80,10 @@ public class ValueSolutionList extends AValueAssignmentList<ValueSolutionList, V
         return variableMap.toBoolean(this);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public IComputation<BooleanSolutionList> toBoolean(IComputation<VariableMap> variableMap) {
-        return variableMap.mapResult(ValueSolutionList.class, "toBoolean", v -> toBoolean(v).get());
+        return (IComputation<BooleanSolutionList>) super.toBoolean(variableMap);
     }
 
 //    public SortedIntegerList getVariableAssignment(int variable) {
