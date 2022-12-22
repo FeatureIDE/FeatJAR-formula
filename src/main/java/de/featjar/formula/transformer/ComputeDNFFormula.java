@@ -36,11 +36,11 @@ import de.featjar.formula.visitor.NormalForms;
  * @deprecated does not currently work
  */
 @Deprecated
-public class ComputeDNFFormula extends Computation<Formula> implements Transformation<Formula> {
+public class ComputeDNFFormula extends AComputation<Formula> implements ITransformation<Formula> {
     protected static final Dependency<Formula> NNF_FORMULA = newDependency();
     protected int maximumNumberOfLiterals;
 
-    public ComputeDNFFormula(Computable<Formula> nnfFormula) {
+    public ComputeDNFFormula(IComputation<Formula> nnfFormula) {
         dependOn(NNF_FORMULA);
         setInput(nnfFormula);
     }
@@ -67,7 +67,7 @@ public class ComputeDNFFormula extends Computation<Formula> implements Transform
             } else {
                 formula = (Formula) Trees.clone(formula);
                 ComputeNormalFormFormula formulaToDistributiveNFFormula =
-                        Computable.of((formula instanceof Or) ? formula : new Or(formula), monitor)
+                        IComputation.of((formula instanceof Or) ? formula : new Or(formula), monitor)
                                 .map(c -> new ComputeNormalFormFormula(c, Formula.NormalForm.DNF));
                 formulaToDistributiveNFFormula.setMaximumNumberOfLiterals(maximumNumberOfLiterals);
                 return formulaToDistributiveNFFormula.getResult()
@@ -77,7 +77,7 @@ public class ComputeDNFFormula extends Computation<Formula> implements Transform
     }
 
     @Override
-    public Traversable<Computable<?>> cloneNode() {
+    public Traversable<IComputation<?>> cloneNode() {
         return new ComputeDNFFormula(getInput());
     }
 }

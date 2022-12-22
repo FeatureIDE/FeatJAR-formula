@@ -32,10 +32,10 @@ import de.featjar.formula.visitor.*;
  *
  * @author Elias Kuiter
  */
-public class TransformNNFFormula extends Computation<Formula> implements Transformation<Formula> {
+public class TransformNNFFormula extends AComputation<Formula> implements ITransformation<Formula> {
     protected static final Dependency<Formula> FORMULA = newDependency();
 
-    public TransformNNFFormula(Computable<Formula> formula) {
+    public TransformNNFFormula(IComputation<Formula> formula) {
         dependOn(FORMULA);
         setInput(formula);
     }
@@ -57,7 +57,7 @@ public class TransformNNFFormula extends Computation<Formula> implements Transfo
     }
 
     @Override
-    public Traversable<Computable<?>> cloneNode() {
+    public Traversable<IComputation<?>> cloneNode() {
         return new TransformNNFFormula(getInput());
     }
 }

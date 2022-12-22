@@ -44,7 +44,7 @@ import java.util.List;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class TransformCNFFormula extends Computation<Formula> implements Transformation<Formula> {
+public class TransformCNFFormula extends AComputation<Formula> implements ITransformation<Formula> {
     protected static final Dependency<Formula> NNF_FORMULA = newDependency();
 
     protected int maximumNumberOfLiterals = Integer.MAX_VALUE; //todo: pass as dependent computation
@@ -54,7 +54,7 @@ public class TransformCNFFormula extends Computation<Formula> implements Transfo
     protected final List<ComputeTseitinCNFFormula.Substitute> tseitinClauses;
     protected boolean useDistributive;
 
-    public TransformCNFFormula(Computable<Formula> nnfFormula) { // precondition: nnf must be given (TODO: validate)
+    public TransformCNFFormula(IComputation<Formula> nnfFormula) { // precondition: nnf must be given (TODO: validate)
         dependOn(NNF_FORMULA);
         setInput(nnfFormula);
         //this.maximumNumberOfLiterals = maximumNumberOfLiterals;
@@ -155,7 +155,7 @@ public class TransformCNFFormula extends Computation<Formula> implements Transfo
     protected Result<Formula> distributive(Formula child, Monitor monitor)
             throws ComputeNormalFormFormula.MaximumNumberOfLiteralsExceededException {
         final ComputeNormalFormFormula cnfDistributiveLawTransformer =
-                Computable.of(child, monitor)
+                IComputation.of(child, monitor)
                         .map(c -> new ComputeNormalFormFormula(c, Formula.NormalForm.CNF)); // TODO: monitor subtask?
         cnfDistributiveLawTransformer.setMaximumNumberOfLiterals(maximumNumberOfLiterals);
         return cnfDistributiveLawTransformer.getResult();
@@ -167,7 +167,7 @@ public class TransformCNFFormula extends Computation<Formula> implements Transfo
     }
 
     @Override
-    public Traversable<Computable<?>> cloneNode() {
+    public Traversable<IComputation<?>> cloneNode() {
         return new TransformCNFFormula(getInput());
     }
 }

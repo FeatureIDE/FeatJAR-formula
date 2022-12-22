@@ -1,6 +1,6 @@
 package de.featjar.formula.analysis.value;
 
-import de.featjar.base.computation.Computable;
+import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.Solution;
 import de.featjar.formula.analysis.Solver;
@@ -40,8 +40,8 @@ public class ValueSolution extends ValueAssignment implements Solution<String> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public Computable<BooleanSolution> toBoolean(Computable<VariableMap> variableMap) {
-        return (Computable<BooleanSolution>) super.toBoolean(variableMap);
+    public IComputation<BooleanSolution> toBoolean(IComputation<VariableMap> variableMap) {
+        return (IComputation<BooleanSolution>) super.toBoolean(variableMap);
     }
 
     @Override

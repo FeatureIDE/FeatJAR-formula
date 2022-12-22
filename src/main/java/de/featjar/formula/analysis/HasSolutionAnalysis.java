@@ -1,7 +1,7 @@
 package de.featjar.formula.analysis;
 
-import de.featjar.base.computation.Analysis;
-import de.featjar.base.computation.Computable;
+import de.featjar.base.computation.IAnalysis;
+import de.featjar.base.computation.IComputation;
 
 /**
  * Computes whether there is a solution for a given formula.
@@ -13,7 +13,7 @@ import de.featjar.base.computation.Computable;
  * @author Elias Kuiter
  */
 public interface HasSolutionAnalysis<T, U extends Assignment<?>> extends
-        Analysis<T, Boolean>,
-        Computable.WithTimeout,
-        FormulaAnalysis.WithAssumedAssignment<U> {
+        IAnalysis<T, Boolean>,
+        IComputation.WithTimeout,
+        IFormulaAnalysis.WithAssumedAssignment<U> {
 }

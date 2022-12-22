@@ -20,17 +20,17 @@
  */
 package de.featjar.formula.analysis;
 
-import de.featjar.base.extension.Extension;
+import de.featjar.base.extension.IExtension;
 
 /**
  * Solves problems expressed as logical formulas.
- * Is capable of performing various basic {@link FormulaAnalysis analyses}.
+ * Is capable of performing various basic {@link IFormulaAnalysis analyses}.
  *
  * @param <T> the index type of the variables
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public interface Solver<T> extends Extension {
+public interface Solver<T> extends IExtension {
     /**
      * {@return an analysis that computes whether there is a solution for some given formula, if supported by this solver}
      * Satisfiability solvers support this method.

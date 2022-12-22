@@ -1,7 +1,7 @@
 package de.featjar.formula.analysis;
 
-import de.featjar.base.computation.Analysis;
-import de.featjar.base.computation.Computable;
+import de.featjar.base.computation.IAnalysis;
+import de.featjar.base.computation.IComputation;
 
 import java.math.BigInteger;
 
@@ -16,7 +16,7 @@ import java.math.BigInteger;
  * @author Elias Kuiter
  */
 public interface CountSolutionsAnalysis<T, U extends Assignment<?>> extends
-        Analysis<T, BigInteger>,
-        Computable.WithTimeout,
-        FormulaAnalysis.WithAssumedAssignment<U> {
+        IAnalysis<T, BigInteger>,
+        IComputation.WithTimeout,
+        IFormulaAnalysis.WithAssumedAssignment<U> {
 }

@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.visitor;
 
-import de.featjar.base.computation.Computable;
+import de.featjar.base.computation.IComputation;
 import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.structure.formula.connective.And;
@@ -59,7 +59,7 @@ public class NormalForms {
     }
 
     public static Result<Formula> toNormalForm(Formula formula, Formula.NormalForm normalForm, boolean isClausal) {
-        Computable<Formula> normalFormFormula = async(formula)
+        IComputation<Formula> normalFormFormula = async(formula)
                 .map(normalForm == Formula.NormalForm.NNF
                         ? TransformNNFFormula::new
                         : normalForm == Formula.NormalForm.CNF

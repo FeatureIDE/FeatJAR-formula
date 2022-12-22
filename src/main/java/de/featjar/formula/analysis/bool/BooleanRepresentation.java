@@ -1,6 +1,6 @@
 package de.featjar.formula.analysis.bool;
 
-import de.featjar.base.computation.Computable;
+import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.value.ValueRepresentation;
@@ -15,5 +15,5 @@ public interface BooleanRepresentation {
      */
     Result<? extends ValueRepresentation> toValue(VariableMap variableMap);
 
-    Computable<? extends ValueRepresentation> toValue(Computable<VariableMap> variableMap);
+    IComputation<? extends ValueRepresentation> toValue(IComputation<VariableMap> variableMap);
 }

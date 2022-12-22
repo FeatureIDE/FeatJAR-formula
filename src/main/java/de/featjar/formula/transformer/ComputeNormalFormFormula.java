@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
  *
  * @author Sebastian Krieter
  */
-public class ComputeNormalFormFormula extends Computation<Formula> implements Transformation<Formula> {
+public class ComputeNormalFormFormula extends AComputation<Formula> implements ITransformation<Formula> {
     protected static final Dependency<Formula> NNF_FORMULA = newDependency();
 
     public static class MaximumNumberOfLiteralsExceededException extends Exception {
@@ -65,7 +65,7 @@ public class ComputeNormalFormFormula extends Computation<Formula> implements Tr
 
     private List<Expression> children;
 
-    public ComputeNormalFormFormula(Computable<Formula> nnfFormula, Formula.NormalForm normalForm) {
+    public ComputeNormalFormFormula(IComputation<Formula> nnfFormula, Formula.NormalForm normalForm) {
         dependOn(NNF_FORMULA);
         setInput(nnfFormula);
         this.normalForm = normalForm;
@@ -245,7 +245,7 @@ public class ComputeNormalFormFormula extends Computation<Formula> implements Tr
     }
 
     @Override
-    public Traversable<Computable<?>> cloneNode() {
+    public Traversable<IComputation<?>> cloneNode() {
         return new ComputeNormalFormFormula(getInput(), normalForm);
     }
 }

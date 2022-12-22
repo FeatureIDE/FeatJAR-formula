@@ -1,6 +1,6 @@
 package de.featjar.formula.analysis.value;
 
-import de.featjar.base.computation.Computable;
+import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.bool.BooleanClauseList;
 import de.featjar.formula.analysis.VariableMap;
@@ -45,7 +45,7 @@ public class ValueClauseList extends ValueAssignmentList<ValueClauseList, ValueC
     }
 
     @Override
-    public Computable<BooleanClauseList> toBoolean(Computable<VariableMap> variableMap) {
+    public IComputation<BooleanClauseList> toBoolean(IComputation<VariableMap> variableMap) {
         return variableMap.mapResult(ValueClauseList.class, "toBoolean", v -> toBoolean(v).get());
     }
 

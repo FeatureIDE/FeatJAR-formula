@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.analysis;
 
-import de.featjar.base.computation.Computable;
+import de.featjar.base.computation.IComputation;
 import de.featjar.base.computation.Dependency;
 
 /**
@@ -30,7 +30,7 @@ import de.featjar.base.computation.Dependency;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public interface FormulaAnalysis {
+public interface IFormulaAnalysis {
     /**
      * An analysis that can be passed a further assignment to assume.
      *
@@ -44,18 +44,18 @@ public interface FormulaAnalysis {
          * This analysis can freely interpret this assignment.
          * Usually, it is interpreted as a conjunction (i.e., similar to a {@link Solution}).
          */
-        default Computable<T> getAssumedAssignment() {
-            return getAssumedAssignmentDependency().get((Computable<?>) this);
+        default IComputation<T> getAssumedAssignment() {
+            return getAssumedAssignmentDependency().get((IComputation<?>) this);
         }
 
         /**
          * Sets the computation for the assignment assumed by this analysis.
          *
          * @param assignment the assignment computation
-         * @return itself
+         * @return this analysis
          */
-        default WithAssumedAssignment<T> setAssumedAssignment(Computable<T> assignment) {
-            getAssumedAssignmentDependency().set((Computable<?>) this, assignment);
+        default WithAssumedAssignment<T> setAssumedAssignment(IComputation<T> assignment) {
+            getAssumedAssignmentDependency().set((IComputation<?>) this, assignment);
             return this;
         }
     }
@@ -74,18 +74,18 @@ public interface FormulaAnalysis {
          * This analysis interprets this list of clauses as a conjunction of
          * disjunctions of literals or equalities (i.e., a CNF).
          */
-        default Computable<T> getAssumedClauseList() {
-            return getAssumedClauseListDependency().get((Computable<?>) this);
+        default IComputation<T> getAssumedClauseList() {
+            return getAssumedClauseListDependency().get((IComputation<?>) this);
         }
 
         /**
          * Sets the computation for the clause list assumed by this analysis.
          *
          * @param clauseList the clause list computation
-         * @return itself
+         * @return this analysis
          */
-        default WithAssumedClauseList<T> setAssumedClauseList(Computable<T> clauseList) {
-            getAssumedClauseListDependency().set((Computable<?>) this, clauseList);
+        default WithAssumedClauseList<T> setAssumedClauseList(IComputation<T> clauseList) {
+            getAssumedClauseListDependency().set((IComputation<?>) this, clauseList);
             return this;
         }
     }

@@ -34,7 +34,6 @@ import de.featjar.formula.structure.formula.predicate.Literal;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Random;
 
 /**
  * Transforms a formula, which is assumed to be in conjunctive normal form, into an indexed CNF representation.
@@ -43,10 +42,10 @@ import java.util.Random;
  * @author Elias Kuiter
  */
 public abstract class ComputeBooleanRepresentation<T extends ValueRepresentation, U extends BooleanRepresentation>
-        extends Computation<Pair<U, VariableMap>> implements Analysis<T, Pair<U, VariableMap>> {
+        extends AComputation<Pair<U, VariableMap>> implements IAnalysis<T, Pair<U, VariableMap>> {
     protected final static Dependency<?> VALUE_REPRESENTATION = newDependency();
 
-    public ComputeBooleanRepresentation(Computable<T> valueRepresentation) {
+    public ComputeBooleanRepresentation(IComputation<T> valueRepresentation) {
         dependOn(VALUE_REPRESENTATION);
         setInput(valueRepresentation);
     }
@@ -69,40 +68,40 @@ public abstract class ComputeBooleanRepresentation<T extends ValueRepresentation
     }
 
     public static class OfAssignment extends ComputeBooleanRepresentation<ValueAssignment, BooleanAssignment> {
-        public OfAssignment(Computable<ValueAssignment> valueRepresentation) {
+        public OfAssignment(IComputation<ValueAssignment> valueRepresentation) {
             super(valueRepresentation);
         }
 
         @Override
-        public Traversable<Computable<?>> cloneNode() {
+        public Traversable<IComputation<?>> cloneNode() {
             return new OfAssignment(getInput());
         }
     }
 
     public static class OfClause extends ComputeBooleanRepresentation<ValueClause, BooleanClause> {
-        public OfClause(Computable<ValueClause> valueRepresentation) {
+        public OfClause(IComputation<ValueClause> valueRepresentation) {
             super(valueRepresentation);
         }
 
         @Override
-        public Traversable<Computable<?>> cloneNode() {
+        public Traversable<IComputation<?>> cloneNode() {
             return new OfClause(getInput());
         }
     }
 
     public static class OfSolution extends ComputeBooleanRepresentation<ValueSolution, BooleanSolution> {
-        public OfSolution(Computable<ValueSolution> valueRepresentation) {
+        public OfSolution(IComputation<ValueSolution> valueRepresentation) {
             super(valueRepresentation);
         }
 
         @Override
-        public Traversable<Computable<?>> cloneNode() {
+        public Traversable<IComputation<?>> cloneNode() {
             return new OfSolution(getInput());
         }
     }
 
     public static class OfFormula extends ComputeBooleanRepresentation<Formula, BooleanClauseList> { // todo: assumption: is in CNF
-        public OfFormula(Computable<Formula> valueRepresentation) {
+        public OfFormula(IComputation<Formula> valueRepresentation) {
             super(valueRepresentation);
         }
 
@@ -147,7 +146,7 @@ public abstract class ComputeBooleanRepresentation<T extends ValueRepresentation
         }
 
         @Override
-        public Traversable<Computable<?>> cloneNode() {
+        public Traversable<IComputation<?>> cloneNode() {
             return new OfFormula(getInput());
         }
     }
