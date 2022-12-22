@@ -23,7 +23,7 @@ package de.featjar.formula.io.textual;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.AInputMapper;
 import de.featjar.base.io.format.IFormat;
-import de.featjar.formula.structure.Expression;
+import de.featjar.formula.structure.IExpression;
 
 /**
  * Parses and serializes propositional and first-order expressions.
@@ -32,7 +32,7 @@ import de.featjar.formula.structure.Expression;
  * @deprecated does not work reliably at the moment
  */
 @Deprecated
-public class ExpressionFormat implements IFormat<Expression> {
+public class ExpressionFormat implements IFormat<IExpression> {
     @Override
     public String getName() {
         return "Expression";
@@ -49,12 +49,12 @@ public class ExpressionFormat implements IFormat<Expression> {
     }
 
     @Override
-    public Result<Expression> parse(AInputMapper inputMapper) {
+    public Result<IExpression> parse(AInputMapper inputMapper) {
         return new ExpressionParser().parse(inputMapper.get().read().get());
     }
 
     @Override
-    public Result<String> serialize(Expression expression) {
+    public Result<String> serialize(IExpression expression) {
         return Result.of(new ExpressionSerializer().serialize(expression));
     }
 }

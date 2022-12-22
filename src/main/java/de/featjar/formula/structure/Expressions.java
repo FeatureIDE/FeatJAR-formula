@@ -1,13 +1,13 @@
 package de.featjar.formula.structure;
 
 import de.featjar.base.data.Problem;
-import de.featjar.formula.structure.formula.Formula;
+import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.*;
 import de.featjar.formula.structure.formula.predicate.*;
-import de.featjar.formula.structure.term.Term;
+import de.featjar.formula.structure.term.ITerm;
 import de.featjar.formula.structure.term.function.*;
 import de.featjar.formula.structure.term.value.Constant;
-import de.featjar.formula.structure.term.value.Value;
+import de.featjar.formula.structure.term.value.IValue;
 import de.featjar.formula.structure.term.value.Variable;
 
 /**
@@ -33,7 +33,7 @@ public class Expressions {
      *
      * @param formulas the formulas
      */
-    public static And and(Formula... formulas) {
+    public static And and(IFormula... formulas) {
         return new And(formulas);
     }
 
@@ -43,7 +43,7 @@ public class Expressions {
      * @param minimum the minimum
      * @param formulas the formulas
      */
-    public static AtLeast atLeast(int minimum, Formula... formulas) {
+    public static AtLeast atLeast(int minimum, IFormula... formulas) {
         return new AtLeast(minimum, formulas);
     }
 
@@ -53,7 +53,7 @@ public class Expressions {
      * @param maximum the maximum
      * @param formulas the formulas
      */
-    public static AtMost atMost(int maximum, Formula... formulas) {
+    public static AtMost atMost(int maximum, IFormula... formulas) {
         return new AtMost(maximum, formulas);
     }
 
@@ -63,7 +63,7 @@ public class Expressions {
      * @param minimum the minimum
      * @param formulas the formulas
      */
-    public static Between between(int minimum, int maximum, Formula... formulas) {
+    public static Between between(int minimum, int maximum, IFormula... formulas) {
         return new Between(minimum, maximum, formulas);
     }
 
@@ -73,7 +73,7 @@ public class Expressions {
      * @param leftFormula the left formula
      * @param rightFormula the right formula
      */
-    public static BiImplies biImplies(Formula leftFormula, Formula rightFormula) {
+    public static BiImplies biImplies(IFormula leftFormula, IFormula rightFormula) {
         return new BiImplies(leftFormula, rightFormula);
     }
 
@@ -83,7 +83,7 @@ public class Expressions {
      * @param bound the bound
      * @param formulas the formulas
      */
-    public static Choose choose(int bound, Formula... formulas) {
+    public static Choose choose(int bound, IFormula... formulas) {
         return new Choose(bound, formulas);
     }
 
@@ -93,7 +93,7 @@ public class Expressions {
      * @param boundVariable the bound variable
      * @param formula the formula
      */
-    public static Exists exists(Variable boundVariable, Formula formula) {
+    public static Exists exists(Variable boundVariable, IFormula formula) {
         return new Exists(boundVariable, formula);
     }
 
@@ -103,7 +103,7 @@ public class Expressions {
      * @param boundVariable the bound variable
      * @param formula the formula
      */
-    public static ForAll forAll(Variable boundVariable, Formula formula) {
+    public static ForAll forAll(Variable boundVariable, IFormula formula) {
         return new ForAll(boundVariable, formula);
     }
 
@@ -114,7 +114,7 @@ public class Expressions {
      * @param leftFormula the left formula
      * @param rightFormula the right formula
      */
-    public static Implies implies(Formula leftFormula, Formula rightFormula) {
+    public static Implies implies(IFormula leftFormula, IFormula rightFormula) {
         return new Implies(leftFormula, rightFormula);
     }
 
@@ -123,7 +123,7 @@ public class Expressions {
      *
      * @param formula the formula
      */
-    public static Not not(Formula formula) {
+    public static Not not(IFormula formula) {
         return new Not(formula);
     }
 
@@ -132,7 +132,7 @@ public class Expressions {
      *
      * @param formulas the formulas
      */
-    public static Or or(Formula... formulas) {
+    public static Or or(IFormula... formulas) {
         return new Or(formulas);
     }
 
@@ -141,7 +141,7 @@ public class Expressions {
      *
      * @param formula the formula
      */
-    public static Reference reference(Formula formula) {
+    public static Reference reference(IFormula formula) {
         return new Reference(formula);
     }
 
@@ -151,7 +151,7 @@ public class Expressions {
      * @param leftTerm the left term
      * @param rightTerm the right term
      */
-    public static Equals equals(Term leftTerm, Term rightTerm) {
+    public static Equals equals(ITerm leftTerm, ITerm rightTerm) {
         return new Equals(leftTerm, rightTerm);
     }
 
@@ -161,7 +161,7 @@ public class Expressions {
      * @param leftTerm the left term
      * @param rightTerm the right term
      */
-    public static GreaterEqual greaterEqual(Term leftTerm, Term rightTerm) {
+    public static GreaterEqual greaterEqual(ITerm leftTerm, ITerm rightTerm) {
         return new GreaterEqual(leftTerm, rightTerm);
     }
 
@@ -171,7 +171,7 @@ public class Expressions {
      * @param leftTerm the left term
      * @param rightTerm the right term
      */
-    public static GreaterThan greaterThan(Term leftTerm, Term rightTerm) {
+    public static GreaterThan greaterThan(ITerm leftTerm, ITerm rightTerm) {
         return new GreaterThan(leftTerm, rightTerm);
     }
 
@@ -181,7 +181,7 @@ public class Expressions {
      * @param leftTerm the left term
      * @param rightTerm the right term
      */
-    public static LessEqual lessEqual(Term leftTerm, Term rightTerm) {
+    public static LessEqual lessEqual(ITerm leftTerm, ITerm rightTerm) {
         return new LessEqual(leftTerm, rightTerm);
     }
 
@@ -191,7 +191,7 @@ public class Expressions {
      * @param leftTerm the left term
      * @param rightTerm the right term
      */
-    public static LessThan lessThan(Term leftTerm, Term rightTerm) {
+    public static LessThan lessThan(ITerm leftTerm, ITerm rightTerm) {
         return new LessThan(leftTerm, rightTerm);
     }
 
@@ -201,7 +201,7 @@ public class Expressions {
      * @param isPositive the polarity
      * @param value the term
      */
-    public static Literal literal(boolean isPositive, Value value) {
+    public static Literal literal(boolean isPositive, IValue value) {
         return new Literal(isPositive, value);
     }
 
@@ -210,7 +210,7 @@ public class Expressions {
      *
      * @param value the term
      */
-    public static Literal literal(Value value) {
+    public static Literal literal(IValue value) {
         return new Literal(value);
     }
 
@@ -239,7 +239,7 @@ public class Expressions {
      * @param leftTerm the left term
      * @param rightTerm the right term
      */
-    public static NotEquals notEquals(Term leftTerm, Term rightTerm) {
+    public static NotEquals notEquals(ITerm leftTerm, ITerm rightTerm) {
         return new NotEquals(leftTerm, rightTerm);
     }
 
@@ -258,7 +258,7 @@ public class Expressions {
      * @param leftTerm the left term
      * @param rightTerm the right term
      */
-    public static IntegerAdd integerAdd(Term leftTerm, Term rightTerm) {
+    public static IntegerAdd integerAdd(ITerm leftTerm, ITerm rightTerm) {
         return new IntegerAdd(leftTerm, rightTerm);
     }
 
@@ -268,7 +268,7 @@ public class Expressions {
      * @param leftTerm the left term
      * @param rightTerm the right term
      */
-    public static IntegerDivide integerDivide(Term leftTerm, Term rightTerm) {
+    public static IntegerDivide integerDivide(ITerm leftTerm, ITerm rightTerm) {
         return new IntegerDivide(leftTerm, rightTerm);
     }
 
@@ -278,7 +278,7 @@ public class Expressions {
      * @param leftTerm the left term
      * @param rightTerm the right term
      */
-    public static IntegerMultiply integerMultiply(Term leftTerm, Term rightTerm) {
+    public static IntegerMultiply integerMultiply(ITerm leftTerm, ITerm rightTerm) {
         return new IntegerMultiply(leftTerm, rightTerm);
     }
 
@@ -288,7 +288,7 @@ public class Expressions {
      * @param leftTerm the left term
      * @param rightTerm the right term
      */
-    public static RealAdd realAdd(Term leftTerm, Term rightTerm) {
+    public static RealAdd realAdd(ITerm leftTerm, ITerm rightTerm) {
         return new RealAdd(leftTerm, rightTerm);
     }
 
@@ -298,7 +298,7 @@ public class Expressions {
      * @param leftTerm the left term
      * @param rightTerm the right term
      */
-    public static RealDivide realDivide(Term leftTerm, Term rightTerm) {
+    public static RealDivide realDivide(ITerm leftTerm, ITerm rightTerm) {
         return new RealDivide(leftTerm, rightTerm);
     }
 
@@ -308,7 +308,7 @@ public class Expressions {
      * @param leftTerm the left term
      * @param rightTerm the right term
      */
-    public static RealMultiply realMultiply(Term leftTerm, Term rightTerm) {
+    public static RealMultiply realMultiply(ITerm leftTerm, ITerm rightTerm) {
         return new RealMultiply(leftTerm, rightTerm);
     }
 

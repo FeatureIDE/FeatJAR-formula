@@ -21,12 +21,12 @@
 package de.featjar.formula.io;
 
 import de.featjar.base.io.format.AFormats;
-import de.featjar.formula.structure.formula.Formula;
+import de.featjar.formula.structure.formula.IFormula;
 
 /**
  * Manages formula formats.
  *
  * @author Sebastian Krieter
  */
-public class FormulaFormats extends AFormats<Formula> {
+public class FormulaFormats extends AFormats<IFormula> {
 }

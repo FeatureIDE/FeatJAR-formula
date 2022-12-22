@@ -22,10 +22,10 @@ package de.featjar.formula.visitor;
 
 import de.featjar.base.data.Problem;
 import de.featjar.base.data.Result;
-import de.featjar.formula.structure.formula.Formula;
+import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.*;
-import de.featjar.formula.structure.formula.predicate.InvertiblePredicate;
-import de.featjar.formula.structure.formula.predicate.Predicate;
+import de.featjar.formula.structure.formula.predicate.IInvertiblePredicate;
+import de.featjar.formula.structure.formula.predicate.IPredicate;
 import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.base.tree.visitor.ITreeVisitor;
 import java.util.List;
@@ -33,41 +33,41 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * Applies De Morgan's laws to push {@link Not} down towards a {@link Predicate}.
+ * Applies De Morgan's laws to push {@link Not} down towards a {@link IPredicate}.
  *
  * @author Sebastian Krieter
  */
-public class DeMorganApplier implements ITreeVisitor<Formula, Result.Unit> {
+public class DeMorganApplier implements ITreeVisitor<IFormula, Result.Unit> {
     @Override
-    public Optional<Problem> nodeValidator(List<Formula> path) {
+    public Optional<Problem> nodeValidator(List<IFormula> path) {
         return rootValidator(path, root -> root instanceof Reference, "expected formula reference");
     }
 
     @Override
-    public TraversalAction firstVisit(List<Formula> path) {
-        final Formula formula = getCurrentNode(path);
-        if (formula instanceof Predicate) {
+    public TraversalAction firstVisit(List<IFormula> path) {
+        final IFormula formula = getCurrentNode(path);
+        if (formula instanceof IPredicate) {
             return TraversalAction.SKIP_CHILDREN;
-        } else if (formula instanceof Connective) {
-            formula.replaceChildren(expression -> replace((Formula) expression));
+        } else if (formula instanceof IConnective) {
+            formula.replaceChildren(expression -> replace((IFormula) expression));
             return TraversalAction.CONTINUE;
         } else {
             return TraversalAction.FAIL;
         }
     }
 
-    protected Formula replace(Formula formula) {
-        Formula newFormula = formula;
+    protected IFormula replace(IFormula formula) {
+        IFormula newFormula = formula;
         while (newFormula instanceof Not) {
-            final Formula notChild = (Formula) ((Not) newFormula).getExpression();
-            if (notChild instanceof InvertiblePredicate) {
+            final IFormula notChild = (IFormula) ((Not) newFormula).getExpression();
+            if (notChild instanceof IInvertiblePredicate) {
                 newFormula = ((Literal) notChild).invert();
             } else if (notChild instanceof Not) {
-                newFormula = (Formula) ((Not) notChild).getExpression();
+                newFormula = (IFormula) ((Not) notChild).getExpression();
             } else if (notChild instanceof Or) {
-                newFormula = new And(notChild.getChildren().stream().map(c -> new Not((Formula) c)).collect(Collectors.toList()));
+                newFormula = new And(notChild.getChildren().stream().map(c -> new Not((IFormula) c)).collect(Collectors.toList()));
             } else if (notChild instanceof And) {
-                newFormula = new Or(notChild.getChildren().stream().map(c -> new Not((Formula) c)).collect(Collectors.toList()));
+                newFormula = new Or(notChild.getChildren().stream().map(c -> new Not((IFormula) c)).collect(Collectors.toList()));
             }
         }
         return newFormula;

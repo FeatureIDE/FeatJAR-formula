@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.io;
 
-import de.featjar.formula.analysis.bool.BooleanAssignmentList;
+import de.featjar.formula.analysis.bool.ABooleanAssignmentList;
 import de.featjar.base.io.format.IFormat;
 
 import java.util.*;
@@ -30,7 +30,7 @@ import java.util.*;
  *
  * @author Sebastian Krieter
  */
-public class ExpressionGroupFormat implements IFormat<List<List<BooleanAssignmentList>>> {
+public class ExpressionGroupFormat implements IFormat<List<List<ABooleanAssignmentList>>> {
 
 //    @Override
 //    public String serialize(List<List<LiteralMatrix>> expressionGroups) {

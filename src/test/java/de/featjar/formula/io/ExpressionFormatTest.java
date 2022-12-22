@@ -22,7 +22,7 @@ package de.featjar.formula.io;
 
 import de.featjar.base.io.format.IFormat;
 import de.featjar.formula.io.textual.ExpressionFormat;
-import de.featjar.formula.structure.formula.Formula;
+import de.featjar.formula.structure.formula.IFormula;
 import org.junit.jupiter.api.Test;
 
 import static de.featjar.formula.structure.Expressions.*;
@@ -59,7 +59,7 @@ public class ExpressionFormatTest {
         FormatTest.testLoadAndSave(getFormula(name), name, (IFormat) new ExpressionFormat());
     }
 
-    private static Formula getFormula(String name) {
+    private static IFormula getFormula(String name) {
         switch (name) {
             case "faulty": {
                 return null;

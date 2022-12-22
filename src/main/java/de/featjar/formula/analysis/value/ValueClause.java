@@ -2,8 +2,8 @@ package de.featjar.formula.analysis.value;
 
 import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
-import de.featjar.formula.analysis.Clause;
-import de.featjar.formula.analysis.Solver;
+import de.featjar.formula.analysis.IClause;
+import de.featjar.formula.analysis.ISolver;
 import de.featjar.formula.analysis.bool.BooleanClause;
 import de.featjar.formula.analysis.VariableMap;
 
@@ -11,11 +11,11 @@ import java.util.LinkedHashMap;
 
 /**
  * A value clause; that is, a disjunction of equalities.
- * Often used as input to an SMT {@link Solver}.
+ * Often used as input to an SMT {@link ISolver}.
  *
  * @author Elias Kuiter
  */
-public class ValueClause extends ValueAssignment implements Clause<String> {
+public class ValueClause extends ValueAssignment implements IClause<String> {
     public ValueClause() {
     }
 

@@ -24,7 +24,7 @@ import de.featjar.base.computation.IComputation;
 import de.featjar.base.computation.Dependency;
 
 /**
- * Base class for an analysis performed by a {@link Solver solver}.
+ * Base class for an analysis performed by a {@link ISolver solver}.
  * Contains several mixins to control exactly what capabilities a concrete implementation has.
  *
  * @author Sebastian Krieter
@@ -36,13 +36,13 @@ public interface IFormulaAnalysis {
      *
      * @param <T> the type of the assignment
      */
-    interface WithAssumedAssignment<T extends Assignment<?>> {
+    interface WithAssumedAssignment<T extends IAssignment<?>> {
         Dependency<T> getAssumedAssignmentDependency();
 
         /**
          * {@return a computation for the assignment assumed by this analysis}
          * This analysis can freely interpret this assignment.
-         * Usually, it is interpreted as a conjunction (i.e., similar to a {@link Solution}).
+         * Usually, it is interpreted as a conjunction (i.e., similar to a {@link ISolution}).
          */
         default IComputation<T> getAssumedAssignment() {
             return getAssumedAssignmentDependency().get((IComputation<?>) this);
@@ -66,7 +66,7 @@ public interface IFormulaAnalysis {
      *
      * @param <T> type of the clause list
      */
-    interface WithAssumedClauseList<T extends AssignmentList<? extends Clause<?>>> {
+    interface WithAssumedClauseList<T extends IAssignmentList<? extends IClause<?>>> {
         Dependency<T> getAssumedClauseListDependency();
 
         /**

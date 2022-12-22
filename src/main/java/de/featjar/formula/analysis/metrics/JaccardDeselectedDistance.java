@@ -26,7 +26,7 @@ package de.featjar.formula.analysis.metrics;
  *
  * @author Sebastian Krieter
  */
-public class JaccardDeselectedDistance implements DistanceFunction {
+public class JaccardDeselectedDistance implements IDistanceFunction {
 
     @Override
     public double computeDistance(final int[] literals1, final int[] literals2) {

@@ -21,7 +21,7 @@
 package de.featjar.formula.structure.formula.predicate;
 
 import de.featjar.formula.structure.*;
-import de.featjar.formula.structure.term.value.Value;
+import de.featjar.formula.structure.term.value.IValue;
 import de.featjar.formula.structure.term.value.Variable;
 
 import java.util.List;
@@ -34,7 +34,7 @@ import java.util.Objects;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class Literal extends NonTerminalExpression implements UnaryExpression, PolarPredicate {
+public class Literal extends ANonTerminalExpression implements IUnaryExpression, IPolarPredicate {
 
     private boolean isPositive;
 
@@ -42,14 +42,14 @@ public class Literal extends NonTerminalExpression implements UnaryExpression, P
         this.isPositive = literal.isPositive;
     }
 
-    public Literal(boolean isPositive, Value value) {
+    public Literal(boolean isPositive, IValue value) {
         super(value);
         this.isPositive = isPositive;
         if (!Objects.equals(value.getType(), Boolean.class))
             throw new IllegalArgumentException("Boolean literals only accept Boolean values");
     }
 
-    public Literal(Value value) {
+    public Literal(IValue value) {
         this(true, value);
     }
 
@@ -72,13 +72,13 @@ public class Literal extends NonTerminalExpression implements UnaryExpression, P
 
     @Override
     public Literal invert() {
-        return new Literal(!isPositive, (Value) getExpression());
+        return new Literal(!isPositive, (IValue) getExpression());
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<? extends Value> getChildren() {
-        return (List<? extends Value>) super.getChildren();
+    public List<? extends IValue> getChildren() {
+        return (List<? extends IValue>) super.getChildren();
     }
 
     @Override
@@ -103,7 +103,7 @@ public class Literal extends NonTerminalExpression implements UnaryExpression, P
     }
 
     @Override
-    public boolean equalsNode(Expression other) {
+    public boolean equalsNode(IExpression other) {
         return super.equalsNode(other) && isPositive == ((Literal) other).isPositive;
     }
 

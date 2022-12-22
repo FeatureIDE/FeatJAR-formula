@@ -26,7 +26,7 @@ package de.featjar.formula.analysis.metrics;
  *
  * @author Sebastian Krieter
  */
-public class CosineNegativeDistance implements DistanceFunction {
+public class CosineNegativeDistance implements IDistanceFunction {
 
     @Override
     public double computeDistance(final int[] literals1, final int[] literals2) {

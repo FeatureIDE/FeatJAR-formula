@@ -22,11 +22,11 @@ package de.featjar.formula.visitor;
 
 import de.featjar.base.data.Problem;
 import de.featjar.base.data.Result;
-import de.featjar.formula.structure.Expression;
+import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.Expressions;
-import de.featjar.formula.structure.formula.Formula;
+import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.*;
-import de.featjar.formula.structure.formula.predicate.Predicate;
+import de.featjar.formula.structure.formula.predicate.IPredicate;
 import de.featjar.base.tree.visitor.ITreeVisitor;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
  *
  * @author Sebastian Krieter
  */
-public class ConnectiveSimplifier implements ITreeVisitor<Formula, Result.Unit> {
+public class ConnectiveSimplifier implements ITreeVisitor<IFormula, Result.Unit> {
 
     private boolean fail;
 
@@ -51,17 +51,17 @@ public class ConnectiveSimplifier implements ITreeVisitor<Formula, Result.Unit> 
     }
 
     @Override
-    public Optional<Problem> nodeValidator(List<Formula> path) {
+    public Optional<Problem> nodeValidator(List<IFormula> path) {
         return rootValidator(path, root -> root instanceof Reference, "expected formula reference");
     }
 
     @Override
-    public TraversalAction firstVisit(List<Formula> path) {
-        final Formula formula = getCurrentNode(path);
-        if (formula instanceof Predicate) {
+    public TraversalAction firstVisit(List<IFormula> path) {
+        final IFormula formula = getCurrentNode(path);
+        if (formula instanceof IPredicate) {
             return TraversalAction.SKIP_CHILDREN;
-        } else if (formula instanceof Connective) {
-            if (formula instanceof Quantifier) {
+        } else if (formula instanceof IConnective) {
+            if (formula instanceof AQuantifier) {
                 return TraversalAction.FAIL;
             }
             return TraversalAction.CONTINUE;
@@ -71,9 +71,9 @@ public class ConnectiveSimplifier implements ITreeVisitor<Formula, Result.Unit> 
     }
 
     @Override
-    public TraversalAction lastVisit(List<Formula> path) {
-        final Formula formula = getCurrentNode(path);
-        if (!(formula instanceof Predicate))
+    public TraversalAction lastVisit(List<IFormula> path) {
+        final IFormula formula = getCurrentNode(path);
+        if (!(formula instanceof IPredicate))
             formula.replaceChildren(this::replace);
         if (fail) {
             return TraversalAction.FAIL;
@@ -82,15 +82,15 @@ public class ConnectiveSimplifier implements ITreeVisitor<Formula, Result.Unit> 
     }
 
     @SuppressWarnings("unchecked")
-    private Formula replace(Expression formula) {
-        if ((formula instanceof Predicate)
+    private IFormula replace(IExpression formula) {
+        if ((formula instanceof IPredicate)
                 || (formula instanceof And)
                 || (formula instanceof Or)
                 || (formula instanceof Not)) {
             return null;
         }
-        final List<Formula> children = (List<Formula>) formula.getChildren();
-        Formula newFormula;
+        final List<IFormula> children = (List<IFormula>) formula.getChildren();
+        IFormula newFormula;
         if (formula instanceof Implies) {
             newFormula = new Or(new Not(children.get(0)), children.get(1));
         } else if (formula instanceof BiImplies) {
@@ -115,7 +115,7 @@ public class ConnectiveSimplifier implements ITreeVisitor<Formula, Result.Unit> 
         return newFormula;
     }
 
-    private List<Formula> atMostK(List<? extends Formula> elements, int k) {
+    private List<IFormula> atMostK(List<? extends IFormula> elements, int k) {
         final int n = elements.size();
 
         // return tautology
@@ -131,7 +131,7 @@ public class ConnectiveSimplifier implements ITreeVisitor<Formula, Result.Unit> 
         return groupElements(elements.stream().map(Not::new).collect(Collectors.toList()), k, n);
     }
 
-    private List<Formula> atLeastK(List<? extends Formula> elements, int k) {
+    private List<IFormula> atLeastK(List<? extends IFormula> elements, int k) {
         final int n = elements.size();
 
         // return tautology
@@ -147,9 +147,9 @@ public class ConnectiveSimplifier implements ITreeVisitor<Formula, Result.Unit> 
         return groupElements(elements, n - k, n);
     }
 
-    public static List<Formula> groupElements(List<? extends Formula> elements, int k, final int n) {
-        final List<Formula> groupedElements = new ArrayList<>();
-        final Formula[] clause = new Formula[k + 1];
+    public static List<IFormula> groupElements(List<? extends IFormula> elements, int k, final int n) {
+        final List<IFormula> groupedElements = new ArrayList<>();
+        final IFormula[] clause = new IFormula[k + 1];
         final int[] index = new int[k + 1];
 
         // the position that is currently filled in clause
@@ -166,7 +166,7 @@ public class ConnectiveSimplifier implements ITreeVisitor<Formula, Result.Unit> 
             } else {
                 clause[level] = elements.get(index[level]);
                 if (level == k) {
-                    final Formula[] clonedClause = new Formula[clause.length];
+                    final IFormula[] clonedClause = new IFormula[clause.length];
                     System.arraycopy(clause, 0, clonedClause, 0, clause.length);
                     groupedElements.add(new Or(clonedClause));
                 } else {

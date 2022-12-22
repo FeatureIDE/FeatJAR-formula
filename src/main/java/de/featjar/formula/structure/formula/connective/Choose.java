@@ -21,7 +21,7 @@
 package de.featjar.formula.structure.formula.connective;
 
 import de.featjar.base.data.Range;
-import de.featjar.formula.structure.formula.Formula;
+import de.featjar.formula.structure.formula.IFormula;
 
 import java.util.List;
 
@@ -31,16 +31,16 @@ import java.util.List;
  *
  * @author Sebastian Krieter
  */
-public class Choose extends Cardinal {
+public class Choose extends ACardinal {
     private Choose(Choose choose) {
         super(choose);
     }
 
-    public Choose(int bound, Formula... formulas) {
+    public Choose(int bound, IFormula... formulas) {
         super(Range.exactly(bound), formulas);
     }
 
-    public Choose(int minimum, List<? extends Formula> formulas) {
+    public Choose(int minimum, List<? extends IFormula> formulas) {
         super(Range.exactly(minimum), formulas);
     }
 

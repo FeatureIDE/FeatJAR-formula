@@ -23,11 +23,11 @@ package de.featjar.formula.analysis.combinations;
 import java.util.Iterator;
 
 /**
- * Abstract iterator that implements parts of {@link CombinationIterator}.
+ * Abstract iterator that implements parts of {@link ICombinationIterator}.
  *
  * @author Sebastian Krieter
  */
-public abstract class ACombinationIterator implements CombinationIterator {
+public abstract class ACombinationIterator implements ICombinationIterator {
 
     protected final int t, n;
     protected final long numCombinations;

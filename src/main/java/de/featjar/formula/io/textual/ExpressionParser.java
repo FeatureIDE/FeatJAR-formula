@@ -22,8 +22,8 @@ package de.featjar.formula.io.textual;
 
 import de.featjar.base.data.Problem;
 import de.featjar.formula.io.textual.Symbols.Operator;
-import de.featjar.formula.structure.Expression;
-import de.featjar.formula.structure.formula.Formula;
+import de.featjar.formula.structure.IExpression;
+import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.structure.formula.predicate.ProblemFormula;
 import de.featjar.formula.structure.formula.connective.And;
@@ -150,7 +150,7 @@ public class ExpressionParser {
         this.ignoreUnparseableSubExpressions = Objects.requireNonNull(ignoreUnparseableSubExpressions);
     }
 
-    public Result<Expression> parse(String formulaString) {
+    public Result<IExpression> parse(String formulaString) {
         problemList = new ArrayList<>();
         if (formulaString == null) {
             return Result.empty(new ParseProblem(new ParseException(ErrorMessage.NULL_CONSTRAINT.getMessage(), 0), 0));
@@ -171,7 +171,7 @@ public class ExpressionParser {
         }
     }
 
-    private Expression checkExpression(String source, List<String> quotedVariables, List<String> subExpressions)
+    private IExpression checkExpression(String source, List<String> quotedVariables, List<String> subExpressions)
             throws ParseException {
         if (source.isEmpty()) {
             return handleInvalidExpression(ErrorMessage.EMPTY_EXPRESSION, source);
@@ -188,7 +188,7 @@ public class ExpressionParser {
 
                 // recursion for children nodes
 
-                final Expression expression1, expression2;
+                final IExpression expression1, expression2;
                 String substring = source.substring(index + symbol.length());
                 if (operator == Operator.NOT) {
                     final String rightSide = substring.trim();
@@ -224,19 +224,19 @@ public class ExpressionParser {
 
                 switch (operator) {
                     case BIIMPLIES: {
-                        return new BiImplies((Formula) expression1, (Formula) expression2);
+                        return new BiImplies((IFormula) expression1, (IFormula) expression2);
                     }
                     case IMPLIES: {
-                        return new Implies((Formula) expression1, (Formula) expression2);
+                        return new Implies((IFormula) expression1, (IFormula) expression2);
                     }
                     case OR: {
-                        return new Or((Formula) expression1, (Formula) expression2);
+                        return new Or((IFormula) expression1, (IFormula) expression2);
                     }
                     case AND: {
-                        return new And((Formula) expression1, (Formula) expression2);
+                        return new And((IFormula) expression1, (IFormula) expression2);
                     }
                     case NOT: {
-                        return new Not((Formula) expression2);
+                        return new Not((IFormula) expression2);
                     }
                     case ATLEAST:
                     case ATMOST:
@@ -286,15 +286,15 @@ public class ExpressionParser {
         }
     }
 
-    private Expression handleInvalidFeatureName(String featureName) throws ParseException {
+    private IExpression handleInvalidFeatureName(String featureName) throws ParseException {
         return getInvalidLiteral(ErrorMessage.INVALID_FEATURE_NAME, ignoreMissingFeatures, featureName);
     }
 
-    private Expression handleInvalidExpression(ErrorMessage message, String constraint) throws ParseException {
+    private IExpression handleInvalidExpression(ErrorMessage message, String constraint) throws ParseException {
         return getInvalidLiteral(message, ignoreUnparseableSubExpressions, constraint);
     }
 
-    private Expression getInvalidLiteral(ErrorMessage message, ErrorHandling handleError, String element)
+    private IExpression getInvalidLiteral(ErrorMessage message, ErrorHandling handleError, String element)
             throws ParseException {
         switch (handleError) {
             case KEEP:
@@ -310,7 +310,7 @@ public class ExpressionParser {
         }
     }
 
-    private Expression parseNode(String constraint) throws ParseException {
+    private IExpression parseNode(String constraint) throws ParseException {
         constraint = constraint.trim();
         if (constraint.isEmpty()) {
             throwParsingError(ErrorMessage.EMPTY_CONSTRAINT, 0);

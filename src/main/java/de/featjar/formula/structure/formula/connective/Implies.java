@@ -20,9 +20,9 @@
  */
 package de.featjar.formula.structure.formula.connective;
 
-import de.featjar.formula.structure.BinaryExpression;
-import de.featjar.formula.structure.NonTerminalExpression;
-import de.featjar.formula.structure.formula.Formula;
+import de.featjar.formula.structure.IBinaryExpression;
+import de.featjar.formula.structure.ANonTerminalExpression;
+import de.featjar.formula.structure.formula.IFormula;
 
 import java.util.List;
 
@@ -33,16 +33,16 @@ import java.util.List;
  *
  * @author Sebastian Krieter
  */
-public class Implies extends NonTerminalExpression implements Connective, BinaryExpression {
+public class Implies extends ANonTerminalExpression implements IConnective, IBinaryExpression {
 
     protected Implies() {
     }
 
-    public Implies(Formula leftFormula, Formula rightFormula) {
+    public Implies(IFormula leftFormula, IFormula rightFormula) {
         super(leftFormula, rightFormula);
     }
 
-    public Implies(List<? extends Formula> formulas) {
+    public Implies(List<? extends IFormula> formulas) {
         super(formulas);
     }
 

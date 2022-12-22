@@ -23,7 +23,7 @@ package de.featjar.formula.transformer;
 import de.featjar.base.computation.*;
 import de.featjar.base.tree.Trees;
 import de.featjar.base.tree.structure.ITree;
-import de.featjar.formula.structure.formula.Formula;
+import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.Reference;
 import de.featjar.formula.visitor.*;
 
@@ -32,21 +32,21 @@ import de.featjar.formula.visitor.*;
  *
  * @author Elias Kuiter
  */
-public class TransformNNFFormula extends AComputation<Formula> implements ITransformation<Formula> {
-    protected static final Dependency<Formula> FORMULA = newDependency();
+public class TransformNNFFormula extends AComputation<IFormula> implements ITransformation<IFormula> {
+    protected static final Dependency<IFormula> FORMULA = newDependency();
 
-    public TransformNNFFormula(IComputation<Formula> formula) {
+    public TransformNNFFormula(IComputation<IFormula> formula) {
         dependOn(FORMULA);
         setInput(formula);
     }
 
     @Override
-    public Dependency<Formula> getInputDependency() {
+    public Dependency<IFormula> getInputDependency() {
         return FORMULA;
     }
 
     @Override
-    public FutureResult<Formula> compute() {
+    public FutureResult<IFormula> compute() {
         return getInput().compute().thenComputeResult((formula, monitor) -> {
             // TODO: if already in NNF, should do nothing (this requires the NNF tester to be revised, as it allows complex connectives right now)
             return Reference.mutateClone(formula,

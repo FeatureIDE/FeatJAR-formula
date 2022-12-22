@@ -20,9 +20,9 @@
  */
 package de.featjar.formula.structure.formula.connective;
 
-import de.featjar.formula.structure.BinaryExpression;
-import de.featjar.formula.structure.NonTerminalExpression;
-import de.featjar.formula.structure.formula.Formula;
+import de.featjar.formula.structure.IBinaryExpression;
+import de.featjar.formula.structure.ANonTerminalExpression;
+import de.featjar.formula.structure.formula.IFormula;
 
 import java.util.List;
 
@@ -32,16 +32,16 @@ import java.util.List;
  *
  * @author Sebastian Krieter
  */
-public class BiImplies extends NonTerminalExpression implements Connective, BinaryExpression {
+public class BiImplies extends ANonTerminalExpression implements IConnective, IBinaryExpression {
 
     protected BiImplies() {
     }
 
-    public BiImplies(Formula leftFormula, Formula rightFormula) {
+    public BiImplies(IFormula leftFormula, IFormula rightFormula) {
         super(leftFormula, rightFormula);
     }
 
-    public BiImplies(List<? extends Formula> formulas) {
+    public BiImplies(List<? extends IFormula> formulas) {
         super(formulas);
     }
 

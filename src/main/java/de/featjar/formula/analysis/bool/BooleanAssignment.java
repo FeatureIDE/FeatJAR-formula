@@ -4,7 +4,8 @@ import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.AIntegerList;
 import de.featjar.base.data.Problem;
 import de.featjar.base.data.Result;
-import de.featjar.formula.analysis.Assignment;
+import de.featjar.formula.analysis.IAssignment;
+import de.featjar.formula.analysis.ISolver;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.value.ValueAssignment;
 
@@ -13,7 +14,7 @@ import java.util.stream.IntStream;
 
 /**
  * Assigns Boolean values integer-identified {@link de.featjar.formula.structure.term.value.Variable variables}.
- * Can be used to represent a set of literals for use in a SAT {@link de.featjar.formula.analysis.Solver}.
+ * Can be used to represent a set of literals for use in a SAT {@link ISolver}.
  * Implemented as an unordered list of indices to variables in some unspecified {@link VariableMap}.
  * An index can be negative, indicating a negated occurrence of its variable,
  * or 0, indicating no occurrence, and it may occur multiple times.
@@ -25,7 +26,7 @@ import java.util.stream.IntStream;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class BooleanAssignment extends AIntegerList<BooleanAssignment> implements Assignment<Integer>, BooleanRepresentation {
+public class BooleanAssignment extends AIntegerList<BooleanAssignment> implements IAssignment<Integer>, IBooleanRepresentation {
     public BooleanAssignment(int... integers) {
         super(integers);
     }

@@ -27,7 +27,7 @@ import de.featjar.formula.analysis.bool.BooleanSolution;
  *
  * @author Sebastian Krieter
  */
-public class PositiveCount implements CountFunction {
+public class PositiveCount implements ICountFunction {
 
     @Override
     public double compute(BooleanSolution literals) {

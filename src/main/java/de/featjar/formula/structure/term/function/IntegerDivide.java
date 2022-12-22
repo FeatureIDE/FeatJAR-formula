@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.structure.term.function;
 
-import de.featjar.formula.structure.term.Term;
+import de.featjar.formula.structure.term.ITerm;
 
 import java.util.List;
 
@@ -31,16 +31,16 @@ import java.util.List;
  * @deprecated currently not supported by any meaningful operations
  */
 @Deprecated
-public class IntegerDivide extends Divide {
+public class IntegerDivide extends ADivide {
 
     protected IntegerDivide() {
     }
 
-    public IntegerDivide(Term leftTerm, Term rightTerm) {
+    public IntegerDivide(ITerm leftTerm, ITerm rightTerm) {
         super(leftTerm, rightTerm);
     }
 
-    public IntegerDivide(List<Term> arguments) {
+    public IntegerDivide(List<ITerm> arguments) {
         super(arguments);
     }
 
@@ -56,7 +56,7 @@ public class IntegerDivide extends Divide {
 
     @Override
     public Long evaluate(List<?> values) {
-        return Function.reduce(values, (a, b) -> a / b);
+        return IFunction.reduce(values, (a, b) -> a / b);
     }
 
     @Override

@@ -26,7 +26,7 @@ import de.featjar.base.io.IO;
 import de.featjar.base.io.AInputMapper;
 import de.featjar.base.io.format.IFormat;
 import de.featjar.formula.analysis.value.ValueAssignment;
-import de.featjar.formula.analysis.value.ValueAssignmentList;
+import de.featjar.formula.analysis.value.AValueAssignmentList;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
  *
  * @author Elias Kuiter
  */
-public class ValueAssignmentListFormat<T extends ValueAssignmentList<?, U>, U extends ValueAssignment> implements IFormat<T> {
+public class ValueAssignmentListFormat<T extends AValueAssignmentList<?, U>, U extends ValueAssignment> implements IFormat<T> {
     protected final Supplier<T> listConstructor;
     protected final ValueAssignmentFormat valueAssignmentFormat;
     //todo: serialize as CSV, parse as CSV

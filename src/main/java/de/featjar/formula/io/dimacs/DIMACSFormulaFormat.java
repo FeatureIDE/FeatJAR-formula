@@ -24,7 +24,7 @@ import de.featjar.base.data.Result;
 import de.featjar.base.io.AInputMapper;
 import de.featjar.base.io.format.IFormat;
 import de.featjar.base.io.format.ParseProblem;
-import de.featjar.formula.structure.formula.Formula;
+import de.featjar.formula.structure.formula.IFormula;
 
 import java.text.ParseException;
 
@@ -34,17 +34,17 @@ import java.text.ParseException;
  * @author Sebastian Krieter
  * @author Timo G&uuml;nther
  */
-public class DIMACSFormulaFormat implements IFormat<Formula> {
+public class DIMACSFormulaFormat implements IFormat<IFormula> {
 
     @Override
-    public Result<String> serialize(Formula formula) {
+    public Result<String> serialize(IFormula formula) {
         final DIMACSSerializer w = new DIMACSSerializer(formula);
         w.setWritingVariableDirectory(true);
         return Result.of(w.serialize());
     }
 
     @Override
-    public Result<Formula> parse(AInputMapper inputMapper) {
+    public Result<IFormula> parse(AInputMapper inputMapper) {
         final DIMACSParser r = new DIMACSParser();
         r.setReadingVariableDirectory(true);
         try {

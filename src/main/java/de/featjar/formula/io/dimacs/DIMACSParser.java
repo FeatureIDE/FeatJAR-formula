@@ -21,7 +21,7 @@
 package de.featjar.formula.io.dimacs;
 
 import de.featjar.base.io.NonEmptyLineIterator;
-import de.featjar.formula.structure.formula.Formula;
+import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.formula.structure.formula.predicate.Literal;
@@ -85,7 +85,7 @@ public class DIMACSParser {
      * @throws ParseException if the input does not conform to the DIMACS CNF file
      *                        format
      */
-    public Formula parse(Reader in) throws ParseException, IOException {
+    public IFormula parse(Reader in) throws ParseException, IOException {
         indexVariables.clear();
         variableCount = -1;
         clauseCount = -1;
@@ -140,7 +140,7 @@ public class DIMACSParser {
      * @throws ParseException if the input does not conform to the DIMACS CNF file
      *                        format
      */
-    public Formula parse(String in) throws ParseException, IOException {
+    public IFormula parse(String in) throws ParseException, IOException {
         return parse(new StringReader(in));
     }
 

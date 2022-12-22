@@ -20,20 +20,18 @@
  */
 package de.featjar.formula.analysis.metrics;
 
-import de.featjar.formula.analysis.bool.BooleanSolutionList;
-
 import java.util.List;
 import java.util.function.DoubleSupplier;
 
-public class CountMetrics extends AggregatableMetrics {
+public class CountMetrics extends AAggregatableMetrics {
 
-    private final CountFunction function;
+    private final ICountFunction function;
 
-    public CountMetrics(CountFunction function) {
+    public CountMetrics(ICountFunction function) {
         this.function = function;
     }
 
-    public static List<SampleMetric> getAllAggregates(CountFunction function) {
+    public static List<ISampleMetric> getAllAggregates(ICountFunction function) {
         return new CountMetrics(function).getAllAggregates();
     }
 
@@ -48,7 +46,7 @@ public class CountMetrics extends AggregatableMetrics {
     }
 
     @Override
-    public SampleMetric getAggregate(String name, DoubleSupplier aggregate) {
+    public ISampleMetric getAggregate(String name, DoubleSupplier aggregate) {
         return new DoubleMetric(function.getName() + "_count_" + name, aggregate);
     }
 }

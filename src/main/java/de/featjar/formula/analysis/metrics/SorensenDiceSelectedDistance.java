@@ -26,7 +26,7 @@ package de.featjar.formula.analysis.metrics;
  *
  * @author Sebastian Krieter
  */
-public class SorensenDiceSelectedDistance implements DistanceFunction {
+public class SorensenDiceSelectedDistance implements IDistanceFunction {
 
     @Override
     public double computeDistance(final int[] literals1, final int[] literals2) {

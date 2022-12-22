@@ -22,12 +22,6 @@ package de.featjar.formula.io;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
-import de.featjar.formula.structure.Expression;
-import de.featjar.formula.structure.formula.predicate.Literal;
-import de.featjar.formula.structure.formula.connective.And;
-import de.featjar.formula.structure.formula.connective.Or;
-import org.junit.jupiter.api.Test;
-
 public class XMLFeatureModelCNFFormatTest {
 //
 //    @Test

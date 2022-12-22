@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.structure.term.function;
 
-import de.featjar.formula.structure.term.Term;
+import de.featjar.formula.structure.term.ITerm;
 
 import java.util.List;
 
@@ -31,16 +31,16 @@ import java.util.List;
  * @deprecated currently not supported by any meaningful operations
  */
 @Deprecated
-public class IntegerAdd extends Add {
+public class IntegerAdd extends AAdd {
 
     protected IntegerAdd() {
     }
 
-    public IntegerAdd(Term leftTerm, Term rightTerm) {
+    public IntegerAdd(ITerm leftTerm, ITerm rightTerm) {
         super(leftTerm, rightTerm);
     }
 
-    public IntegerAdd(List<Term> arguments) {
+    public IntegerAdd(List<ITerm> arguments) {
         super(arguments);
     }
 
@@ -56,7 +56,7 @@ public class IntegerAdd extends Add {
 
     @Override
     public Long evaluate(List<?> values) {
-        return Function.reduce(values, Long::sum);
+        return IFunction.reduce(values, Long::sum);
     }
 
     @Override

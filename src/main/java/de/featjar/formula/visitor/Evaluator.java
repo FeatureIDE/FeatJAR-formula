@@ -23,7 +23,7 @@ package de.featjar.formula.visitor;
 import de.featjar.base.data.Result;
 import de.featjar.base.tree.visitor.ITreeVisitor;
 import de.featjar.formula.analysis.value.ValueAssignment;
-import de.featjar.formula.structure.Expression;
+import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.term.value.Variable;
 
 import java.util.Collections;
@@ -36,7 +36,7 @@ import java.util.List;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class Evaluator implements ITreeVisitor<Expression, Object> {
+public class Evaluator implements ITreeVisitor<IExpression, Object> {
     private final LinkedList<Object> values = new LinkedList<>();
 
     private final ValueAssignment valueAssignment;
@@ -65,8 +65,8 @@ public class Evaluator implements ITreeVisitor<Expression, Object> {
     }
 
     @Override
-    public TraversalAction lastVisit(List<Expression> path) {
-        final Expression expression = getCurrentNode(path);
+    public TraversalAction lastVisit(List<IExpression> path) {
+        final IExpression expression = getCurrentNode(path);
         if (expression instanceof Variable) {
             final Variable variable = (Variable) expression;
             final String variableName = variable.getName();

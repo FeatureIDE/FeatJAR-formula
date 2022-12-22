@@ -23,7 +23,7 @@ package de.featjar.formula.io.xml;
 import de.featjar.base.data.Problem;
 import de.featjar.base.io.format.ParseException;
 import de.featjar.base.io.xml.AXMLFormat;
-import de.featjar.formula.structure.formula.Formula;
+import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.*;
 import de.featjar.formula.structure.formula.predicate.Literal;
 import org.w3c.dom.Element;
@@ -87,7 +87,7 @@ public abstract class AXMLFeatureModelFormat<T, U, V> extends AXMLFormat<T> {
 
     protected abstract V newConstraintLabel();
 
-    protected abstract void addConstraint(V constraintLabel, Formula formula) throws ParseException;
+    protected abstract void addConstraint(V constraintLabel, IFormula formula) throws ParseException;
 
     protected abstract void addConstraintMetadata(V constraintLabel, Element e) throws ParseException;
 
@@ -199,7 +199,7 @@ public abstract class AXMLFeatureModelFormat<T, U, V> extends AXMLFormat<T> {
             if (nodeName.equals(RULE)) {
                 try {
                     V constraintLabel = newConstraintLabel();
-                    final List<Formula> parsedConstraints =
+                    final List<IFormula> parsedConstraints =
                             parseConstraints(child.getChildNodes(), constraintLabel);
                     if (parsedConstraints.size() == 1) {
                         addConstraint(constraintLabel, parsedConstraints.get(0));
@@ -230,10 +230,10 @@ public abstract class AXMLFeatureModelFormat<T, U, V> extends AXMLFormat<T> {
         }
     }
 
-    protected List<Formula> parseConstraints(NodeList nodeList, V parentConstraintLabel)
+    protected List<IFormula> parseConstraints(NodeList nodeList, V parentConstraintLabel)
             throws ParseException {
-        final List<Formula> nodes = new ArrayList<>();
-        List<Formula> children;
+        final List<IFormula> nodes = new ArrayList<>();
+        List<IFormula> children;
         final List<Element> elements = getElements(nodeList);
         for (final Element e : elements) {
             final String nodeName = e.getNodeName();
@@ -291,23 +291,23 @@ public abstract class AXMLFeatureModelFormat<T, U, V> extends AXMLFormat<T> {
         return nodes;
     }
 
-    protected Formula atMostOne(List<? extends Formula> parseFeatures) {
+    protected IFormula atMostOne(List<? extends IFormula> parseFeatures) {
         return new AtMost(1, parseFeatures);
     }
 
-    protected Formula biImplies(Formula a, Formula b) {
+    protected IFormula biImplies(IFormula a, IFormula b) {
         return new BiImplies(a, b);
     }
 
-    protected Formula implies(Literal a, Formula b) {
+    protected IFormula implies(Literal a, IFormula b) {
         return new Implies(a, b);
     }
 
-    protected Formula implies(Formula a, Formula b) {
+    protected IFormula implies(IFormula a, IFormula b) {
         return new Implies(a, b);
     }
 
-    protected Formula implies(Literal f, List<? extends Formula> parseFeatures) {
+    protected IFormula implies(Literal f, List<? extends IFormula> parseFeatures) {
         return parseFeatures.size() == 1 ? new Implies(f, parseFeatures.get(0)) : new Implies(f, new Or(parseFeatures));
     }
 }

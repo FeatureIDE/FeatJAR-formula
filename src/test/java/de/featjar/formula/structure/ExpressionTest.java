@@ -2,8 +2,8 @@ package de.featjar.formula.structure;
 
 import de.featjar.base.data.Sets;
 import de.featjar.formula.analysis.value.ValueAssignment;
-import de.featjar.formula.structure.formula.Formula;
-import de.featjar.formula.structure.term.Term;
+import de.featjar.formula.structure.formula.IFormula;
+import de.featjar.formula.structure.term.ITerm;
 import de.featjar.formula.structure.term.value.Constant;
 import de.featjar.formula.structure.term.value.Variable;
 import org.junit.jupiter.api.Test;
@@ -15,8 +15,8 @@ import static de.featjar.formula.structure.Expressions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ExpressionTest {
-    Formula formula = implies(literal("a"), False);
-    Term term = integerAdd(constant(42L), variable("x", Long.class));
+    IFormula formula = implies(literal("a"), False);
+    ITerm term = integerAdd(constant(42L), variable("x", Long.class));
 
     @Test
     void getName() {

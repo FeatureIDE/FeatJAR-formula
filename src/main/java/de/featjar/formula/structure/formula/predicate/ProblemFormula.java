@@ -21,8 +21,8 @@
 package de.featjar.formula.structure.formula.predicate;
 
 import de.featjar.base.data.Problem;
-import de.featjar.formula.structure.Expression;
-import de.featjar.formula.structure.TerminalExpression;
+import de.featjar.formula.structure.IExpression;
+import de.featjar.formula.structure.ATerminalExpression;
 
 import java.util.List;
 import java.util.Objects;
@@ -33,7 +33,7 @@ import java.util.Objects;
  *
  * @author Sebastian Krieter
  */
-public class ProblemFormula extends TerminalExpression implements Predicate {
+public class ProblemFormula extends ATerminalExpression implements IPredicate {
     private final Problem problem;
 
     public ProblemFormula(Problem problem) {
@@ -55,7 +55,7 @@ public class ProblemFormula extends TerminalExpression implements Predicate {
     }
 
     @Override
-    public boolean equalsNode(Expression other) {
+    public boolean equalsNode(IExpression other) {
         return super.equalsNode(other) && Objects.equals(problem, ((ProblemFormula) other).problem);
     }
 

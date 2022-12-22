@@ -26,7 +26,7 @@ package de.featjar.formula.analysis.metrics;
  *
  * @author Sebastian Krieter
  */
-public class EuclideanDistance implements DistanceFunction {
+public class EuclideanDistance implements IDistanceFunction {
 
     @Override
     public double computeDistance(final int[] literals1, final int[] literals2) {

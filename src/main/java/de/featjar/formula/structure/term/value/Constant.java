@@ -1,7 +1,7 @@
 package de.featjar.formula.structure.term.value;
 
-import de.featjar.formula.structure.Expression;
-import de.featjar.formula.structure.TerminalExpression;
+import de.featjar.formula.structure.IExpression;
+import de.featjar.formula.structure.ATerminalExpression;
 
 import java.util.List;
 import java.util.Objects;
@@ -15,7 +15,7 @@ import java.util.Objects;
  * @deprecated currently not supported by any meaningful operations
  */
 @Deprecated
-public class Constant extends TerminalExpression implements Value {
+public class Constant extends ATerminalExpression implements IValue {
     protected Object value;
     protected Class<?> type;
 
@@ -65,7 +65,7 @@ public class Constant extends TerminalExpression implements Value {
     }
 
     @Override
-    public boolean equalsNode(Expression other) {
+    public boolean equalsNode(IExpression other) {
         return super.equalsNode(other) && Objects.equals(value, ((Constant) other).value);
     }
 

@@ -21,8 +21,8 @@
 package de.featjar.formula.io.dimacs;
 
 import de.featjar.formula.analysis.VariableMap;
-import de.featjar.formula.structure.Expression;
-import de.featjar.formula.structure.formula.Formula;
+import de.featjar.formula.structure.IExpression;
+import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.structure.formula.connective.Or;
 
@@ -34,7 +34,7 @@ public class DIMACSSerializer {
      */
     private boolean writingVariableDirectory = true;
 
-    private final Formula formula;
+    private final IFormula formula;
     private final VariableMap variableMap;
 
     /**
@@ -43,7 +43,7 @@ public class DIMACSSerializer {
      * @param formula the formula to transform; not null
      * @throws IllegalArgumentException if the input is null or not in CNF
      */
-    public DIMACSSerializer(Formula formula) throws IllegalArgumentException {
+    public DIMACSSerializer(IFormula formula) throws IllegalArgumentException {
         if (!formula.isCNF()) {
             throw new IllegalArgumentException();
         }
@@ -134,7 +134,7 @@ public class DIMACSSerializer {
      * @param clause clause to transform; not null
      */
     private void writeClause(StringBuilder sb, Or clause) {
-        for (final Expression child : clause.getChildren()) {
+        for (final IExpression child : clause.getChildren()) {
             final Literal l = (Literal) child;
             final Integer index = variableMap
                     .get(l.getName())
@@ -152,7 +152,7 @@ public class DIMACSSerializer {
      * @param sb the string builder that builds the document
      */
     private void writeClauses(StringBuilder sb) {
-        for (final Expression clause : formula.getChildren()) {
+        for (final IExpression clause : formula.getChildren()) {
             writeClause(sb, (Or) clause);
         }
     }

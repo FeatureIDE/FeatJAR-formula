@@ -1,6 +1,6 @@
 package de.featjar.formula.structure.term.value;
 
-import de.featjar.formula.structure.TerminalExpression;
+import de.featjar.formula.structure.ATerminalExpression;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import java.util.List;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class Variable extends TerminalExpression implements Value {
+public class Variable extends ATerminalExpression implements IValue {
     protected String name;
     protected Class<?> type;
 

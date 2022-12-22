@@ -4,7 +4,7 @@ import de.featjar.base.Feat;
 import de.featjar.base.computation.IComputation;
 import de.featjar.base.io.IO;
 import de.featjar.formula.io.FormulaFormats;
-import de.featjar.formula.structure.formula.Formula;
+import de.featjar.formula.structure.formula.IFormula;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
@@ -36,7 +36,7 @@ class TransformCNFFormulaTest {
 
     @Test
     void basic() {
-        Formula formula =
+        IFormula formula =
                 Feat.apply(featJAR ->
                         IComputation.of(IO.load(fmDirectory.resolve("basic.xml"), Feat.extensionPoint(FormulaFormats.class)).get())
                                 .getResult().get());
@@ -46,7 +46,7 @@ class TransformCNFFormulaTest {
                 or(literal(false, "B"), literal("Root")),
                 literal("A"),
                 literal("B")), formula);
-        Formula finalFormula = formula;
+        IFormula finalFormula = formula;
         formula = Feat.apply(featJAR ->
                 IComputation.of(finalFormula)
                         .map(TransformNNFFormula::new)

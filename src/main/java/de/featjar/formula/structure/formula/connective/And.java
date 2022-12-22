@@ -20,8 +20,8 @@
  */
 package de.featjar.formula.structure.formula.connective;
 
-import de.featjar.formula.structure.NonTerminalExpression;
-import de.featjar.formula.structure.formula.Formula;
+import de.featjar.formula.structure.ANonTerminalExpression;
+import de.featjar.formula.structure.formula.IFormula;
 
 import java.util.List;
 
@@ -31,15 +31,15 @@ import java.util.List;
  *
  * @author Sebastian Krieter
  */
-public class And extends NonTerminalExpression implements Connective {
+public class And extends ANonTerminalExpression implements IConnective {
     protected And() {
     }
 
-    public And(Formula... formulas) {
+    public And(IFormula... formulas) {
         super(formulas);
     }
 
-    public And(List<? extends Formula> formulas) {
+    public And(List<? extends IFormula> formulas) {
         super(formulas);
     }
 

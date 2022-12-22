@@ -6,7 +6,7 @@ import de.featjar.base.data.RangeMap;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.bool.*;
 import de.featjar.formula.analysis.value.*;
-import de.featjar.formula.structure.Expression;
+import de.featjar.formula.structure.formula.IFormula;
 
 import java.util.*;
 import java.util.function.Function;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 /**
  * Maps variable names to indices and vice versa.
  * Used to link a literal index in a {@link BooleanAssignment} to a {@link de.featjar.formula.structure.term.value.Variable}
- * in a {@link de.featjar.formula.structure.formula.Formula}.
+ * in a {@link IFormula}.
  *
  * @author Elias Kuiter
  */
@@ -24,7 +24,7 @@ public class VariableMap extends RangeMap<String> {
     public VariableMap() {
     }
 
-    protected VariableMap(ValueRepresentation valueRepresentation) {
+    protected VariableMap(IValueRepresentation valueRepresentation) {
         super(valueRepresentation.getVariableNames());
     }
 
@@ -38,7 +38,7 @@ public class VariableMap extends RangeMap<String> {
      *
      * @param valueRepresentation the value representation
      */
-    public static VariableMap of(ValueRepresentation valueRepresentation) {
+    public static VariableMap of(IValueRepresentation valueRepresentation) {
         return new VariableMap(valueRepresentation);
     }
 
@@ -105,8 +105,8 @@ public class VariableMap extends RangeMap<String> {
         return toBoolean(valueSolution, BooleanSolution::new);
     }
 
-    protected <T extends BooleanAssignmentList<?, U>, U extends BooleanAssignment> Result<T> toBoolean(
-            ValueAssignmentList<?, ?> valueAssignmentList,
+    protected <T extends ABooleanAssignmentList<?, U>, U extends BooleanAssignment> Result<T> toBoolean(
+            AValueAssignmentList<?, ?> valueAssignmentList,
             Supplier<T> listConstructor, Function<List<Integer>, U> constructor) {
         T booleanAssignmentList = listConstructor.get();
         List<Problem> problems = new ArrayList<>();
@@ -154,8 +154,8 @@ public class VariableMap extends RangeMap<String> {
         return toValue(booleanSolution, ValueSolution::new);
     }
 
-    protected <T extends ValueAssignmentList<?, U>, U extends ValueAssignment> Result<T> toValue(
-            BooleanAssignmentList<?, ?> booleanAssignmentList,
+    protected <T extends AValueAssignmentList<?, U>, U extends ValueAssignment> Result<T> toValue(
+            ABooleanAssignmentList<?, ?> booleanAssignmentList,
             Supplier<T> listConstructor, Function<LinkedHashMap<String, Object>, U> constructor) {
         T valueAssignmentList = listConstructor.get();
         List<Problem> problems = new ArrayList<>();
@@ -198,8 +198,8 @@ public class VariableMap extends RangeMap<String> {
         return toAnonymousValue(booleanSolution, ValueSolution::new);
     }
 
-    protected static <T extends ValueAssignmentList<?, U>, U extends ValueAssignment> Result<T> toAnonymousValue(
-            BooleanAssignmentList<?, ?> booleanAssignmentList,
+    protected static <T extends AValueAssignmentList<?, U>, U extends ValueAssignment> Result<T> toAnonymousValue(
+            ABooleanAssignmentList<?, ?> booleanAssignmentList,
             Supplier<T> listConstructor, Function<LinkedHashMap<String, Object>, U> constructor) {
         T valueAssignmentList = listConstructor.get();
         List<Problem> problems = new ArrayList<>();

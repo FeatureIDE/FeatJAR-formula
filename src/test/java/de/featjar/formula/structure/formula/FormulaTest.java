@@ -10,11 +10,11 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class FormulaTest {
-    Formula formula = new Implies(new Literal("a"), Expressions.False);
-    Formula cnf = new Or(new Literal(false, "a"), Expressions.False);
-    Formula dnf = new And(new Literal(false, "a"), Expressions.False);
-    Formula clausalCnf = new And(new Or(new Literal(false, "a"), Expressions.False));
-    Formula clausalDnf = new Or(new And(new Literal(false, "a"), Expressions.False));
+    IFormula formula = new Implies(new Literal("a"), Expressions.False);
+    IFormula cnf = new Or(new Literal(false, "a"), Expressions.False);
+    IFormula dnf = new And(new Literal(false, "a"), Expressions.False);
+    IFormula clausalCnf = new And(new Or(new Literal(false, "a"), Expressions.False));
+    IFormula clausalDnf = new Or(new And(new Literal(false, "a"), Expressions.False));
 
     @Test
     void getType() {
@@ -41,20 +41,20 @@ class FormulaTest {
 
     @Test
     void isClausalCNF() {
-        assertFalse(formula.isClausalNormalForm(Formula.NormalForm.CNF));
-        assertFalse(cnf.isClausalNormalForm(Formula.NormalForm.CNF));
-        assertTrue(clausalCnf.isClausalNormalForm(Formula.NormalForm.CNF));
-        assertFalse(dnf.isClausalNormalForm(Formula.NormalForm.CNF));
-        assertFalse(clausalDnf.isClausalNormalForm(Formula.NormalForm.CNF));
+        assertFalse(formula.isClausalNormalForm(IFormula.NormalForm.CNF));
+        assertFalse(cnf.isClausalNormalForm(IFormula.NormalForm.CNF));
+        assertTrue(clausalCnf.isClausalNormalForm(IFormula.NormalForm.CNF));
+        assertFalse(dnf.isClausalNormalForm(IFormula.NormalForm.CNF));
+        assertFalse(clausalDnf.isClausalNormalForm(IFormula.NormalForm.CNF));
     }
 
     @Test
     void isClausalDNF() {
-        assertFalse(formula.isClausalNormalForm(Formula.NormalForm.DNF));
-        assertFalse(cnf.isClausalNormalForm(Formula.NormalForm.DNF));
-        assertFalse(clausalCnf.isClausalNormalForm(Formula.NormalForm.DNF));
-        assertFalse(dnf.isClausalNormalForm(Formula.NormalForm.DNF));
-        assertTrue(clausalDnf.isClausalNormalForm(Formula.NormalForm.DNF));
+        assertFalse(formula.isClausalNormalForm(IFormula.NormalForm.DNF));
+        assertFalse(cnf.isClausalNormalForm(IFormula.NormalForm.DNF));
+        assertFalse(clausalCnf.isClausalNormalForm(IFormula.NormalForm.DNF));
+        assertFalse(dnf.isClausalNormalForm(IFormula.NormalForm.DNF));
+        assertTrue(clausalDnf.isClausalNormalForm(IFormula.NormalForm.DNF));
     }
 
     @Test

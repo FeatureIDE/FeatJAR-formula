@@ -27,5 +27,5 @@ import de.featjar.base.extension.AExtensionPoint;
  *
  * @author Elias Kuiter
  */
-public class Solvers extends AExtensionPoint<Solver<?>> {
+public class Solvers extends AExtensionPoint<ISolver<?>> {
 }

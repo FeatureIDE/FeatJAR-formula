@@ -21,7 +21,7 @@
 package de.featjar.formula.visitor;
 
 import de.featjar.base.computation.IComputation;
-import de.featjar.formula.structure.formula.Formula;
+import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Or;
@@ -40,36 +40,36 @@ import static de.featjar.base.computation.Computations.async;
  */
 public class NormalForms {
 
-    public static NormalFormTester getNormalFormTester(Formula formula, Formula.NormalForm normalForm) {
-        NormalFormTester normalFormTester = normalForm == Formula.NormalForm.NNF
-                ? new NormalFormTester.NNF()
-                : normalForm == Formula.NormalForm.CNF
-                ? new NormalFormTester.CNF()
-                : new NormalFormTester.DNF();
+    public static ANormalFormTester getNormalFormTester(IFormula formula, IFormula.NormalForm normalForm) {
+        ANormalFormTester normalFormTester = normalForm == IFormula.NormalForm.NNF
+                ? new ANormalFormTester.NNF()
+                : normalForm == IFormula.NormalForm.CNF
+                ? new ANormalFormTester.CNF()
+                : new ANormalFormTester.DNF();
         Trees.traverse(formula, normalFormTester);
         return normalFormTester;
     }
 
-    public static boolean isNormalForm(Formula formula, Formula.NormalForm normalForm) {
+    public static boolean isNormalForm(IFormula formula, IFormula.NormalForm normalForm) {
         return getNormalFormTester(formula, normalForm).isNormalForm();
     }
 
-    public static boolean isClausalNormalForm(Formula formula, Formula.NormalForm normalForm) {
+    public static boolean isClausalNormalForm(IFormula formula, IFormula.NormalForm normalForm) {
         return getNormalFormTester(formula, normalForm).isClausalNormalForm();
     }
 
-    public static Result<Formula> toNormalForm(Formula formula, Formula.NormalForm normalForm, boolean isClausal) {
-        IComputation<Formula> normalFormFormula = async(formula)
-                .map(normalForm == Formula.NormalForm.NNF
+    public static Result<IFormula> toNormalForm(IFormula formula, IFormula.NormalForm normalForm, boolean isClausal) {
+        IComputation<IFormula> normalFormFormula = async(formula)
+                .map(normalForm == IFormula.NormalForm.NNF
                         ? TransformNNFFormula::new
-                        : normalForm == Formula.NormalForm.CNF
+                        : normalForm == IFormula.NormalForm.CNF
                         ? TransformCNFFormula::new
                         : ComputeDNFFormula::new);
-        Result<Formula> res = normalFormFormula.getResult();
+        Result<IFormula> res = normalFormFormula.getResult();
         return res.map(f -> isClausal ? normalToClausalNormalForm(formula, normalForm) : f);
     }
 
-    public static Formula normalToClausalNormalForm(Formula formula, Formula.NormalForm normalForm) {
+    public static IFormula normalToClausalNormalForm(IFormula formula, IFormula.NormalForm normalForm) {
         switch (normalForm) {
             case NNF:
                 // TODO: currently not implemented
@@ -80,7 +80,7 @@ public class NormalForms {
                 } else if (formula instanceof Or) {
                     formula = new And(formula);
                 } else {
-                    formula.replaceChildren(child -> (child instanceof Literal ? new Or((Formula) child) : child));
+                    formula.replaceChildren(child -> (child instanceof Literal ? new Or((IFormula) child) : child));
                 }
                 break;
             case DNF:
@@ -89,7 +89,7 @@ public class NormalForms {
                 } else if (formula instanceof And) {
                     formula = new Or(new And(formula));
                 } else {
-                    formula.replaceChildren(child -> (child instanceof Literal ? new And((Formula) child) : child));
+                    formula.replaceChildren(child -> (child instanceof Literal ? new And((IFormula) child) : child));
                 }
                 break;
         }

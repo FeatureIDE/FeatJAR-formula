@@ -2,8 +2,8 @@ package de.featjar.formula.analysis.bool;
 
 import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
-import de.featjar.formula.analysis.Solver;
-import de.featjar.formula.analysis.Solution;
+import de.featjar.formula.analysis.ISolver;
+import de.featjar.formula.analysis.ISolution;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.value.ValueSolution;
 
@@ -12,7 +12,7 @@ import java.util.*;
 /**
  * A (partial) Boolean solution; that is, a conjunction of literals.
  * Implemented as a sorted list of indices.
- * Often holds output of a SAT {@link Solver}.
+ * Often holds output of a SAT {@link ISolver}.
  * Indices are ordered such that the array index {@code i} either holds {@code -i}, {@code 0}, or {@code i}.
  * That is, the largest occurring index mandates the minimum length of the underlying array.
  * The same index may not occur multiple times, but indices may be 0 for partial solutions.
@@ -20,7 +20,7 @@ import java.util.*;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class BooleanSolution extends BooleanAssignment implements Solution<Integer> {
+public class BooleanSolution extends BooleanAssignment implements ISolution<Integer> {
     public BooleanSolution(int... integers) {
         this(integers, true);
     }

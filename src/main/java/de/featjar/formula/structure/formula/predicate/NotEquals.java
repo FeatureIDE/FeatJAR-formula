@@ -20,8 +20,8 @@
  */
 package de.featjar.formula.structure.formula.predicate;
 
-import de.featjar.formula.structure.NonTerminalExpression;
-import de.featjar.formula.structure.term.Term;
+import de.featjar.formula.structure.ANonTerminalExpression;
+import de.featjar.formula.structure.term.ITerm;
 import java.util.List;
 
 /**
@@ -32,15 +32,15 @@ import java.util.List;
  * @deprecated currently not supported by any meaningful operations
  */
 @Deprecated
-public class NotEquals extends NonTerminalExpression implements BinaryPredicate, InvertiblePredicate {
+public class NotEquals extends ANonTerminalExpression implements IBinaryPredicate, IInvertiblePredicate {
     protected NotEquals() {
     }
 
-    public NotEquals(Term leftTerm, Term rightTerm) {
+    public NotEquals(ITerm leftTerm, ITerm rightTerm) {
         super(leftTerm, rightTerm);
     }
 
-    public NotEquals(List<? extends Term> terms) {
+    public NotEquals(List<? extends ITerm> terms) {
         super(terms);
     }
 
@@ -56,7 +56,7 @@ public class NotEquals extends NonTerminalExpression implements BinaryPredicate,
 
     @Override
     public Equals invert() {
-        return new Equals((Term) getLeftExpression(), (Term) getRightFormula());
+        return new Equals((ITerm) getLeftExpression(), (ITerm) getRightFormula());
     }
 
     @Override

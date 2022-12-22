@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.structure.term.function;
 
-import de.featjar.formula.structure.term.Term;
+import de.featjar.formula.structure.term.ITerm;
 
 import java.util.List;
 
@@ -31,16 +31,16 @@ import java.util.List;
  * @deprecated currently not supported by any meaningful operations
  */
 @Deprecated
-public class RealDivide extends Divide {
+public class RealDivide extends ADivide {
 
     protected RealDivide() {
     }
 
-    public RealDivide(Term leftTerm, Term rightTerm) {
+    public RealDivide(ITerm leftTerm, ITerm rightTerm) {
         super(leftTerm, rightTerm);
     }
 
-    public RealDivide(List<Term> arguments) {
+    public RealDivide(List<ITerm> arguments) {
         super(arguments);
     }
 
@@ -56,7 +56,7 @@ public class RealDivide extends Divide {
 
     @Override
     public Double evaluate(List<?> values) {
-        return Function.reduce(values, (a, b) -> a / b);
+        return IFunction.reduce(values, (a, b) -> a / b);
     }
 
     @Override

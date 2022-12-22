@@ -21,7 +21,7 @@
 package de.featjar.formula.structure.formula.connective;
 
 import de.featjar.base.data.Range;
-import de.featjar.formula.structure.formula.Formula;
+import de.featjar.formula.structure.formula.IFormula;
 
 import java.util.List;
 
@@ -31,16 +31,16 @@ import java.util.List;
  *
  * @author Sebastian Krieter
  */
-public class AtMost extends Cardinal {
+public class AtMost extends ACardinal {
     private AtMost(AtMost atMost) {
         super(atMost);
     }
 
-    public AtMost(int maximum, Formula... formulas) {
+    public AtMost(int maximum, IFormula... formulas) {
         super(Range.atMost(maximum), formulas);
     }
 
-    public AtMost(int maximum, List<? extends Formula> formulas) {
+    public AtMost(int maximum, List<? extends IFormula> formulas) {
         super(Range.atMost(maximum), formulas);
     }
 

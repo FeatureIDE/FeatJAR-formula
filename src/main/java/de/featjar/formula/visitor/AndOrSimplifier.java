@@ -22,13 +22,13 @@ package de.featjar.formula.visitor;
 
 import de.featjar.base.data.Result;
 import de.featjar.base.tree.visitor.ITreeVisitor;
-import de.featjar.formula.structure.Expression;
+import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.Expressions;
-import de.featjar.formula.structure.formula.Formula;
+import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.And;
-import de.featjar.formula.structure.formula.connective.Connective;
+import de.featjar.formula.structure.formula.connective.IConnective;
 import de.featjar.formula.structure.formula.connective.Or;
-import de.featjar.formula.structure.formula.predicate.Predicate;
+import de.featjar.formula.structure.formula.predicate.IPredicate;
 
 import java.util.Collections;
 import java.util.List;
@@ -40,13 +40,13 @@ import java.util.List;
  *
  * @author Sebastian Krieter
  */
-public class AndOrSimplifier implements ITreeVisitor<Formula, Result.Unit> {
+public class AndOrSimplifier implements ITreeVisitor<IFormula, Result.Unit> {
     @Override
-    public TraversalAction firstVisit(List<Formula> path) {
-        final Formula formula = getCurrentNode(path);
-        if (formula instanceof Predicate) {
+    public TraversalAction firstVisit(List<IFormula> path) {
+        final IFormula formula = getCurrentNode(path);
+        if (formula instanceof IPredicate) {
             return TraversalAction.SKIP_CHILDREN;
-        } else if (formula instanceof Connective) {
+        } else if (formula instanceof IConnective) {
             return TraversalAction.CONTINUE;
         } else {
             return TraversalAction.FAIL;
@@ -54,9 +54,9 @@ public class AndOrSimplifier implements ITreeVisitor<Formula, Result.Unit> {
     }
 
     @Override
-    public TraversalAction lastVisit(List<Formula> path) {
-        final Formula formula = getCurrentNode(path);
-        if (formula instanceof Connective) {
+    public TraversalAction lastVisit(List<IFormula> path) {
+        final IFormula formula = getCurrentNode(path);
+        if (formula instanceof IConnective) {
             if (formula instanceof And) {
                 // TODO: False dominates And, which is implemented, but True is neutral and can be removed
                 if (formula.getChildren().stream().anyMatch(c -> c == Expressions.False)) {
@@ -76,14 +76,14 @@ public class AndOrSimplifier implements ITreeVisitor<Formula, Result.Unit> {
         return TraversalAction.CONTINUE;
     }
 
-    private List<? extends Expression> mergeAnd(final Expression child) {
+    private List<? extends IExpression> mergeAnd(final IExpression child) {
         return (child instanceof And)
                         || (child instanceof Or && (child.getChildren().size() == 1))
                 ? child.getChildren()
                 : null;
     }
 
-    private List<? extends Expression> mergeOr(final Expression child) {
+    private List<? extends IExpression> mergeOr(final IExpression child) {
         return (child instanceof Or)
                         || (child instanceof And && (child.getChildren().size() == 1))
                 ? child.getChildren()

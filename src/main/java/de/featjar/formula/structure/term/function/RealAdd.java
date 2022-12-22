@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.structure.term.function;
 
-import de.featjar.formula.structure.term.Term;
+import de.featjar.formula.structure.term.ITerm;
 import java.util.List;
 
 /**
@@ -30,16 +30,16 @@ import java.util.List;
  * @deprecated currently not supported by any meaningful operations
  */
 @Deprecated
-public class RealAdd extends Add {
+public class RealAdd extends AAdd {
 
     protected RealAdd() {
     }
 
-    public RealAdd(Term leftTerm, Term rightTerm) {
+    public RealAdd(ITerm leftTerm, ITerm rightTerm) {
         super(leftTerm, rightTerm);
     }
 
-    public RealAdd(List<Term> arguments) {
+    public RealAdd(List<ITerm> arguments) {
         super(arguments);
     }
 
@@ -55,7 +55,7 @@ public class RealAdd extends Add {
 
     @Override
     public Double evaluate(List<?> values) {
-        return Function.reduce(values, Double::sum);
+        return IFunction.reduce(values, Double::sum);
     }
 
     @Override

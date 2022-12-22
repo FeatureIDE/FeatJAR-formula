@@ -21,7 +21,7 @@
 package de.featjar.formula.io.textual;
 
 import de.featjar.base.data.Pair;
-import de.featjar.formula.structure.Expression;
+import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.formula.connective.*;
 
 import java.util.Collection;
@@ -92,8 +92,8 @@ public class Symbols {
         return symbol != null ? symbol : operator.defaultName;
     }
 
-    public static Operator getOperator(Expression expression) throws IllegalArgumentException {
-        if (expression instanceof Connective) {
+    public static Operator getOperator(IExpression expression) throws IllegalArgumentException {
+        if (expression instanceof IConnective) {
             if (expression instanceof Not) {
                 return Operator.NOT;
             }

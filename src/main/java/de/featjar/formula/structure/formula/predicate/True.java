@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.structure.formula.predicate;
 
-import de.featjar.formula.structure.TerminalExpression;
+import de.featjar.formula.structure.ATerminalExpression;
 
 import java.util.List;
 
@@ -30,7 +30,7 @@ import java.util.List;
  *
  * @author Sebastian Krieter
  */
-public class True extends TerminalExpression implements PolarPredicate {
+public class True extends ATerminalExpression implements IPolarPredicate {
 
     private static final True INSTANCE = new True();
 

@@ -20,27 +20,25 @@
  */
 package de.featjar.formula.analysis.metrics;
 
-import de.featjar.formula.analysis.bool.BooleanSolutionList;
-
 import java.util.List;
 import java.util.function.DoubleSupplier;
 
-public class DistanceMetrics extends AggregatableMetrics {
+public class DistanceMetrics extends AAggregatableMetrics {
 
-    private final DistanceFunction function;
+    private final IDistanceFunction function;
 
     private double leastMean = EMPTY;
     private double mostMean = EMPTY;
     private double meanMin = EMPTY;
     private double meanMax = EMPTY;
 
-    public DistanceMetrics(DistanceFunction function) {
+    public DistanceMetrics(IDistanceFunction function) {
         this.function = function;
     }
 
-    public static List<SampleMetric> getAllAggregates(DistanceFunction distanceFunction) {
+    public static List<ISampleMetric> getAllAggregates(IDistanceFunction distanceFunction) {
         final DistanceMetrics metrics = new DistanceMetrics(distanceFunction);
-        final List<SampleMetric> aggregates = metrics.getAllAggregates();
+        final List<ISampleMetric> aggregates = metrics.getAllAggregates();
         aggregates.add(metrics.getAggregate("leastMean", metrics::getLeastMean));
         aggregates.add(metrics.getAggregate("mostMean", metrics::getMostMean));
         aggregates.add(metrics.getAggregate("meanMin", metrics::getMeanMin));
@@ -49,7 +47,7 @@ public class DistanceMetrics extends AggregatableMetrics {
     }
 
     @Override
-    public SampleMetric getAggregate(String name, DoubleSupplier aggregate) {
+    public ISampleMetric getAggregate(String name, DoubleSupplier aggregate) {
         return new DoubleMetric(function.getName() + "_distance_" + name, aggregate);
     }
 

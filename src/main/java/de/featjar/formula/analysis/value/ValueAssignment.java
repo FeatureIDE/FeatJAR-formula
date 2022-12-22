@@ -3,7 +3,8 @@ package de.featjar.formula.analysis.value;
 import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.IO;
-import de.featjar.formula.analysis.Assignment;
+import de.featjar.formula.analysis.IAssignment;
+import de.featjar.formula.analysis.ISolver;
 import de.featjar.formula.analysis.bool.BooleanAssignment;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.io.value.ValueAssignmentFormat;
@@ -14,11 +15,11 @@ import java.util.LinkedHashSet;
 
 /**
  * Assigns values of any type to string-identified {@link de.featjar.formula.structure.term.value.Variable variables}.
- * Can be used to represent a set of equalities for use in an SMT {@link de.featjar.formula.analysis.Solver}.
+ * Can be used to represent a set of equalities for use in an SMT {@link ISolver}.
  *
  * @author Elias Kuiter
  */
-public class ValueAssignment implements Assignment<String>, ValueRepresentation {
+public class ValueAssignment implements IAssignment<String>, IValueRepresentation {
     final LinkedHashMap<String, Object> variableValuePairs;
 
     public ValueAssignment() {

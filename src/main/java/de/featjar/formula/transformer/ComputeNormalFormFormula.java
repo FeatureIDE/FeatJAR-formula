@@ -23,10 +23,10 @@ package de.featjar.formula.transformer;
 import de.featjar.base.computation.*;
 import de.featjar.base.data.Result;
 import de.featjar.base.tree.structure.ITree;
-import de.featjar.formula.structure.Expression;
-import de.featjar.formula.structure.formula.Formula;
+import de.featjar.formula.structure.IExpression;
+import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.And;
-import de.featjar.formula.structure.formula.connective.Connective;
+import de.featjar.formula.structure.formula.connective.IConnective;
 import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.formula.structure.formula.predicate.Literal;
 
@@ -39,33 +39,33 @@ import java.util.stream.Collectors;
  *
  * @author Sebastian Krieter
  */
-public class ComputeNormalFormFormula extends AComputation<Formula> implements ITransformation<Formula> {
-    protected static final Dependency<Formula> NNF_FORMULA = newDependency();
+public class ComputeNormalFormFormula extends AComputation<IFormula> implements ITransformation<IFormula> {
+    protected static final Dependency<IFormula> NNF_FORMULA = newDependency();
 
     public static class MaximumNumberOfLiteralsExceededException extends Exception {
     }
 
     private static class PathElement {
-        Expression expression;
-        List<Expression> newChildren = new ArrayList<>();
+        IExpression expression;
+        List<IExpression> newChildren = new ArrayList<>();
         int maxDepth = 0;
 
-        PathElement(Expression expression) {
+        PathElement(IExpression expression) {
             this.expression = expression;
         }
     }
 
-    private final Formula.NormalForm normalForm; //todo: input as dependency
-    private final Class<? extends Connective> clauseClass;
-    private final Function<List<? extends Formula>, Formula> clauseConstructor;
+    private final IFormula.NormalForm normalForm; //todo: input as dependency
+    private final Class<? extends IConnective> clauseClass;
+    private final Function<List<? extends IFormula>, IFormula> clauseConstructor;
 
     private int maximumNumberOfLiterals = Integer.MAX_VALUE;
 
     private int numberOfLiterals;
 
-    private List<Expression> children;
+    private List<IExpression> children;
 
-    public ComputeNormalFormFormula(IComputation<Formula> nnfFormula, Formula.NormalForm normalForm) {
+    public ComputeNormalFormFormula(IComputation<IFormula> nnfFormula, IFormula.NormalForm normalForm) {
         dependOn(NNF_FORMULA);
         setInput(nnfFormula);
         this.normalForm = normalForm;
@@ -84,7 +84,7 @@ public class ComputeNormalFormFormula extends AComputation<Formula> implements I
     }
 
     @Override
-    public Dependency<Formula> getInputDependency() {
+    public Dependency<IFormula> getInputDependency() {
         return NNF_FORMULA;
     }
 
@@ -93,18 +93,18 @@ public class ComputeNormalFormFormula extends AComputation<Formula> implements I
     }
 
     @Override
-    public FutureResult<Formula> compute() {
+    public FutureResult<IFormula> compute() {
         return getInput().get().thenComputeResult((formula, monitor) -> {
-            if (normalForm.equals(Formula.NormalForm.CNF))
+            if (normalForm.equals(IFormula.NormalForm.CNF))
                 formula = (formula instanceof And) ? (And) formula : new And(formula);
-            if (normalForm.equals(Formula.NormalForm.DNF))
+            if (normalForm.equals(IFormula.NormalForm.DNF))
                 formula = (formula instanceof Or) ? (Or) formula : new Or(formula);
 
             final ArrayList<PathElement> path = new ArrayList<>();
-            final ArrayDeque<Expression> stack = new ArrayDeque<>();
+            final ArrayDeque<IExpression> stack = new ArrayDeque<>();
             stack.addLast(formula);
             while (!stack.isEmpty()) {
-                final Expression curNode = stack.getLast();
+                final IExpression curNode = stack.getLast();
                 final boolean firstEncounter = path.isEmpty() || (curNode != path.get(path.size() - 1).expression);
                 if (firstEncounter) {
                     if (curNode instanceof Literal) {
@@ -146,7 +146,7 @@ public class ComputeNormalFormFormula extends AComputation<Formula> implements I
     }
 
     @SuppressWarnings("unchecked")
-    private List<Expression> convert(Expression child) throws MaximumNumberOfLiteralsExceededException {
+    private List<IExpression> convert(IExpression child) throws MaximumNumberOfLiteralsExceededException {
         if (child instanceof Literal) {
             return null;
         } else {
@@ -156,7 +156,7 @@ public class ComputeNormalFormFormula extends AComputation<Formula> implements I
             children.sort(Comparator.comparingInt(c -> c.getChildren().size()));
             convertNF(newClauseList, new LinkedHashSet<>(children.size() << 1), 0);
 
-            final List<Expression> filteredClauseList = new ArrayList<>(newClauseList.size());
+            final List<IExpression> filteredClauseList = new ArrayList<>(newClauseList.size());
             newClauseList.sort(Comparator.comparingInt(Set::size));
             final int lastIndex = newClauseList.size();
             for (int i = 0; i < lastIndex; i++) {
@@ -187,7 +187,7 @@ public class ComputeNormalFormFormula extends AComputation<Formula> implements I
             }
             clauses.add(newClause);
         } else {
-            final Expression child = children.get(index);
+            final IExpression child = children.get(index);
             if (child instanceof Literal) {
                 final Literal clauseLiteral = (Literal) child;
                 if (literals.contains(clauseLiteral)) {
@@ -201,7 +201,7 @@ public class ComputeNormalFormFormula extends AComputation<Formula> implements I
                 if (isRedundant(literals, child)) {
                     convertNF(clauses, literals, index + 1);
                 } else {
-                    for (final Expression grandChild : child.getChildren()) {
+                    for (final IExpression grandChild : child.getChildren()) {
                         if (grandChild instanceof Literal) {
                             final Literal newlyAddedLiteral = (Literal) grandChild;
                             if (!literals.contains(newlyAddedLiteral.invert())) {
@@ -230,11 +230,11 @@ public class ComputeNormalFormFormula extends AComputation<Formula> implements I
         return greatGrandChildren.stream().map(Literal::invert).noneMatch(literals::contains);
     }
 
-    private boolean isRedundant(LinkedHashSet<Literal> literals, final Expression child) {
+    private boolean isRedundant(LinkedHashSet<Literal> literals, final IExpression child) {
         return child.getChildren().stream().anyMatch(e -> isRedundant(e, literals));
     }
 
-    private static boolean isRedundant(Expression expression, LinkedHashSet<Literal> literals) {
+    private static boolean isRedundant(IExpression expression, LinkedHashSet<Literal> literals) {
         return (expression instanceof Literal)
                 ? literals.contains(expression)
                 : expression.getChildren().stream().allMatch(literals::contains);

@@ -2,8 +2,8 @@ package de.featjar.formula.analysis.bool;
 
 import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
-import de.featjar.formula.analysis.Solver;
-import de.featjar.formula.analysis.Clause;
+import de.featjar.formula.analysis.ISolver;
+import de.featjar.formula.analysis.IClause;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.value.ValueClause;
 
@@ -12,14 +12,14 @@ import java.util.*;
 /**
  * A Boolean clause; that is, a disjunction of literals.
  * Implemented as a sorted list of indices.
- * Often used as input to a SAT {@link Solver}.
+ * Often used as input to a SAT {@link ISolver}.
  * Indices are ordered naturally; that is, in ascending order, so negative indices come before positive indices.
  * The same index may occur multiple times, but no index may be 0.
  *
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class BooleanClause extends BooleanAssignment implements Clause<Integer> {
+public class BooleanClause extends BooleanAssignment implements IClause<Integer> {
     public BooleanClause(int... integers) {
         this(integers, true);
     }

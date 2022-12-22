@@ -31,7 +31,7 @@ import de.featjar.formula.analysis.bool.*;
  * @deprecated
  */
 @Deprecated
-public class BinaryFormat extends ABinaryFormat<BooleanAssignmentList<?, ?>> { // DNFBinaryFormat?
+public class BinaryFormat extends ABinaryFormat<ABooleanAssignmentList<?, ?>> { // DNFBinaryFormat?
 //    @Override
 //    public void write(BooleanAssignmentList<?, ?> solutions, OutputMapper outputMapper) throws IOException {
 //        final OutputStream outputStream = outputMapper.get().getOutputStream();

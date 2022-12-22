@@ -24,6 +24,7 @@ import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.bool.BooleanSolutionList;
 import de.featjar.formula.analysis.VariableMap;
+import de.featjar.formula.structure.formula.IFormula;
 
 import java.util.Collection;
 import java.util.List;
@@ -31,14 +32,14 @@ import java.util.stream.Collectors;
 
 /**
  * A list of value solutions.
- * Typically used to express solutions to a problem expressed as a {@link de.featjar.formula.structure.formula.Formula}.
+ * Typically used to express solutions to a problem expressed as a {@link IFormula}.
  * Analogous to a {@link de.featjar.formula.analysis.value.ValueClauseList},
  * a {@link de.featjar.formula.analysis.value.ValueSolutionList}
  * is a low-level representation of a formula in disjunctive normal form (DNF).
  *
  * @author Elias Kuiter
  */
-public class ValueSolutionList extends ValueAssignmentList<ValueSolutionList, ValueSolution> {
+public class ValueSolutionList extends AValueAssignmentList<ValueSolutionList, ValueSolution> {
     public ValueSolutionList() {
     }
 

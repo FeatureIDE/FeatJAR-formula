@@ -22,8 +22,8 @@ package de.featjar.formula.io.xml;
 
 import de.featjar.base.io.format.ParseException;
 import de.featjar.base.tree.Trees;
-import de.featjar.formula.structure.Expression;
-import de.featjar.formula.structure.formula.Formula;
+import de.featjar.formula.structure.IExpression;
+import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Not;
 import de.featjar.formula.structure.formula.connective.Or;
@@ -62,7 +62,7 @@ public class XMLFeatureModelCNFFormulaFormat extends XMLFeatureModelFormulaForma
     }
 
     @Override
-    protected Expression parseDocument(Document document) throws ParseException {
+    protected IExpression parseDocument(Document document) throws ParseException {
         final Element featureModelElement = getDocumentElement(document, FEATURE_MODEL);
         parseFeatureTree(getElement(featureModelElement, STRUCT));
         Optional<Element> constraintsElement = getOptionalElement(featureModelElement, CONSTRAINTS);
@@ -73,42 +73,42 @@ public class XMLFeatureModelCNFFormulaFormat extends XMLFeatureModelFormulaForma
     }
 
     @Override
-    protected void addConstraint(Boolean constraintLabel, Formula formula) throws ParseException {
-        Formula transformedExpression = async(formula).map(TransformNNFFormula::new).map(TransformCNFFormula::new).getResult()
+    protected void addConstraint(Boolean constraintLabel, IFormula formula) throws ParseException {
+        IFormula transformedExpression = async(formula).map(TransformNNFFormula::new).map(TransformCNFFormula::new).getResult()
                 .orElseThrow(p -> new ParseException("failed to transform " + formula));
         super.addConstraint(constraintLabel, transformedExpression);
     }
 
     @Override
-    protected Formula atMostOne(List<? extends Formula> parseFeatures) {
+    protected IFormula atMostOne(List<? extends IFormula> parseFeatures) {
         return new And(ConnectiveSimplifier.groupElements(
                 parseFeatures.stream().map(Not::new).collect(Collectors.toList()), 1, parseFeatures.size()));
     }
 
     @Override
-    protected Formula biImplies(Formula a, Formula b) {
+    protected IFormula biImplies(IFormula a, IFormula b) {
         return new And(new Or(new Not(a), b), new Or(new Not(b), a));
     }
 
     @Override
-    protected Formula implies(Literal a, Formula b) {
+    protected IFormula implies(Literal a, IFormula b) {
         return new Or(a.invert(), b);
     }
 
     @Override
-    protected Formula implies(Formula a, Formula b) {
+    protected IFormula implies(IFormula a, IFormula b) {
         return new Or(new Not(a), b);
     }
 
     @Override
-    protected Formula implies(Literal f, List<? extends Formula> parseFeatures) {
-        final ArrayList<Formula> list = new ArrayList<>(parseFeatures.size() + 1);
+    protected IFormula implies(Literal f, List<? extends IFormula> parseFeatures) {
+        final ArrayList<IFormula> list = new ArrayList<>(parseFeatures.size() + 1);
         list.add(f.invert());
         list.addAll(parseFeatures);
         return new Or(list);
     }
 
-    private static Formula simplify(Formula formula) {
+    private static IFormula simplify(IFormula formula) {
         // TODO: error handling
         Trees.traverse(formula, new DeMorganApplier());
         Trees.traverse(formula, new AndOrSimplifier());

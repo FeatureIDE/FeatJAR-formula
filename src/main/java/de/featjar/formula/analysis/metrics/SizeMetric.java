@@ -27,7 +27,7 @@ import de.featjar.formula.analysis.bool.BooleanSolutionList;
  *
  * @author Sebastian Krieter
  */
-public class SizeMetric implements SampleMetric {
+public class SizeMetric implements ISampleMetric {
 
     @Override
     public double get(BooleanSolutionList sample) {

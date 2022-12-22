@@ -21,7 +21,7 @@
 package de.featjar.formula.io.textual;
 
 import de.featjar.formula.io.textual.Symbols.Operator;
-import de.featjar.formula.structure.Expression;
+import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.AtLeast;
@@ -29,7 +29,7 @@ import de.featjar.formula.structure.formula.connective.AtMost;
 import de.featjar.formula.structure.formula.connective.Between;
 import de.featjar.formula.structure.formula.connective.BiImplies;
 import de.featjar.formula.structure.formula.connective.Choose;
-import de.featjar.formula.structure.formula.connective.Connective;
+import de.featjar.formula.structure.formula.connective.IConnective;
 import de.featjar.formula.structure.formula.connective.Exists;
 import de.featjar.formula.structure.formula.connective.ForAll;
 import de.featjar.formula.structure.formula.connective.Implies;
@@ -273,22 +273,22 @@ public class ExpressionSerializer {
      * @param expression the formula to write
      * @return the textual representation; not null
      */
-    public String serialize(Expression expression) {
+    public String serialize(IExpression expression) {
         final StringBuilder sb = new StringBuilder();
         nodeToString(expression, null, sb, -1);
         return sb.toString();
     }
 
-    public void serialize(Expression expression, StringBuilder sb) {
+    public void serialize(IExpression expression, StringBuilder sb) {
         nodeToString(expression, null, sb, -1);
     }
 
-    private void nodeToString(Expression expression, Operator parent, StringBuilder sb, int depth) {
+    private void nodeToString(IExpression expression, Operator parent, StringBuilder sb, int depth) {
         if (expression == null) {
             sb.append((String) null);
         } else {
             if (expression instanceof Not) {
-                final Expression child = expression.getFirstChild().orElse(null);
+                final IExpression child = expression.getFirstChild().orElse(null);
                 if (child instanceof Literal) {
                     literalToString(((Literal) child.cloneTree()).invert(), sb, depth + 1);
                     return;
@@ -297,7 +297,7 @@ public class ExpressionSerializer {
             if (expression instanceof Literal) {
                 literalToString((Literal) expression, sb, depth + 1);
             } else {
-                operationToString((Connective) expression, parent, sb, depth + 1);
+                operationToString((IConnective) expression, parent, sb, depth + 1);
             }
         }
     }
@@ -364,9 +364,9 @@ public class ExpressionSerializer {
      * @param sb     the {@link StringBuilder} containing the textual
      *               representation.
      */
-    private void operationToString(Connective node, Operator parent, StringBuilder sb, int depth) {
+    private void operationToString(IConnective node, Operator parent, StringBuilder sb, int depth) {
         alignLine(sb, depth);
-        final List<? extends Expression> children = node.getChildren();
+        final List<? extends IExpression> children = node.getChildren();
         if (children.size() == 0) {
             sb.append("()");
             return;
@@ -464,7 +464,7 @@ public class ExpressionSerializer {
      * @param expression operation in question
      * @return true iff the given operation can be written in infix notation
      */
-    private boolean isInfixCompatibleOperation(Expression expression) {
+    private boolean isInfixCompatibleOperation(IExpression expression) {
         return (expression instanceof And)
                 || (expression instanceof Or)
                 || (expression instanceof Implies)

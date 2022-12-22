@@ -21,11 +21,11 @@
 package de.featjar.formula.transformer;
 
 import de.featjar.base.data.Result;
-import de.featjar.formula.structure.Expression;
-import de.featjar.formula.structure.formula.predicate.Predicate;
+import de.featjar.formula.structure.IExpression;
+import de.featjar.formula.structure.formula.predicate.IPredicate;
 import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.structure.formula.connective.And;
-import de.featjar.formula.structure.formula.connective.Connective;
+import de.featjar.formula.structure.formula.connective.IConnective;
 import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.base.task.IMonitor;
 import de.featjar.base.task.IMonitorableFunction;
@@ -46,33 +46,33 @@ import java.util.Objects;
  */
 @Deprecated
 public class ComputeTseitinCNFFormula
-        implements IMonitorableFunction<Expression, List<ComputeTseitinCNFFormula.Substitute>>, ITreeVisitor<Expression, Expression> {
+        implements IMonitorableFunction<IExpression, List<ComputeTseitinCNFFormula.Substitute>>, ITreeVisitor<IExpression, IExpression> {
 
     public static class Substitute {
-        private final Expression orgExpression;
+        private final IExpression orgExpression;
         private final Variable variable;
-        private final List<Expression> clauses;
+        private final List<IExpression> clauses;
 
-        private Substitute(Expression orgExpression, Variable variable, int numberOfClauses) {
+        private Substitute(IExpression orgExpression, Variable variable, int numberOfClauses) {
             this.orgExpression = orgExpression;
             this.variable = variable;
             clauses = new ArrayList<>(numberOfClauses);
         }
 
-        private Substitute(Expression orgExpression, Variable variable, Expression clause) {
+        private Substitute(IExpression orgExpression, Variable variable, IExpression clause) {
             this.orgExpression = orgExpression;
             this.variable = variable;
             clauses = new ArrayList<>(1);
             clauses.add(clause);
         }
 
-        private Substitute(Expression orgExpression, Variable variable, List<? extends Expression> clauses) {
+        private Substitute(IExpression orgExpression, Variable variable, List<? extends IExpression> clauses) {
             this.orgExpression = orgExpression;
             this.variable = variable;
             this.clauses = new ArrayList<>(clauses);
         }
 
-        private void addClause(Expression clause) {
+        private void addClause(IExpression clause) {
             clauses.add(clause);
         }
 
@@ -80,7 +80,7 @@ public class ComputeTseitinCNFFormula
             return variable;
         }
 
-        public List<Expression> getClauses() {
+        public List<IExpression> getClauses() {
             return clauses;
         }
 
@@ -100,7 +100,7 @@ public class ComputeTseitinCNFFormula
     private final List<Substitute> substitutes = new ArrayList<>();
     private int i = 0;
 
-    private Variable newVariable(final ArrayList<Literal> newChildren, final Expression clonedLastNode) {
+    private Variable newVariable(final ArrayList<Literal> newChildren, final IExpression clonedLastNode) {
         Variable addBooleanVariable = new Variable("__tmp__" + (++i));
         final Substitute substitute = new Substitute(clonedLastNode, addBooleanVariable, newChildren.size() + 1);
         substitutes.add(substitute);
@@ -128,10 +128,10 @@ public class ComputeTseitinCNFFormula
         return substitute.variable;
     }
 
-    private final ArrayDeque<Expression> stack = new ArrayDeque<>();
+    private final ArrayDeque<IExpression> stack = new ArrayDeque<>();
 
     @Override
-    public Result<List<Substitute>> execute(Expression child, IMonitor monitor) {
+    public Result<List<Substitute>> execute(IExpression child, IMonitor monitor) {
         substitutes.clear();
         stack.clear();
 
@@ -145,11 +145,11 @@ public class ComputeTseitinCNFFormula
     }
 
     @Override
-    public TraversalAction firstVisit(List<Expression> path) {
-        final Expression expression = getCurrentNode(path);
-        if (expression instanceof Predicate) {
+    public TraversalAction firstVisit(List<IExpression> path) {
+        final IExpression expression = getCurrentNode(path);
+        if (expression instanceof IPredicate) {
             return TraversalAction.SKIP_CHILDREN;
-        } else if ((expression instanceof Connective)) {
+        } else if ((expression instanceof IConnective)) {
             stack.push(expression);
             return TraversalAction.CONTINUE;
         } else {
@@ -158,10 +158,10 @@ public class ComputeTseitinCNFFormula
     }
 
     @Override
-    public TraversalAction lastVisit(List<Expression> path) {
-        final Expression expression = getCurrentNode(path);
-        if (expression instanceof Predicate) {
-            final Expression clonedExpression = expression;
+    public TraversalAction lastVisit(List<IExpression> path) {
+        final IExpression expression = getCurrentNode(path);
+        if (expression instanceof IPredicate) {
+            final IExpression clonedExpression = expression;
             if (path.isEmpty()) {
                 substitutes.add(new Substitute(clonedExpression, null, clonedExpression));
             } else {
@@ -169,21 +169,21 @@ public class ComputeTseitinCNFFormula
             }
         } else {
             final ArrayList<Literal> newChildren = new ArrayList<>();
-            Expression lastNode = stack.pop();
+            IExpression lastNode = stack.pop();
             while (lastNode != expression) {
                 newChildren.add((Literal) lastNode);
                 lastNode = stack.pop();
             }
 
             if (stack.isEmpty()) {
-                final Expression clonedLastNode = lastNode;
+                final IExpression clonedLastNode = lastNode;
                 if (lastNode instanceof And) {
                     substitutes.add(new Substitute(clonedLastNode, null, newChildren));
                 } else {
                     substitutes.add(new Substitute(clonedLastNode, null, new Or(newChildren)));
                 }
             } else {
-                final Expression clonedLastNode = lastNode;
+                final IExpression clonedLastNode = lastNode;
                 final Variable variable = newVariable(newChildren, clonedLastNode);
                 stack.push(new Literal(variable));
             }

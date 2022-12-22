@@ -21,7 +21,7 @@
 package de.featjar.formula.analysis.combinations;
 
 /**
- * Instantiates an implementation of {@link CombinationIterator}.
+ * Instantiates an implementation of {@link ICombinationIterator}.
  *
  * @author Sebastian Krieter
  */
@@ -36,7 +36,7 @@ public class IteratorFactory {
         Partition
     }
 
-    public static CombinationIterator getIterator(IteratorID id, int size, int t) {
+    public static ICombinationIterator getIterator(IteratorID id, int size, int t) {
         switch (id) {
             case Default:
                 return new InverseDefaultIterator(t, size);

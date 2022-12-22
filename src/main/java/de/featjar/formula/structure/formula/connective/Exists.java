@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.structure.formula.connective;
 
-import de.featjar.formula.structure.formula.Formula;
+import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.term.value.Variable;
 
 /**
@@ -33,13 +33,13 @@ import de.featjar.formula.structure.term.value.Variable;
  * @deprecated currently not supported by any meaningful operations
  */
 @Deprecated
-public class Exists extends Quantifier {
+public class Exists extends AQuantifier {
     //TODO: rewrite CNFSlicer to work on a QBF
     protected Exists(Exists exists) {
         super(exists);
     }
 
-    public Exists(Variable boundVariable, Formula formula) {
+    public Exists(Variable boundVariable, IFormula formula) {
         super(boundVariable, formula);
     }
 

@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.structure.term.function;
 
-import de.featjar.formula.structure.term.Term;
+import de.featjar.formula.structure.term.ITerm;
 import java.util.List;
 
 /**
@@ -30,16 +30,16 @@ import java.util.List;
  * @deprecated currently not supported by any meaningful operations
  */
 @Deprecated
-public class RealMultiply extends Multiply {
+public class RealMultiply extends AMultiply {
 
     protected RealMultiply() {
     }
 
-    public RealMultiply(Term leftTerm, Term rightTerm) {
+    public RealMultiply(ITerm leftTerm, ITerm rightTerm) {
         super(leftTerm, rightTerm);
     }
 
-    public RealMultiply(List<Term> arguments) {
+    public RealMultiply(List<ITerm> arguments) {
         super(arguments);
     }
 
@@ -55,7 +55,7 @@ public class RealMultiply extends Multiply {
 
     @Override
     public Double evaluate(List<?> values) {
-        return Function.reduce(values, (a, b) -> a * b);
+        return IFunction.reduce(values, (a, b) -> a * b);
     }
 
     @Override

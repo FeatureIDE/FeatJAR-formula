@@ -20,8 +20,8 @@
  */
 package de.featjar.formula.structure.formula.predicate;
 
-import de.featjar.formula.structure.NonTerminalExpression;
-import de.featjar.formula.structure.term.Term;
+import de.featjar.formula.structure.ANonTerminalExpression;
+import de.featjar.formula.structure.term.ITerm;
 import java.util.List;
 
 /**
@@ -32,15 +32,15 @@ import java.util.List;
  * @deprecated currently not supported by any meaningful operations
  */
 @Deprecated
-public class GreaterThan extends NonTerminalExpression implements BinaryPredicate, InvertiblePredicate {
+public class GreaterThan extends ANonTerminalExpression implements IBinaryPredicate, IInvertiblePredicate {
     protected GreaterThan() {
     }
 
-    public GreaterThan(Term leftTerm, Term rightTerm) {
+    public GreaterThan(ITerm leftTerm, ITerm rightTerm) {
         super(leftTerm, rightTerm);
     }
 
-    public GreaterThan(List<? extends Term> terms) {
+    public GreaterThan(List<? extends ITerm> terms) {
         super(terms);
     }
 
@@ -56,7 +56,7 @@ public class GreaterThan extends NonTerminalExpression implements BinaryPredicat
 
     @Override
     public LessEqual invert() {
-        return new LessEqual((Term) getLeftExpression(), (Term) getRightFormula());
+        return new LessEqual((ITerm) getLeftExpression(), (ITerm) getRightFormula());
     }
 
     @Override

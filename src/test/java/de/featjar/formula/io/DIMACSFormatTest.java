@@ -24,8 +24,7 @@ import static de.featjar.formula.structure.Expressions.*;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import de.featjar.formula.io.dimacs.DIMACSFormulaFormat;
-import de.featjar.formula.structure.formula.Formula;
-import org.junit.jupiter.api.Test;
+import de.featjar.formula.structure.formula.IFormula;
 
 /**
  * Tests {@link de.featjar.formula.io.dimacs.DIMACSFormulaFormat DIMACS} format.
@@ -94,7 +93,7 @@ public class DIMACSFormatTest {
         FormatTest.testLoadAndSave(getFormula(name), name, new DIMACSFormulaFormat());
     }
 
-    private static Formula getFormula(String name) {
+    private static IFormula getFormula(String name) {
         switch (name) {
             case "faulty": {
                 return null;

@@ -22,9 +22,9 @@ package de.featjar.formula.structure.formula.connective;
 
 import de.featjar.base.data.Result;
 import de.featjar.base.tree.visitor.ITreeVisitor;
-import de.featjar.formula.structure.NonTerminalExpression;
-import de.featjar.formula.structure.UnaryExpression;
-import de.featjar.formula.structure.formula.Formula;
+import de.featjar.formula.structure.ANonTerminalExpression;
+import de.featjar.formula.structure.IUnaryExpression;
+import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.transformer.TransformNNFFormula;
 
 import java.util.List;
@@ -47,15 +47,15 @@ import java.util.function.Function;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class Reference extends NonTerminalExpression implements Connective, UnaryExpression {
+public class Reference extends ANonTerminalExpression implements IConnective, IUnaryExpression {
     protected Reference() {
     }
 
-    public Reference(Formula formula) {
+    public Reference(IFormula formula) {
         super(formula);
     }
 
-    public Reference(List<? extends Formula> formulas) {
+    public Reference(List<? extends IFormula> formulas) {
         super(formulas);
     }
 
@@ -83,9 +83,9 @@ public class Reference extends NonTerminalExpression implements Connective, Unar
      * @param fn the function
      * @return the result of mutating the cloned formula
      */
-    public static Result<Formula> mutateClone(Formula formula, Function<Reference, Result<?>> fn) {
-        Reference formulaReference = new Reference((Formula) formula.cloneTree());
+    public static Result<IFormula> mutateClone(IFormula formula, Function<Reference, Result<?>> fn) {
+        Reference formulaReference = new Reference((IFormula) formula.cloneTree());
         return fn.apply(formulaReference)
-                .map(result -> (Formula) formulaReference.getExpression());
+                .map(result -> (IFormula) formulaReference.getExpression());
     }
 }
