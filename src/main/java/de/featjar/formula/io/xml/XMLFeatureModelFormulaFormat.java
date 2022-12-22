@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class XMLFeatureModelFormulaFormat extends AbstractXMLFeatureModelFormat<Expression, Literal, Boolean> {
+public class XMLFeatureModelFormulaFormat extends AXMLFeatureModelFormat<Expression, Literal, Boolean> {
     protected final LinkedHashSet<String> featureLabels = new LinkedHashSet<>();
     protected final List<Formula> constraints = new ArrayList<>();
 
@@ -80,7 +80,7 @@ public class XMLFeatureModelFormulaFormat extends AbstractXMLFeatureModelFormat<
 
     @Override
     protected Pattern getInputHeaderPattern() {
-        return AbstractXMLFeatureModelFormat.inputHeaderPattern;
+        return AXMLFeatureModelFormat.inputHeaderPattern;
     }
 
     @Override

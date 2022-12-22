@@ -22,13 +22,13 @@ package de.featjar.formula.transformer;
 
 import de.featjar.base.computation.*;
 import de.featjar.base.data.Result;
-import de.featjar.base.tree.structure.Traversable;
+import de.featjar.base.tree.structure.ITree;
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.term.value.Variable;
 import de.featjar.formula.visitor.NormalFormTester;
 import de.featjar.formula.structure.formula.connective.And;
-import de.featjar.base.task.Monitor;
+import de.featjar.base.task.IMonitor;
 import de.featjar.base.task.CancelableMonitor;
 import de.featjar.base.tree.Trees;
 import de.featjar.formula.visitor.NormalForms;
@@ -152,7 +152,7 @@ public class TransformCNFFormula extends AComputation<Formula> implements ITrans
         }
     }
 
-    protected Result<Formula> distributive(Formula child, Monitor monitor)
+    protected Result<Formula> distributive(Formula child, IMonitor monitor)
             throws ComputeNormalFormFormula.MaximumNumberOfLiteralsExceededException {
         final ComputeNormalFormFormula cnfDistributiveLawTransformer =
                 IComputation.of(child, monitor)
@@ -161,13 +161,13 @@ public class TransformCNFFormula extends AComputation<Formula> implements ITrans
         return cnfDistributiveLawTransformer.getResult();
     }
 
-    protected Result<List<ComputeTseitinCNFFormula.Substitute>> tseitin(Expression child, Monitor monitor) {
+    protected Result<List<ComputeTseitinCNFFormula.Substitute>> tseitin(Expression child, IMonitor monitor) {
         final ComputeTseitinCNFFormula toTseitinCNFFormula = new ComputeTseitinCNFFormula();
         return toTseitinCNFFormula.execute(child, monitor);
     }
 
     @Override
-    public Traversable<IComputation<?>> cloneNode() {
+    public ITree<IComputation<?>> cloneNode() {
         return new TransformCNFFormula(getInput());
     }
 }

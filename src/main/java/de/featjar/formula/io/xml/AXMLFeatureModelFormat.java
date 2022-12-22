@@ -22,7 +22,7 @@ package de.featjar.formula.io.xml;
 
 import de.featjar.base.data.Problem;
 import de.featjar.base.io.format.ParseException;
-import de.featjar.base.io.xml.XMLFormat;
+import de.featjar.base.io.xml.AXMLFormat;
 import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.formula.connective.*;
 import de.featjar.formula.structure.formula.predicate.Literal;
@@ -44,7 +44,7 @@ import java.util.regex.Pattern;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public abstract class AbstractXMLFeatureModelFormat<T, U, V> extends XMLFormat<T> {
+public abstract class AXMLFeatureModelFormat<T, U, V> extends AXMLFormat<T> {
     protected static final Pattern inputHeaderPattern =
             Pattern.compile("\\A\\s*(<[?]xml\\s.*[?]>\\s*)?<featureModel[\\s>]");
     protected static final String FEATURE_MODEL = "featureModel";

@@ -27,7 +27,7 @@ import de.featjar.formula.structure.Expressions;
 import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.formula.connective.*;
 import de.featjar.formula.structure.formula.predicate.Predicate;
-import de.featjar.base.tree.visitor.TreeVisitor;
+import de.featjar.base.tree.visitor.ITreeVisitor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
  *
  * @author Sebastian Krieter
  */
-public class ConnectiveSimplifier implements TreeVisitor<Formula, Result.Unit> {
+public class ConnectiveSimplifier implements ITreeVisitor<Formula, Result.Unit> {
 
     private boolean fail;
 

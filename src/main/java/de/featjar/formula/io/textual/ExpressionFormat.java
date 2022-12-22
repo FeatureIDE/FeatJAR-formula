@@ -21,8 +21,8 @@
 package de.featjar.formula.io.textual;
 
 import de.featjar.base.data.Result;
-import de.featjar.base.io.InputMapper;
-import de.featjar.base.io.format.Format;
+import de.featjar.base.io.AInputMapper;
+import de.featjar.base.io.format.IFormat;
 import de.featjar.formula.structure.Expression;
 
 /**
@@ -32,7 +32,7 @@ import de.featjar.formula.structure.Expression;
  * @deprecated does not work reliably at the moment
  */
 @Deprecated
-public class ExpressionFormat implements Format<Expression> {
+public class ExpressionFormat implements IFormat<Expression> {
     @Override
     public String getName() {
         return "Expression";
@@ -49,7 +49,7 @@ public class ExpressionFormat implements Format<Expression> {
     }
 
     @Override
-    public Result<Expression> parse(InputMapper inputMapper) {
+    public Result<Expression> parse(AInputMapper inputMapper) {
         return new ExpressionParser().parse(inputMapper.get().read().get());
     }
 

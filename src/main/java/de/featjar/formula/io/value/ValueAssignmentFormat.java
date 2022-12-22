@@ -23,10 +23,8 @@ package de.featjar.formula.io.value;
 import de.featjar.base.data.Problem;
 import de.featjar.base.data.Problem.Severity;
 import de.featjar.base.data.Result;
-import de.featjar.base.io.InputMapper;
-import de.featjar.base.io.format.Format;
-import de.featjar.base.io.format.ParseProblem;
-import de.featjar.formula.analysis.bool.*;
+import de.featjar.base.io.AInputMapper;
+import de.featjar.base.io.format.IFormat;
 import de.featjar.formula.analysis.value.ValueAssignment;
 
 import java.util.*;
@@ -38,7 +36,7 @@ import java.util.stream.Collectors;
  *
  * @author Elias Kuiter
  */
-public class ValueAssignmentFormat implements Format<ValueAssignment> {
+public class ValueAssignmentFormat implements IFormat<ValueAssignment> {
     protected final Function<LinkedHashMap<String, Object>, ValueAssignment> constructor;
 
     public ValueAssignmentFormat() {
@@ -63,7 +61,7 @@ public class ValueAssignmentFormat implements Format<ValueAssignment> {
     }
 
     @Override
-    public Result<ValueAssignment> parse(InputMapper inputMapper) {
+    public Result<ValueAssignment> parse(AInputMapper inputMapper) {
         LinkedHashMap<String, Object> variableValuePairs = new LinkedHashMap<>();
         for (String variableValuePair : inputMapper.get().getLineStream()
                 .collect(Collectors.joining(","))

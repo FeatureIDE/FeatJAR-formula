@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.io;
 
-import de.featjar.base.io.format.Formats;
+import de.featjar.base.io.format.AFormats;
 import de.featjar.formula.structure.formula.Formula;
 
 /**
@@ -28,5 +28,5 @@ import de.featjar.formula.structure.formula.Formula;
  *
  * @author Sebastian Krieter
  */
-public class FormulaFormats extends Formats<Formula> {
+public class FormulaFormats extends AFormats<Formula> {
 }

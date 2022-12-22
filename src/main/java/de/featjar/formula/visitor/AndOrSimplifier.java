@@ -21,7 +21,7 @@
 package de.featjar.formula.visitor;
 
 import de.featjar.base.data.Result;
-import de.featjar.base.tree.visitor.TreeVisitor;
+import de.featjar.base.tree.visitor.ITreeVisitor;
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.Expressions;
 import de.featjar.formula.structure.formula.Formula;
@@ -40,7 +40,7 @@ import java.util.List;
  *
  * @author Sebastian Krieter
  */
-public class AndOrSimplifier implements TreeVisitor<Formula, Result.Unit> {
+public class AndOrSimplifier implements ITreeVisitor<Formula, Result.Unit> {
     @Override
     public TraversalAction firstVisit(List<Formula> path) {
         final Formula formula = getCurrentNode(path);

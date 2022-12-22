@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.structure;
 
-import de.featjar.base.tree.structure.LeafNode;
+import de.featjar.base.tree.structure.ALeafNode;
 
 import java.util.Objects;
 
@@ -30,7 +30,7 @@ import java.util.Objects;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public abstract class TerminalExpression extends LeafNode<Expression> implements Expression {
+public abstract class TerminalExpression extends ALeafNode<Expression> implements Expression {
     @Override
     public boolean equalsNode(Expression other) {
         return (getClass() == other.getClass()) &&

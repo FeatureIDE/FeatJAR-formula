@@ -21,8 +21,8 @@
 package de.featjar.formula.io.dimacs;
 
 import de.featjar.base.data.Result;
-import de.featjar.base.io.InputMapper;
-import de.featjar.base.io.format.Format;
+import de.featjar.base.io.AInputMapper;
+import de.featjar.base.io.format.IFormat;
 import de.featjar.base.io.format.ParseProblem;
 import de.featjar.formula.structure.formula.Formula;
 
@@ -34,7 +34,7 @@ import java.text.ParseException;
  * @author Sebastian Krieter
  * @author Timo G&uuml;nther
  */
-public class DIMACSFormulaFormat implements Format<Formula> {
+public class DIMACSFormulaFormat implements IFormat<Formula> {
 
     @Override
     public Result<String> serialize(Formula formula) {
@@ -44,7 +44,7 @@ public class DIMACSFormulaFormat implements Format<Formula> {
     }
 
     @Override
-    public Result<Formula> parse(InputMapper inputMapper) {
+    public Result<Formula> parse(AInputMapper inputMapper) {
         final DIMACSParser r = new DIMACSParser();
         r.setReadingVariableDirectory(true);
         try {

@@ -20,12 +20,8 @@
  */
 package de.featjar.formula.io.dimacs;
 
-import de.featjar.base.data.Result;
-import de.featjar.base.io.format.Format;
-import de.featjar.formula.analysis.bool.BooleanClause;
+import de.featjar.base.io.format.IFormat;
 import de.featjar.formula.analysis.bool.BooleanClauseList;
-
-import java.util.Objects;
 
 /**
  * Serializes a {@link BooleanClauseList} to a String in DIMACS format.
@@ -34,7 +30,7 @@ import java.util.Objects;
  * @deprecated
  */
 @Deprecated
-public class DIMACSCNFFormat implements Format<BooleanClauseList> {
+public class DIMACSCNFFormat implements IFormat<BooleanClauseList> {
 
 //    @Override
 //    public Result<String> serialize(BooleanClauseList cnf) {

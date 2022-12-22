@@ -27,10 +27,10 @@ import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Connective;
 import de.featjar.formula.structure.formula.connective.Or;
-import de.featjar.base.task.Monitor;
-import de.featjar.base.task.MonitorableFunction;
+import de.featjar.base.task.IMonitor;
+import de.featjar.base.task.IMonitorableFunction;
 import de.featjar.base.tree.Trees;
-import de.featjar.base.tree.visitor.TreeVisitor;
+import de.featjar.base.tree.visitor.ITreeVisitor;
 import de.featjar.formula.structure.term.value.Variable;
 
 import java.util.ArrayDeque;
@@ -46,7 +46,7 @@ import java.util.Objects;
  */
 @Deprecated
 public class ComputeTseitinCNFFormula
-        implements MonitorableFunction<Expression, List<ComputeTseitinCNFFormula.Substitute>>, TreeVisitor<Expression, Expression> {
+        implements IMonitorableFunction<Expression, List<ComputeTseitinCNFFormula.Substitute>>, ITreeVisitor<Expression, Expression> {
 
     public static class Substitute {
         private final Expression orgExpression;
@@ -131,7 +131,7 @@ public class ComputeTseitinCNFFormula
     private final ArrayDeque<Expression> stack = new ArrayDeque<>();
 
     @Override
-    public Result<List<Substitute>> execute(Expression child, Monitor monitor) {
+    public Result<List<Substitute>> execute(Expression child, IMonitor monitor) {
         substitutes.clear();
         stack.clear();
 
@@ -188,6 +188,6 @@ public class ComputeTseitinCNFFormula
                 stack.push(new Literal(variable));
             }
         }
-        return TreeVisitor.super.lastVisit(path);
+        return ITreeVisitor.super.lastVisit(path);
     }
 }

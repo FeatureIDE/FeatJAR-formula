@@ -22,7 +22,7 @@ package de.featjar.formula.transformer;
 
 import de.featjar.base.computation.*;
 import de.featjar.base.tree.Trees;
-import de.featjar.base.tree.structure.Traversable;
+import de.featjar.base.tree.structure.ITree;
 import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.formula.connective.Reference;
 import de.featjar.formula.visitor.*;
@@ -57,7 +57,7 @@ public class TransformNNFFormula extends AComputation<Formula> implements ITrans
     }
 
     @Override
-    public Traversable<IComputation<?>> cloneNode() {
+    public ITree<IComputation<?>> cloneNode() {
         return new TransformNNFFormula(getInput());
     }
 }

@@ -23,8 +23,8 @@ package de.featjar.formula.io.value;
 import de.featjar.base.data.Problem;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.IO;
-import de.featjar.base.io.InputMapper;
-import de.featjar.base.io.format.Format;
+import de.featjar.base.io.AInputMapper;
+import de.featjar.base.io.format.IFormat;
 import de.featjar.formula.analysis.value.ValueAssignment;
 import de.featjar.formula.analysis.value.ValueAssignmentList;
 
@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
  *
  * @author Elias Kuiter
  */
-public class ValueAssignmentListFormat<T extends ValueAssignmentList<?, U>, U extends ValueAssignment> implements Format<T> {
+public class ValueAssignmentListFormat<T extends ValueAssignmentList<?, U>, U extends ValueAssignment> implements IFormat<T> {
     protected final Supplier<T> listConstructor;
     protected final ValueAssignmentFormat valueAssignmentFormat;
     //todo: serialize as CSV, parse as CSV
@@ -63,7 +63,7 @@ public class ValueAssignmentListFormat<T extends ValueAssignmentList<?, U>, U ex
 
     @SuppressWarnings("unchecked")
     @Override
-    public Result<T> parse(InputMapper inputMapper) {
+    public Result<T> parse(AInputMapper inputMapper) {
         if (listConstructor == null || valueAssignmentFormat == null)
             return Result.empty(new Problem("cannot parse unknown value assignment", Problem.Severity.ERROR));
         T valueAssignmentList = listConstructor.get();

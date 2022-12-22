@@ -22,8 +22,8 @@ package de.featjar.formula.io;
 
 import de.featjar.formula.analysis.bool.*;
 import de.featjar.base.data.Result;
-import de.featjar.base.io.InputMapper;
-import de.featjar.base.io.format.Format;
+import de.featjar.base.io.AInputMapper;
+import de.featjar.base.io.format.IFormat;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ import java.util.List;
  * @deprecated
  */
 @Deprecated
-public class ListFormat implements Format<BooleanAssignmentList<?, ?>> {
+public class ListFormat implements IFormat<BooleanAssignmentList<?, ?>> {
 
     @Override
     public Result<String> serialize(BooleanAssignmentList<?, ?> dnf) {
@@ -60,7 +60,7 @@ public class ListFormat implements Format<BooleanAssignmentList<?, ?>> {
     }
 
     @Override
-    public Result<BooleanAssignmentList<?, ?>> parse(InputMapper inputMapper) {
+    public Result<BooleanAssignmentList<?, ?>> parse(AInputMapper inputMapper) {
 //        int lineNumber = 0;
 //        final BooleanSolutionList dnf = new BooleanSolutionList();
 //        final Iterator<String> iterator = inputMapper.get().getLineStream().iterator();

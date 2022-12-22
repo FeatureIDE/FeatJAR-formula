@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import de.featjar.base.data.Result;
 import de.featjar.base.io.IO;
-import de.featjar.base.io.format.Format;
+import de.featjar.base.io.format.IFormat;
 import de.featjar.formula.structure.formula.Formula;
 
 import java.io.ByteArrayInputStream;
@@ -51,7 +51,7 @@ public class FormatTest {
     public static final Path rootDirectory = Paths.get("src/test/resources");
     public static final Path formatsDirectory = rootDirectory.resolve("formats");
 
-    public static void testLoad(Formula expression1, String name, Format<Formula> format) {
+    public static void testLoad(Formula expression1, String name, IFormat<Formula> format) {
         assertEquals(format.getClass().getCanonicalName(), format.getIdentifier());
         assertTrue(format.supportsParse());
         assertFalse(format.supportsSerialize());
@@ -62,7 +62,7 @@ public class FormatTest {
         }
     }
 
-    public static void testLoadAndSave(Formula expression1, String name, Format<Formula> format) {
+    public static void testLoadAndSave(Formula expression1, String name, IFormat<Formula> format) {
         assertEquals(format.getClass().getCanonicalName(), format.getIdentifier());
         assertTrue(format.supportsParse());
         assertTrue(format.supportsSerialize());
@@ -79,12 +79,12 @@ public class FormatTest {
         }
     }
 
-    private static <T> T load(Format<T> format, Path path) {
+    private static <T> T load(IFormat<T> format, Path path) {
         return IO.load(path, format).get();
     }
 
     @SuppressWarnings("resource")
-    private static List<Path> getFileList(String name, Format<Formula> format) {
+    private static List<Path> getFileList(String name, IFormat<Formula> format) {
         final String namePattern = Pattern.quote(name) + "_\\d\\d";
         try {
             final List<Path> fileList = Files.walk(formatsDirectory.resolve(format.getName()))
@@ -106,7 +106,7 @@ public class FormatTest {
         assertEquals(expression1, expression2, "Formulas are different");
     }
 
-    private static <T> T saveAndLoad(T object, Format<T> format) {
+    private static <T> T saveAndLoad(T object, IFormat<T> format) {
         if (object == null) {
             return null;
         }

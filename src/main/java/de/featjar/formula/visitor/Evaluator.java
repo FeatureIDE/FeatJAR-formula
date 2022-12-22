@@ -21,7 +21,7 @@
 package de.featjar.formula.visitor;
 
 import de.featjar.base.data.Result;
-import de.featjar.base.tree.visitor.TreeVisitor;
+import de.featjar.base.tree.visitor.ITreeVisitor;
 import de.featjar.formula.analysis.value.ValueAssignment;
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.term.value.Variable;
@@ -36,7 +36,7 @@ import java.util.List;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class Evaluator implements TreeVisitor<Expression, Object> {
+public class Evaluator implements ITreeVisitor<Expression, Object> {
     private final LinkedList<Object> values = new LinkedList<>();
 
     private final ValueAssignment valueAssignment;

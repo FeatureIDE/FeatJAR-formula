@@ -24,7 +24,7 @@ import de.featjar.base.Feat;
 import de.featjar.base.computation.*;
 import de.featjar.base.data.Pair;
 import de.featjar.base.data.Result;
-import de.featjar.base.tree.structure.Traversable;
+import de.featjar.base.tree.structure.ITree;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.value.*;
 import de.featjar.formula.structure.Expression;
@@ -73,7 +73,7 @@ public abstract class ComputeBooleanRepresentation<T extends ValueRepresentation
         }
 
         @Override
-        public Traversable<IComputation<?>> cloneNode() {
+        public ITree<IComputation<?>> cloneNode() {
             return new OfAssignment(getInput());
         }
     }
@@ -84,7 +84,7 @@ public abstract class ComputeBooleanRepresentation<T extends ValueRepresentation
         }
 
         @Override
-        public Traversable<IComputation<?>> cloneNode() {
+        public ITree<IComputation<?>> cloneNode() {
             return new OfClause(getInput());
         }
     }
@@ -95,7 +95,7 @@ public abstract class ComputeBooleanRepresentation<T extends ValueRepresentation
         }
 
         @Override
-        public Traversable<IComputation<?>> cloneNode() {
+        public ITree<IComputation<?>> cloneNode() {
             return new OfSolution(getInput());
         }
     }
@@ -146,7 +146,7 @@ public abstract class ComputeBooleanRepresentation<T extends ValueRepresentation
         }
 
         @Override
-        public Traversable<IComputation<?>> cloneNode() {
+        public ITree<IComputation<?>> cloneNode() {
             return new OfFormula(getInput());
         }
     }

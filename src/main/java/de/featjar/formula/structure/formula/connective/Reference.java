@@ -21,6 +21,7 @@
 package de.featjar.formula.structure.formula.connective;
 
 import de.featjar.base.data.Result;
+import de.featjar.base.tree.visitor.ITreeVisitor;
 import de.featjar.formula.structure.NonTerminalExpression;
 import de.featjar.formula.structure.UnaryExpression;
 import de.featjar.formula.structure.formula.Formula;
@@ -41,7 +42,7 @@ import java.util.function.Function;
  * By wrapping the formula in a {@link Reference}, such a mutation becomes possible;
  * without a {@link Reference}, it must be cloned instead.
  * Algorithms that mutate formulas can specify that they expect a top-level {@link Reference}
- * with {@link de.featjar.base.tree.visitor.TreeVisitor#rootValidator(List, Function, String)}.
+ * with {@link ITreeVisitor#rootValidator(List, Function, String)}.
  *
  * @author Sebastian Krieter
  * @author Elias Kuiter
@@ -75,7 +76,7 @@ public class Reference extends NonTerminalExpression implements Connective, Unar
 
     /**
      * Clones the given formula, wraps it inside a reference, and executes a given function.
-     * Useful to traverse a formula with {@link de.featjar.base.tree.visitor.TreeVisitor} that
+     * Useful to traverse a formula with {@link ITreeVisitor} that
      * expects a reference when a clone is needed.
      *
      * @param formula the formula

@@ -1,7 +1,7 @@
 package de.featjar.formula.analysis.bool;
 
 import de.featjar.base.computation.IComputation;
-import de.featjar.base.data.IntegerList;
+import de.featjar.base.data.AIntegerList;
 import de.featjar.base.data.Problem;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.Assignment;
@@ -25,7 +25,7 @@ import java.util.stream.IntStream;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class BooleanAssignment extends IntegerList<BooleanAssignment> implements Assignment<Integer>, BooleanRepresentation {
+public class BooleanAssignment extends AIntegerList<BooleanAssignment> implements Assignment<Integer>, BooleanRepresentation {
     public BooleanAssignment(int... integers) {
         super(integers);
     }

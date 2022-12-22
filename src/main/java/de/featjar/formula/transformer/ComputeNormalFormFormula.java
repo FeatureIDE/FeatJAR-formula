@@ -22,7 +22,7 @@ package de.featjar.formula.transformer;
 
 import de.featjar.base.computation.*;
 import de.featjar.base.data.Result;
-import de.featjar.base.tree.structure.Traversable;
+import de.featjar.base.tree.structure.ITree;
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.formula.connective.And;
@@ -245,7 +245,7 @@ public class ComputeNormalFormFormula extends AComputation<Formula> implements I
     }
 
     @Override
-    public Traversable<IComputation<?>> cloneNode() {
+    public ITree<IComputation<?>> cloneNode() {
         return new ComputeNormalFormFormula(getInput(), normalForm);
     }
 }

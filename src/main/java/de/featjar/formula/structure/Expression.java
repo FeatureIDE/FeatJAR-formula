@@ -22,7 +22,7 @@ package de.featjar.formula.structure;
 
 import de.featjar.base.io.IO;
 import de.featjar.base.tree.Trees;
-import de.featjar.base.tree.structure.Traversable;
+import de.featjar.base.tree.structure.ITree;
 import de.featjar.formula.analysis.value.ValueAssignment;
 import de.featjar.formula.io.textual.ExpressionFormat;
 import de.featjar.formula.structure.term.value.Constant;
@@ -46,7 +46,7 @@ import java.util.stream.Stream;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public interface Expression extends Traversable<Expression> {
+public interface Expression extends ITree<Expression> {
     /**
      * {@return the name of this expression's operator}
      */

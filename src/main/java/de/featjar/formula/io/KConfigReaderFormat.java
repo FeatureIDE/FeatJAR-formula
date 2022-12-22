@@ -22,8 +22,8 @@ package de.featjar.formula.io;
 
 import de.featjar.base.data.Problem;
 import de.featjar.base.data.Result;
-import de.featjar.base.io.InputMapper;
-import de.featjar.base.io.format.Format;
+import de.featjar.base.io.AInputMapper;
+import de.featjar.base.io.format.IFormat;
 import de.featjar.formula.io.textual.ExpressionParser;
 import de.featjar.formula.io.textual.PropositionalModelSymbols;
 import de.featjar.formula.structure.Expression;
@@ -40,10 +40,10 @@ import java.util.stream.Collectors;
  * @deprecated this is currently mostly a hack and should be parsed properly as first-order formulas
  */
 @Deprecated
-public class KConfigReaderFormat implements Format<Expression> {
+public class KConfigReaderFormat implements IFormat<Expression> {
 
     @Override
-    public Result<Expression> parse(InputMapper inputMapper) {
+    public Result<Expression> parse(AInputMapper inputMapper) {
         final ArrayList<Problem> problems = new ArrayList<>();
         final ExpressionParser expressionParser = new ExpressionParser();
         expressionParser.setSymbols(PropositionalModelSymbols.INSTANCE);

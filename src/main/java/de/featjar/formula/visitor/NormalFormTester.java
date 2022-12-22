@@ -21,7 +21,7 @@
 package de.featjar.formula.visitor;
 
 import de.featjar.base.data.Result;
-import de.featjar.base.tree.visitor.TreeVisitor;
+import de.featjar.base.tree.visitor.ITreeVisitor;
 import de.featjar.formula.structure.Expression;
 import de.featjar.formula.structure.formula.Formula;
 import de.featjar.formula.structure.formula.connective.And;
@@ -40,7 +40,7 @@ import java.util.List;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public abstract class NormalFormTester implements TreeVisitor<Formula, Boolean> {
+public abstract class NormalFormTester implements ITreeVisitor<Formula, Boolean> {
 
     protected boolean isNormalForm = true;
     protected boolean isClausalNormalForm = true;

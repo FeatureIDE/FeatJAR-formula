@@ -27,7 +27,7 @@ import de.featjar.formula.structure.formula.connective.*;
 import de.featjar.formula.structure.formula.predicate.InvertiblePredicate;
 import de.featjar.formula.structure.formula.predicate.Predicate;
 import de.featjar.formula.structure.formula.predicate.Literal;
-import de.featjar.base.tree.visitor.TreeVisitor;
+import de.featjar.base.tree.visitor.ITreeVisitor;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
  *
  * @author Sebastian Krieter
  */
-public class DeMorganApplier implements TreeVisitor<Formula, Result.Unit> {
+public class DeMorganApplier implements ITreeVisitor<Formula, Result.Unit> {
     @Override
     public Optional<Problem> nodeValidator(List<Formula> path) {
         return rootValidator(path, root -> root instanceof Reference, "expected formula reference");

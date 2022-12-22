@@ -20,12 +20,12 @@
  */
 package de.featjar.formula.analysis;
 
-import de.featjar.base.extension.ExtensionPoint;
+import de.featjar.base.extension.AExtensionPoint;
 
 /**
  * Extension point for solvers.
  *
  * @author Elias Kuiter
  */
-public class Solvers extends ExtensionPoint<Solver<?>> {
+public class Solvers extends AExtensionPoint<Solver<?>> {
 }

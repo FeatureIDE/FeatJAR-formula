@@ -20,6 +20,7 @@
  */
 package de.featjar.formula.io;
 
+import de.featjar.base.io.binary.ABinaryFormat;
 import de.featjar.formula.analysis.bool.*;
 
 // TODO implement saving/loading constants
@@ -30,7 +31,7 @@ import de.featjar.formula.analysis.bool.*;
  * @deprecated
  */
 @Deprecated
-public class BinaryFormat extends de.featjar.base.io.binary.BinaryFormat<BooleanAssignmentList<?, ?>> { // DNFBinaryFormat?
+public class BinaryFormat extends ABinaryFormat<BooleanAssignmentList<?, ?>> { // DNFBinaryFormat?
 //    @Override
 //    public void write(BooleanAssignmentList<?, ?> solutions, OutputMapper outputMapper) throws IOException {
 //        final OutputStream outputStream = outputMapper.get().getOutputStream();

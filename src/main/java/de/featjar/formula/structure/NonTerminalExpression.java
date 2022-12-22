@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.structure;
 
-import de.featjar.base.tree.structure.Tree;
+import de.featjar.base.tree.structure.ATree;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,7 +32,7 @@ import java.util.Objects;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public abstract class NonTerminalExpression extends Tree<Expression> implements Expression {
+public abstract class NonTerminalExpression extends ATree<Expression> implements Expression {
     protected NonTerminalExpression(Expression... children) {
         if (children.length > 0)
             super.setChildren(Arrays.asList(children));
