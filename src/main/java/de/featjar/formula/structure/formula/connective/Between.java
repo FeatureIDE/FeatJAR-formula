@@ -54,7 +54,6 @@ public class Between extends ACardinal {
         return new Between(this);
     }
 
-    @SuppressWarnings("OptionalGetWithoutIsPresent")
     public int getMinimum() {
         return super.getRange().getLowerBound().get();
     }
@@ -63,7 +62,6 @@ public class Between extends ACardinal {
         super.getRange().setLowerBound(minimum);
     }
 
-    @SuppressWarnings("OptionalGetWithoutIsPresent")
     public int getMaximum() {
         return super.getRange().getUpperBound().get();
     }

@@ -141,12 +141,14 @@ public class TransformCNFFormula extends AComputation<IFormula> implements ITran
         } else {
             if (useDistributive) {
                 try {
+                    // todo: do not use .get
                     distributiveClauses.addAll(
                             (List<? extends IFormula>) distributive(clonedChild, new CancelableMonitor()).get().getChildren()); // TODO .get?
                     return;
                 } catch (final ComputeNormalFormFormula.MaximumNumberOfLiteralsExceededException ignored) {
                 }
             }
+            // todo: do not use .get
             tseitinClauses.addAll(tseitin(clonedChild, new CancelableMonitor()).get()); // TODO: .get?
         }
     }

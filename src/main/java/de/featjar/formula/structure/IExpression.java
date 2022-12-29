@@ -72,7 +72,7 @@ public interface IExpression extends ITree<IExpression> {
      * @param valueAssignment the value assignment
      */
     default Object evaluate(ValueAssignment valueAssignment) {
-        return traverse(new Evaluator(valueAssignment)).get();
+        return traverse(new Evaluator(valueAssignment)).orElse(null);
     }
 
     /**

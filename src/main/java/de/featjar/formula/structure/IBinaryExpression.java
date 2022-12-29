@@ -32,7 +32,6 @@ public interface IBinaryExpression extends IExpression {
         return Range.exactly(2);
     }
 
-    @SuppressWarnings("OptionalGetWithoutIsPresent")
     default IExpression getLeftExpression() {
         return getFirstChild().get();
     }
@@ -41,7 +40,6 @@ public interface IBinaryExpression extends IExpression {
         replaceChild(0, expression);
     }
 
-    @SuppressWarnings("OptionalGetWithoutIsPresent")
     default IExpression getRightFormula() {
         return getLastChild().get();
     }

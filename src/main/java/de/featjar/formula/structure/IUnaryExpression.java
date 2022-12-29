@@ -32,7 +32,6 @@ public interface IUnaryExpression extends IExpression {
         return Range.exactly(1);
     }
 
-    @SuppressWarnings("OptionalGetWithoutIsPresent")
     default IExpression getExpression() {
         return getFirstChild().get();
     }

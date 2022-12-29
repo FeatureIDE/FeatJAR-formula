@@ -74,7 +74,11 @@ public class XMLFeatureModelCNFFormulaFormat extends XMLFeatureModelFormulaForma
 
     @Override
     protected void addConstraint(Boolean constraintLabel, IFormula formula) throws ParseException {
-        IFormula transformedExpression = async(formula).map(TransformNNFFormula::new).map(TransformCNFFormula::new).getResult()
+        IFormula transformedExpression =
+                async(formula)
+                .map(TransformNNFFormula::new)
+                .map(TransformCNFFormula::new)
+                .computeResult() // todo: maybe let cache decide whether this should be cached
                 .orElseThrow(p -> new ParseException("failed to transform " + formula));
         super.addConstraint(constraintLabel, transformedExpression);
     }

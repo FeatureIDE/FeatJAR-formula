@@ -54,7 +54,6 @@ public class Choose extends ACardinal {
         return new Choose(this);
     }
 
-    @SuppressWarnings("OptionalGetWithoutIsPresent")
     public int getBound() {
         return super.getRange().getLowerBound().get();
     }

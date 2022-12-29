@@ -12,6 +12,7 @@ import de.featjar.formula.io.value.ValueAssignmentFormat;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 
 /**
  * Assigns values of any type to string-identified {@link de.featjar.formula.structure.term.value.Variable variables}.
@@ -96,5 +97,18 @@ public class ValueAssignment implements IAssignment<String>, IValueRepresentatio
     @Override
     public String toString() {
         return String.format("ValueAssignment[%s]", print());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ValueAssignment that = (ValueAssignment) o;
+        return Objects.equals(variableValuePairs, that.variableValuePairs);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(variableValuePairs);
     }
 }

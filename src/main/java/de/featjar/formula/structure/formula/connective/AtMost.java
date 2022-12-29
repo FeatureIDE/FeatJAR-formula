@@ -54,7 +54,6 @@ public class AtMost extends ACardinal {
         return new AtMost(this);
     }
 
-    @SuppressWarnings("OptionalGetWithoutIsPresent")
     public int getMaximum() {
         return super.getRange().getUpperBound().get();
     }

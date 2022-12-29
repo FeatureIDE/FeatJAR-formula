@@ -54,7 +54,6 @@ public class AtLeast extends ACardinal {
         return new AtLeast(this);
     }
 
-    @SuppressWarnings("OptionalGetWithoutIsPresent")
     public int getMinimum() {
         return super.getRange().getLowerBound().get();
     }
