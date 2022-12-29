@@ -7,12 +7,12 @@ import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.bool.BooleanClauseList;
 
 public class ComputeValueRepresentationOfClauseList extends AComputeValueRepresentation<BooleanClauseList, ValueClauseList> {
-    public ComputeValueRepresentationOfClauseList(IComputation<Pair<BooleanClauseList, VariableMap>> booleanRepresentation) {
-        super(booleanRepresentation);
+    public ComputeValueRepresentationOfClauseList(IComputation<BooleanClauseList> booleanRepresentation, IComputation<VariableMap> variableMap) {
+        super(booleanRepresentation, variableMap);
     }
 
     @Override
     public ITree<IComputation<?>> cloneNode() {
-        return new ComputeValueRepresentationOfClauseList(getInput());
+        return new ComputeValueRepresentationOfClauseList(getInput(), getVariableMap());
     }
 }

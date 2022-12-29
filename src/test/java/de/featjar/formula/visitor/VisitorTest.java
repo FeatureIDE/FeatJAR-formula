@@ -9,13 +9,13 @@ import static org.junit.jupiter.api.Assertions.*;
 public class VisitorTest {
     public static void traverseAndAssertSameFormula(IFormula oldFormula, ITreeVisitor<IFormula, ?> treeVisitor) {
         IFormula newFormula = (IFormula) oldFormula.cloneTree();
-        assertTrue(Trees.traverse(newFormula, treeVisitor).getProblems().isEmpty());
+        assertTrue(Trees.traverse(newFormula, treeVisitor).getProblem().isEmpty());
         assertEquals(oldFormula, newFormula);
     }
 
     public static void traverseAndAssertFormulaEquals(IFormula oldFormula, ITreeVisitor<IFormula, ?> treeVisitor, IFormula assertFormula) {
         IFormula newFormula = (IFormula) oldFormula.cloneTree();
-        assertTrue(Trees.traverse(newFormula, treeVisitor).getProblems().isEmpty());
+        assertTrue(Trees.traverse(newFormula, treeVisitor).getProblem().isEmpty());
         assertNotEquals(oldFormula, newFormula);
         assertEquals(assertFormula, newFormula);
     }

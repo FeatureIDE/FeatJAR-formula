@@ -1,11 +1,11 @@
 package de.featjar.formula.analysis;
 
 import de.featjar.base.data.Pair;
+import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.bool.BooleanAssignment;
 import de.featjar.formula.analysis.value.ValueAssignment;
 
 import java.util.LinkedHashMap;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
@@ -53,8 +53,8 @@ public interface IAssignment<T> {
      *
      * @param variable the variable
      */
-    default Optional<Object> getValue(T variable) {
-        return Optional.ofNullable(getAll().get(variable));
+    default Result<Object> getValue(T variable) {
+        return Result.ofNullable(getAll().get(variable));
     }
 
     /**

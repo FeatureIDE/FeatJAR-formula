@@ -298,10 +298,10 @@ public class ExpressionParser {
             throws ParseException {
         switch (handleError) {
             case KEEP:
-                problemList.add(new ParseProblem(message.getMessage(), 0, Severity.WARNING));
+                problemList.add(new ParseProblem(message.getMessage(), Severity.WARNING, 0));
                 return new ProblemFormula(new Problem(message.getMessage(), Severity.ERROR));
             case REMOVE:
-                problemList.add(new ParseProblem(message.getMessage(), 0, Severity.WARNING));
+                problemList.add(new ParseProblem(message.getMessage(), Severity.WARNING, 0));
                 return null;
             case THROW:
             default:

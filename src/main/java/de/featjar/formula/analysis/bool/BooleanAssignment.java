@@ -8,7 +8,6 @@ import de.featjar.formula.analysis.IAssignment;
 import de.featjar.formula.analysis.ISolver;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.value.ValueAssignment;
-import de.featjar.formula.analysis.value.ValueClause;
 
 import java.util.*;
 import java.util.stream.IntStream;
@@ -74,12 +73,12 @@ public class BooleanAssignment extends AIntegerList<BooleanAssignment> implement
         return newIntegerList(negated);
     }
 
-    public Optional<BooleanAssignment> clean() { // TODO: must this be an optional?
+    public Result<BooleanAssignment> clean() { // TODO: must this be an optional?
         final LinkedHashSet<Integer> newIntegerSet = new LinkedHashSet<>();
 
         for (final int integer : integers) {
             if (newIntegerSet.contains(-integer)) {
-                return Optional.empty();
+                return Result.empty();
             } else {
                 newIntegerSet.add(integer);
             }
@@ -95,7 +94,7 @@ public class BooleanAssignment extends AIntegerList<BooleanAssignment> implement
                 uniqueVarArray[i++] = lit;
             }
         }
-        return Optional.of(newIntegerList(uniqueVarArray));
+        return Result.of(newIntegerList(uniqueVarArray));
     }
 
     public Result<BooleanAssignment> adapt(VariableMap oldVariableMap, VariableMap newVariableMap) {
@@ -103,9 +102,9 @@ public class BooleanAssignment extends AIntegerList<BooleanAssignment> implement
         final int[] newIntegers = new int[oldIntegers.length];
         for (int i = 0; i < oldIntegers.length; i++) {
             final int l = oldIntegers[i];
-            final Optional<String> name = oldVariableMap.get(Math.abs(l));
+            final Result<String> name = oldVariableMap.get(Math.abs(l));
             if (name.isPresent()) {
-                final Optional<Integer> index = newVariableMap.get(name.get());
+                final Result<Integer> index = newVariableMap.get(name.get());
                 if (index.isPresent()) {
                     newIntegers[i] = l < 0 ? -index.get() : index.get();
                 } else {
@@ -234,16 +233,16 @@ public class BooleanAssignment extends AIntegerList<BooleanAssignment> implement
     }
 
     @Override
-    public Optional<Object> getValue(Integer variable) {
+    public Result<Object> getValue(Integer variable) {
         int index = indexOfVariable(variable);
         if (index < 0)
-            return Optional.empty();
+            return Result.empty();
         int value = get(index);
-        return value == 0 ? Optional.empty() : Optional.of(value > 0);
+        return value == 0 ? Result.empty() : Result.of(value > 0);
     }
 
     public String print() {
-        return VariableMap.toAnonymousValue(this).getAndLogProblems().print();
+        return VariableMap.toAnonymousValue(this).get().print();
     }
 
     @Override

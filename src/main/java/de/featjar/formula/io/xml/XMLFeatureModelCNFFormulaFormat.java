@@ -20,6 +20,7 @@
  */
 package de.featjar.formula.io.xml;
 
+import de.featjar.base.data.Result;
 import de.featjar.base.io.format.ParseException;
 import de.featjar.base.tree.Trees;
 import de.featjar.formula.structure.IExpression;
@@ -38,7 +39,6 @@ import org.w3c.dom.Element;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.featjar.base.computation.Computations.*;
@@ -65,7 +65,7 @@ public class XMLFeatureModelCNFFormulaFormat extends XMLFeatureModelFormulaForma
     protected IExpression parseDocument(Document document) throws ParseException {
         final Element featureModelElement = getDocumentElement(document, FEATURE_MODEL);
         parseFeatureTree(getElement(featureModelElement, STRUCT));
-        Optional<Element> constraintsElement = getOptionalElement(featureModelElement, CONSTRAINTS);
+        Result<Element> constraintsElement = getElementResult(featureModelElement, CONSTRAINTS);
         if (constraintsElement.isPresent()) {
             parseConstraints(constraintsElement.get());
         }

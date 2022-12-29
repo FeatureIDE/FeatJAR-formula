@@ -1,5 +1,6 @@
 package de.featjar.formula.analysis.bool;
 
+import de.featjar.base.computation.Computations;
 import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.VariableMap;
@@ -16,8 +17,8 @@ public interface IBooleanRepresentation {
     Result<? extends IValueRepresentation> toValue(VariableMap variableMap);
 
     default IComputation<? extends IValueRepresentation> toValue(IComputation<VariableMap> variableMap) {
-        return IComputation.of(IComputation.of(this), variableMap)
-                .mapResult(IBooleanRepresentation.class, "toValue",
-                        pair -> pair.getKey().toValue(pair.getValue()).get());
+        return Computations.of(Computations.of(this), variableMap)
+                .flatMapResult(IBooleanRepresentation.class, "toValue",
+                        pair -> pair.getKey().toValue(pair.getValue()));
     }
 }

@@ -138,7 +138,7 @@ public class DIMACSSerializer {
             final Literal l = (Literal) child;
             final Integer index = variableMap
                     .get(l.getName())
-                    .orElseThrow(() -> new IllegalArgumentException(l.getName()));
+                    .orElseThrow();
             sb.append(l.isPositive() ? index : -index);
             sb.append(' ');
         }

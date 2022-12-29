@@ -24,16 +24,11 @@ import de.featjar.base.Feat;
 import de.featjar.base.computation.*;
 import de.featjar.base.data.Pair;
 import de.featjar.base.data.Result;
-import de.featjar.base.tree.structure.ITree;
+import de.featjar.base.task.IMonitor;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.value.*;
-import de.featjar.formula.structure.IExpression;
-import de.featjar.formula.structure.Expressions;
-import de.featjar.formula.structure.formula.IFormula;
-import de.featjar.formula.structure.formula.predicate.Literal;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Transforms a formula, which is assumed to be in conjunctive normal form, into an indexed CNF representation.
@@ -43,7 +38,7 @@ import java.util.Objects;
  */
 public abstract class AComputeBooleanRepresentation<T extends IValueRepresentation, U extends IBooleanRepresentation>
         extends AComputation<Pair<U, VariableMap>> implements IAnalysis<T, Pair<U, VariableMap>> {
-    protected final static Dependency<?> VALUE_REPRESENTATION = newDependency();
+    protected final static Dependency<?> VALUE_REPRESENTATION = newRequiredDependency();
 
     public AComputeBooleanRepresentation(IComputation<T> valueRepresentation) {
         dependOn(VALUE_REPRESENTATION);
@@ -58,13 +53,11 @@ public abstract class AComputeBooleanRepresentation<T extends IValueRepresentati
 
     @SuppressWarnings("unchecked")
     @Override
-    public FutureResult<Pair<U, VariableMap>> compute() {
-        return getInput().get().thenComputeResult(((t, monitor) -> {
-            Feat.log().debug("initializing variable map for " + t.getClass().getName());
-            VariableMap variableMap = VariableMap.of(t);
-            Feat.log().debug(variableMap);
-            return t.toBoolean(variableMap).map(u -> new Pair<>((U) u, variableMap));
-        }));
+    public Result<Pair<U, VariableMap>> computeResult(List<?> results, IMonitor monitor) {
+        T t = (T) VALUE_REPRESENTATION.get(results);
+        Feat.log().debug("initializing variable map for " + t.getClass().getName());
+        VariableMap variableMap = VariableMap.of(t);
+        Feat.log().debug(variableMap);
+        return t.toBoolean(variableMap).map(u -> new Pair<>((U) u, variableMap));
     }
-
 }

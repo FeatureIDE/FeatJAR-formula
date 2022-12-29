@@ -67,7 +67,7 @@ public class BooleanClauseList extends ABooleanAssignmentList<BooleanClauseList,
     }
 
     public String print() {
-        return VariableMap.toAnonymousValue(this).getAndLogProblems().print();
+        return VariableMap.toAnonymousValue(this).get().print();
     }
 
     @Override

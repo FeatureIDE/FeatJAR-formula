@@ -66,7 +66,7 @@ public class KConfigReaderFormat implements IFormat<IExpression> {
                         .map(l -> l.replace("-", "_"))
                         .map(l -> l.replaceAll("def\\((\\w+)\\)", "$1"))
                         .map(expressionParser::parse)
-                        .peek(r -> problems.addAll(r.getProblems()))
+                        .peek(r -> problems.add(r.getProblem().orElse(null)))
                         .filter(Result::isPresent)
                         .map(expressionResult -> (IFormula) expressionResult.get())
                         .collect(Collectors.toList())),

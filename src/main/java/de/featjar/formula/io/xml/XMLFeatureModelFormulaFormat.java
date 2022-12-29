@@ -20,6 +20,7 @@
  */
 package de.featjar.formula.io.xml;
 
+import de.featjar.base.data.Result;
 import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.predicate.Literal;
@@ -61,7 +62,7 @@ public class XMLFeatureModelFormulaFormat extends AXMLFeatureModelFormat<IExpres
     protected IExpression parseDocument(Document document) throws ParseException {
         final Element featureModelElement = getDocumentElement(document, FEATURE_MODEL);
         parseFeatureTree(getElement(featureModelElement, STRUCT));
-        Optional<Element> constraintsElement = getOptionalElement(featureModelElement, CONSTRAINTS);
+        Result<Element> constraintsElement = getElementResult(featureModelElement, CONSTRAINTS);
         if (constraintsElement.isPresent()) parseConstraints(constraintsElement.get());
         if (constraints.isEmpty()) {
             return new And();

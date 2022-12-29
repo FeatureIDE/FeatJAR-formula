@@ -45,7 +45,7 @@ import java.util.List;
  * @author Elias Kuiter
  */
 public class TransformCNFFormula extends AComputation<IFormula> implements ITransformation<IFormula> {
-    protected static final Dependency<IFormula> NNF_FORMULA = newDependency();
+    protected static final Dependency<IFormula> NNF_FORMULA = newRequiredDependency();
 
     protected int maximumNumberOfLiterals = Integer.MAX_VALUE; //todo: pass as dependent computation
     public final boolean useMultipleThreads = false; //todo: pass as dependent computation
@@ -73,33 +73,32 @@ public class TransformCNFFormula extends AComputation<IFormula> implements ITran
     }
 
     @Override
-    public FutureResult<IFormula> compute() {
-        return getInput().get().thenComputeResult((formula, monitor) -> {
-            useDistributive = (maximumNumberOfLiterals > 0);
-            final ANormalFormTester normalFormTester = NormalForms.getNormalFormTester(formula, IFormula.NormalForm.CNF);
-            if (normalFormTester.isNormalForm()) {
-                if (!normalFormTester.isClausalNormalForm()) {
-                    return Result.of(NormalForms.normalToClausalNormalForm((IFormula) Trees.clone(formula), IFormula.NormalForm.CNF));
-                } else {
-                    return Result.of((IFormula) Trees.clone(formula)); // TODO: is it a computation's responsibility to clone its input or not? should the Store do this, or the caller, or thenComputeResult...?
-                }
-            }
-            IFormula newFormula = (IFormula) formula.cloneTree();
-            if (newFormula instanceof And) {
-                final List<? extends IExpression> children = newFormula.getChildren();
-                if (useMultipleThreads) {
-                    children.parallelStream().forEach(child -> transform((IFormula) child));
-                } else {
-                    children.forEach(child -> transform((IFormula) child));
-                }
+    public Result<IFormula> computeResult(List<?> results, IMonitor monitor) {
+        IFormula formula = NNF_FORMULA.get(results);
+        useDistributive = (maximumNumberOfLiterals > 0);
+        final ANormalFormTester normalFormTester = NormalForms.getNormalFormTester(formula, IFormula.NormalForm.CNF);
+        if (normalFormTester.isNormalForm()) {
+            if (!normalFormTester.isClausalNormalForm()) {
+                return Result.of(NormalForms.normalToClausalNormalForm((IFormula) Trees.clone(formula), IFormula.NormalForm.CNF));
             } else {
-                transform(newFormula);
+                return Result.of((IFormula) Trees.clone(formula)); // TODO: is it a computation's responsibility to clone its input or not? should the Store do this, or the caller, or thenComputeResult...?
             }
+        }
+        IFormula newFormula = (IFormula) formula.cloneTree();
+        if (newFormula instanceof And) {
+            final List<? extends IExpression> children = newFormula.getChildren();
+            if (useMultipleThreads) {
+                children.parallelStream().forEach(child -> transform((IFormula) child));
+            } else {
+                children.forEach(child -> transform((IFormula) child));
+            }
+        } else {
+            transform(newFormula);
+        }
 
-            newFormula = new And(getTransformedClauses());
-            newFormula = NormalForms.normalToClausalNormalForm(newFormula, IFormula.NormalForm.CNF);
-            return Result.of(newFormula);
-        });
+        newFormula = new And(getTransformedClauses());
+        newFormula = NormalForms.normalToClausalNormalForm(newFormula, IFormula.NormalForm.CNF);
+        return Result.of(newFormula);
     }
 
     protected List<? extends IFormula> getTransformedClauses() {
@@ -155,7 +154,7 @@ public class TransformCNFFormula extends AComputation<IFormula> implements ITran
     protected Result<IFormula> distributive(IFormula child, IMonitor monitor)
             throws ComputeNormalFormFormula.MaximumNumberOfLiteralsExceededException {
         final ComputeNormalFormFormula cnfDistributiveLawTransformer =
-                IComputation.of(child, monitor)
+                Computations.of(child, monitor)
                         .map(c -> new ComputeNormalFormFormula(c, IFormula.NormalForm.CNF)); // TODO: monitor subtask?
         cnfDistributiveLawTransformer.setMaximumNumberOfLiterals(maximumNumberOfLiterals);
         return cnfDistributiveLawTransformer.getResult();

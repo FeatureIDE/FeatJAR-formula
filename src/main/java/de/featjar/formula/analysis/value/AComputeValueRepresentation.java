@@ -21,11 +21,13 @@
 package de.featjar.formula.analysis.value;
 
 import de.featjar.base.computation.*;
-import de.featjar.base.data.Pair;
 import de.featjar.base.data.Result;
-import de.featjar.base.tree.structure.ITree;
+import de.featjar.base.task.IMonitor;
+import de.featjar.formula.analysis.IVariableMapDependency;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.bool.*;
+
+import java.util.List;
 
 /**
  * ...
@@ -33,28 +35,32 @@ import de.featjar.formula.analysis.bool.*;
  * @author Elias Kuiter
  */
 public abstract class AComputeValueRepresentation<T extends IBooleanRepresentation, U extends IValueRepresentation>
-        extends AComputation<U> implements IAnalysis<Pair<T, VariableMap>, U> {
-    protected final static Dependency<?> VALUE_REPRESENTATION = newDependency();
+        extends AComputation<U> implements IAnalysis<T, U>, IVariableMapDependency {
+    protected final static Dependency<?> BOOLEAN_REPRESENTATION = newRequiredDependency();
+    protected final static Dependency<VariableMap> VARIABLE_MAP = newRequiredDependency();
 
-    public AComputeValueRepresentation(IComputation<Pair<T, VariableMap>> valueRepresentation) {
-        dependOn(VALUE_REPRESENTATION);
-        setInput(valueRepresentation);
+    public AComputeValueRepresentation(IComputation<T> booleanRepresentation, IComputation<VariableMap> variableMap) {
+        dependOn(BOOLEAN_REPRESENTATION, VARIABLE_MAP);
+        setInput(booleanRepresentation);
+        setVariableMap(variableMap);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public Dependency<Pair<T, VariableMap>> getInputDependency() {
-        return (Dependency<Pair<T, VariableMap>>) VALUE_REPRESENTATION;
+    public Dependency<T> getInputDependency() {
+        return (Dependency<T>) BOOLEAN_REPRESENTATION;
+    }
+
+    @Override
+    public Dependency<VariableMap> getVariableMapDependency() {
+        return VARIABLE_MAP;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public FutureResult<U> compute() {
-        return getInput().get().thenComputeResult(((pair, monitor) -> {
-                    T t = pair.getKey();
-                    VariableMap variableMap = pair.getValue();
-                    return (Result<U>) t.toValue(variableMap);
-                }));
+    public Result<U> computeResult(List<?> results, IMonitor monitor) {
+        T t = (T) BOOLEAN_REPRESENTATION.get(results);
+        VariableMap variableMap = VARIABLE_MAP.get(results);
+        return (Result<U>) t.toValue(variableMap);
     }
-
 }

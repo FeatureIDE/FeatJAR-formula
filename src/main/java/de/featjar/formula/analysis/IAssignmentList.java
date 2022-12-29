@@ -1,11 +1,11 @@
 package de.featjar.formula.analysis;
 
+import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.bool.ABooleanAssignmentList;
 import de.featjar.formula.analysis.value.AValueAssignmentList;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
@@ -53,10 +53,10 @@ public interface IAssignmentList<T extends IAssignment<?>> {
      *
      * @param index the index
      */
-    default Optional<T> get(int index) {
+    default Result<T> get(int index) {
         if (index < 0 || index >= size())
-            return Optional.empty();
-        return Optional.of(getAll().get(index));
+            return Result.empty();
+        return Result.of(getAll().get(index));
     }
 
     /**
@@ -104,10 +104,10 @@ public interface IAssignmentList<T extends IAssignment<?>> {
      * @param index the index
      * @return the removed assignment, if any
      */
-    default Optional<T> remove(int index) {
+    default Result<T> remove(int index) {
         if (index < 0 || index >= size())
-            return Optional.empty();
-        return Optional.of(getAll().remove(index));
+            return Result.empty();
+        return Result.of(getAll().remove(index));
     }
 
     /**
@@ -115,7 +115,7 @@ public interface IAssignmentList<T extends IAssignment<?>> {
      *
      * @return the removed assignment, if any
      */
-    default Optional<T> remove() {
+    default Result<T> remove() {
         return remove(size() - 1);
     }
 

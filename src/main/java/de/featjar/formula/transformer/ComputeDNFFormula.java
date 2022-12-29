@@ -22,12 +22,15 @@ package de.featjar.formula.transformer;
 
 import de.featjar.base.computation.*;
 import de.featjar.base.data.Result;
+import de.featjar.base.task.IMonitor;
 import de.featjar.base.tree.structure.ITree;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.base.tree.Trees;
 import de.featjar.formula.visitor.ANormalFormTester;
 import de.featjar.formula.visitor.NormalForms;
+
+import java.util.List;
 
 /**
  * Transforms a formula into clausal disjunctive normal form.
@@ -37,7 +40,7 @@ import de.featjar.formula.visitor.NormalForms;
  */
 @Deprecated
 public class ComputeDNFFormula extends AComputation<IFormula> implements ITransformation<IFormula> {
-    protected static final Dependency<IFormula> NNF_FORMULA = newDependency();
+    protected static final Dependency<IFormula> NNF_FORMULA = newRequiredDependency();
     protected int maximumNumberOfLiterals;
 
     public ComputeDNFFormula(IComputation<IFormula> nnfFormula) {
@@ -55,25 +58,24 @@ public class ComputeDNFFormula extends AComputation<IFormula> implements ITransf
     }
 
     @Override
-    public FutureResult<IFormula> compute() {
-        return getInput().get().thenComputeResult(((formula, monitor) -> {
-            final ANormalFormTester normalFormTester = NormalForms.getNormalFormTester(formula, IFormula.NormalForm.DNF);
-            if (normalFormTester.isNormalForm()) {
-                if (!normalFormTester.isClausalNormalForm()) {
-                    return NormalForms.toNormalForm((IFormula) Trees.clone(formula), IFormula.NormalForm.DNF, true);
-                } else {
-                    return Result.of((IFormula) Trees.clone(formula));
-                }
+    public Result<IFormula> computeResult(List<?> results, IMonitor monitor) {
+        IFormula formula = NNF_FORMULA.get(results);
+        final ANormalFormTester normalFormTester = NormalForms.getNormalFormTester(formula, IFormula.NormalForm.DNF);
+        if (normalFormTester.isNormalForm()) {
+            if (!normalFormTester.isClausalNormalForm()) {
+                return NormalForms.toNormalForm((IFormula) Trees.clone(formula), IFormula.NormalForm.DNF, true);
             } else {
-                formula = (IFormula) Trees.clone(formula);
-                ComputeNormalFormFormula formulaToDistributiveNFFormula =
-                        IComputation.of((formula instanceof Or) ? formula : new Or(formula), monitor)
-                                .map(c -> new ComputeNormalFormFormula(c, IFormula.NormalForm.DNF));
-                formulaToDistributiveNFFormula.setMaximumNumberOfLiterals(maximumNumberOfLiterals);
-                return formulaToDistributiveNFFormula.getResult()
-                        .map(f -> NormalForms.normalToClausalNormalForm(f, IFormula.NormalForm.DNF));
+                return Result.of((IFormula) Trees.clone(formula));
             }
-        }));
+        } else {
+            formula = (IFormula) Trees.clone(formula);
+            ComputeNormalFormFormula formulaToDistributiveNFFormula =
+                    Computations.of((formula instanceof Or) ? formula : new Or(formula), monitor)
+                            .map(c -> new ComputeNormalFormFormula(c, IFormula.NormalForm.DNF));
+            formulaToDistributiveNFFormula.setMaximumNumberOfLiterals(maximumNumberOfLiterals);
+            return formulaToDistributiveNFFormula.getResult()
+                    .map(f -> NormalForms.normalToClausalNormalForm(f, IFormula.NormalForm.DNF));
+        }
     }
 
     @Override

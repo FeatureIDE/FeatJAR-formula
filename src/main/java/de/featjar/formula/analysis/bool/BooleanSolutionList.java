@@ -83,7 +83,7 @@ public class BooleanSolutionList extends ABooleanAssignmentList<BooleanSolutionL
     }
 
     public String print() {
-        return VariableMap.toAnonymousValue(this).getAndLogProblems().print();
+        return VariableMap.toAnonymousValue(this).get().print();
     }
 
     @Override

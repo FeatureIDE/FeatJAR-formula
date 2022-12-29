@@ -36,7 +36,7 @@ public class ComputeBooleanRepresentationOfFormula extends AComputeBooleanRepres
     protected static BooleanClause getClause(IFormula formula, VariableMap variableMap) {
         if (formula instanceof Literal) {
             final Literal literal = (Literal) formula;
-            final int index = variableMap.get(literal.getExpression().getName()).orElseThrow(RuntimeException::new);
+            final int index = variableMap.get(literal.getExpression().getName()).orElseThrow();
             return new BooleanClause(literal.isPositive() ? index : -index);
         } else {
             final List<? extends IExpression> children = formula.getChildren();
@@ -48,7 +48,7 @@ public class ComputeBooleanRepresentationOfFormula extends AComputeBooleanRepres
                         .filter(literal -> literal instanceof Literal)
                         .mapToInt(literal -> {
                             final int variable = variableMap.get(((Literal) literal).getExpression().getName())
-                                    .orElseThrow(RuntimeException::new);
+                                    .orElseThrow();
                             return ((Literal) literal).isPositive() ? variable : -variable;
                         })
                         .toArray();

@@ -21,11 +21,15 @@
 package de.featjar.formula.transformer;
 
 import de.featjar.base.computation.*;
+import de.featjar.base.data.Result;
+import de.featjar.base.task.IMonitor;
 import de.featjar.base.tree.Trees;
 import de.featjar.base.tree.structure.ITree;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.Reference;
 import de.featjar.formula.visitor.*;
+
+import java.util.List;
 
 /**
  * Transforms a formula into clausal negation normal form.
@@ -33,7 +37,7 @@ import de.featjar.formula.visitor.*;
  * @author Elias Kuiter
  */
 public class TransformNNFFormula extends AComputation<IFormula> implements ITransformation<IFormula> {
-    protected static final Dependency<IFormula> FORMULA = newDependency();
+    protected static final Dependency<IFormula> FORMULA = newRequiredDependency();
 
     public TransformNNFFormula(IComputation<IFormula> formula) {
         dependOn(FORMULA);
@@ -46,14 +50,13 @@ public class TransformNNFFormula extends AComputation<IFormula> implements ITran
     }
 
     @Override
-    public FutureResult<IFormula> compute() {
-        return getInput().get().thenComputeResult((formula, monitor) -> {
-            // TODO: if already in NNF, should do nothing (this requires the NNF tester to be revised, as it allows complex connectives right now)
-            return Reference.mutateClone(formula,
-                    reference -> Trees.traverse(reference, new ConnectiveSimplifier())
-                            .flatMap(unit -> Trees.traverse(reference, new DeMorganApplier()))
-                            .flatMap(unit -> Trees.traverse(reference, new AndOrSimplifier())));
-        });
+    public Result<IFormula> computeResult(List<?> results, IMonitor monitor) {
+        IFormula formula = FORMULA.get(results);
+        // TODO: if already in NNF, should do nothing (this requires the NNF tester to be revised, as it allows complex connectives right now)
+        return Reference.mutateClone(formula,
+                reference -> Trees.traverse(reference, new ConnectiveSimplifier())
+                        .flatMap(unit -> Trees.traverse(reference, new DeMorganApplier()))
+                        .flatMap(unit -> Trees.traverse(reference, new AndOrSimplifier())));
     }
 
     @Override

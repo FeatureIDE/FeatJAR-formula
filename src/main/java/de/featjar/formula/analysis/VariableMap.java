@@ -82,7 +82,7 @@ public class VariableMap extends RangeMap<String> {
             else {
                 String variable = variableValuePair.getKey();
                 Boolean value = (Boolean) variableValuePair.getValue();
-                Optional<Integer> index = get(variable);
+                Result<Integer> index = get(variable);
                 if (index.isEmpty())
                     problems.add(new Problem("tried to reference variable " + variable + ", which is not mapped to an index", Problem.Severity.WARNING));
                 else {
@@ -112,7 +112,7 @@ public class VariableMap extends RangeMap<String> {
         List<Problem> problems = new ArrayList<>();
         for (ValueAssignment valueAssignment : valueAssignmentList.getAll()) {
             Result<U> booleanAssignment = toBoolean(valueAssignment, constructor);
-            problems.addAll(booleanAssignment.getProblems());
+            problems.add(booleanAssignment.getProblem().orElse(null));
             if (booleanAssignment.isPresent())
                 booleanAssignmentList.add(booleanAssignment.get());
         }
@@ -132,7 +132,7 @@ public class VariableMap extends RangeMap<String> {
         List<Problem> problems = new ArrayList<>();
         for (int integer : booleanAssignment.getIntegers()) {
             int index = Math.abs(integer);
-            Optional<String> variable = get(index);
+            Result<String> variable = get(index);
             if (variable.isEmpty())
                 problems.add(new Problem("tried to reference index " + index + ", which is not mapped to a variable", Problem.Severity.WARNING));
             else {
@@ -161,7 +161,7 @@ public class VariableMap extends RangeMap<String> {
         List<Problem> problems = new ArrayList<>();
         for (BooleanAssignment booleanAssignment : booleanAssignmentList.getAll()) {
             Result<U> valueAssignment = toValue(booleanAssignment, constructor);
-            problems.addAll(valueAssignment.getProblems());
+            problems.add(valueAssignment.getProblem().orElse(null));
             if (valueAssignment.isPresent())
                 valueAssignmentList.add(valueAssignment.get());
         }
@@ -205,7 +205,7 @@ public class VariableMap extends RangeMap<String> {
         List<Problem> problems = new ArrayList<>();
         for (BooleanAssignment booleanAssignment : booleanAssignmentList.getAll()) {
             Result<U> valueAssignment = toAnonymousValue(booleanAssignment, constructor);
-            problems.addAll(valueAssignment.getProblems());
+            problems.add(valueAssignment.getProblem().orElse(null));
             if (valueAssignment.isPresent())
                 valueAssignmentList.add(valueAssignment.get());
         }
