@@ -31,19 +31,19 @@ import de.featjar.base.extension.IExtension;
  * @author Elias Kuiter
  */
 public interface ISolver<T> extends IExtension {
-    /**
-     * {@return an analysis that computes whether there is a solution for some given formula, if supported by this solver}
-     * Satisfiability solvers support this method.
-     */
-    default IHasSolutionAnalysis<?, ?> hasSolutionAnalysis() {
-        return null;
-    }
+//    /**
+//     * {@return an analysis that computes whether there is a solution for some given formula, if supported by this solver}
+//     * Satisfiability solvers support this method.
+//     */
+//    default IHasSolutionAnalysis<?, ?> hasSolutionAnalysis() {
+//        return null;
+//    }
 
     /**
      * {@return an analysis that computes a solution for some given formula, if supported by this solver}
      * Solution solvers support this method.
      */
-    default IGetSolutionAnalysis<?, ?, ?> getSolutionAnalysis() {
+    default ISolutionAnalysis<?, ?, ?> getSolutionAnalysis() {
         return null;
     }
 
@@ -51,7 +51,7 @@ public interface ISolver<T> extends IExtension {
      * {@return an analysis that computes the number of solutions for some given formula, if supported by this solver}
      * #SAT (SharpSAT) solvers support this method.
      */
-    default ICountSolutionsAnalysis<?, ?> countSolutionsAnalysis() {
+    default ISolutionCountAnalysis<?, ?> countSolutionsAnalysis() {
         return null;
     }
 
@@ -59,7 +59,7 @@ public interface ISolver<T> extends IExtension {
      * {@return an analysis that computes all solutions for some given formula, if supported by this solver}
      * All-solution (AllSAT) solvers support this method.
      */
-    default IGetSolutionsAnalysis<?, ?, ?> getSolutionsAnalysis() {
+    default ISolutionsAnalysis<?, ?, ?> getSolutionsAnalysis() {
         return null;
     }
 

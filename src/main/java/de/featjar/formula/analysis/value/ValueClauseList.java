@@ -5,7 +5,7 @@ import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.bool.BooleanClauseList;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.structure.formula.IFormula;
-import de.featjar.formula.transformer.TransformCNFFormula;
+import de.featjar.formula.transformer.ComputeCNFFormula;
 
 import java.util.Collection;
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  * A list of value clauses.
  * Typically used to express a conjunctive normal form.
  * Compared to a {@link IFormula} in CNF (e.g., computed with
- * {@link TransformCNFFormula}), a {@link ValueClauseList} is a more low-level representation.
+ * {@link ComputeCNFFormula}), a {@link ValueClauseList} is a more low-level representation.
  *
  * @author Elias Kuiter
  */

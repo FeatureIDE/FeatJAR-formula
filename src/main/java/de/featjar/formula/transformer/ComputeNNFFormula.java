@@ -36,10 +36,10 @@ import java.util.List;
  *
  * @author Elias Kuiter
  */
-public class TransformNNFFormula extends AComputation<IFormula> implements ITransformation<IFormula> {
+public class ComputeNNFFormula extends AComputation<IFormula> implements ITransformation<IFormula> {
     protected static final Dependency<IFormula> FORMULA = newRequiredDependency();
 
-    public TransformNNFFormula(IComputation<IFormula> formula) {
+    public ComputeNNFFormula(IComputation<IFormula> formula) {
         dependOn(FORMULA);
         setInput(formula);
     }
@@ -61,6 +61,6 @@ public class TransformNNFFormula extends AComputation<IFormula> implements ITran
 
     @Override
     public ITree<IComputation<?>> cloneNode() {
-        return new TransformNNFFormula(getInput());
+        return new ComputeNNFFormula(getInput());
     }
 }

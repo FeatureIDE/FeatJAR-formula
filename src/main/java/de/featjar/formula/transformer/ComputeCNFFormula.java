@@ -45,7 +45,7 @@ import java.util.List;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class TransformCNFFormula extends AComputation<IFormula> implements ITransformation<IFormula> {
+public class ComputeCNFFormula extends AComputation<IFormula> implements ITransformation<IFormula> {
     protected static final Dependency<IFormula> NNF_FORMULA = newRequiredDependency();
 
     protected int maximumNumberOfLiterals = Integer.MAX_VALUE; //todo: pass as dependent computation
@@ -55,7 +55,7 @@ public class TransformCNFFormula extends AComputation<IFormula> implements ITran
     protected final List<ComputeTseitinCNFFormula.Substitute> tseitinClauses;
     protected boolean useDistributive;
 
-    public TransformCNFFormula(IComputation<IFormula> nnfFormula) { // precondition: nnf must be given (TODO: validate)
+    public ComputeCNFFormula(IComputation<IFormula> nnfFormula) { // precondition: nnf must be given (TODO: validate)
         dependOn(NNF_FORMULA);
         setInput(nnfFormula);
         //this.maximumNumberOfLiterals = maximumNumberOfLiterals;
@@ -170,6 +170,6 @@ public class TransformCNFFormula extends AComputation<IFormula> implements ITran
 
     @Override
     public ITree<IComputation<?>> cloneNode() {
-        return new TransformCNFFormula(getInput());
+        return new ComputeCNFFormula(getInput());
     }
 }

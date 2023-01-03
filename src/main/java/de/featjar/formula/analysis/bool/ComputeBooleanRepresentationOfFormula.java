@@ -12,7 +12,7 @@ import de.featjar.formula.structure.formula.predicate.Literal;
 import java.util.List;
 import java.util.Objects;
 
-public class ComputeBooleanRepresentationOfFormula extends AComputeBooleanRepresentation<IFormula, BooleanClauseList> { // todo: assumption: is in CNF
+public class ComputeBooleanRepresentationOfFormula extends ABooleanRepresentationComputation<IFormula, BooleanClauseList> { // todo: assumption: is in CNF
     public ComputeBooleanRepresentationOfFormula(IComputation<IFormula> valueRepresentation) {
         super(valueRepresentation);
     }

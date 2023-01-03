@@ -13,12 +13,12 @@ import java.nio.file.Paths;
 import static de.featjar.formula.structure.Expressions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-class TransformCNFFormulaTest {
+class ComputeCNFFormulaTest {
     public static final Path fmDirectory = Paths.get("src/test/resources/testFeatureModels");
 
     //@Test
     public void doesNothing() {
-        TransformerTest.traverseAndAssertSameFormula(and(or(literal("a"), literal("b")), or(literal("c"))), TransformCNFFormula::new);
+        TransformerTest.traverseAndAssertSameFormula(and(or(literal("a"), literal("b")), or(literal("c"))), ComputeCNFFormula::new);
     }
 
     // TODO: currently broken, as ToNormalForm is not deterministic (probably due to usage of Set<>)
@@ -26,11 +26,11 @@ class TransformCNFFormulaTest {
     public void toCNF() {
         TransformerTest.traverseAndAssertFormulaEquals(
                 or(and(literal("a"), literal("b")), and(literal("c"))),
-                TransformCNFFormula::new,
+                ComputeCNFFormula::new,
                 and(or(literal("c"), literal("b")), or(literal("c"), literal("a"))));
         TransformerTest.traverseAndAssertFormulaEquals(
                 or(and(literal("a"), literal("b")), literal("c")),
-                TransformCNFFormula::new,
+                ComputeCNFFormula::new,
                 and(or(literal("c"), literal("b")), or(literal("a"), literal("c"))));
     }
 
@@ -49,8 +49,8 @@ class TransformCNFFormulaTest {
         IFormula finalFormula = formula;
         formula = FeatJAR.apply(featJAR ->
                 Computations.of(finalFormula)
-                        .map(TransformNNFFormula::new)
-                        .map(TransformCNFFormula::new)
+                        .map(ComputeNNFFormula::new)
+                        .map(ComputeCNFFormula::new)
                         .getResult().get());
         assertEquals(and(
                 or(literal("Root")),

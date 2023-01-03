@@ -3,18 +3,20 @@ package de.featjar.formula.analysis;
 import de.featjar.base.computation.IAnalysis;
 import de.featjar.base.computation.ITimeoutDependency;
 
+import java.math.BigInteger;
+
 /**
- * Computes a solution for a given formula.
+ * Counts the number of solutions for a given formula.
  * Allows setting an optional timeout.
  * Allows passing an assignment with additional assumptions to make when solving the formula.
+ * May return a lower bound with a warning if the timeout is reached.
  *
  * @param <T> the type of the analysis input
- * @param <U> the type of the analysis result
- * @param <R> the type of the assignment
+ * @param <U> the type of the assignment
  * @author Elias Kuiter
  */
-public interface IGetSolutionAnalysis<T, U extends ISolution<?>, R extends IAssignment<?>> extends
-        IAnalysis<T, U>,
+public interface ISolutionCountAnalysis<T, U extends IAssignment<?>> extends
+        IAnalysis<T, BigInteger>,
         ITimeoutDependency,
-        IAssumedAssignmentDependency<R> {
+        IAssumedAssignmentDependency<U> {
 }

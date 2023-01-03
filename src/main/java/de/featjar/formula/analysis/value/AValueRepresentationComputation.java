@@ -18,46 +18,49 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.analysis.bool;
+package de.featjar.formula.analysis.value;
 
-import de.featjar.base.FeatJAR;
 import de.featjar.base.computation.*;
-import de.featjar.base.data.Pair;
 import de.featjar.base.data.Result;
 import de.featjar.base.task.IMonitor;
+import de.featjar.formula.analysis.IVariableMapDependency;
 import de.featjar.formula.analysis.VariableMap;
-import de.featjar.formula.analysis.value.*;
+import de.featjar.formula.analysis.bool.*;
 
 import java.util.List;
 
 /**
- * Transforms a formula, which is assumed to be in conjunctive normal form, into an indexed CNF representation.
+ * ...
  *
- * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public abstract class AComputeBooleanRepresentation<T extends IValueRepresentation, U extends IBooleanRepresentation>
-        extends AComputation<Pair<U, VariableMap>> implements IAnalysis<T, Pair<U, VariableMap>> {
-    protected final static Dependency<?> VALUE_REPRESENTATION = newRequiredDependency();
+public abstract class AValueRepresentationComputation<T extends IBooleanRepresentation, U extends IValueRepresentation>
+        extends AComputation<U> implements IAnalysis<T, U>, IVariableMapDependency {
+    protected final static Dependency<?> BOOLEAN_REPRESENTATION = newRequiredDependency();
+    protected final static Dependency<VariableMap> VARIABLE_MAP = newRequiredDependency();
 
-    public AComputeBooleanRepresentation(IComputation<T> valueRepresentation) {
-        dependOn(VALUE_REPRESENTATION);
-        setInput(valueRepresentation);
+    public AValueRepresentationComputation(IComputation<T> booleanRepresentation, IComputation<VariableMap> variableMap) {
+        dependOn(BOOLEAN_REPRESENTATION, VARIABLE_MAP);
+        setInput(booleanRepresentation);
+        setVariableMap(variableMap);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public Dependency<T> getInputDependency() {
-        return (Dependency<T>) VALUE_REPRESENTATION;
+        return (Dependency<T>) BOOLEAN_REPRESENTATION;
+    }
+
+    @Override
+    public Dependency<VariableMap> getVariableMapDependency() {
+        return VARIABLE_MAP;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public Result<Pair<U, VariableMap>> computeResult(List<?> results, IMonitor monitor) {
-        T t = (T) VALUE_REPRESENTATION.get(results);
-        FeatJAR.log().debug("initializing variable map for " + t.getClass().getName());
-        VariableMap variableMap = VariableMap.of(t);
-        FeatJAR.log().debug(variableMap);
-        return t.toBoolean(variableMap).map(u -> new Pair<>((U) u, variableMap));
+    public Result<U> computeResult(List<?> results, IMonitor monitor) {
+        T t = (T) BOOLEAN_REPRESENTATION.get(results);
+        VariableMap variableMap = VARIABLE_MAP.get(results);
+        return (Result<U>) t.toValue(variableMap);
     }
 }

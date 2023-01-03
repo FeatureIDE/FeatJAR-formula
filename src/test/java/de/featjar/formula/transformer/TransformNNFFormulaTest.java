@@ -9,11 +9,11 @@ class TransformNNFFormulaTest {
     public void toNNF() {
         TransformerTest.traverseAndAssertFormulaEquals(
                 implies(literal("a"), False),
-                TransformNNFFormula::new,
+                ComputeNNFFormula::new,
                 or(literal(false, "a"), False));
         TransformerTest.traverseAndAssertFormulaEquals(
                 not(or(literal("a"), literal("b"))),
-                TransformNNFFormula::new,
+                ComputeNNFFormula::new,
                 and(literal(false, "a"), literal(false, "b")));
     }
 }

@@ -29,8 +29,8 @@ import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Not;
 import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.formula.structure.formula.predicate.Literal;
-import de.featjar.formula.transformer.TransformCNFFormula;
-import de.featjar.formula.transformer.TransformNNFFormula;
+import de.featjar.formula.transformer.ComputeCNFFormula;
+import de.featjar.formula.transformer.ComputeNNFFormula;
 import de.featjar.formula.visitor.AndOrSimplifier;
 import de.featjar.formula.visitor.ConnectiveSimplifier;
 import de.featjar.formula.visitor.DeMorganApplier;
@@ -76,8 +76,8 @@ public class XMLFeatureModelCNFFormulaFormat extends XMLFeatureModelFormulaForma
     protected void addConstraint(Boolean constraintLabel, IFormula formula) throws ParseException {
         IFormula transformedExpression =
                 async(formula)
-                .map(TransformNNFFormula::new)
-                .map(TransformCNFFormula::new)
+                .map(ComputeNNFFormula::new)
+                .map(ComputeCNFFormula::new)
                 .computeResult() // todo: maybe let cache decide whether this should be cached
                 .orElseThrow(p -> new ParseException("failed to transform " + formula));
         super.addConstraint(constraintLabel, transformedExpression);
