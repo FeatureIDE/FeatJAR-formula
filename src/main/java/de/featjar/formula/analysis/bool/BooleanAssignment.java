@@ -1,9 +1,7 @@
 package de.featjar.formula.analysis.bool;
 
 import de.featjar.base.computation.IComputation;
-import de.featjar.base.data.AIntegerList;
-import de.featjar.base.data.Problem;
-import de.featjar.base.data.Result;
+import de.featjar.base.data.*;
 import de.featjar.formula.analysis.IAssignment;
 import de.featjar.formula.analysis.ISolver;
 import de.featjar.formula.analysis.VariableMap;
@@ -74,7 +72,7 @@ public class BooleanAssignment extends AIntegerList<BooleanAssignment> implement
     }
 
     public Result<BooleanAssignment> clean() { // TODO: must this be an optional?
-        final LinkedHashSet<Integer> newIntegerSet = new LinkedHashSet<>();
+        final LinkedHashSet<Integer> newIntegerSet = Sets.empty();
 
         for (final int integer : integers) {
             if (newIntegerSet.contains(-integer)) {
@@ -212,7 +210,7 @@ public class BooleanAssignment extends AIntegerList<BooleanAssignment> implement
 
     @Override
     public LinkedHashMap<Integer, Object> getAll() {
-        LinkedHashMap<Integer, Object> map = new LinkedHashMap<>();
+        LinkedHashMap<Integer, Object> map = Maps.empty();
         for (int integer : integers) {
             if (integer > 0)
                 map.put(integer, true);

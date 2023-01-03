@@ -21,6 +21,7 @@
 package de.featjar.formula.transformer;
 
 import de.featjar.base.computation.*;
+import de.featjar.base.data.Maps;
 import de.featjar.base.data.Result;
 import de.featjar.base.tree.structure.ITree;
 import de.featjar.formula.structure.IExpression;
@@ -105,7 +106,7 @@ public class TransformCNFFormula extends AComputation<IFormula> implements ITran
         final List<IFormula> transformedClauses = new ArrayList<>(distributiveClauses);
 
         if (!tseitinClauses.isEmpty()) {
-            final LinkedHashMap<ComputeTseitinCNFFormula.Substitute, ComputeTseitinCNFFormula.Substitute> combinedTseitinClauses = new LinkedHashMap<>();
+            final LinkedHashMap<ComputeTseitinCNFFormula.Substitute, ComputeTseitinCNFFormula.Substitute> combinedTseitinClauses = Maps.empty();
             for (final ComputeTseitinCNFFormula.Substitute tseitinClause : tseitinClauses) {
                 ComputeTseitinCNFFormula.Substitute substitute = combinedTseitinClauses.get(tseitinClause);
                 if (substitute == null) {

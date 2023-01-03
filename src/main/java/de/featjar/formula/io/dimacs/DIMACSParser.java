@@ -20,6 +20,7 @@
  */
 package de.featjar.formula.io.dimacs;
 
+import de.featjar.base.data.Maps;
 import de.featjar.base.io.NonEmptyLineIterator;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.And;
@@ -42,7 +43,7 @@ public class DIMACSParser {
             "\\A\\s*" + DIMACSConstants.PROBLEM + "\\s+" + DIMACSConstants.CNF + "\\s+(\\d+)\\s+(\\d+)");
 
     /** Maps indexes to variables. */
-    private final LinkedHashMap<Integer, String> indexVariables = new LinkedHashMap<>();
+    private final LinkedHashMap<Integer, String> indexVariables = Maps.empty();
 
     /**
      * The amount of variables as declared in the problem definition. May differ

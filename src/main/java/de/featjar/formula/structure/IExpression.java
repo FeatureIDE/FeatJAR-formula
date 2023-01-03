@@ -90,7 +90,7 @@ public interface IExpression extends ITree<IExpression> {
     }
 
     @Override
-    default Predicate<IExpression> getChildrenValidator() {
+    default Predicate<IExpression> getChildValidator() {
         return expression -> getChildrenType() == null || getChildrenType().isAssignableFrom(expression.getType());
     }
 

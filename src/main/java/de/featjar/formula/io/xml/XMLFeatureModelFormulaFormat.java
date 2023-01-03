@@ -21,6 +21,7 @@
 package de.featjar.formula.io.xml;
 
 import de.featjar.base.data.Result;
+import de.featjar.base.data.Sets;
 import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.predicate.Literal;
@@ -40,7 +41,7 @@ import org.w3c.dom.Element;
  * @author Elias Kuiter
  */
 public class XMLFeatureModelFormulaFormat extends AXMLFeatureModelFormat<IExpression, Literal, Boolean> {
-    protected final LinkedHashSet<String> featureLabels = new LinkedHashSet<>();
+    protected final LinkedHashSet<String> featureLabels = Sets.empty();
     protected final List<IFormula> constraints = new ArrayList<>();
 
     @Override

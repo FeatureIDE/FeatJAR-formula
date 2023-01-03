@@ -1,9 +1,6 @@
 package de.featjar.formula.analysis;
 
-import de.featjar.base.data.Pair;
-import de.featjar.base.data.Problem;
-import de.featjar.base.data.RangeMap;
-import de.featjar.base.data.Result;
+import de.featjar.base.data.*;
 import de.featjar.formula.analysis.bool.*;
 import de.featjar.formula.analysis.value.*;
 import de.featjar.formula.structure.formula.IFormula;
@@ -128,7 +125,7 @@ public class VariableMap extends RangeMap<String> {
     }
 
     protected <T extends ValueAssignment> Result<T> toValue(BooleanAssignment booleanAssignment, Function<LinkedHashMap<String, Object>, T> constructor) {
-        LinkedHashMap<String, Object> variableValuePairs = new LinkedHashMap<>();
+        LinkedHashMap<String, Object> variableValuePairs = Maps.empty();
         List<Problem> problems = new ArrayList<>();
         for (int integer : booleanAssignment.getIntegers()) {
             int index = Math.abs(integer);
@@ -177,7 +174,7 @@ public class VariableMap extends RangeMap<String> {
     }
 
     protected static <T extends ValueAssignment> Result<T> toAnonymousValue(BooleanAssignment booleanAssignment, Function<LinkedHashMap<String, Object>, T> constructor) {
-        LinkedHashMap<String, Object> variableValuePairs = new LinkedHashMap<>();
+        LinkedHashMap<String, Object> variableValuePairs = Maps.empty();
         List<Problem> problems = new ArrayList<>();
         for (int integer : booleanAssignment.getIntegers()) {
             int index = Math.abs(integer);

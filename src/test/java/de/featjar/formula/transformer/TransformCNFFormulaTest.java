@@ -1,6 +1,6 @@
 package de.featjar.formula.transformer;
 
-import de.featjar.base.Feat;
+import de.featjar.base.FeatJAR;
 import de.featjar.base.computation.Computations;
 import de.featjar.base.io.IO;
 import de.featjar.formula.io.FormulaFormats;
@@ -37,8 +37,8 @@ class TransformCNFFormulaTest {
     @Test
     void basic() {
         IFormula formula =
-                Feat.apply(featJAR ->
-                        Computations.of(IO.load(fmDirectory.resolve("basic.xml"), Feat.extensionPoint(FormulaFormats.class)).get())
+                FeatJAR.apply(featJAR ->
+                        Computations.of(IO.load(fmDirectory.resolve("basic.xml"), FeatJAR.extensionPoint(FormulaFormats.class)).get())
                                 .getResult().get());
         assertEquals(and(
                 literal("Root"),
@@ -47,7 +47,7 @@ class TransformCNFFormulaTest {
                 literal("A"),
                 literal("B")), formula);
         IFormula finalFormula = formula;
-        formula = Feat.apply(featJAR ->
+        formula = FeatJAR.apply(featJAR ->
                 Computations.of(finalFormula)
                         .map(TransformNNFFormula::new)
                         .map(TransformCNFFormula::new)

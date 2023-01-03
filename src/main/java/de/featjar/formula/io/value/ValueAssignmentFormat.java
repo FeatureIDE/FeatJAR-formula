@@ -20,6 +20,7 @@
  */
 package de.featjar.formula.io.value;
 
+import de.featjar.base.data.Maps;
 import de.featjar.base.data.Problem;
 import de.featjar.base.data.Problem.Severity;
 import de.featjar.base.data.Result;
@@ -62,7 +63,7 @@ public class ValueAssignmentFormat implements IFormat<ValueAssignment> {
 
     @Override
     public Result<ValueAssignment> parse(AInputMapper inputMapper) {
-        LinkedHashMap<String, Object> variableValuePairs = new LinkedHashMap<>();
+        LinkedHashMap<String, Object> variableValuePairs = Maps.empty();
         for (String variableValuePair : inputMapper.get().getLineStream()
                 .collect(Collectors.joining(","))
                 .split(",")) {

@@ -61,7 +61,7 @@ public class Evaluator implements ITreeVisitor<IExpression, Object> {
 
     @Override
     public Result<Object> getResult() {
-        return Result.of(values.peek());
+        return Result.ofNullable(values.peek());
     }
 
     @Override

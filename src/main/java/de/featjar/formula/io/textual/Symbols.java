@@ -20,6 +20,7 @@
  */
 package de.featjar.formula.io.textual;
 
+import de.featjar.base.data.Maps;
 import de.featjar.base.data.Pair;
 import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.formula.connective.*;
@@ -56,8 +57,8 @@ public class Symbols {
         }
     }
 
-    private final LinkedHashMap<String, Operator> symbolToOperator = new LinkedHashMap<>();
-    private final LinkedHashMap<Operator, String> operatorToSymbol = new LinkedHashMap<>();
+    private final LinkedHashMap<String, Operator> symbolToOperator = Maps.empty();
+    private final LinkedHashMap<Operator, String> operatorToSymbol = Maps.empty();
 
     private final boolean textual;
 

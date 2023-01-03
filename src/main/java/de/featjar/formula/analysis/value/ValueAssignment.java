@@ -1,6 +1,7 @@
 package de.featjar.formula.analysis.value;
 
 import de.featjar.base.computation.IComputation;
+import de.featjar.base.data.Maps;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.IO;
 import de.featjar.formula.analysis.IAssignment;
@@ -24,7 +25,7 @@ public class ValueAssignment implements IAssignment<String>, IValueRepresentatio
     final LinkedHashMap<String, Object> variableValuePairs;
 
     public ValueAssignment() {
-        this(new LinkedHashMap<>());
+        this(Maps.empty());
     }
 
     public ValueAssignment(LinkedHashMap<String, Object> variableValuePairs) {
@@ -32,7 +33,7 @@ public class ValueAssignment implements IAssignment<String>, IValueRepresentatio
     }
 
     public ValueAssignment(Object... variableValuePairs) {
-        this.variableValuePairs = new LinkedHashMap<>();
+        this.variableValuePairs = Maps.empty();
         if (variableValuePairs.length % 2 == 1)
             throw new IllegalArgumentException("expected a list of variable-value pairs for this value assignment");
         for (int i = 0; i < variableValuePairs.length; i += 2) {

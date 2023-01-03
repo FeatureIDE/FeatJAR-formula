@@ -48,10 +48,10 @@ class ExpressionTest {
 
     @Test
     void getChildrenValidator() {
-        assertTrue(formula.getChildrenValidator().test(new Variable("x")));
-        assertFalse(formula.getChildrenValidator().test(new Variable("x", Long.class)));
-        assertFalse(term.getChildrenValidator().test(new Variable("x")));
-        assertTrue(term.getChildrenValidator().test(new Variable("x", Long.class)));
+        assertTrue(formula.getChildValidator().test(new Variable("x")));
+        assertFalse(formula.getChildValidator().test(new Variable("x", Long.class)));
+        assertFalse(term.getChildValidator().test(new Variable("x")));
+        assertTrue(term.getChildValidator().test(new Variable("x", Long.class)));
     }
 
     @Test

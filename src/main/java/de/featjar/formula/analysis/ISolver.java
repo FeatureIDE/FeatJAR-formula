@@ -24,7 +24,7 @@ import de.featjar.base.extension.IExtension;
 
 /**
  * Solves problems expressed as logical formulas.
- * Is capable of performing various basic {@link IFormulaAnalysis analyses}.
+ * Is capable of performing various basic {@link de.featjar.base.computation.IAnalysis analyses}.
  *
  * @param <T> the index type of the variables
  * @author Sebastian Krieter

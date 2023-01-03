@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.analysis.bool;
 
-import de.featjar.base.Feat;
+import de.featjar.base.FeatJAR;
 import de.featjar.base.computation.*;
 import de.featjar.base.data.Pair;
 import de.featjar.base.data.Result;
@@ -55,9 +55,9 @@ public abstract class AComputeBooleanRepresentation<T extends IValueRepresentati
     @Override
     public Result<Pair<U, VariableMap>> computeResult(List<?> results, IMonitor monitor) {
         T t = (T) VALUE_REPRESENTATION.get(results);
-        Feat.log().debug("initializing variable map for " + t.getClass().getName());
+        FeatJAR.log().debug("initializing variable map for " + t.getClass().getName());
         VariableMap variableMap = VariableMap.of(t);
-        Feat.log().debug(variableMap);
+        FeatJAR.log().debug(variableMap);
         return t.toBoolean(variableMap).map(u -> new Pair<>((U) u, variableMap));
     }
 }
