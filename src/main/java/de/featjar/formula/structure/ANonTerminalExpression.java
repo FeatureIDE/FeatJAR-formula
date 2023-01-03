@@ -60,7 +60,13 @@ public abstract class ANonTerminalExpression extends ATree<IExpression> implemen
             final StringBuilder sb = new StringBuilder();
             sb.append(getName());
             sb.append("(");
-            for (final IExpression child : getChildren()) {
+            List<? extends IExpression> iExpressions = getChildren();
+            for (int i = 0; i < iExpressions.size(); i++) {
+                if (i >= 3) {
+                    sb.append("...  ");
+                    break;
+                }
+                IExpression child = iExpressions.get(i);
                 sb.append(child.getName());
                 sb.append(", ");
             }
