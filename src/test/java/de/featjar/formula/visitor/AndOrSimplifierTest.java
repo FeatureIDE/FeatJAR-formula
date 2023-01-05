@@ -48,18 +48,10 @@ class AndOrSimplifierTest {
     }
 
     @Test
-    void trueDominatesOr() {
+    void simplifyComplex() {
         VisitorTest.traverseAndAssertFormulaEquals(
-                or(literal("x"), True),
+                and(literal("a"), and(literal("b"), literal("c"), True), and(literal("b"), False), or(literal("x"), False)),
                 new AndOrSimplifier(),
-                or(True)); // TODO: this could even be implemented more strict by simplifying to True
-    }
-
-    @Test
-    void falseDominatesAnd() {
-        VisitorTest.traverseAndAssertFormulaEquals(
-                and(literal("x"), False),
-                new AndOrSimplifier(),
-                and(False)); // TODO: this could even be implemented more strict by simplifying to True
+                and(literal("a"), literal("b"), literal("c"), True, literal("b"), False, or(literal("x"), False)));
     }
 }

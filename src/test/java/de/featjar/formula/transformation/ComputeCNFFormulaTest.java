@@ -1,7 +1,8 @@
-package de.featjar.formula.transformer;
+package de.featjar.formula.transformation;
 
 import de.featjar.base.FeatJAR;
 import de.featjar.base.computation.Computations;
+import de.featjar.base.computation.IComputation;
 import de.featjar.base.io.IO;
 import de.featjar.formula.io.FormulaFormats;
 import de.featjar.formula.structure.formula.IFormula;
@@ -16,22 +17,21 @@ import static org.junit.jupiter.api.Assertions.*;
 class ComputeCNFFormulaTest {
     public static final Path fmDirectory = Paths.get("src/test/resources/testFeatureModels");
 
-    //@Test
-    public void doesNothing() {
-        TransformerTest.traverseAndAssertSameFormula(and(or(literal("a"), literal("b")), or(literal("c"))), ComputeCNFFormula::new);
+    IComputation<IFormula> toCNF(IComputation<IFormula> formula) {
+        return formula.map(ComputeNNFFormula::new).map(ComputeCNFFormula::new);
     }
 
-    // TODO: currently broken, as ToNormalForm is not deterministic (probably due to usage of Set<>)
-    //@Test
+    @Test
+    public void doesNothing() {
+        TransformationTest.traverseAndAssertSameFormula(and(or(literal("a"), literal("b")), or(literal("c"))), this::toCNF);
+    }
+
+    @Test
     public void toCNF() {
-        TransformerTest.traverseAndAssertFormulaEquals(
+        TransformationTest.traverseAndAssertFormulaEquals(
                 or(and(literal("a"), literal("b")), and(literal("c"))),
-                ComputeCNFFormula::new,
+                this::toCNF,
                 and(or(literal("c"), literal("b")), or(literal("c"), literal("a"))));
-        TransformerTest.traverseAndAssertFormulaEquals(
-                or(and(literal("a"), literal("b")), literal("c")),
-                ComputeCNFFormula::new,
-                and(or(literal("c"), literal("b")), or(literal("a"), literal("c"))));
     }
 
     @Test
@@ -47,11 +47,11 @@ class ComputeCNFFormulaTest {
                 literal("A"),
                 literal("B")), formula);
         IFormula finalFormula = formula;
-        formula = FeatJAR.apply(featJAR ->
+        formula =
                 Computations.of(finalFormula)
                         .map(ComputeNNFFormula::new)
                         .map(ComputeCNFFormula::new)
-                        .getResult().get());
+                        .getResult().get();
         assertEquals(and(
                 or(literal("Root")),
                 or(literal(false, "A"), literal("Root")),

@@ -123,7 +123,7 @@ public class DIMACSSerializer {
         sb.append(' ');
         sb.append(formula.getVariables().size());
         sb.append(' ');
-        sb.append(formula.getChildren().size());
+        sb.append(formula.getChildrenCount());
         sb.append(System.lineSeparator());
     }
 
@@ -137,7 +137,7 @@ public class DIMACSSerializer {
         for (final IExpression child : clause.getChildren()) {
             final Literal l = (Literal) child;
             final Integer index = variableMap
-                    .get(l.getName())
+                    .get(l.getExpression().getName())
                     .orElseThrow();
             sb.append(l.isPositive() ? index : -index);
             sb.append(' ');

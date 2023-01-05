@@ -23,8 +23,8 @@ package de.featjar.formula.visitor;
 import de.featjar.base.data.Result;
 import de.featjar.base.data.Void;
 import de.featjar.base.tree.visitor.ITreeVisitor;
-import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.Expressions;
+import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.IConnective;
@@ -34,16 +34,15 @@ import de.featjar.formula.structure.formula.predicate.IPredicate;
 import de.featjar.formula.structure.formula.predicate.True;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 /**
- * Merges nested {@link And} and {@link Or} connectives.
+ * Reduces occurrences of {@link True} and {@link False}.
  *
- * @author Sebastian Krieter
+ * @author Elias Kuiter
  */
-public class AndOrSimplifier implements ITreeVisitor<IFormula, Void> {
+public class TrueFalseSimplifier implements ITreeVisitor<IFormula, Void> {
     @Override
     public TraversalAction firstVisit(List<IFormula> path) {
         final IFormula formula = getCurrentNode(path);
@@ -60,27 +59,26 @@ public class AndOrSimplifier implements ITreeVisitor<IFormula, Void> {
     public TraversalAction lastVisit(List<IFormula> path) {
         final IFormula formula = getCurrentNode(path);
         if (formula instanceof And) {
-            formula.flatReplaceChildren(this::mergeAnd);
-        } else if (formula instanceof Or) {
-            formula.flatReplaceChildren(this::mergeOr);
+            if (formula.getChildren().stream().anyMatch(c -> c == Expressions.False)) {
+                // false dominates conjunction
+                formula.clearChildren();
+                formula.addChild(Expressions.False);
+            } else {
+                // true is neutral to conjunction
+                formula.flatReplaceChildren(child -> child instanceof True ? new ArrayList<>() : null);
+            }
         }
-        formula.replaceChildren(child ->
-                child.getChildrenCount() == 1 && ((child instanceof And) || (child instanceof Or))
-                        ? child.getFirstChild().get()
-                        : null);
+        if (formula instanceof Or) {
+            if (formula.getChildren().stream().anyMatch(c -> c == Expressions.True)) {
+                // true dominates disjunction
+                formula.clearChildren();
+                formula.addChild(Expressions.True);
+            } else {
+                // false is neutral to disjunction
+                formula.flatReplaceChildren(child -> child instanceof False ? new ArrayList<>() : null);
+            }
+        }
         return TraversalAction.CONTINUE;
-    }
-
-    private List<? extends IExpression> mergeAnd(final IExpression child) {
-        return (child instanceof And) || (child instanceof Or && (child.getChildrenCount() == 1))
-                ? child.getChildren()
-                : null;
-    }
-
-    private List<? extends IExpression> mergeOr(final IExpression child) {
-        return (child instanceof Or) || (child instanceof And && (child.getChildrenCount() == 1))
-                ? child.getChildren()
-                : null;
     }
 
     @Override

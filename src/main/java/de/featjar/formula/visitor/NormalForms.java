@@ -27,9 +27,9 @@ import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.base.data.Result;
 import de.featjar.base.tree.Trees;
-import de.featjar.formula.transformer.ComputeCNFFormula;
-import de.featjar.formula.transformer.ComputeDNFFormula;
-import de.featjar.formula.transformer.ComputeNNFFormula;
+import de.featjar.formula.transformation.ComputeCNFFormula;
+import de.featjar.formula.transformation.ComputeDNFFormula;
+import de.featjar.formula.transformation.ComputeNNFFormula;
 
 import static de.featjar.base.computation.Computations.async;
 

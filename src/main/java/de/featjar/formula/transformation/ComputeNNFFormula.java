@@ -18,7 +18,7 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.transformer;
+package de.featjar.formula.transformation;
 
 import de.featjar.base.computation.*;
 import de.featjar.base.data.Result;
@@ -52,11 +52,11 @@ public class ComputeNNFFormula extends AComputation<IFormula> implements ITransf
     @Override
     public Result<IFormula> computeResult(List<?> results, IMonitor monitor) {
         IFormula formula = FORMULA.get(results);
-        // TODO: if already in NNF, should do nothing (this requires the NNF tester to be revised, as it allows complex connectives right now)
         return Reference.mutateClone(formula,
                 reference -> Trees.traverse(reference, new ConnectiveSimplifier())
-                        .flatMap(unit -> Trees.traverse(reference, new DeMorganApplier()))
-                        .flatMap(unit -> Trees.traverse(reference, new AndOrSimplifier())));
+                        .flatMap(_void -> Trees.traverse(reference, new DeMorganApplier()))
+                        .flatMap(_void -> Trees.traverse(reference, new TrueFalseSimplifier()))
+                        .flatMap(_void -> Trees.traverse(reference, new AndOrSimplifier())));
     }
 
     @Override

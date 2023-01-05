@@ -85,7 +85,7 @@ public class Evaluator implements ITreeVisitor<IExpression, Object> {
                 }
             }
         } else {
-            final List<Object> arguments = values.subList(0, expression.getChildren().size());
+            final List<Object> arguments = values.subList(0, expression.getChildrenCount());
             Collections.reverse(arguments);
             final Object value = expression.evaluate(arguments);
             arguments.clear();

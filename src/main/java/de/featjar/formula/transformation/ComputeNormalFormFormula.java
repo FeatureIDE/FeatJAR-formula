@@ -18,7 +18,7 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.transformer;
+package de.featjar.formula.transformation;
 
 import de.featjar.base.computation.*;
 import de.featjar.base.data.Result;
@@ -145,15 +145,14 @@ public class ComputeNormalFormFormula extends AComputation<IFormula> implements 
         return Result.of(formula);
     }
 
-    @SuppressWarnings("unchecked")
     private List<IExpression> convert(IExpression child) throws MaximumNumberOfLiteralsExceededException {
         if (child instanceof Literal) {
-            return null;
+            return new ArrayList<>();
         } else {
             numberOfLiterals = 0;
             final ArrayList<LinkedHashSet<Literal>> newClauseList = new ArrayList<>();
             children = new ArrayList<>(child.getChildren());
-            children.sort(Comparator.comparingInt(c -> c.getChildren().size()));
+            children.sort(Comparator.comparingInt(ITree::getChildrenCount));
             convertNF(newClauseList, new LinkedHashSet<>(children.size() << 1), 0);
 
             final List<IExpression> filteredClauseList = new ArrayList<>(newClauseList.size());
@@ -217,7 +216,7 @@ public class ComputeNormalFormFormula extends AComputation<IFormula> implements 
                                         .filter(literals::add)
                                         .collect(Collectors.toList());
                                 convertNF(clauses, literals, index + 1);
-                                literals.removeAll(newlyAddedLiterals);
+                                newlyAddedLiterals.forEach(literals::remove);
                             }
                         }
                     }
@@ -237,7 +236,7 @@ public class ComputeNormalFormFormula extends AComputation<IFormula> implements 
     private static boolean isRedundant(IExpression expression, LinkedHashSet<Literal> literals) {
         return (expression instanceof Literal)
                 ? literals.contains(expression)
-                : expression.getChildren().stream().allMatch(literals::contains);
+                : literals.containsAll(expression.getChildren());
     }
 
     public int getMaximumNumberOfLiterals() {

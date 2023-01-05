@@ -25,7 +25,7 @@ import de.featjar.base.tree.visitor.ITreeVisitor;
 import de.featjar.formula.structure.ANonTerminalExpression;
 import de.featjar.formula.structure.IUnaryExpression;
 import de.featjar.formula.structure.formula.IFormula;
-import de.featjar.formula.transformer.ComputeNNFFormula;
+import de.featjar.formula.transformation.ComputeNNFFormula;
 
 import java.util.List;
 import java.util.function.Function;
