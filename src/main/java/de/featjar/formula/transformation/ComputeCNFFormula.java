@@ -29,8 +29,7 @@ import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.term.value.Variable;
 import de.featjar.formula.visitor.ANormalFormTester;
 import de.featjar.formula.structure.formula.connective.And;
-import de.featjar.base.task.IMonitor;
-import de.featjar.base.task.CancelableMonitor;
+import de.featjar.base.computation.Progress;
 import de.featjar.base.tree.Trees;
 import de.featjar.formula.visitor.NormalForms;
 
@@ -74,7 +73,7 @@ public class ComputeCNFFormula extends AComputation<IFormula> implements ITransf
     }
 
     @Override
-    public Result<IFormula> computeResult(List<?> results, IMonitor monitor) {
+    public Result<IFormula> computeResult(List<?> results, Progress progress) {
         IFormula formula = NNF_FORMULA.get(results);
         useDistributive = (maximumNumberOfLiterals > 0);
         final ANormalFormTester normalFormTester = NormalForms.getNormalFormTester(formula, IFormula.NormalForm.CNF);
@@ -144,28 +143,27 @@ public class ComputeCNFFormula extends AComputation<IFormula> implements ITransf
                 try {
                     // todo: do not use .get
                     distributiveClauses.addAll(
-                            (List<? extends IFormula>) distributive(clonedChild, new CancelableMonitor()).get().getChildren()); // TODO .get?
+                            (List<? extends IFormula>) distributive(clonedChild).get().getChildren()); // TODO .get?
                     return;
                 } catch (final ComputeNormalFormFormula.MaximumNumberOfLiteralsExceededException ignored) {
                 }
             }
             // todo: do not use .get
-            tseitinClauses.addAll(tseitin(clonedChild, new CancelableMonitor()).get()); // TODO: .get?
+            tseitinClauses.addAll(tseitin(clonedChild).get()); // TODO: .get?
         }
     }
 
-    protected Result<IFormula> distributive(IFormula child, IMonitor monitor)
+    protected Result<IFormula> distributive(IFormula child)
             throws ComputeNormalFormFormula.MaximumNumberOfLiteralsExceededException {
         final ComputeNormalFormFormula cnfDistributiveLawTransformer =
-                Computations.of(child, monitor)
-                        .map(c -> new ComputeNormalFormFormula(c, IFormula.NormalForm.CNF)); // TODO: monitor subtask?
+                Computations.of(child).map(c -> new ComputeNormalFormFormula(c, IFormula.NormalForm.CNF)); // TODO: monitor subtask?
         cnfDistributiveLawTransformer.setMaximumNumberOfLiterals(maximumNumberOfLiterals);
         return cnfDistributiveLawTransformer.getResult();
     }
 
-    protected Result<List<ComputeTseitinCNFFormula.Substitute>> tseitin(IExpression child, IMonitor monitor) {
+    protected Result<List<ComputeTseitinCNFFormula.Substitute>> tseitin(IExpression child) {
         final ComputeTseitinCNFFormula toTseitinCNFFormula = new ComputeTseitinCNFFormula();
-        return toTseitinCNFFormula.execute(child, monitor);
+        return toTseitinCNFFormula.execute(child);
     }
 
     @Override

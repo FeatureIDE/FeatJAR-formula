@@ -22,7 +22,7 @@ package de.featjar.formula.transformation;
 
 import de.featjar.base.computation.*;
 import de.featjar.base.data.Result;
-import de.featjar.base.task.IMonitor;
+import de.featjar.base.computation.Progress;
 import de.featjar.base.tree.structure.ITree;
 import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.formula.IFormula;
@@ -94,7 +94,7 @@ public class ComputeNormalFormFormula extends AComputation<IFormula> implements 
     }
 
     @Override
-    public Result<IFormula> computeResult(List<?> results, IMonitor monitor) {
+    public Result<IFormula> computeResult(List<?> results, Progress progress) {
         IFormula formula = NNF_FORMULA.get(results);
         if (normalForm.equals(IFormula.NormalForm.CNF))
             formula = (formula instanceof And) ? (And) formula : new And(formula);

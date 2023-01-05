@@ -27,8 +27,6 @@ import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.IConnective;
 import de.featjar.formula.structure.formula.connective.Or;
-import de.featjar.base.task.IMonitor;
-import de.featjar.base.task.IMonitorableFunction;
 import de.featjar.base.tree.Trees;
 import de.featjar.base.tree.visitor.ITreeVisitor;
 import de.featjar.formula.structure.term.value.Variable;
@@ -45,8 +43,7 @@ import java.util.Objects;
  * @deprecated does not currently work, still meant for old VariableMap
  */
 @Deprecated
-public class ComputeTseitinCNFFormula
-        implements IMonitorableFunction<IExpression, List<ComputeTseitinCNFFormula.Substitute>>, ITreeVisitor<IExpression, IExpression> {
+public class ComputeTseitinCNFFormula implements ITreeVisitor<IExpression, IExpression> {
 
     public static class Substitute {
         private final IExpression orgExpression;
@@ -130,8 +127,7 @@ public class ComputeTseitinCNFFormula
 
     private final ArrayDeque<IExpression> stack = new ArrayDeque<>();
 
-    @Override
-    public Result<List<Substitute>> execute(IExpression child, IMonitor monitor) {
+    public Result<List<Substitute>> execute(IExpression child) {
         substitutes.clear();
         stack.clear();
 

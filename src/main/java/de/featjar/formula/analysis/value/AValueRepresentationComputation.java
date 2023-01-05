@@ -22,7 +22,7 @@ package de.featjar.formula.analysis.value;
 
 import de.featjar.base.computation.*;
 import de.featjar.base.data.Result;
-import de.featjar.base.task.IMonitor;
+import de.featjar.base.computation.Progress;
 import de.featjar.formula.analysis.IVariableMapDependency;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.bool.*;
@@ -58,7 +58,7 @@ public abstract class AValueRepresentationComputation<T extends IBooleanRepresen
 
     @SuppressWarnings("unchecked")
     @Override
-    public Result<U> computeResult(List<?> results, IMonitor monitor) {
+    public Result<U> computeResult(List<?> results, Progress progress) {
         T t = (T) BOOLEAN_REPRESENTATION.get(results);
         VariableMap variableMap = VARIABLE_MAP.get(results);
         return (Result<U>) t.toValue(variableMap);

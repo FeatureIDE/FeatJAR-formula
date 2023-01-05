@@ -24,7 +24,7 @@ import de.featjar.base.FeatJAR;
 import de.featjar.base.computation.*;
 import de.featjar.base.data.Pair;
 import de.featjar.base.data.Result;
-import de.featjar.base.task.IMonitor;
+import de.featjar.base.computation.Progress;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.value.*;
 
@@ -53,7 +53,7 @@ public abstract class ABooleanRepresentationComputation<T extends IValueRepresen
 
     @SuppressWarnings("unchecked")
     @Override
-    public Result<Pair<U, VariableMap>> computeResult(List<?> results, IMonitor monitor) {
+    public Result<Pair<U, VariableMap>> computeResult(List<?> results, Progress progress) {
         T t = (T) VALUE_REPRESENTATION.get(results);
         FeatJAR.log().debug("initializing variable map for " + t.getClass().getName());
         VariableMap variableMap = VariableMap.of(t);

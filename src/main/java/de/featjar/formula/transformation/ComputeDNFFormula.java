@@ -22,7 +22,7 @@ package de.featjar.formula.transformation;
 
 import de.featjar.base.computation.*;
 import de.featjar.base.data.Result;
-import de.featjar.base.task.IMonitor;
+import de.featjar.base.computation.Progress;
 import de.featjar.base.tree.structure.ITree;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.Or;
@@ -58,7 +58,7 @@ public class ComputeDNFFormula extends AComputation<IFormula> implements ITransf
     }
 
     @Override
-    public Result<IFormula> computeResult(List<?> results, IMonitor monitor) {
+    public Result<IFormula> computeResult(List<?> results, Progress progress) {
         IFormula formula = NNF_FORMULA.get(results);
         final ANormalFormTester normalFormTester = NormalForms.getNormalFormTester(formula, IFormula.NormalForm.DNF);
         if (normalFormTester.isNormalForm()) {
@@ -70,7 +70,7 @@ public class ComputeDNFFormula extends AComputation<IFormula> implements ITransf
         } else {
             formula = (IFormula) Trees.clone(formula);
             ComputeNormalFormFormula formulaToDistributiveNFFormula =
-                    Computations.of((formula instanceof Or) ? formula : new Or(formula), monitor)
+                    Computations.of((formula instanceof Or) ? formula : new Or(formula))
                             .map(c -> new ComputeNormalFormFormula(c, IFormula.NormalForm.DNF));
             formulaToDistributiveNFFormula.setMaximumNumberOfLiterals(maximumNumberOfLiterals);
             return formulaToDistributiveNFFormula.getResult()

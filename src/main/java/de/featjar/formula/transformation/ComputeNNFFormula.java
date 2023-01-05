@@ -21,8 +21,8 @@
 package de.featjar.formula.transformation;
 
 import de.featjar.base.computation.*;
+import de.featjar.base.computation.Progress;
 import de.featjar.base.data.Result;
-import de.featjar.base.task.IMonitor;
 import de.featjar.base.tree.Trees;
 import de.featjar.base.tree.structure.ITree;
 import de.featjar.formula.structure.formula.IFormula;
@@ -50,7 +50,7 @@ public class ComputeNNFFormula extends AComputation<IFormula> implements ITransf
     }
 
     @Override
-    public Result<IFormula> computeResult(List<?> results, IMonitor monitor) {
+    public Result<IFormula> computeResult(List<?> results, Progress progress) {
         IFormula formula = FORMULA.get(results);
         return Reference.mutateClone(formula,
                 reference -> Trees.traverse(reference, new ConnectiveSimplifier())
