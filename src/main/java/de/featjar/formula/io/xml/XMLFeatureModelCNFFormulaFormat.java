@@ -78,7 +78,7 @@ public class XMLFeatureModelCNFFormulaFormat extends XMLFeatureModelFormulaForma
                 async(formula)
                 .map(ComputeNNFFormula::new)
                 .map(ComputeCNFFormula::new)
-                .computeResult() // todo: maybe let cache decide whether this should be cached
+                .computeUncachedResult()
                 .orElseThrow(p -> new ParseException("failed to transform " + formula));
         super.addConstraint(constraintLabel, transformedExpression);
     }

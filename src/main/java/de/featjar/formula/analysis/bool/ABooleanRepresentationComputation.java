@@ -28,8 +28,6 @@ import de.featjar.base.computation.Progress;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.value.*;
 
-import java.util.List;
-
 /**
  * Transforms a formula, which is assumed to be in conjunctive normal form, into an indexed CNF representation.
  *
@@ -53,8 +51,8 @@ public abstract class ABooleanRepresentationComputation<T extends IValueRepresen
 
     @SuppressWarnings("unchecked")
     @Override
-    public Result<Pair<U, VariableMap>> computeResult(List<?> results, Progress progress) {
-        T t = (T) VALUE_REPRESENTATION.get(results);
+    public Result<Pair<U, VariableMap>> compute(DependencyList dependencyList, Progress progress) {
+        T t = (T) dependencyList.get(VALUE_REPRESENTATION);
         FeatJAR.log().debug("initializing variable map for " + t.getClass().getName());
         VariableMap variableMap = VariableMap.of(t);
         FeatJAR.log().debug(variableMap);

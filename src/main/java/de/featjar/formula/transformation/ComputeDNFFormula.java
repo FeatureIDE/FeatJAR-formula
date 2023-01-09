@@ -30,8 +30,6 @@ import de.featjar.base.tree.Trees;
 import de.featjar.formula.visitor.ANormalFormTester;
 import de.featjar.formula.visitor.NormalForms;
 
-import java.util.List;
-
 /**
  * Transforms a formula into clausal disjunctive normal form.
  *
@@ -58,8 +56,8 @@ public class ComputeDNFFormula extends AComputation<IFormula> implements ITransf
     }
 
     @Override
-    public Result<IFormula> computeResult(List<?> results, Progress progress) {
-        IFormula formula = NNF_FORMULA.get(results);
+    public Result<IFormula> compute(DependencyList dependencyList, Progress progress) {
+        IFormula formula = dependencyList.get(NNF_FORMULA);
         final ANormalFormTester normalFormTester = NormalForms.getNormalFormTester(formula, IFormula.NormalForm.DNF);
         if (normalFormTester.isNormalForm()) {
             if (!normalFormTester.isClausalNormalForm()) {
@@ -73,7 +71,7 @@ public class ComputeDNFFormula extends AComputation<IFormula> implements ITransf
                     Computations.of((formula instanceof Or) ? formula : new Or(formula))
                             .map(c -> new ComputeNormalFormFormula(c, IFormula.NormalForm.DNF));
             formulaToDistributiveNFFormula.setMaximumNumberOfLiterals(maximumNumberOfLiterals);
-            return formulaToDistributiveNFFormula.getResult()
+            return formulaToDistributiveNFFormula.get()
                     .map(f -> NormalForms.normalToClausalNormalForm(f, IFormula.NormalForm.DNF));
         }
     }

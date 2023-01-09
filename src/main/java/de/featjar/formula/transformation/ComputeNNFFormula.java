@@ -29,8 +29,6 @@ import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.Reference;
 import de.featjar.formula.visitor.*;
 
-import java.util.List;
-
 /**
  * Transforms a formula into clausal negation normal form.
  *
@@ -50,8 +48,8 @@ public class ComputeNNFFormula extends AComputation<IFormula> implements ITransf
     }
 
     @Override
-    public Result<IFormula> computeResult(List<?> results, Progress progress) {
-        IFormula formula = FORMULA.get(results);
+    public Result<IFormula> compute(DependencyList dependencyList, Progress progress) {
+        IFormula formula = dependencyList.get(FORMULA);
         return Reference.mutateClone(formula,
                 reference -> Trees.traverse(reference, new ConnectiveSimplifier())
                         .flatMap(_void -> Trees.traverse(reference, new DeMorganApplier()))

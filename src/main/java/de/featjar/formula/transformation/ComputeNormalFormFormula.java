@@ -94,8 +94,8 @@ public class ComputeNormalFormFormula extends AComputation<IFormula> implements 
     }
 
     @Override
-    public Result<IFormula> computeResult(List<?> results, Progress progress) {
-        IFormula formula = NNF_FORMULA.get(results);
+    public Result<IFormula> compute(DependencyList dependencyList, Progress progress) {
+        IFormula formula = dependencyList.get(NNF_FORMULA);
         if (normalForm.equals(IFormula.NormalForm.CNF))
             formula = (formula instanceof And) ? (And) formula : new And(formula);
         if (normalForm.equals(IFormula.NormalForm.DNF))

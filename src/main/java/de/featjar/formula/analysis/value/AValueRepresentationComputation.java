@@ -27,8 +27,6 @@ import de.featjar.formula.analysis.IVariableMapDependency;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.bool.*;
 
-import java.util.List;
-
 /**
  * ...
  *
@@ -58,9 +56,9 @@ public abstract class AValueRepresentationComputation<T extends IBooleanRepresen
 
     @SuppressWarnings("unchecked")
     @Override
-    public Result<U> computeResult(List<?> results, Progress progress) {
-        T t = (T) BOOLEAN_REPRESENTATION.get(results);
-        VariableMap variableMap = VARIABLE_MAP.get(results);
+    public Result<U> compute(DependencyList dependencyList, Progress progress) {
+        T t = (T) dependencyList.get(BOOLEAN_REPRESENTATION);
+        VariableMap variableMap = dependencyList.get(VARIABLE_MAP);
         return (Result<U>) t.toValue(variableMap);
     }
 }

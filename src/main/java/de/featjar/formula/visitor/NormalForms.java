@@ -65,7 +65,7 @@ public class NormalForms {
                         : normalForm == IFormula.NormalForm.CNF
                         ? ComputeCNFFormula::new
                         : ComputeDNFFormula::new);
-        Result<IFormula> res = normalFormFormula.getResult();
+        Result<IFormula> res = normalFormFormula.get();
         return res.map(f -> isClausal ? normalToClausalNormalForm(formula, normalForm) : f);
     }
 

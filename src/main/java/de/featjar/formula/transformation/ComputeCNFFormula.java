@@ -73,8 +73,8 @@ public class ComputeCNFFormula extends AComputation<IFormula> implements ITransf
     }
 
     @Override
-    public Result<IFormula> computeResult(List<?> results, Progress progress) {
-        IFormula formula = NNF_FORMULA.get(results);
+    public Result<IFormula> compute(DependencyList dependencyList, Progress progress) {
+        IFormula formula = dependencyList.get(NNF_FORMULA);
         useDistributive = (maximumNumberOfLiterals > 0);
         final ANormalFormTester normalFormTester = NormalForms.getNormalFormTester(formula, IFormula.NormalForm.CNF);
         if (normalFormTester.isNormalForm()) {
@@ -158,7 +158,7 @@ public class ComputeCNFFormula extends AComputation<IFormula> implements ITransf
         final ComputeNormalFormFormula cnfDistributiveLawTransformer =
                 Computations.of(child).map(c -> new ComputeNormalFormFormula(c, IFormula.NormalForm.CNF)); // TODO: monitor subtask?
         cnfDistributiveLawTransformer.setMaximumNumberOfLiterals(maximumNumberOfLiterals);
-        return cnfDistributiveLawTransformer.getResult();
+        return cnfDistributiveLawTransformer.get();
     }
 
     protected Result<List<ComputeTseitinCNFFormula.Substitute>> tseitin(IExpression child) {
