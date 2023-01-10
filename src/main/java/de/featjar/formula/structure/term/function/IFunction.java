@@ -22,7 +22,6 @@ package de.featjar.formula.structure.term.function;
 
 import de.featjar.formula.structure.term.ITerm;
 import de.featjar.formula.structure.term.value.IValue;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BinaryOperator;

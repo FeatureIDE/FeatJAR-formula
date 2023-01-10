@@ -21,9 +21,8 @@
 package de.featjar.formula.structure.formula.predicate;
 
 import de.featjar.base.data.Problem;
-import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.ATerminalExpression;
-
+import de.featjar.formula.structure.IExpression;
 import java.util.List;
 import java.util.Objects;
 

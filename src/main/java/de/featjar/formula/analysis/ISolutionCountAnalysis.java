@@ -2,7 +2,6 @@ package de.featjar.formula.analysis;
 
 import de.featjar.base.computation.IAnalysis;
 import de.featjar.base.computation.ITimeoutDependency;
-
 import java.math.BigInteger;
 
 /**
@@ -15,8 +14,5 @@ import java.math.BigInteger;
  * @param <U> the type of the assignment
  * @author Elias Kuiter
  */
-public interface ISolutionCountAnalysis<T, U extends IAssignment<?>> extends
-        IAnalysis<T, BigInteger>,
-        ITimeoutDependency,
-        IAssumedAssignmentDependency<U> {
-}
+public interface ISolutionCountAnalysis<T, U extends IAssignment<?>>
+        extends IAnalysis<T, BigInteger>, ITimeoutDependency, IAssumedAssignmentDependency<U> {}

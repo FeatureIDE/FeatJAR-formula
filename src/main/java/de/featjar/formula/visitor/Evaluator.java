@@ -25,7 +25,6 @@ import de.featjar.base.tree.visitor.ITreeVisitor;
 import de.featjar.formula.analysis.value.ValueAssignment;
 import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.term.value.Variable;
-
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;

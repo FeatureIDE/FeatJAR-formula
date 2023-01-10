@@ -26,7 +26,6 @@ import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.formula.structure.formula.predicate.Literal;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -258,8 +257,7 @@ public class DIMACSParser {
             }
             final Integer key = Math.abs(index);
             String variableName = indexVariables.computeIfAbsent(key, String::valueOf);
-            literals[j] =
-                    new Literal(index > 0, variableName);
+            literals[j] = new Literal(index > 0, variableName);
         }
         return new Or(literals);
     }

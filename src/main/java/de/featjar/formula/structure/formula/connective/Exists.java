@@ -34,7 +34,7 @@ import de.featjar.formula.structure.term.value.Variable;
  */
 @Deprecated
 public class Exists extends AQuantifier {
-    //TODO: rewrite CNFSlicer to work on a QBF
+    // TODO: rewrite CNFSlicer to work on a QBF
     protected Exists(Exists exists) {
         super(exists);
     }

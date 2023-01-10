@@ -1,12 +1,11 @@
 package de.featjar.formula.structure;
 
+import static de.featjar.formula.structure.Expressions.*;
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.featjar.formula.analysis.value.ValueAssignment;
 import de.featjar.formula.structure.formula.connective.And;
-import de.featjar.formula.structure.formula.predicate.Literal;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static de.featjar.formula.structure.Expressions.*;
 
 class ExpressionsTest {
     @Test

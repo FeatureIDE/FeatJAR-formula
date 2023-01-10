@@ -4,7 +4,6 @@ import de.featjar.base.data.*;
 import de.featjar.formula.analysis.bool.*;
 import de.featjar.formula.analysis.value.*;
 import de.featjar.formula.structure.formula.IFormula;
-
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -18,8 +17,7 @@ import java.util.stream.Collectors;
  * @author Elias Kuiter
  */
 public class VariableMap extends RangeMap<String> {
-    public VariableMap() {
-    }
+    public VariableMap() {}
 
     protected VariableMap(IValueRepresentation valueRepresentation) {
         super(valueRepresentation.getVariableNames());
@@ -62,7 +60,9 @@ public class VariableMap extends RangeMap<String> {
     }
 
     public String print() {
-        return stream().map(pair -> String.format("%d <-> %s", pair.getKey(), pair.getValue())).collect(Collectors.joining(", "));
+        return stream()
+                .map(pair -> String.format("%d <-> %s", pair.getKey(), pair.getValue()))
+                .collect(Collectors.joining(", "));
     }
 
     @Override
@@ -70,18 +70,24 @@ public class VariableMap extends RangeMap<String> {
         return String.format("VariableMap[%s]", print());
     }
 
-    protected <T extends BooleanAssignment> Result<T> toBoolean(ValueAssignment valueAssignment, Function<List<Integer>, T> constructor) {
+    protected <T extends BooleanAssignment> Result<T> toBoolean(
+            ValueAssignment valueAssignment, Function<List<Integer>, T> constructor) {
         List<Integer> integers = new ArrayList<>();
         List<Problem> problems = new ArrayList<>();
-        for (Map.Entry<String, Object> variableValuePair : valueAssignment.getAll().entrySet()) {
+        for (Map.Entry<String, Object> variableValuePair :
+                valueAssignment.getAll().entrySet()) {
             if (!(variableValuePair.getValue() instanceof Boolean))
-                problems.add(new Problem("tried to set value " + variableValuePair.getValue() + ", which is not Boolean", Problem.Severity.WARNING));
+                problems.add(new Problem(
+                        "tried to set value " + variableValuePair.getValue() + ", which is not Boolean",
+                        Problem.Severity.WARNING));
             else {
                 String variable = variableValuePair.getKey();
                 Boolean value = (Boolean) variableValuePair.getValue();
                 Result<Integer> index = get(variable);
                 if (index.isEmpty())
-                    problems.add(new Problem("tried to reference variable " + variable + ", which is not mapped to an index", Problem.Severity.WARNING));
+                    problems.add(new Problem(
+                            "tried to reference variable " + variable + ", which is not mapped to an index",
+                            Problem.Severity.WARNING));
                 else {
                     integers.add(value ? index.get() : -index.get());
                 }
@@ -104,14 +110,14 @@ public class VariableMap extends RangeMap<String> {
 
     protected <T extends ABooleanAssignmentList<?, U>, U extends BooleanAssignment> Result<T> toBoolean(
             AValueAssignmentList<?, ?> valueAssignmentList,
-            Supplier<T> listConstructor, Function<List<Integer>, U> constructor) {
+            Supplier<T> listConstructor,
+            Function<List<Integer>, U> constructor) {
         T booleanAssignmentList = listConstructor.get();
         List<Problem> problems = new ArrayList<>();
         for (ValueAssignment valueAssignment : valueAssignmentList.getAll()) {
             Result<U> booleanAssignment = toBoolean(valueAssignment, constructor);
             problems.addAll(booleanAssignment.getProblems());
-            if (booleanAssignment.isPresent())
-                booleanAssignmentList.add(booleanAssignment.get());
+            if (booleanAssignment.isPresent()) booleanAssignmentList.add(booleanAssignment.get());
         }
         return Result.of(booleanAssignmentList, problems);
     }
@@ -124,14 +130,17 @@ public class VariableMap extends RangeMap<String> {
         return toBoolean(valueSolutionList, BooleanSolutionList::new, BooleanSolution::new);
     }
 
-    protected <T extends ValueAssignment> Result<T> toValue(BooleanAssignment booleanAssignment, Function<LinkedHashMap<String, Object>, T> constructor) {
+    protected <T extends ValueAssignment> Result<T> toValue(
+            BooleanAssignment booleanAssignment, Function<LinkedHashMap<String, Object>, T> constructor) {
         LinkedHashMap<String, Object> variableValuePairs = Maps.empty();
         List<Problem> problems = new ArrayList<>();
         for (int integer : booleanAssignment.getIntegers()) {
             int index = Math.abs(integer);
             Result<String> variable = get(index);
             if (variable.isEmpty())
-                problems.add(new Problem("tried to reference index " + index + ", which is not mapped to a variable", Problem.Severity.WARNING));
+                problems.add(new Problem(
+                        "tried to reference index " + index + ", which is not mapped to a variable",
+                        Problem.Severity.WARNING));
             else {
                 variableValuePairs.put(variable.get(), integer > 0);
             }
@@ -153,14 +162,14 @@ public class VariableMap extends RangeMap<String> {
 
     protected <T extends AValueAssignmentList<?, U>, U extends ValueAssignment> Result<T> toValue(
             ABooleanAssignmentList<?, ?> booleanAssignmentList,
-            Supplier<T> listConstructor, Function<LinkedHashMap<String, Object>, U> constructor) {
+            Supplier<T> listConstructor,
+            Function<LinkedHashMap<String, Object>, U> constructor) {
         T valueAssignmentList = listConstructor.get();
         List<Problem> problems = new ArrayList<>();
         for (BooleanAssignment booleanAssignment : booleanAssignmentList.getAll()) {
             Result<U> valueAssignment = toValue(booleanAssignment, constructor);
             problems.addAll(valueAssignment.getProblems());
-            if (valueAssignment.isPresent())
-                valueAssignmentList.add(valueAssignment.get());
+            if (valueAssignment.isPresent()) valueAssignmentList.add(valueAssignment.get());
         }
         return Result.of(valueAssignmentList, problems);
     }
@@ -173,7 +182,8 @@ public class VariableMap extends RangeMap<String> {
         return toValue(booleanSolutionList, ValueSolutionList::new, ValueSolution::new);
     }
 
-    protected static <T extends ValueAssignment> Result<T> toAnonymousValue(BooleanAssignment booleanAssignment, Function<LinkedHashMap<String, Object>, T> constructor) {
+    protected static <T extends ValueAssignment> Result<T> toAnonymousValue(
+            BooleanAssignment booleanAssignment, Function<LinkedHashMap<String, Object>, T> constructor) {
         LinkedHashMap<String, Object> variableValuePairs = Maps.empty();
         List<Problem> problems = new ArrayList<>();
         for (int integer : booleanAssignment.getIntegers()) {
@@ -197,14 +207,14 @@ public class VariableMap extends RangeMap<String> {
 
     protected static <T extends AValueAssignmentList<?, U>, U extends ValueAssignment> Result<T> toAnonymousValue(
             ABooleanAssignmentList<?, ?> booleanAssignmentList,
-            Supplier<T> listConstructor, Function<LinkedHashMap<String, Object>, U> constructor) {
+            Supplier<T> listConstructor,
+            Function<LinkedHashMap<String, Object>, U> constructor) {
         T valueAssignmentList = listConstructor.get();
         List<Problem> problems = new ArrayList<>();
         for (BooleanAssignment booleanAssignment : booleanAssignmentList.getAll()) {
             Result<U> valueAssignment = toAnonymousValue(booleanAssignment, constructor);
             problems.addAll(valueAssignment.getProblems());
-            if (valueAssignment.isPresent())
-                valueAssignmentList.add(valueAssignment.get());
+            if (valueAssignment.isPresent()) valueAssignmentList.add(valueAssignment.get());
         }
         return Result.of(valueAssignmentList, problems);
     }

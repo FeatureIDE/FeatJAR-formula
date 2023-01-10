@@ -6,7 +6,6 @@ import de.featjar.formula.structure.formula.connective.IConnective;
 import de.featjar.formula.structure.formula.connective.Not;
 import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.formula.structure.formula.predicate.IPredicate;
-
 import java.util.List;
 
 /**

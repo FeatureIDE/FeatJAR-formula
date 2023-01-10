@@ -25,7 +25,6 @@ import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.value.ValueSolutionList;
 import de.featjar.formula.structure.formula.IFormula;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,8 +40,7 @@ import java.util.stream.Collectors;
  * @author Elias Kuiter
  */
 public class BooleanSolutionList extends ABooleanAssignmentList<BooleanSolutionList, BooleanSolution> {
-    public BooleanSolutionList() {
-    }
+    public BooleanSolutionList() {}
 
     public BooleanSolutionList(int size) {
         super(size);
@@ -63,7 +61,8 @@ public class BooleanSolutionList extends ABooleanAssignmentList<BooleanSolutionL
 
     @Override
     public BooleanClauseList toClauseList() {
-        return new BooleanClauseList(assignments.stream().map(BooleanSolution::toClause).collect(Collectors.toList()));
+        return new BooleanClauseList(
+                assignments.stream().map(BooleanSolution::toClause).collect(Collectors.toList()));
     }
 
     @Override

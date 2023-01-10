@@ -20,57 +20,54 @@
  */
 package de.featjar.formula.todo;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 public class CNFTransformTest {
 
-//    @Test
-//    public void testImplies() {
-//        testTransform(FormulaCreator.getFormula01());
-//    }
-//
-//    @Test
-//    public void testComplex() {
-//        testTransform(FormulaCreator.getFormula02());
-//    }
-//
-//    private void testTransform(final Expression expressionOrg) {
-//        final Expression expressionClone = Trees.clone(expressionOrg);
-//        final TermMap map = expressionOrg.getTermMap().orElseThrow();
-//        final TermMap mapClone = map.clone();
-//
-//        final ModelRepresentation rep = new ModelRepresentation(expressionOrg);
-//        final Expression expressionCNF = rep.get(FormulaComputation.CNF.fromFormula());
-//
-//        FormulaCreator.testAllAssignments(map, assignment -> {
-//            final Boolean orgEval =
-//                    (Boolean) Formulas.evaluate(expressionOrg, assignment).orElseThrow();
-//            final Boolean cnfEval =
-//                    (Boolean) Formulas.evaluate(expressionCNF, assignment).orElseThrow();
-//            assertEquals(orgEval, cnfEval, assignment.toString());
-//        });
-//        assertTrue(Trees.equals(expressionOrg, expressionClone));
-//        assertEquals(mapClone, map);
-//        assertEquals(mapClone, expressionOrg.getTermMap().get());
-//    }
-//
-//    @Test
-//    public void testKConfigReader() throws IOException {
-//        final Path modelFile = Paths.get("src/test/resources/kconfigreader/min-example.model");
-//        final Path dimacsFile = Paths.get("src/test/resources/kconfigreader/min-example.dimacs");
-//        final Expression expression = IO.load(modelFile, new KConfigReaderFormat()).orElseThrow();
-//
-//        ModelRepresentation rep = new ModelRepresentation(expression);
-//        IO.save(rep.get(FormulaComputation.CNF.fromFormula()), dimacsFile, new DIMACSFormat());
-//        Files.deleteIfExists(dimacsFile);
-//
-//        rep = new ModelRepresentation(expression);
-//        IO.save(rep.get(FormulaComputation.CNF.fromFormula(0)), dimacsFile, new DIMACSFormat());
-//        Files.deleteIfExists(dimacsFile);
-//
-//        rep = new ModelRepresentation(expression);
-//        IO.save(rep.get(FormulaComputation.CNF.fromFormula(100)), dimacsFile, new DIMACSFormat());
-//        Files.deleteIfExists(dimacsFile);
-//    }
+    //    @Test
+    //    public void testImplies() {
+    //        testTransform(FormulaCreator.getFormula01());
+    //    }
+    //
+    //    @Test
+    //    public void testComplex() {
+    //        testTransform(FormulaCreator.getFormula02());
+    //    }
+    //
+    //    private void testTransform(final Expression expressionOrg) {
+    //        final Expression expressionClone = Trees.clone(expressionOrg);
+    //        final TermMap map = expressionOrg.getTermMap().orElseThrow();
+    //        final TermMap mapClone = map.clone();
+    //
+    //        final ModelRepresentation rep = new ModelRepresentation(expressionOrg);
+    //        final Expression expressionCNF = rep.get(FormulaComputation.CNF.fromFormula());
+    //
+    //        FormulaCreator.testAllAssignments(map, assignment -> {
+    //            final Boolean orgEval =
+    //                    (Boolean) Formulas.evaluate(expressionOrg, assignment).orElseThrow();
+    //            final Boolean cnfEval =
+    //                    (Boolean) Formulas.evaluate(expressionCNF, assignment).orElseThrow();
+    //            assertEquals(orgEval, cnfEval, assignment.toString());
+    //        });
+    //        assertTrue(Trees.equals(expressionOrg, expressionClone));
+    //        assertEquals(mapClone, map);
+    //        assertEquals(mapClone, expressionOrg.getTermMap().get());
+    //    }
+    //
+    //    @Test
+    //    public void testKConfigReader() throws IOException {
+    //        final Path modelFile = Paths.get("src/test/resources/kconfigreader/min-example.model");
+    //        final Path dimacsFile = Paths.get("src/test/resources/kconfigreader/min-example.dimacs");
+    //        final Expression expression = IO.load(modelFile, new KConfigReaderFormat()).orElseThrow();
+    //
+    //        ModelRepresentation rep = new ModelRepresentation(expression);
+    //        IO.save(rep.get(FormulaComputation.CNF.fromFormula()), dimacsFile, new DIMACSFormat());
+    //        Files.deleteIfExists(dimacsFile);
+    //
+    //        rep = new ModelRepresentation(expression);
+    //        IO.save(rep.get(FormulaComputation.CNF.fromFormula(0)), dimacsFile, new DIMACSFormat());
+    //        Files.deleteIfExists(dimacsFile);
+    //
+    //        rep = new ModelRepresentation(expression);
+    //        IO.save(rep.get(FormulaComputation.CNF.fromFormula(100)), dimacsFile, new DIMACSFormat());
+    //        Files.deleteIfExists(dimacsFile);
+    //    }
 }

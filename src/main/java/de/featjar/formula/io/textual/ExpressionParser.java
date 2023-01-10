@@ -21,21 +21,20 @@
 package de.featjar.formula.io.textual;
 
 import de.featjar.base.data.Problem;
+import de.featjar.base.data.Problem.Severity;
+import de.featjar.base.data.Result;
+import de.featjar.base.io.format.ParseException;
+import de.featjar.base.io.format.ParseProblem;
 import de.featjar.formula.io.textual.Symbols.Operator;
 import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.formula.IFormula;
-import de.featjar.formula.structure.formula.predicate.Literal;
-import de.featjar.formula.structure.formula.predicate.ProblemFormula;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.BiImplies;
 import de.featjar.formula.structure.formula.connective.Implies;
 import de.featjar.formula.structure.formula.connective.Not;
 import de.featjar.formula.structure.formula.connective.Or;
-import de.featjar.base.data.Problem.Severity;
-import de.featjar.base.data.Result;
-import de.featjar.base.io.format.ParseException;
-import de.featjar.base.io.format.ParseProblem;
-
+import de.featjar.formula.structure.formula.predicate.Literal;
+import de.featjar.formula.structure.formula.predicate.ProblemFormula;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

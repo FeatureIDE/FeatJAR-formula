@@ -32,8 +32,7 @@ import java.util.List;
 @Deprecated
 public class RealAdd extends AAdd {
 
-    protected RealAdd() {
-    }
+    protected RealAdd() {}
 
     public RealAdd(ITerm leftTerm, ITerm rightTerm) {
         super(leftTerm, rightTerm);

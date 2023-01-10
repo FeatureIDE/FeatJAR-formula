@@ -32,8 +32,7 @@ import java.util.List;
 @Deprecated
 public class RealMultiply extends AMultiply {
 
-    protected RealMultiply() {
-    }
+    protected RealMultiply() {}
 
     public RealMultiply(ITerm leftTerm, ITerm rightTerm) {
         super(leftTerm, rightTerm);

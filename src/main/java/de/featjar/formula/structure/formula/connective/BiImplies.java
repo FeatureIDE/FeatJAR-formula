@@ -20,10 +20,9 @@
  */
 package de.featjar.formula.structure.formula.connective;
 
-import de.featjar.formula.structure.IBinaryExpression;
 import de.featjar.formula.structure.ANonTerminalExpression;
+import de.featjar.formula.structure.IBinaryExpression;
 import de.featjar.formula.structure.formula.IFormula;
-
 import java.util.List;
 
 /**
@@ -34,8 +33,7 @@ import java.util.List;
  */
 public class BiImplies extends ANonTerminalExpression implements IConnective, IBinaryExpression {
 
-    protected BiImplies() {
-    }
+    protected BiImplies() {}
 
     public BiImplies(IFormula leftFormula, IFormula rightFormula) {
         super(leftFormula, rightFormula);

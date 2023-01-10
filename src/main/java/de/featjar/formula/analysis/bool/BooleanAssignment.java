@@ -6,7 +6,6 @@ import de.featjar.formula.analysis.IAssignment;
 import de.featjar.formula.analysis.ISolver;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.value.ValueAssignment;
-
 import java.util.*;
 import java.util.stream.IntStream;
 
@@ -24,7 +23,8 @@ import java.util.stream.IntStream;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class BooleanAssignment extends AIntegerList<BooleanAssignment> implements IAssignment<Integer>, IBooleanRepresentation {
+public class BooleanAssignment extends AIntegerList<BooleanAssignment>
+        implements IAssignment<Integer>, IBooleanRepresentation {
     public BooleanAssignment(int... integers) {
         super(integers);
     }
@@ -116,13 +116,11 @@ public class BooleanAssignment extends AIntegerList<BooleanAssignment> implement
     }
 
     public boolean containsAnyVariable(int... integers) {
-        return Arrays.stream(integers)
-                .anyMatch(integer -> indexOfVariable(integer) >= 0);
+        return Arrays.stream(integers).anyMatch(integer -> indexOfVariable(integer) >= 0);
     }
 
     public boolean containsAllVariables(int... integers) {
-        return Arrays.stream(integers)
-                .noneMatch(integer -> indexOfVariable(integer) >= 0);
+        return Arrays.stream(integers).noneMatch(integer -> indexOfVariable(integer) >= 0);
     }
 
     public int indexOfVariable(int variableInteger) {
@@ -212,10 +210,8 @@ public class BooleanAssignment extends AIntegerList<BooleanAssignment> implement
     public LinkedHashMap<Integer, Object> getAll() {
         LinkedHashMap<Integer, Object> map = Maps.empty();
         for (int integer : integers) {
-            if (integer > 0)
-                map.put(integer, true);
-            else if (integer < 0)
-                map.put(-integer, false);
+            if (integer > 0) map.put(integer, true);
+            else if (integer < 0) map.put(-integer, false);
         }
         return map;
     }
@@ -233,8 +229,7 @@ public class BooleanAssignment extends AIntegerList<BooleanAssignment> implement
     @Override
     public Result<Object> getValue(Integer variable) {
         int index = indexOfVariable(variable);
-        if (index < 0)
-            return Result.empty();
+        if (index < 0) return Result.empty();
         int value = get(index);
         return value == 0 ? Result.empty() : Result.of(value > 0);
     }

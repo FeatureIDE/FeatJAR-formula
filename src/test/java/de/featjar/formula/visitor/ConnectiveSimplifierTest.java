@@ -1,8 +1,8 @@
 package de.featjar.formula.visitor;
 
-import org.junit.jupiter.api.Test;
-
 import static de.featjar.formula.structure.Expressions.*;
+
+import org.junit.jupiter.api.Test;
 
 class ConnectiveSimplifierTest {
 
@@ -14,9 +14,7 @@ class ConnectiveSimplifierTest {
     @Test
     void simplifiesImplies() {
         VisitorTest.traverseAndAssertFormulaEquals(
-                implies(literal("x"), literal("y")),
-                new ConnectiveSimplifier(),
-                or(not(literal("x")), literal("y")));
+                implies(literal("x"), literal("y")), new ConnectiveSimplifier(), or(not(literal("x")), literal("y")));
     }
 
     @Test

@@ -24,7 +24,6 @@ import de.featjar.base.data.Result;
 import de.featjar.base.data.Void;
 import de.featjar.base.tree.visitor.ITreeVisitor;
 import de.featjar.formula.structure.Expressions;
-import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.IConnective;
@@ -32,9 +31,7 @@ import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.formula.structure.formula.predicate.False;
 import de.featjar.formula.structure.formula.predicate.IPredicate;
 import de.featjar.formula.structure.formula.predicate.True;
-
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**

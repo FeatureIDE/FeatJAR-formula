@@ -4,7 +4,6 @@ import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.formula.structure.formula.predicate.IPredicate;
-
 import java.util.List;
 
 /**

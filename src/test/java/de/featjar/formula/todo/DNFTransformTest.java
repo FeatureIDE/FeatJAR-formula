@@ -20,38 +20,35 @@
  */
 package de.featjar.formula.todo;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 public class DNFTransformTest {
 
-//    @Test
-//    public void testImplies() {
-//        testTransform(FormulaCreator.getFormula01());
-//    }
-//
-//    @Test
-//    public void testComplex() {
-//        testTransform(FormulaCreator.getFormula02());
-//    }
-//
-//    private void testTransform(final Expression expressionOrg) {
-//        final Expression expressionClone = Trees.clone(expressionOrg);
-//        final TermMap map = expressionOrg.getTermMap().orElseThrow();
-//        final TermMap mapClone = map.clone();
-//
-//        final ModelRepresentation rep = new ModelRepresentation(expressionOrg);
-//        final Expression expressionDNF = rep.get(FormulaComputation.DNF.fromFormula());
-//
-//        FormulaCreator.testAllAssignments(map, assignment -> {
-//            final Boolean orgEval =
-//                    (Boolean) Formulas.evaluate(expressionOrg, assignment).orElseThrow();
-//            final Boolean dnfEval =
-//                    (Boolean) Formulas.evaluate(expressionDNF, assignment).orElseThrow();
-//            assertEquals(orgEval, dnfEval, assignment.toString());
-//        });
-//        assertTrue(Trees.equals(expressionOrg, expressionClone));
-//        assertEquals(mapClone, map);
-//        assertEquals(mapClone, expressionOrg.getTermMap().get());
-//    }
+    //    @Test
+    //    public void testImplies() {
+    //        testTransform(FormulaCreator.getFormula01());
+    //    }
+    //
+    //    @Test
+    //    public void testComplex() {
+    //        testTransform(FormulaCreator.getFormula02());
+    //    }
+    //
+    //    private void testTransform(final Expression expressionOrg) {
+    //        final Expression expressionClone = Trees.clone(expressionOrg);
+    //        final TermMap map = expressionOrg.getTermMap().orElseThrow();
+    //        final TermMap mapClone = map.clone();
+    //
+    //        final ModelRepresentation rep = new ModelRepresentation(expressionOrg);
+    //        final Expression expressionDNF = rep.get(FormulaComputation.DNF.fromFormula());
+    //
+    //        FormulaCreator.testAllAssignments(map, assignment -> {
+    //            final Boolean orgEval =
+    //                    (Boolean) Formulas.evaluate(expressionOrg, assignment).orElseThrow();
+    //            final Boolean dnfEval =
+    //                    (Boolean) Formulas.evaluate(expressionDNF, assignment).orElseThrow();
+    //            assertEquals(orgEval, dnfEval, assignment.toString());
+    //        });
+    //        assertTrue(Trees.equals(expressionOrg, expressionClone));
+    //        assertEquals(mapClone, map);
+    //        assertEquals(mapClone, expressionOrg.getTermMap().get());
+    //    }
 }

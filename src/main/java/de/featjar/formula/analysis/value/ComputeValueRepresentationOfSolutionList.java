@@ -5,8 +5,10 @@ import de.featjar.base.tree.structure.ITree;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.bool.BooleanSolutionList;
 
-public class ComputeValueRepresentationOfSolutionList extends AValueRepresentationComputation<BooleanSolutionList, ValueSolutionList> {
-    public ComputeValueRepresentationOfSolutionList(IComputation<BooleanSolutionList> booleanRepresentation, IComputation<VariableMap> variableMap) {
+public class ComputeValueRepresentationOfSolutionList
+        extends AValueRepresentationComputation<BooleanSolutionList, ValueSolutionList> {
+    public ComputeValueRepresentationOfSolutionList(
+            IComputation<BooleanSolutionList> booleanRepresentation, IComputation<VariableMap> variableMap) {
         super(booleanRepresentation, variableMap);
     }
 

@@ -4,9 +4,8 @@ import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.ISolution;
 import de.featjar.formula.analysis.ISolver;
-import de.featjar.formula.analysis.bool.BooleanSolution;
 import de.featjar.formula.analysis.VariableMap;
-
+import de.featjar.formula.analysis.bool.BooleanSolution;
 import java.util.LinkedHashMap;
 
 /**
@@ -16,8 +15,7 @@ import java.util.LinkedHashMap;
  * @author Elias Kuiter
  */
 public class ValueSolution extends ValueAssignment implements ISolution<String> {
-    public ValueSolution() {
-    }
+    public ValueSolution() {}
 
     public ValueSolution(LinkedHashMap<String, Object> variableValuePairs) {
         super(variableValuePairs);

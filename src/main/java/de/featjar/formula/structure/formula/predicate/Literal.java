@@ -23,7 +23,6 @@ package de.featjar.formula.structure.formula.predicate;
 import de.featjar.formula.structure.*;
 import de.featjar.formula.structure.term.value.IValue;
 import de.featjar.formula.structure.term.value.Variable;
-
 import java.util.List;
 import java.util.Objects;
 

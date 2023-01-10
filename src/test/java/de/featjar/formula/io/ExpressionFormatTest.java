@@ -20,13 +20,13 @@
  */
 package de.featjar.formula.io;
 
+import static de.featjar.formula.structure.Expressions.*;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import de.featjar.base.io.format.IFormat;
 import de.featjar.formula.io.textual.ExpressionFormat;
 import de.featjar.formula.structure.formula.IFormula;
 import org.junit.jupiter.api.Test;
-
-import static de.featjar.formula.structure.Expressions.*;
-import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Tests {@link ExpressionFormat Formula} format.
@@ -35,12 +35,12 @@ import static org.junit.jupiter.api.Assertions.fail;
  */
 public class ExpressionFormatTest {
 
-    //@Test //TODO
+    // @Test //TODO
     public void Formula_ABC_nAnBnC() {
         test("ABC-nAnBnC");
     }
 
-    //@Test //TODO
+    // @Test //TODO
     public void Formula_empty() {
         test("faulty");
     }

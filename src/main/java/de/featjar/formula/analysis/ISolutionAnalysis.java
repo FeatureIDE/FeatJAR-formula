@@ -13,8 +13,5 @@ import de.featjar.base.computation.ITimeoutDependency;
  * @param <R> the type of the assignment
  * @author Elias Kuiter
  */
-public interface ISolutionAnalysis<T, U extends ISolution<?>, R extends IAssignment<?>> extends
-        IAnalysis<T, U>,
-        ITimeoutDependency,
-        IAssumedAssignmentDependency<R> {
-}
+public interface ISolutionAnalysis<T, U extends ISolution<?>, R extends IAssignment<?>>
+        extends IAnalysis<T, U>, ITimeoutDependency, IAssumedAssignmentDependency<R> {}

@@ -21,7 +21,6 @@
 package de.featjar.formula.structure;
 
 import de.featjar.base.tree.structure.ATree;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -34,8 +33,7 @@ import java.util.Objects;
  */
 public abstract class ANonTerminalExpression extends ATree<IExpression> implements IExpression {
     protected ANonTerminalExpression(IExpression... children) {
-        if (children.length > 0)
-            super.setChildren(Arrays.asList(children));
+        if (children.length > 0) super.setChildren(Arrays.asList(children));
     }
 
     protected ANonTerminalExpression(List<? extends IExpression> children) {
@@ -44,9 +42,9 @@ public abstract class ANonTerminalExpression extends ATree<IExpression> implemen
 
     @Override
     public boolean equalsNode(IExpression other) {
-        return (getClass() == other.getClass()) &&
-                Objects.equals(getName(), other.getName()) &&
-                Objects.equals(getType(), other.getType());
+        return (getClass() == other.getClass())
+                && Objects.equals(getName(), other.getName())
+                && Objects.equals(getType(), other.getType());
     }
 
     @Override

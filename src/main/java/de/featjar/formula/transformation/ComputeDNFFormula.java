@@ -21,12 +21,12 @@
 package de.featjar.formula.transformation;
 
 import de.featjar.base.computation.*;
-import de.featjar.base.data.Result;
 import de.featjar.base.computation.Progress;
+import de.featjar.base.data.Result;
+import de.featjar.base.tree.Trees;
 import de.featjar.base.tree.structure.ITree;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.Or;
-import de.featjar.base.tree.Trees;
 import de.featjar.formula.visitor.ANormalFormTester;
 import de.featjar.formula.visitor.NormalForms;
 
@@ -67,11 +67,12 @@ public class ComputeDNFFormula extends AComputation<IFormula> implements ITransf
             }
         } else {
             formula = (IFormula) Trees.clone(formula);
-            ComputeNormalFormFormula formulaToDistributiveNFFormula =
-                    Computations.of((formula instanceof Or) ? formula : new Or(formula))
-                            .map(c -> new ComputeNormalFormFormula(c, IFormula.NormalForm.DNF));
+            ComputeNormalFormFormula formulaToDistributiveNFFormula = Computations.of(
+                            (formula instanceof Or) ? formula : new Or(formula))
+                    .map(c -> new ComputeNormalFormFormula(c, IFormula.NormalForm.DNF));
             formulaToDistributiveNFFormula.setMaximumNumberOfLiterals(maximumNumberOfLiterals);
-            return formulaToDistributiveNFFormula.get()
+            return formulaToDistributiveNFFormula
+                    .get()
                     .map(f -> NormalForms.normalToClausalNormalForm(f, IFormula.NormalForm.DNF));
         }
     }

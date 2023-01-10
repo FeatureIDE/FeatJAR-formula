@@ -21,7 +21,6 @@
 package de.featjar.formula.structure.term.function;
 
 import de.featjar.formula.structure.term.ITerm;
-
 import java.util.List;
 
 /**
@@ -33,8 +32,7 @@ import java.util.List;
 @Deprecated
 public class IntegerDivide extends ADivide {
 
-    protected IntegerDivide() {
-    }
+    protected IntegerDivide() {}
 
     public IntegerDivide(ITerm leftTerm, ITerm rightTerm) {
         super(leftTerm, rightTerm);

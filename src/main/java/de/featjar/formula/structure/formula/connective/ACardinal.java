@@ -21,10 +21,9 @@
 package de.featjar.formula.structure.formula.connective;
 
 import de.featjar.base.data.Range;
-import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.ANonTerminalExpression;
+import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.formula.IFormula;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -42,15 +41,13 @@ public abstract class ACardinal extends ANonTerminalExpression implements IConne
     protected ACardinal(Range range, IFormula... formulas) {
         super();
         this.range = range;
-        if (formulas.length > 0)
-            super.setChildren(Arrays.asList(formulas));
+        if (formulas.length > 0) super.setChildren(Arrays.asList(formulas));
     }
 
     protected ACardinal(Range range, List<? extends IFormula> formulas) {
         super();
         this.range = range;
-        if (formulas.size() > 0)
-            super.setChildren(formulas);
+        if (formulas.size() > 0) super.setChildren(formulas);
     }
 
     protected ACardinal(ACardinal cardinal) {

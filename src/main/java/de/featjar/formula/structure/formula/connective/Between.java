@@ -22,7 +22,6 @@ package de.featjar.formula.structure.formula.connective;
 
 import de.featjar.base.data.Range;
 import de.featjar.formula.structure.formula.IFormula;
-
 import java.util.List;
 
 /**

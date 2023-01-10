@@ -29,5 +29,4 @@ import de.featjar.formula.structure.formula.IFormula;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public interface IPredicate extends IFormula {
-}
+public interface IPredicate extends IFormula {}

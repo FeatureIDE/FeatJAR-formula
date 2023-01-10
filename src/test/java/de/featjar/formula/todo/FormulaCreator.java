@@ -22,38 +22,38 @@ package de.featjar.formula.todo;
 
 public class FormulaCreator {
 
-//    public static Expression getFormula01() {
-//        final TermMap map = new TermMap(Arrays.asList("p", "q", "r", "s"));
-//        final Literal p = map.createLiteral("p");
-//        final Literal q = map.createLiteral("q");
-//        final Literal r = map.createLiteral("r");
-//        final Literal s = map.createLiteral("s");
-//
-//        return new Implies(new And(new Or(p, q), r), s.invert());
-//    }
-//
-//    public static Expression getFormula02() {
-//        final TermMap map = new TermMap(Arrays.asList("p", "q", "r", "s"));
-//        final Literal p = map.createLiteral("p");
-//        final Literal q = map.createLiteral("q");
-//        final Literal r = map.createLiteral("r");
-//        final Literal s = map.createLiteral("s");
-//
-//        return new And(
-//                new Implies(r, new And(p, q)),
-//                new Implies(s, new And(q, p)),
-//                new Or(new And(s.invert(), r), new And(s, r.invert())));
-//    }
-//
-//    public static void testAllAssignments(TermMap map, Consumer<Assignment> testFunction) {
-//        final Assignment assignment = new NameAssignment(map);
-//        final int numVariables = map.getVariableCount();
-//        final int numAssignments = (int) Math.pow(2, numVariables);
-//        for (int i = 0; i < numAssignments; i++) {
-//            for (int j = 0; j < numVariables; j++) {
-//                assignment.set(j + 1, ((i >> j) & 1) == 1);
-//            }
-//            testFunction.accept(assignment);
-//        }
-//    }
+    //    public static Expression getFormula01() {
+    //        final TermMap map = new TermMap(Arrays.asList("p", "q", "r", "s"));
+    //        final Literal p = map.createLiteral("p");
+    //        final Literal q = map.createLiteral("q");
+    //        final Literal r = map.createLiteral("r");
+    //        final Literal s = map.createLiteral("s");
+    //
+    //        return new Implies(new And(new Or(p, q), r), s.invert());
+    //    }
+    //
+    //    public static Expression getFormula02() {
+    //        final TermMap map = new TermMap(Arrays.asList("p", "q", "r", "s"));
+    //        final Literal p = map.createLiteral("p");
+    //        final Literal q = map.createLiteral("q");
+    //        final Literal r = map.createLiteral("r");
+    //        final Literal s = map.createLiteral("s");
+    //
+    //        return new And(
+    //                new Implies(r, new And(p, q)),
+    //                new Implies(s, new And(q, p)),
+    //                new Or(new And(s.invert(), r), new And(s, r.invert())));
+    //    }
+    //
+    //    public static void testAllAssignments(TermMap map, Consumer<Assignment> testFunction) {
+    //        final Assignment assignment = new NameAssignment(map);
+    //        final int numVariables = map.getVariableCount();
+    //        final int numAssignments = (int) Math.pow(2, numVariables);
+    //        for (int i = 0; i < numAssignments; i++) {
+    //            for (int j = 0; j < numVariables; j++) {
+    //                assignment.set(j + 1, ((i >> j) & 1) == 1);
+    //            }
+    //            testFunction.accept(assignment);
+    //        }
+    //    }
 }

@@ -20,11 +20,10 @@
  */
 package de.featjar.formula.io;
 
-import de.featjar.formula.analysis.bool.*;
 import de.featjar.base.data.Result;
-import de.featjar.base.io.input.AInputMapper;
 import de.featjar.base.io.format.IFormat;
-
+import de.featjar.base.io.input.AInputMapper;
+import de.featjar.formula.analysis.bool.*;
 import java.util.List;
 
 /**
@@ -40,7 +39,7 @@ public class ListFormat implements IFormat<ABooleanAssignmentList<?, ?>> {
     public Result<String> serialize(ABooleanAssignmentList<?, ?> dnf) {
         final StringBuilder csv = new StringBuilder();
         csv.append("Configuration");
-        final List<String> names = null; //dnf.getVariableMap().getVariableNames();
+        final List<String> names = null; // dnf.getVariableMap().getVariableNames();
         for (final String name : names) {
             csv.append(';');
             csv.append(name);
@@ -61,50 +60,51 @@ public class ListFormat implements IFormat<ABooleanAssignmentList<?, ?>> {
 
     @Override
     public Result<ABooleanAssignmentList<?, ?>> parse(AInputMapper inputMapper) {
-//        int lineNumber = 0;
-//        final BooleanSolutionList dnf = new BooleanSolutionList();
-//        final Iterator<String> iterator = inputMapper.get().getLineStream().iterator();
-//        try {
-//            {
-//                if (!iterator.hasNext()) {
-//                    return Result.empty(new ParseProblem("Empty file!", lineNumber, Severity.ERROR));
-//                }
-//                final String line = iterator.next();
-//                if (line.trim().isEmpty()) {
-//                    return Result.empty(new ParseProblem("Empty file!", lineNumber, Severity.ERROR));
-//                }
-//                final String[] names = line.split(";");
-//                final VariableMap map = VariableMap.empty();
-//                Arrays.asList(names).subList(1, names.length).forEach(map::add);
-//               // dnf.setVariableMap(map);
-//            }
-//
-//            while (iterator.hasNext()) {
-//                final String line = iterator.next();
-//                lineNumber++;
-//                final String[] split = line.split(";");
-//                if ((split.length - 1)
-//                        != dnf
-//                                .getVariableMap()
-//                                .getVariableNames()
-//                                .size()) {
-//                    return Result.empty(new ParseProblem(
-//                            "Number of selections does not match number of features!", lineNumber, Severity.ERROR));
-//                }
-//                final int[] literals = new int
-//                        [dnf
-//                                .getVariableMap()
-//                                .getVariableNames()
-//                                .size()];
-//                for (int i = 1; i < split.length; i++) {
-//                    literals[i - 1] = split[i].equals("0") ? -i : i;
-//                }
-//                dnf.add(new BooleanSolution(literals, false));
-//            }
-//        } catch (final Exception e) {
-//            return Result.empty(new ParseProblem(e.getMessage(), lineNumber, Severity.ERROR));
-//        }
-//        return Result.of(dnf);
+        //        int lineNumber = 0;
+        //        final BooleanSolutionList dnf = new BooleanSolutionList();
+        //        final Iterator<String> iterator = inputMapper.get().getLineStream().iterator();
+        //        try {
+        //            {
+        //                if (!iterator.hasNext()) {
+        //                    return Result.empty(new ParseProblem("Empty file!", lineNumber, Severity.ERROR));
+        //                }
+        //                final String line = iterator.next();
+        //                if (line.trim().isEmpty()) {
+        //                    return Result.empty(new ParseProblem("Empty file!", lineNumber, Severity.ERROR));
+        //                }
+        //                final String[] names = line.split(";");
+        //                final VariableMap map = VariableMap.empty();
+        //                Arrays.asList(names).subList(1, names.length).forEach(map::add);
+        //               // dnf.setVariableMap(map);
+        //            }
+        //
+        //            while (iterator.hasNext()) {
+        //                final String line = iterator.next();
+        //                lineNumber++;
+        //                final String[] split = line.split(";");
+        //                if ((split.length - 1)
+        //                        != dnf
+        //                                .getVariableMap()
+        //                                .getVariableNames()
+        //                                .size()) {
+        //                    return Result.empty(new ParseProblem(
+        //                            "Number of selections does not match number of features!", lineNumber,
+        // Severity.ERROR));
+        //                }
+        //                final int[] literals = new int
+        //                        [dnf
+        //                                .getVariableMap()
+        //                                .getVariableNames()
+        //                                .size()];
+        //                for (int i = 1; i < split.length; i++) {
+        //                    literals[i - 1] = split[i].equals("0") ? -i : i;
+        //                }
+        //                dnf.add(new BooleanSolution(literals, false));
+        //            }
+        //        } catch (final Exception e) {
+        //            return Result.empty(new ParseProblem(e.getMessage(), lineNumber, Severity.ERROR));
+        //        }
+        //        return Result.of(dnf);
         return null;
     }
 

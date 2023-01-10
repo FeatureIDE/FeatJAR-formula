@@ -33,8 +33,7 @@ import java.util.List;
  */
 @Deprecated
 public class GreaterEqual extends ANonTerminalExpression implements IBinaryPredicate, IInvertiblePredicate {
-    protected GreaterEqual() {
-    }
+    protected GreaterEqual() {}
 
     public GreaterEqual(ITerm leftTerm, ITerm rightTerm) {
         super(leftTerm, rightTerm);

@@ -2,11 +2,10 @@ package de.featjar.formula.analysis.bool;
 
 import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
-import de.featjar.formula.analysis.ISolver;
 import de.featjar.formula.analysis.ISolution;
+import de.featjar.formula.analysis.ISolver;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.value.ValueSolution;
-
 import java.util.*;
 
 /**
@@ -27,8 +26,7 @@ public class BooleanSolution extends BooleanAssignment implements ISolution<Inte
 
     public BooleanSolution(int[] integers, boolean sort) {
         super(integers);
-        if (sort)
-            sort();
+        if (sort) sort();
     }
 
     public BooleanSolution(Collection<Integer> integers) {

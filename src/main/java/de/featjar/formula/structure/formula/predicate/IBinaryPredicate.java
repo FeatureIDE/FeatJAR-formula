@@ -21,7 +21,6 @@
 package de.featjar.formula.structure.formula.predicate;
 
 import de.featjar.formula.structure.IBinaryExpression;
-
 import java.util.List;
 
 /**

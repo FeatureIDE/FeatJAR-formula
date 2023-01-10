@@ -4,7 +4,8 @@ import de.featjar.base.computation.IComputation;
 import de.featjar.base.tree.structure.ITree;
 import de.featjar.formula.analysis.value.ValueSolution;
 
-public class ComputeBooleanRepresentationOfSolution extends ABooleanRepresentationComputation<ValueSolution, BooleanSolution> {
+public class ComputeBooleanRepresentationOfSolution
+        extends ABooleanRepresentationComputation<ValueSolution, BooleanSolution> {
     public ComputeBooleanRepresentationOfSolution(IComputation<ValueSolution> valueRepresentation) {
         super(valueRepresentation);
     }

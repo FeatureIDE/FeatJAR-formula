@@ -5,7 +5,6 @@ import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.bool.BooleanClauseList;
 import de.featjar.formula.analysis.bool.ComputeBooleanRepresentationOfFormula;
-import de.featjar.formula.analysis.bool.IBooleanRepresentation;
 import de.featjar.formula.analysis.value.IValueRepresentation;
 import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.formula.connective.AQuantifier;
@@ -13,7 +12,6 @@ import de.featjar.formula.structure.formula.connective.IConnective;
 import de.featjar.formula.structure.formula.predicate.IPredicate;
 import de.featjar.formula.structure.term.value.Variable;
 import de.featjar.formula.visitor.NormalForms;
-
 import java.util.LinkedHashSet;
 
 /**
@@ -130,7 +128,6 @@ public interface IFormula extends IExpression, IValueRepresentation {
     @Override
     default IComputation<BooleanClauseList> toBoolean(IComputation<VariableMap> variableMap) {
         return (IComputation<BooleanClauseList>) IValueRepresentation.super.toBoolean(variableMap);
-
     }
 
     // TODO: mutate/analyze analogous to FeatureModel?

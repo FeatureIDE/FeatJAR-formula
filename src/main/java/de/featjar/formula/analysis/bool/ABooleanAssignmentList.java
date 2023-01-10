@@ -21,7 +21,6 @@
 package de.featjar.formula.analysis.bool;
 
 import de.featjar.formula.analysis.IAssignmentList;
-
 import java.util.*;
 
 /**
@@ -32,7 +31,8 @@ import java.util.*;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public abstract class ABooleanAssignmentList<T extends ABooleanAssignmentList<?, U>, U extends BooleanAssignment> implements IAssignmentList<U>, IBooleanRepresentation {
+public abstract class ABooleanAssignmentList<T extends ABooleanAssignmentList<?, U>, U extends BooleanAssignment>
+        implements IAssignmentList<U>, IBooleanRepresentation {
     protected final List<U> assignments;
 
     public ABooleanAssignmentList() {
@@ -87,7 +87,7 @@ public abstract class ABooleanAssignmentList<T extends ABooleanAssignmentList<?,
         return negatedAssignmentList;
     }
 
-    //assumes that the maximum index corresponds to the number of variables
+    // assumes that the maximum index corresponds to the number of variables
     public int getVariableCount() {
         return assignments.stream()
                 .flatMapToInt(assignment -> Arrays.stream(assignment.getIntegers()))

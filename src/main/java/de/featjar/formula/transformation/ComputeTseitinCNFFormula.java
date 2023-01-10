@@ -21,16 +21,15 @@
 package de.featjar.formula.transformation;
 
 import de.featjar.base.data.Result;
+import de.featjar.base.tree.Trees;
+import de.featjar.base.tree.visitor.ITreeVisitor;
 import de.featjar.formula.structure.IExpression;
-import de.featjar.formula.structure.formula.predicate.IPredicate;
-import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.IConnective;
 import de.featjar.formula.structure.formula.connective.Or;
-import de.featjar.base.tree.Trees;
-import de.featjar.base.tree.visitor.ITreeVisitor;
+import de.featjar.formula.structure.formula.predicate.IPredicate;
+import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.structure.term.value.Variable;
-
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;

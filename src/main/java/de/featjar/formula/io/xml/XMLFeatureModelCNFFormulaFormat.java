@@ -20,6 +20,8 @@
  */
 package de.featjar.formula.io.xml;
 
+import static de.featjar.base.computation.Computations.*;
+
 import de.featjar.base.data.Result;
 import de.featjar.base.io.format.ParseException;
 import de.featjar.base.tree.Trees;
@@ -34,14 +36,11 @@ import de.featjar.formula.transformation.ComputeNNFFormula;
 import de.featjar.formula.visitor.AndOrSimplifier;
 import de.featjar.formula.visitor.ConnectiveSimplifier;
 import de.featjar.formula.visitor.DeMorganApplier;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static de.featjar.base.computation.Computations.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Parses feature model CNF formulas from FeatureIDE XML files. Returns a
@@ -74,8 +73,7 @@ public class XMLFeatureModelCNFFormulaFormat extends XMLFeatureModelFormulaForma
 
     @Override
     protected void addConstraint(Boolean constraintLabel, IFormula formula) throws ParseException {
-        IFormula transformedExpression =
-                async(formula)
+        IFormula transformedExpression = async(formula)
                 .map(ComputeNNFFormula::new)
                 .map(ComputeCNFFormula::new)
                 .computeUncachedResult()

@@ -21,7 +21,6 @@
 package de.featjar.formula.analysis.metrics;
 
 import de.featjar.formula.analysis.bool.BooleanSolutionList;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

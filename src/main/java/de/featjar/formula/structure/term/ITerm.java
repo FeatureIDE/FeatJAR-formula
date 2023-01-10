@@ -33,5 +33,4 @@ import de.featjar.formula.structure.term.value.IValue;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public interface ITerm extends IExpression {
-}
+public interface ITerm extends IExpression {}

@@ -3,7 +3,7 @@ package de.featjar.formula.transformation;
 import static de.featjar.formula.structure.Expressions.*;
 
 class ComputeDNFFormulaTest {
-    //@Test
+    // @Test
     public void toDNF() {
         // TODO: currently buggy
         TransformationTest.traverseAndAssertFormulaEquals(

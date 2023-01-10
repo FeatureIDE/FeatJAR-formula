@@ -2,11 +2,10 @@ package de.featjar.formula.analysis.value;
 
 import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
-import de.featjar.formula.analysis.bool.BooleanClauseList;
 import de.featjar.formula.analysis.VariableMap;
+import de.featjar.formula.analysis.bool.BooleanClauseList;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.transformation.ComputeCNFFormula;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,8 +19,7 @@ import java.util.stream.Collectors;
  * @author Elias Kuiter
  */
 public class ValueClauseList extends AValueAssignmentList<ValueClauseList, ValueClause> {
-    public ValueClauseList() {
-    }
+    public ValueClauseList() {}
 
     public ValueClauseList(int size) {
         super(size);
@@ -63,6 +61,7 @@ public class ValueClauseList extends AValueAssignmentList<ValueClauseList, Value
 
     @Override
     public ValueSolutionList toSolutionList() {
-        return new ValueSolutionList(literalLists.stream().map(ValueClause::toSolution).collect(Collectors.toList()));
+        return new ValueSolutionList(
+                literalLists.stream().map(ValueClause::toSolution).collect(Collectors.toList()));
     }
 }

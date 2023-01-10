@@ -22,12 +22,12 @@ package de.featjar.formula.visitor;
 
 import de.featjar.base.data.Result;
 import de.featjar.base.data.Void;
+import de.featjar.base.tree.visitor.ITreeVisitor;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.*;
 import de.featjar.formula.structure.formula.predicate.IInvertiblePredicate;
 import de.featjar.formula.structure.formula.predicate.IPredicate;
 import de.featjar.formula.structure.formula.predicate.Literal;
-import de.featjar.base.tree.visitor.ITreeVisitor;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,9 +64,13 @@ public class DeMorganApplier implements ITreeVisitor<IFormula, Void> {
             } else if (notChild instanceof Not) {
                 newFormula = (IFormula) ((Not) notChild).getExpression();
             } else if (notChild instanceof Or) {
-                newFormula = new And(notChild.getChildren().stream().map(c -> new Not((IFormula) c)).collect(Collectors.toList()));
+                newFormula = new And(notChild.getChildren().stream()
+                        .map(c -> new Not((IFormula) c))
+                        .collect(Collectors.toList()));
             } else if (notChild instanceof And) {
-                newFormula = new Or(notChild.getChildren().stream().map(c -> new Not((IFormula) c)).collect(Collectors.toList()));
+                newFormula = new Or(notChild.getChildren().stream()
+                        .map(c -> new Not((IFormula) c))
+                        .collect(Collectors.toList()));
             }
         }
         return newFormula;

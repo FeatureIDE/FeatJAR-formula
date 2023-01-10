@@ -33,8 +33,7 @@ import java.util.List;
  */
 @Deprecated
 public class LessThan extends ANonTerminalExpression implements IBinaryPredicate, IInvertiblePredicate {
-    protected LessThan() {
-    }
+    protected LessThan() {}
 
     public LessThan(ITerm leftTerm, ITerm rightTerm) {
         super(leftTerm, rightTerm);

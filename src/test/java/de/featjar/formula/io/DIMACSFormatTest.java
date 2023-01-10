@@ -34,60 +34,60 @@ import de.featjar.formula.structure.formula.IFormula;
 public class DIMACSFormatTest {
 
     // TODO: something is wrong with the Dimacs Serializer, go figure :-)
-//    @Test
-//    public void DIMACS_123_n1n2n3() {
-//        test("123-n1n2n3");
-//    }
-//
-//    @Test
-//    public void DIMACS_ABC_nAnBnC() {
-//        test("ABC-nAnBnC");
-//    }
-//
-//    @Test
-//    public void DIMACS_empty() {
-//        test("empty");
-//    }
-//
-//    @Test
-//    public void DIMACS_empty_1() {
-//        test("empty-1");
-//    }
-//
-//    @Test
-//    public void DIMACS_empty_A() {
-//        test("empty-A");
-//    }
-//
-//    @Test
-//    public void DIMACS_empty_ABC() {
-//        test("empty-ABC");
-//    }
-//
-//    @Test
-//    public void DIMACS_empty_A2C() {
-//        test("empty-A2C");
-//    }
-//
-//    @Test
-//    public void DIMACS_nA() {
-//        test("nA");
-//    }
-//
-//    @Test
-//    public void DIMACS_nAB() {
-//        test("nAB");
-//    }
-//
-//    @Test
-//    public void DIMACS_faulty() {
-//        test("faulty");
-//    }
-//
-//    @Test
-//    public void DIMACS_void() {
-//        test("void");
-//    }
+    //    @Test
+    //    public void DIMACS_123_n1n2n3() {
+    //        test("123-n1n2n3");
+    //    }
+    //
+    //    @Test
+    //    public void DIMACS_ABC_nAnBnC() {
+    //        test("ABC-nAnBnC");
+    //    }
+    //
+    //    @Test
+    //    public void DIMACS_empty() {
+    //        test("empty");
+    //    }
+    //
+    //    @Test
+    //    public void DIMACS_empty_1() {
+    //        test("empty-1");
+    //    }
+    //
+    //    @Test
+    //    public void DIMACS_empty_A() {
+    //        test("empty-A");
+    //    }
+    //
+    //    @Test
+    //    public void DIMACS_empty_ABC() {
+    //        test("empty-ABC");
+    //    }
+    //
+    //    @Test
+    //    public void DIMACS_empty_A2C() {
+    //        test("empty-A2C");
+    //    }
+    //
+    //    @Test
+    //    public void DIMACS_nA() {
+    //        test("nA");
+    //    }
+    //
+    //    @Test
+    //    public void DIMACS_nAB() {
+    //        test("nAB");
+    //    }
+    //
+    //    @Test
+    //    public void DIMACS_faulty() {
+    //        test("faulty");
+    //    }
+    //
+    //    @Test
+    //    public void DIMACS_void() {
+    //        test("void");
+    //    }
 
     private static void test(String name) {
         FormatTest.testLoadAndSave(getFormula(name), name, new DIMACSFormulaFormat());

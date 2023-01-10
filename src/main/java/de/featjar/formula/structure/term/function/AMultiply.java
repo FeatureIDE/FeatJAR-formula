@@ -20,10 +20,9 @@
  */
 package de.featjar.formula.structure.term.function;
 
-import de.featjar.formula.structure.IBinaryExpression;
 import de.featjar.formula.structure.ANonTerminalExpression;
+import de.featjar.formula.structure.IBinaryExpression;
 import de.featjar.formula.structure.term.ITerm;
-
 import java.util.List;
 
 /**
@@ -34,8 +33,7 @@ import java.util.List;
  */
 @Deprecated
 public abstract class AMultiply extends ANonTerminalExpression implements IFunction, IBinaryExpression {
-    protected AMultiply() {
-    }
+    protected AMultiply() {}
 
     protected AMultiply(ITerm leftTerm, ITerm rightTerm) {
         super(leftTerm, rightTerm);

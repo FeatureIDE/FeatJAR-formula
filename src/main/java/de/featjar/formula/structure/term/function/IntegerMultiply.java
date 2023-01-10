@@ -21,7 +21,6 @@
 package de.featjar.formula.structure.term.function;
 
 import de.featjar.formula.structure.term.ITerm;
-
 import java.util.List;
 
 /**
@@ -33,8 +32,7 @@ import java.util.List;
 @Deprecated
 public class IntegerMultiply extends AMultiply {
 
-    protected IntegerMultiply() {
-    }
+    protected IntegerMultiply() {}
 
     public IntegerMultiply(ITerm leftTerm, ITerm rightTerm) {
         super(leftTerm, rightTerm);

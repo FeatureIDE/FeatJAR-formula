@@ -20,43 +20,41 @@
  */
 package de.featjar.formula.todo;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 public class CNFTest {
 
-//    @Test
-//    public void convert() {
-//        final TermMap variables = new TermMap(Arrays.asList("a", "b", "c"));
-//        final Literal a = variables.createLiteral("a");
-//        final Literal b = variables.createLiteral("b");
-//        final Literal c = variables.createLiteral("c");
-//
-//        final Implies implies1 = new Implies(a, b);
-//        final Or or = new Or(implies1, c);
-//        final BiImplies equals = new BiImplies(a, b);
-//        final And and = new And(equals, c);
-//        final Implies formula = new Implies(or, and);
-//
-//        final Expression cnfExpression = Formulas.toCNF(formula).get();
-//
-//        final Or or2 = new Or(a, c);
-//        final Or or3 = new Or(a, b.invert());
-//        final Or or4 = new Or(c, b.invert());
-//        final Or or5 = new Or(b, a.invert(), c.invert());
-//        final And and2 = new And(or2, or3, or4, or5);
-//
-//        sortChildren(cnfExpression);
-//        sortChildren(and2);
-//        assertEquals(cnfExpression.getDescendantsAsPreOrder(), and2.getDescendantsAsPreOrder());
-//        assertEquals(cnfExpression.getDescendantsAsPostOrder(), and2.getDescendantsAsPostOrder());
-//    }
-//
-//    private void sortChildren(final Expression root) {
-//        Trees.postOrderStream(root).forEach(node -> {
-//            final ArrayList<Expression> sortedChildren = new ArrayList<>(node.getChildren());
-//            Collections.sort(sortedChildren, Comparator.comparing(e -> e.getDescendantsAsPreOrder()
-//                    .toString()));
-//            node.setChildren(sortedChildren);
-//        });
-//    }
+    //    @Test
+    //    public void convert() {
+    //        final TermMap variables = new TermMap(Arrays.asList("a", "b", "c"));
+    //        final Literal a = variables.createLiteral("a");
+    //        final Literal b = variables.createLiteral("b");
+    //        final Literal c = variables.createLiteral("c");
+    //
+    //        final Implies implies1 = new Implies(a, b);
+    //        final Or or = new Or(implies1, c);
+    //        final BiImplies equals = new BiImplies(a, b);
+    //        final And and = new And(equals, c);
+    //        final Implies formula = new Implies(or, and);
+    //
+    //        final Expression cnfExpression = Formulas.toCNF(formula).get();
+    //
+    //        final Or or2 = new Or(a, c);
+    //        final Or or3 = new Or(a, b.invert());
+    //        final Or or4 = new Or(c, b.invert());
+    //        final Or or5 = new Or(b, a.invert(), c.invert());
+    //        final And and2 = new And(or2, or3, or4, or5);
+    //
+    //        sortChildren(cnfExpression);
+    //        sortChildren(and2);
+    //        assertEquals(cnfExpression.getDescendantsAsPreOrder(), and2.getDescendantsAsPreOrder());
+    //        assertEquals(cnfExpression.getDescendantsAsPostOrder(), and2.getDescendantsAsPostOrder());
+    //    }
+    //
+    //    private void sortChildren(final Expression root) {
+    //        Trees.postOrderStream(root).forEach(node -> {
+    //            final ArrayList<Expression> sortedChildren = new ArrayList<>(node.getChildren());
+    //            Collections.sort(sortedChildren, Comparator.comparing(e -> e.getDescendantsAsPreOrder()
+    //                    .toString()));
+    //            node.setChildren(sortedChildren);
+    //        });
+    //    }
 }

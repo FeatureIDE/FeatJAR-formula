@@ -20,18 +20,18 @@
  */
 package de.featjar.formula.visitor;
 
+import static de.featjar.base.computation.Computations.async;
+
 import de.featjar.base.computation.IComputation;
-import de.featjar.formula.structure.formula.IFormula;
-import de.featjar.formula.structure.formula.predicate.Literal;
-import de.featjar.formula.structure.formula.connective.And;
-import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.base.data.Result;
 import de.featjar.base.tree.Trees;
+import de.featjar.formula.structure.formula.IFormula;
+import de.featjar.formula.structure.formula.connective.And;
+import de.featjar.formula.structure.formula.connective.Or;
+import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.transformation.ComputeCNFFormula;
 import de.featjar.formula.transformation.ComputeDNFFormula;
 import de.featjar.formula.transformation.ComputeNNFFormula;
-
-import static de.featjar.base.computation.Computations.async;
 
 /**
  * Tests and transforms formulas for and into normal forms.
@@ -43,9 +43,7 @@ public class NormalForms {
     public static ANormalFormTester getNormalFormTester(IFormula formula, IFormula.NormalForm normalForm) {
         ANormalFormTester normalFormTester = normalForm == IFormula.NormalForm.NNF
                 ? new NNFTester()
-                : normalForm == IFormula.NormalForm.CNF
-                ? new CNFTester()
-                : new DNFTester();
+                : normalForm == IFormula.NormalForm.CNF ? new CNFTester() : new DNFTester();
         Trees.traverse(formula, normalFormTester);
         return normalFormTester;
     }
@@ -60,11 +58,12 @@ public class NormalForms {
 
     public static Result<IFormula> toNormalForm(IFormula formula, IFormula.NormalForm normalForm, boolean isClausal) {
         IComputation<IFormula> normalFormFormula = async(formula)
-                .map(normalForm == IFormula.NormalForm.NNF
-                        ? ComputeNNFFormula::new
-                        : normalForm == IFormula.NormalForm.CNF
-                        ? ComputeCNFFormula::new
-                        : ComputeDNFFormula::new);
+                .map(
+                        normalForm == IFormula.NormalForm.NNF
+                                ? ComputeNNFFormula::new
+                                : normalForm == IFormula.NormalForm.CNF
+                                        ? ComputeCNFFormula::new
+                                        : ComputeDNFFormula::new);
         Result<IFormula> res = normalFormFormula.get();
         return res.map(f -> isClausal ? normalToClausalNormalForm(formula, normalForm) : f);
     }

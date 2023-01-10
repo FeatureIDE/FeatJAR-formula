@@ -26,14 +26,13 @@ import de.featjar.base.io.xml.AXMLFormat;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.*;
 import de.featjar.formula.structure.formula.predicate.Literal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * Implements common behaviors for parsing and writing XML feature model files.
@@ -199,8 +198,7 @@ public abstract class AXMLFeatureModelFormat<T, U, V> extends AXMLFormat<T> {
             if (nodeName.equals(RULE)) {
                 try {
                     V constraintLabel = newConstraintLabel();
-                    final List<IFormula> parsedConstraints =
-                            parseConstraints(child.getChildNodes(), constraintLabel);
+                    final List<IFormula> parsedConstraints = parseConstraints(child.getChildNodes(), constraintLabel);
                     if (parsedConstraints.size() == 1) {
                         addConstraint(constraintLabel, parsedConstraints.get(0));
                         if (child.hasAttributes()) {
@@ -230,8 +228,7 @@ public abstract class AXMLFeatureModelFormat<T, U, V> extends AXMLFormat<T> {
         }
     }
 
-    protected List<IFormula> parseConstraints(NodeList nodeList, V parentConstraintLabel)
-            throws ParseException {
+    protected List<IFormula> parseConstraints(NodeList nodeList, V parentConstraintLabel) throws ParseException {
         final List<IFormula> nodes = new ArrayList<>();
         List<IFormula> children;
         final List<Element> elements = getElements(nodeList);

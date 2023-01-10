@@ -32,44 +32,44 @@ import de.featjar.formula.analysis.bool.BooleanClauseList;
 @Deprecated
 public class DIMACSCNFFormat implements IFormat<BooleanClauseList> {
 
-//    @Override
-//    public Result<String> serialize(BooleanClauseList cnf) {
-//        Objects.requireNonNull(cnf);
-//
-//        final StringBuilder sb = new StringBuilder();
-//
-//        // Variables
-//        int index = 1;
-//        for (final String name : cnf.getVariableMap().getVariableNames()) {
-//            sb.append(DIMACSConstants.COMMENT_START);
-//            sb.append(index++);
-//            sb.append(' ');
-//            sb.append(name);
-//            sb.append(System.lineSeparator());
-//        }
-//
-//        // Problem
-//        sb.append(DIMACSConstants.PROBLEM);
-//        sb.append(' ');
-//        sb.append(DIMACSConstants.CNF);
-//        sb.append(' ');
-//        sb.append(cnf.getVariableMap().getVariableNames().size());
-//        sb.append(' ');
-//        sb.append(cnf.size());
-//        sb.append(System.lineSeparator());
-//
-//        // Clauses
-//        for (final BooleanClause LiteralClause : cnf.getAll()) {
-//            for (final int l : LiteralClause.getIntegers()) {
-//                sb.append(l);
-//                sb.append(' ');
-//            }
-//            sb.append(DIMACSConstants.CLAUSE_END);
-//            sb.append(System.lineSeparator());
-//        }
-//
-//        return Result.of(sb.toString());
-//    }
+    //    @Override
+    //    public Result<String> serialize(BooleanClauseList cnf) {
+    //        Objects.requireNonNull(cnf);
+    //
+    //        final StringBuilder sb = new StringBuilder();
+    //
+    //        // Variables
+    //        int index = 1;
+    //        for (final String name : cnf.getVariableMap().getVariableNames()) {
+    //            sb.append(DIMACSConstants.COMMENT_START);
+    //            sb.append(index++);
+    //            sb.append(' ');
+    //            sb.append(name);
+    //            sb.append(System.lineSeparator());
+    //        }
+    //
+    //        // Problem
+    //        sb.append(DIMACSConstants.PROBLEM);
+    //        sb.append(' ');
+    //        sb.append(DIMACSConstants.CNF);
+    //        sb.append(' ');
+    //        sb.append(cnf.getVariableMap().getVariableNames().size());
+    //        sb.append(' ');
+    //        sb.append(cnf.size());
+    //        sb.append(System.lineSeparator());
+    //
+    //        // Clauses
+    //        for (final BooleanClause LiteralClause : cnf.getAll()) {
+    //            for (final int l : LiteralClause.getIntegers()) {
+    //                sb.append(l);
+    //                sb.append(' ');
+    //            }
+    //            sb.append(DIMACSConstants.CLAUSE_END);
+    //            sb.append(System.lineSeparator());
+    //        }
+    //
+    //        return Result.of(sb.toString());
+    //    }
 
     @Override
     public boolean supportsSerialize() {

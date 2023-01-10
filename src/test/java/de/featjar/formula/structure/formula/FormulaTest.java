@@ -1,13 +1,13 @@
 package de.featjar.formula.structure.formula;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.featjar.formula.structure.Expressions;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Implies;
 import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.formula.structure.formula.predicate.Literal;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class FormulaTest {
     IFormula formula = new Implies(new Literal("a"), Expressions.False);

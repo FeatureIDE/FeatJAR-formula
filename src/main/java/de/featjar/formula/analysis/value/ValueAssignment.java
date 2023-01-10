@@ -6,10 +6,9 @@ import de.featjar.base.data.Result;
 import de.featjar.base.io.IO;
 import de.featjar.formula.analysis.IAssignment;
 import de.featjar.formula.analysis.ISolver;
-import de.featjar.formula.analysis.bool.BooleanAssignment;
 import de.featjar.formula.analysis.VariableMap;
+import de.featjar.formula.analysis.bool.BooleanAssignment;
 import de.featjar.formula.io.value.ValueAssignmentFormat;
-
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;

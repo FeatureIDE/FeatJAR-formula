@@ -24,7 +24,6 @@ import de.featjar.base.data.Sets;
 import de.featjar.base.io.IO;
 import de.featjar.formula.analysis.IAssignmentList;
 import de.featjar.formula.io.value.ValueAssignmentListFormat;
-
 import java.io.IOException;
 import java.util.*;
 
@@ -35,7 +34,8 @@ import java.util.*;
  * @param <T> the type of the literal list
  * @author Elias Kuiter
  */
-public abstract class AValueAssignmentList<T extends AValueAssignmentList<?, U>, U extends ValueAssignment> implements IAssignmentList<U>, IValueRepresentation {
+public abstract class AValueAssignmentList<T extends AValueAssignmentList<?, U>, U extends ValueAssignment>
+        implements IAssignmentList<U>, IValueRepresentation {
     protected final List<U> literalLists;
 
     public AValueAssignmentList() {
@@ -69,8 +69,10 @@ public abstract class AValueAssignmentList<T extends AValueAssignmentList<?, U>,
 
     @Override
     public LinkedHashSet<String> getVariableNames() {
-        return literalLists.stream().map(ValueAssignment::getVariableNames)
-                .flatMap(LinkedHashSet::stream).collect(Sets.toSet());
+        return literalLists.stream()
+                .map(ValueAssignment::getVariableNames)
+                .flatMap(LinkedHashSet::stream)
+                .collect(Sets.toSet());
     }
 
     @Override

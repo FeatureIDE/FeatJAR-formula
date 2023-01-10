@@ -21,7 +21,6 @@
 package de.featjar.formula.structure;
 
 import de.featjar.base.tree.structure.ALeafNode;
-
 import java.util.Objects;
 
 /**
@@ -33,9 +32,9 @@ import java.util.Objects;
 public abstract class ATerminalExpression extends ALeafNode<IExpression> implements IExpression {
     @Override
     public boolean equalsNode(IExpression other) {
-        return (getClass() == other.getClass()) &&
-                Objects.equals(getName(), other.getName()) &&
-                Objects.equals(getType(), other.getType());
+        return (getClass() == other.getClass())
+                && Objects.equals(getName(), other.getName())
+                && Objects.equals(getType(), other.getType());
     }
 
     @Override

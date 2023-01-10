@@ -6,7 +6,6 @@ import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.value.ValueClauseList;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.transformation.ComputeCNFFormula;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,8 +24,7 @@ import java.util.stream.Collectors;
  * @author Elias Kuiter
  */
 public class BooleanClauseList extends ABooleanAssignmentList<BooleanClauseList, BooleanClause> {
-    public BooleanClauseList() {
-    }
+    public BooleanClauseList() {}
 
     public BooleanClauseList(int size) {
         super(size);
@@ -52,7 +50,8 @@ public class BooleanClauseList extends ABooleanAssignmentList<BooleanClauseList,
 
     @Override
     public BooleanSolutionList toSolutionList() {
-        return new BooleanSolutionList(assignments.stream().map(BooleanClause::toSolution).collect(Collectors.toList()));
+        return new BooleanSolutionList(
+                assignments.stream().map(BooleanClause::toSolution).collect(Collectors.toList()));
     }
 
     @Override

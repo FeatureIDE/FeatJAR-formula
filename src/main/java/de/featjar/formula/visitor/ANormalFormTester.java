@@ -24,12 +24,8 @@ import de.featjar.base.data.Result;
 import de.featjar.base.tree.visitor.ITreeVisitor;
 import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.formula.IFormula;
-import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.IConnective;
-import de.featjar.formula.structure.formula.connective.Not;
-import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.formula.structure.formula.predicate.IPredicate;
-
 import java.util.List;
 
 /**
@@ -64,7 +60,8 @@ public abstract class ANormalFormTester implements ITreeVisitor<IFormula, Boolea
         return isClausalNormalForm;
     }
 
-    protected TraversalAction processLevelOne(List<IFormula> path, IFormula formula, Class<? extends IConnective> connectiveClass) {
+    protected TraversalAction processLevelOne(
+            List<IFormula> path, IFormula formula, Class<? extends IConnective> connectiveClass) {
         if (path.size() > 1) {
             isNormalForm = false;
             isClausalNormalForm = false;
@@ -113,5 +110,4 @@ public abstract class ANormalFormTester implements ITreeVisitor<IFormula, Boolea
         }
         return TraversalAction.SKIP_CHILDREN;
     }
-
 }

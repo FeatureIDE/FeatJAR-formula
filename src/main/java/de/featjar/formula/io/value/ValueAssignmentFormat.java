@@ -24,10 +24,9 @@ import de.featjar.base.data.Maps;
 import de.featjar.base.data.Problem;
 import de.featjar.base.data.Problem.Severity;
 import de.featjar.base.data.Result;
-import de.featjar.base.io.input.AInputMapper;
 import de.featjar.base.io.format.IFormat;
+import de.featjar.base.io.input.AInputMapper;
 import de.featjar.formula.analysis.value.ValueAssignment;
-
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -54,8 +53,7 @@ public class ValueAssignmentFormat implements IFormat<ValueAssignment> {
                 .map(e -> {
                     String variable = e.getKey();
                     Object value = e.getValue();
-                    if (value instanceof Boolean)
-                        return String.format("%s%s", ((Boolean) value) ? "" : "-", variable);
+                    if (value instanceof Boolean) return String.format("%s%s", ((Boolean) value) ? "" : "-", variable);
                     return String.format("%s = %s", variable, value);
                 })
                 .collect(Collectors.joining(", ")));
@@ -64,35 +62,30 @@ public class ValueAssignmentFormat implements IFormat<ValueAssignment> {
     @Override
     public Result<ValueAssignment> parse(AInputMapper inputMapper) {
         LinkedHashMap<String, Object> variableValuePairs = Maps.empty();
-        for (String variableValuePair : inputMapper.get().getLineStream()
+        for (String variableValuePair : inputMapper
+                .get()
+                .getLineStream()
                 .collect(Collectors.joining(","))
                 .split(",")) {
             String[] parts = variableValuePair.split("=");
             if (parts.length == 0 || parts.length > 2)
-                return Result.empty(new Problem("expected variable-value pair, got " + variableValuePair, Severity.ERROR));
+                return Result.empty(
+                        new Problem("expected variable-value pair, got " + variableValuePair, Severity.ERROR));
             else if (parts.length == 1) {
                 String variable = parts[0].trim();
-                if (variable.startsWith("-"))
-                    variableValuePairs.put(variable.substring(1), false);
-                else
-                    variableValuePairs.put(variable, true);
-            } else
-                variableValuePairs.put(parts[0].trim(), parseValue(parts[1].trim()));
+                if (variable.startsWith("-")) variableValuePairs.put(variable.substring(1), false);
+                else variableValuePairs.put(variable, true);
+            } else variableValuePairs.put(parts[0].trim(), parseValue(parts[1].trim()));
         }
         return Result.of(constructor.apply(variableValuePairs));
     }
 
     public static Object parseValue(String s) {
-        if (s == null || s.equalsIgnoreCase("null"))
-            return null;
-        else if (s.equalsIgnoreCase("true"))
-            return true;
-        else if (s.equalsIgnoreCase("false"))
-            return false;
-        else if (s.toLowerCase().endsWith("f") || s.toLowerCase().endsWith("d"))
-            return Double.valueOf(s);
-        else
-            return Long.valueOf(s);
+        if (s == null || s.equalsIgnoreCase("null")) return null;
+        else if (s.equalsIgnoreCase("true")) return true;
+        else if (s.equalsIgnoreCase("false")) return false;
+        else if (s.toLowerCase().endsWith("f") || s.toLowerCase().endsWith("d")) return Double.valueOf(s);
+        else return Long.valueOf(s);
     }
 
     @Override

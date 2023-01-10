@@ -2,11 +2,10 @@ package de.featjar.formula.analysis.bool;
 
 import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
-import de.featjar.formula.analysis.ISolver;
 import de.featjar.formula.analysis.IClause;
+import de.featjar.formula.analysis.ISolver;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.value.ValueClause;
-
 import java.util.*;
 
 /**
@@ -26,8 +25,7 @@ public class BooleanClause extends BooleanAssignment implements IClause<Integer>
 
     public BooleanClause(int[] integers, boolean sort) {
         super(integers);
-        if (sort)
-            sort();
+        if (sort) sort();
     }
 
     public BooleanClause(Collection<Integer> integers) {
@@ -96,10 +94,10 @@ public class BooleanClause extends BooleanAssignment implements IClause<Integer>
     @Override
     public BooleanClause negate() {
         final int[] negated = new int[integers.length];
-                final int highestIndex = negated.length - 1;
-                for (int i = 0; i < negated.length; i++) {
-                    negated[highestIndex - i] = -integers[i]; // TODO: what does this do?
-                }
+        final int highestIndex = negated.length - 1;
+        for (int i = 0; i < negated.length; i++) {
+            negated[highestIndex - i] = -integers[i]; // TODO: what does this do?
+        }
         return newIntegerList(negated);
     }
 

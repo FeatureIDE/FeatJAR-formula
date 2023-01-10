@@ -21,7 +21,6 @@
 package de.featjar.formula.structure.formula.predicate;
 
 import de.featjar.formula.structure.ATerminalExpression;
-
 import java.util.List;
 
 /**
@@ -34,8 +33,7 @@ public class True extends ATerminalExpression implements IPolarPredicate {
 
     private static final True INSTANCE = new True();
 
-    protected True() {
-    }
+    protected True() {}
 
     public static True getInstance() {
         return INSTANCE;

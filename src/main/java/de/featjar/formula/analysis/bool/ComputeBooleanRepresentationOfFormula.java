@@ -8,29 +8,29 @@ import de.featjar.formula.structure.Expressions;
 import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.predicate.Literal;
-
 import java.util.List;
 import java.util.Objects;
 
-public class ComputeBooleanRepresentationOfFormula extends ABooleanRepresentationComputation<IFormula, BooleanClauseList> { // todo: assumption: is in CNF
+public class ComputeBooleanRepresentationOfFormula
+        extends ABooleanRepresentationComputation<IFormula, BooleanClauseList> { // todo: assumption: is in CNF
     public ComputeBooleanRepresentationOfFormula(IComputation<IFormula> valueRepresentation) {
         super(valueRepresentation);
     }
 
     public static Result<BooleanClauseList> toBooleanClauseList(IFormula formula, VariableMap variableMap) {
         final BooleanClauseList clauseList = new BooleanClauseList();
-        //final Object formulaValue = formula.evaluate();
-//                    if (formulaValue != null) { //TODO
-//                        if (formulaValue == Boolean.FALSE) {
-//                            clauseList.add(new LiteralList());
-//                        }
-//                    } else {
+        // final Object formulaValue = formula.evaluate();
+        //                    if (formulaValue != null) { //TODO
+        //                        if (formulaValue == Boolean.FALSE) {
+        //                            clauseList.add(new LiteralList());
+        //                        }
+        //                    } else {
         formula.getChildren().stream()
                 .map(expression -> getClause((IFormula) expression, variableMap))
                 .filter(Objects::nonNull)
                 .forEach(clauseList::add);
-        //}
-        return Result.of(clauseList); //todo: better error handling when index cannot be found
+        // }
+        return Result.of(clauseList); // todo: better error handling when index cannot be found
     }
 
     protected static BooleanClause getClause(IFormula formula, VariableMap variableMap) {
@@ -47,7 +47,8 @@ public class ComputeBooleanRepresentationOfFormula extends ABooleanRepresentatio
                         .filter(literal -> literal != Expressions.False)
                         .filter(literal -> literal instanceof Literal)
                         .mapToInt(literal -> {
-                            final int variable = variableMap.get(((Literal) literal).getExpression().getName())
+                            final int variable = variableMap
+                                    .get(((Literal) literal).getExpression().getName())
                                     .orElseThrow();
                             return ((Literal) literal).isPositive() ? variable : -variable;
                         })

@@ -22,13 +22,12 @@ package de.featjar.formula.io.xml;
 
 import de.featjar.base.data.Result;
 import de.featjar.base.data.Sets;
+import de.featjar.base.io.format.ParseException;
 import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.formula.IFormula;
-import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Or;
-import de.featjar.base.io.format.ParseException;
-
+import de.featjar.formula.structure.formula.predicate.Literal;
 import java.util.*;
 import java.util.regex.Pattern;
 import org.w3c.dom.Document;

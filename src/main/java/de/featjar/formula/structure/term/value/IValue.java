@@ -9,5 +9,4 @@ import de.featjar.formula.structure.term.ITerm;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public interface IValue extends ITerm {
-}
+public interface IValue extends ITerm {}

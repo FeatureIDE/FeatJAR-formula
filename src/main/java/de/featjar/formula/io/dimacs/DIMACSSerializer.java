@@ -23,8 +23,8 @@ package de.featjar.formula.io.dimacs;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.formula.IFormula;
-import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.structure.formula.connective.Or;
+import de.featjar.formula.structure.formula.predicate.Literal;
 
 public class DIMACSSerializer {
 
@@ -136,9 +136,7 @@ public class DIMACSSerializer {
     private void writeClause(StringBuilder sb, Or clause) {
         for (final IExpression child : clause.getChildren()) {
             final Literal l = (Literal) child;
-            final Integer index = variableMap
-                    .get(l.getExpression().getName())
-                    .orElseThrow();
+            final Integer index = variableMap.get(l.getExpression().getName()).orElseThrow();
             sb.append(l.isPositive() ? index : -index);
             sb.append(' ');
         }

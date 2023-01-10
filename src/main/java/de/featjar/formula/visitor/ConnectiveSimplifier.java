@@ -22,12 +22,12 @@ package de.featjar.formula.visitor;
 
 import de.featjar.base.data.Result;
 import de.featjar.base.data.Void;
-import de.featjar.formula.structure.IExpression;
+import de.featjar.base.tree.visitor.ITreeVisitor;
 import de.featjar.formula.structure.Expressions;
+import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.*;
 import de.featjar.formula.structure.formula.predicate.IPredicate;
-import de.featjar.base.tree.visitor.ITreeVisitor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -72,8 +72,7 @@ public class ConnectiveSimplifier implements ITreeVisitor<IFormula, Void> {
     @Override
     public TraversalAction lastVisit(List<IFormula> path) {
         final IFormula formula = getCurrentNode(path);
-        if (!(formula instanceof IPredicate))
-            formula.replaceChildren(this::replace);
+        if (!(formula instanceof IPredicate)) formula.replaceChildren(this::replace);
         if (fail) {
             return TraversalAction.FAIL;
         }
@@ -103,10 +102,12 @@ public class ConnectiveSimplifier implements ITreeVisitor<IFormula, Void> {
         } else if (formula instanceof Between) {
             final Between between = (Between) formula;
             newFormula = new And(
-                    new And(atLeastK(children, between.getMinimum())), new And(atMostK(children, between.getMaximum())));
+                    new And(atLeastK(children, between.getMinimum())),
+                    new And(atMostK(children, between.getMaximum())));
         } else if (formula instanceof Choose) {
             final Choose choose = (Choose) formula;
-            newFormula = new And(new And(atLeastK(children, choose.getBound())), new And(atMostK(children, choose.getBound())));
+            newFormula = new And(
+                    new And(atLeastK(children, choose.getBound())), new And(atMostK(children, choose.getBound())));
         } else {
             fail = true;
             return null;

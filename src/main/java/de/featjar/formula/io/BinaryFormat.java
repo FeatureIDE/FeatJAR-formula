@@ -32,57 +32,57 @@ import de.featjar.formula.analysis.bool.*;
  */
 @Deprecated
 public class BinaryFormat extends ABinaryFormat<ABooleanAssignmentList<?, ?>> { // DNFBinaryFormat?
-//    @Override
-//    public void write(BooleanAssignmentList<?, ?> solutions, OutputMapper outputMapper) throws IOException {
-//        final OutputStream outputStream = outputMapper.get().getOutputStream();
-//        final List<String> names = solutions.getVariableMap().getVariableNames();
-//        writeInt(outputStream, names.size());
-//        for (final String name : names) {
-//            writeString(outputStream, name);
-//        }
-//        final BitSet bs = new BitSet(names.size());
-//        writeInt(outputStream, solutions.size());
-//        for (final BooleanAssignment configuration : solutions.getAll()) {
-//            final int[] literals = configuration.getIntegers();
-//            for (int i = 0; i < literals.length; i++) {
-//                bs.set(i, literals[i] > 0);
-//            }
-//            final byte[] byteArray = bs.toByteArray();
-//            writeInt(outputStream, byteArray.length);
-//            writeBytes(outputStream, byteArray);
-//            bs.clear();
-//        }
-//        outputStream.flush();
-//    }
-//
-//    @Override
-//    public Result<BooleanAssignmentList<?, ?>> parse(InputMapper inputMapper) {
-//        final InputStream inputStream = inputMapper.get().getInputStream();
-//        try {
-//            final int numberOfVariables = readInt(inputStream);
-//            final List<String> variableNames = new ArrayList<>(numberOfVariables);
-//            for (int i = 0; i < numberOfVariables; i++) {
-//                variableNames.add(readString(inputStream));
-//            }
-//            final VariableMap termMap = VariableMap.empty();
-//            variableNames.forEach(termMap::add);
-//            final int numberOfSolutions = readInt(inputStream);
-//            final BooleanSolutionList LiteralSolutionList = new BooleanSolutionList(numberOfSolutions);
-//            for (int i = 0; i < numberOfSolutions; i++) {
-//                final BitSet bs = BitSet.valueOf(readBytes(inputStream, readInt(inputStream)));
-//                final int[] literals = new int[numberOfVariables];
-//                for (int j = 0; j < numberOfVariables; j++) {
-//                    literals[j] = bs.get(j) ? (j + 1) : -(j + 1);
-//                }
-//                LiteralSolutionList.add(new BooleanSolution(literals, false));
-//            }
-//            BooleanSolutionList solutionList = new BooleanSolutionList(LiteralSolutionList);
-//            solutionList.setVariableMap(termMap);
-//            return Result.of(solutionList);
-//        } catch (final IOException e) {
-//            return Result.empty(e);
-//        }
-//    }
+    //    @Override
+    //    public void write(BooleanAssignmentList<?, ?> solutions, OutputMapper outputMapper) throws IOException {
+    //        final OutputStream outputStream = outputMapper.get().getOutputStream();
+    //        final List<String> names = solutions.getVariableMap().getVariableNames();
+    //        writeInt(outputStream, names.size());
+    //        for (final String name : names) {
+    //            writeString(outputStream, name);
+    //        }
+    //        final BitSet bs = new BitSet(names.size());
+    //        writeInt(outputStream, solutions.size());
+    //        for (final BooleanAssignment configuration : solutions.getAll()) {
+    //            final int[] literals = configuration.getIntegers();
+    //            for (int i = 0; i < literals.length; i++) {
+    //                bs.set(i, literals[i] > 0);
+    //            }
+    //            final byte[] byteArray = bs.toByteArray();
+    //            writeInt(outputStream, byteArray.length);
+    //            writeBytes(outputStream, byteArray);
+    //            bs.clear();
+    //        }
+    //        outputStream.flush();
+    //    }
+    //
+    //    @Override
+    //    public Result<BooleanAssignmentList<?, ?>> parse(InputMapper inputMapper) {
+    //        final InputStream inputStream = inputMapper.get().getInputStream();
+    //        try {
+    //            final int numberOfVariables = readInt(inputStream);
+    //            final List<String> variableNames = new ArrayList<>(numberOfVariables);
+    //            for (int i = 0; i < numberOfVariables; i++) {
+    //                variableNames.add(readString(inputStream));
+    //            }
+    //            final VariableMap termMap = VariableMap.empty();
+    //            variableNames.forEach(termMap::add);
+    //            final int numberOfSolutions = readInt(inputStream);
+    //            final BooleanSolutionList LiteralSolutionList = new BooleanSolutionList(numberOfSolutions);
+    //            for (int i = 0; i < numberOfSolutions; i++) {
+    //                final BitSet bs = BitSet.valueOf(readBytes(inputStream, readInt(inputStream)));
+    //                final int[] literals = new int[numberOfVariables];
+    //                for (int j = 0; j < numberOfVariables; j++) {
+    //                    literals[j] = bs.get(j) ? (j + 1) : -(j + 1);
+    //                }
+    //                LiteralSolutionList.add(new BooleanSolution(literals, false));
+    //            }
+    //            BooleanSolutionList solutionList = new BooleanSolutionList(LiteralSolutionList);
+    //            solutionList.setVariableMap(termMap);
+    //            return Result.of(solutionList);
+    //        } catch (final IOException e) {
+    //            return Result.empty(e);
+    //        }
+    //    }
 
     @Override
     public boolean supportsSerialize() {

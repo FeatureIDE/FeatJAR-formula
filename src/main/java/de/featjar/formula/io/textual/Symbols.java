@@ -24,7 +24,6 @@ import de.featjar.base.data.Maps;
 import de.featjar.base.data.Pair;
 import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.formula.connective.*;
-
 import java.util.Collection;
 import java.util.LinkedHashMap;
 

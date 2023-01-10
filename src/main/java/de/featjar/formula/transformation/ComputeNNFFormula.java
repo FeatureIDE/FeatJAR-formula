@@ -50,11 +50,10 @@ public class ComputeNNFFormula extends AComputation<IFormula> implements ITransf
     @Override
     public Result<IFormula> compute(DependencyList dependencyList, Progress progress) {
         IFormula formula = dependencyList.get(FORMULA);
-        return Reference.mutateClone(formula,
-                reference -> Trees.traverse(reference, new ConnectiveSimplifier())
-                        .flatMap(_void -> Trees.traverse(reference, new DeMorganApplier()))
-                        .flatMap(_void -> Trees.traverse(reference, new TrueFalseSimplifier()))
-                        .flatMap(_void -> Trees.traverse(reference, new AndOrSimplifier())));
+        return Reference.mutateClone(formula, reference -> Trees.traverse(reference, new ConnectiveSimplifier())
+                .flatMap(_void -> Trees.traverse(reference, new DeMorganApplier()))
+                .flatMap(_void -> Trees.traverse(reference, new TrueFalseSimplifier()))
+                .flatMap(_void -> Trees.traverse(reference, new AndOrSimplifier())));
     }
 
     @Override

@@ -34,8 +34,7 @@ import java.util.List;
 @Deprecated
 public class Equals extends ANonTerminalExpression implements IBinaryPredicate, IInvertiblePredicate {
 
-    protected Equals() {
-    }
+    protected Equals() {}
 
     public Equals(ITerm leftTerm, ITerm rightTerm) {
         super(leftTerm, rightTerm);

@@ -18,7 +18,7 @@ public interface IBooleanRepresentation {
 
     default IComputation<? extends IValueRepresentation> toValue(IComputation<VariableMap> variableMap) {
         return Computations.of(Computations.of(this), variableMap)
-                .flatMapResult(IBooleanRepresentation.class, "toValue",
-                        pair -> pair.getKey().toValue(pair.getValue()));
+                .flatMapResult(IBooleanRepresentation.class, "toValue", pair -> pair.getKey()
+                        .toValue(pair.getValue()));
     }
 }

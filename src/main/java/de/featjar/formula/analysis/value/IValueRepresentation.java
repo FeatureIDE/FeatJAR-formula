@@ -5,7 +5,6 @@ import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.bool.IBooleanRepresentation;
-
 import java.util.LinkedHashSet;
 
 public interface IValueRepresentation {
@@ -20,8 +19,8 @@ public interface IValueRepresentation {
 
     default IComputation<? extends IBooleanRepresentation> toBoolean(IComputation<VariableMap> variableMap) {
         return Computations.of(Computations.of(this), variableMap)
-                .flatMapResult(IValueRepresentation.class, "toBoolean",
-                        pair -> pair.getKey().toBoolean(pair.getValue()));
+                .flatMapResult(IValueRepresentation.class, "toBoolean", pair -> pair.getKey()
+                        .toBoolean(pair.getValue()));
     }
 
     LinkedHashSet<String> getVariableNames();

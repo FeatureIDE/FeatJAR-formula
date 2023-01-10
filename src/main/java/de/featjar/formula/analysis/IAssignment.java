@@ -4,7 +4,6 @@ import de.featjar.base.data.Pair;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.bool.BooleanAssignment;
 import de.featjar.formula.analysis.value.ValueAssignment;
-
 import java.util.LinkedHashMap;
 import java.util.stream.Stream;
 

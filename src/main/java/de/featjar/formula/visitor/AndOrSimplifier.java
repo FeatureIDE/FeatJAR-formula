@@ -24,18 +24,11 @@ import de.featjar.base.data.Result;
 import de.featjar.base.data.Void;
 import de.featjar.base.tree.visitor.ITreeVisitor;
 import de.featjar.formula.structure.IExpression;
-import de.featjar.formula.structure.Expressions;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.IConnective;
 import de.featjar.formula.structure.formula.connective.Or;
-import de.featjar.formula.structure.formula.predicate.False;
 import de.featjar.formula.structure.formula.predicate.IPredicate;
-import de.featjar.formula.structure.formula.predicate.True;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -64,8 +57,8 @@ public class AndOrSimplifier implements ITreeVisitor<IFormula, Void> {
         } else if (formula instanceof Or) {
             formula.flatReplaceChildren(this::mergeOr);
         }
-        formula.replaceChildren(child ->
-                child.getChildrenCount() == 1 && ((child instanceof And) || (child instanceof Or))
+        formula.replaceChildren(
+                child -> child.getChildrenCount() == 1 && ((child instanceof And) || (child instanceof Or))
                         ? child.getFirstChild().get()
                         : null);
         return TraversalAction.CONTINUE;

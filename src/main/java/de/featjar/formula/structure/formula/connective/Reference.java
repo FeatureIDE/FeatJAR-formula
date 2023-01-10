@@ -26,7 +26,6 @@ import de.featjar.formula.structure.ANonTerminalExpression;
 import de.featjar.formula.structure.IUnaryExpression;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.transformation.ComputeNNFFormula;
-
 import java.util.List;
 import java.util.function.Function;
 
@@ -48,8 +47,7 @@ import java.util.function.Function;
  * @author Elias Kuiter
  */
 public class Reference extends ANonTerminalExpression implements IConnective, IUnaryExpression {
-    protected Reference() {
-    }
+    protected Reference() {}
 
     public Reference(IFormula formula) {
         super(formula);
@@ -85,7 +83,6 @@ public class Reference extends ANonTerminalExpression implements IConnective, IU
      */
     public static Result<IFormula> mutateClone(IFormula formula, Function<Reference, Result<?>> fn) {
         Reference formulaReference = new Reference((IFormula) formula.cloneTree());
-        return fn.apply(formulaReference)
-                .map(result -> (IFormula) formulaReference.getExpression());
+        return fn.apply(formulaReference).map(result -> (IFormula) formulaReference.getExpression());
     }
 }

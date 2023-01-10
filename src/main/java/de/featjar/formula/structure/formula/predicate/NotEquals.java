@@ -33,8 +33,7 @@ import java.util.List;
  */
 @Deprecated
 public class NotEquals extends ANonTerminalExpression implements IBinaryPredicate, IInvertiblePredicate {
-    protected NotEquals() {
-    }
+    protected NotEquals() {}
 
     public NotEquals(ITerm leftTerm, ITerm rightTerm) {
         super(leftTerm, rightTerm);

@@ -31,13 +31,14 @@ import de.featjar.base.extension.IExtension;
  * @author Elias Kuiter
  */
 public interface ISolver<T> extends IExtension {
-//    /**
-//     * {@return an analysis that computes whether there is a solution for some given formula, if supported by this solver}
-//     * Satisfiability solvers support this method.
-//     */
-//    default IHasSolutionAnalysis<?, ?> hasSolutionAnalysis() {
-//        return null;
-//    }
+    //    /**
+    //     * {@return an analysis that computes whether there is a solution for some given formula, if supported by this
+    // solver}
+    //     * Satisfiability solvers support this method.
+    //     */
+    //    default IHasSolutionAnalysis<?, ?> hasSolutionAnalysis() {
+    //        return null;
+    //    }
 
     /**
      * {@return an analysis that computes a solution for some given formula, if supported by this solver}

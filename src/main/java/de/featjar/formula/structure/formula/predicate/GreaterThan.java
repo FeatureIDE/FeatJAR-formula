@@ -33,8 +33,7 @@ import java.util.List;
  */
 @Deprecated
 public class GreaterThan extends ANonTerminalExpression implements IBinaryPredicate, IInvertiblePredicate {
-    protected GreaterThan() {
-    }
+    protected GreaterThan() {}
 
     public GreaterThan(ITerm leftTerm, ITerm rightTerm) {
         super(leftTerm, rightTerm);

@@ -1,8 +1,8 @@
 package de.featjar.formula.visitor;
 
-import org.junit.jupiter.api.Test;
-
 import static de.featjar.formula.structure.Expressions.*;
+
+import org.junit.jupiter.api.Test;
 
 class DeMorganApplierTest {
     @Test
@@ -13,9 +13,7 @@ class DeMorganApplierTest {
     @Test
     void eliminatesNotBeforeLiteral() {
         VisitorTest.traverseAndAssertFormulaEquals(
-                and(literal("x"), not(literal("y"))),
-                new DeMorganApplier(),
-                and(literal("x"), literal(false, "y")));
+                and(literal("x"), not(literal("y"))), new DeMorganApplier(), and(literal("x"), literal(false, "y")));
     }
 
     @Test

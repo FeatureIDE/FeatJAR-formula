@@ -22,9 +22,9 @@ package de.featjar.formula.analysis.bool;
 
 import de.featjar.base.FeatJAR;
 import de.featjar.base.computation.*;
+import de.featjar.base.computation.Progress;
 import de.featjar.base.data.Pair;
 import de.featjar.base.data.Result;
-import de.featjar.base.computation.Progress;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.value.*;
 
@@ -34,9 +34,10 @@ import de.featjar.formula.analysis.value.*;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public abstract class ABooleanRepresentationComputation<T extends IValueRepresentation, U extends IBooleanRepresentation>
+public abstract class ABooleanRepresentationComputation<
+                T extends IValueRepresentation, U extends IBooleanRepresentation>
         extends AComputation<Pair<U, VariableMap>> implements IAnalysis<T, Pair<U, VariableMap>> {
-    protected final static Dependency<?> VALUE_REPRESENTATION = newRequiredDependency();
+    protected static final Dependency<?> VALUE_REPRESENTATION = newRequiredDependency();
 
     public ABooleanRepresentationComputation(IComputation<T> valueRepresentation) {
         dependOn(VALUE_REPRESENTATION);

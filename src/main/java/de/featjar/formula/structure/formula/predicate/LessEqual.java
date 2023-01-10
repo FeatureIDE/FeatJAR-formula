@@ -33,8 +33,7 @@ import java.util.List;
  */
 @Deprecated
 public class LessEqual extends ANonTerminalExpression implements IBinaryPredicate, IInvertiblePredicate {
-    protected LessEqual() {
-    }
+    protected LessEqual() {}
 
     public LessEqual(ITerm leftTerm, ITerm rightTerm) {
         super(leftTerm, rightTerm);

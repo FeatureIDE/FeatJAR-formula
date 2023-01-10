@@ -22,7 +22,6 @@ package de.featjar.formula.structure.formula.connective;
 
 import de.featjar.formula.structure.ANonTerminalExpression;
 import de.featjar.formula.structure.formula.IFormula;
-
 import java.util.List;
 
 /**
@@ -32,8 +31,7 @@ import java.util.List;
  * @author Sebastian Krieter
  */
 public class And extends ANonTerminalExpression implements IConnective {
-    protected And() {
-    }
+    protected And() {}
 
     public And(IFormula... formulas) {
         super(formulas);

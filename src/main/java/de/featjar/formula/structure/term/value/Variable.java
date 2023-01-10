@@ -1,7 +1,6 @@
 package de.featjar.formula.structure.term.value;
 
 import de.featjar.formula.structure.ATerminalExpression;
-
 import java.util.List;
 
 /**
@@ -54,8 +53,7 @@ public class Variable extends ATerminalExpression implements IValue {
 
     @Override
     public Object evaluate(List<?> values) {
-        if (!getType().isInstance(values))
-            throw new IllegalArgumentException("value not of type " + getType());
+        if (!getType().isInstance(values)) throw new IllegalArgumentException("value not of type " + getType());
         return values.get(0);
     }
 }

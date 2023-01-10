@@ -20,12 +20,11 @@
  */
 package de.featjar.formula.structure.formula.connective;
 
-import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.ANonTerminalExpression;
+import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.IUnaryExpression;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.term.value.Variable;
-
 import java.util.List;
 import java.util.Objects;
 

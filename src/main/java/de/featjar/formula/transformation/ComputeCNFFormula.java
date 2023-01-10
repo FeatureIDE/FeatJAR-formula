@@ -21,18 +21,17 @@
 package de.featjar.formula.transformation;
 
 import de.featjar.base.computation.*;
+import de.featjar.base.computation.Progress;
 import de.featjar.base.data.Maps;
 import de.featjar.base.data.Result;
+import de.featjar.base.tree.Trees;
 import de.featjar.base.tree.structure.ITree;
 import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.formula.IFormula;
+import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.term.value.Variable;
 import de.featjar.formula.visitor.ANormalFormTester;
-import de.featjar.formula.structure.formula.connective.And;
-import de.featjar.base.computation.Progress;
-import de.featjar.base.tree.Trees;
 import de.featjar.formula.visitor.NormalForms;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -47,8 +46,8 @@ import java.util.List;
 public class ComputeCNFFormula extends AComputation<IFormula> implements ITransformation<IFormula> {
     protected static final Dependency<IFormula> NNF_FORMULA = newRequiredDependency();
 
-    protected int maximumNumberOfLiterals = Integer.MAX_VALUE; //todo: pass as dependent computation
-    public final boolean useMultipleThreads = false; //todo: pass as dependent computation
+    protected int maximumNumberOfLiterals = Integer.MAX_VALUE; // todo: pass as dependent computation
+    public final boolean useMultipleThreads = false; // todo: pass as dependent computation
 
     protected final List<IFormula> distributiveClauses;
     protected final List<ComputeTseitinCNFFormula.Substitute> tseitinClauses;
@@ -57,7 +56,7 @@ public class ComputeCNFFormula extends AComputation<IFormula> implements ITransf
     public ComputeCNFFormula(IComputation<IFormula> nnfFormula) { // precondition: nnf must be given (TODO: validate)
         dependOn(NNF_FORMULA);
         setInput(nnfFormula);
-        //this.maximumNumberOfLiterals = maximumNumberOfLiterals;
+        // this.maximumNumberOfLiterals = maximumNumberOfLiterals;
         if (useMultipleThreads) {
             distributiveClauses = Collections.synchronizedList(new ArrayList<>());
             tseitinClauses = Collections.synchronizedList(new ArrayList<>());
@@ -79,9 +78,13 @@ public class ComputeCNFFormula extends AComputation<IFormula> implements ITransf
         final ANormalFormTester normalFormTester = NormalForms.getNormalFormTester(formula, IFormula.NormalForm.CNF);
         if (normalFormTester.isNormalForm()) {
             if (!normalFormTester.isClausalNormalForm()) {
-                return Result.of(NormalForms.normalToClausalNormalForm((IFormula) Trees.clone(formula), IFormula.NormalForm.CNF));
+                return Result.of(NormalForms.normalToClausalNormalForm(
+                        (IFormula) Trees.clone(formula), IFormula.NormalForm.CNF));
             } else {
-                return Result.of((IFormula) Trees.clone(formula)); // TODO: is it a computation's responsibility to clone its input or not? should the Store do this, or the caller, or thenComputeResult...?
+                return Result.of((IFormula)
+                        Trees.clone(formula)); // TODO: is it a computation's responsibility to clone its input or
+                // not? should the Store do this, or the caller, or
+                // thenComputeResult...?
             }
         }
         IFormula newFormula = (IFormula) formula.cloneTree();
@@ -105,25 +108,26 @@ public class ComputeCNFFormula extends AComputation<IFormula> implements ITransf
         final List<IFormula> transformedClauses = new ArrayList<>(distributiveClauses);
 
         if (!tseitinClauses.isEmpty()) {
-            final LinkedHashMap<ComputeTseitinCNFFormula.Substitute, ComputeTseitinCNFFormula.Substitute> combinedTseitinClauses = Maps.empty();
+            final LinkedHashMap<ComputeTseitinCNFFormula.Substitute, ComputeTseitinCNFFormula.Substitute>
+                    combinedTseitinClauses = Maps.empty();
             for (final ComputeTseitinCNFFormula.Substitute tseitinClause : tseitinClauses) {
                 ComputeTseitinCNFFormula.Substitute substitute = combinedTseitinClauses.get(tseitinClause);
                 if (substitute == null) {
                     combinedTseitinClauses.put(tseitinClause, tseitinClause);
                     final Variable variable = tseitinClause.getVariable();
                     if (variable != null) {
-                        //TODO variable.setName(termMap.addBooleanVariable().getName());
+                        // TODO variable.setName(termMap.addBooleanVariable().getName());
                     }
                 } else {
                     final Variable variable = substitute.getVariable();
                     if (variable != null) {
-                        //TODO tseitinClause.getVariable().rename(variable.getName());
+                        // TODO tseitinClause.getVariable().rename(variable.getName());
                     }
                 }
             }
             for (final ComputeTseitinCNFFormula.Substitute tseitinClause : combinedTseitinClauses.keySet()) {
                 for (final IExpression expression : tseitinClause.getClauses()) {
-                    //TODO transformedClauses.add(Formulas.manipulate(expression, new VariableMapSetter(termMap)));
+                    // TODO transformedClauses.add(Formulas.manipulate(expression, new VariableMapSetter(termMap)));
                 }
             }
         }
@@ -142,8 +146,8 @@ public class ComputeCNFFormula extends AComputation<IFormula> implements ITransf
             if (useDistributive) {
                 try {
                     // todo: do not use .get
-                    distributiveClauses.addAll(
-                            (List<? extends IFormula>) distributive(clonedChild).get().getChildren()); // TODO .get?
+                    distributiveClauses.addAll((List<? extends IFormula>)
+                            distributive(clonedChild).get().getChildren()); // TODO .get?
                     return;
                 } catch (final ComputeNormalFormFormula.MaximumNumberOfLiteralsExceededException ignored) {
                 }
@@ -155,8 +159,8 @@ public class ComputeCNFFormula extends AComputation<IFormula> implements ITransf
 
     protected Result<IFormula> distributive(IFormula child)
             throws ComputeNormalFormFormula.MaximumNumberOfLiteralsExceededException {
-        final ComputeNormalFormFormula cnfDistributiveLawTransformer =
-                Computations.of(child).map(c -> new ComputeNormalFormFormula(c, IFormula.NormalForm.CNF)); // TODO: monitor subtask?
+        final ComputeNormalFormFormula cnfDistributiveLawTransformer = Computations.of(child)
+                .map(c -> new ComputeNormalFormFormula(c, IFormula.NormalForm.CNF)); // TODO: monitor subtask?
         cnfDistributiveLawTransformer.setMaximumNumberOfLiterals(maximumNumberOfLiterals);
         return cnfDistributiveLawTransformer.get();
     }

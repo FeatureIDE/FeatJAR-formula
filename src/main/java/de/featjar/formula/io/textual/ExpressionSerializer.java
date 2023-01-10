@@ -22,19 +22,19 @@ package de.featjar.formula.io.textual;
 
 import de.featjar.formula.io.textual.Symbols.Operator;
 import de.featjar.formula.structure.IExpression;
-import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.AtLeast;
 import de.featjar.formula.structure.formula.connective.AtMost;
 import de.featjar.formula.structure.formula.connective.Between;
 import de.featjar.formula.structure.formula.connective.BiImplies;
 import de.featjar.formula.structure.formula.connective.Choose;
-import de.featjar.formula.structure.formula.connective.IConnective;
 import de.featjar.formula.structure.formula.connective.Exists;
 import de.featjar.formula.structure.formula.connective.ForAll;
+import de.featjar.formula.structure.formula.connective.IConnective;
 import de.featjar.formula.structure.formula.connective.Implies;
 import de.featjar.formula.structure.formula.connective.Not;
 import de.featjar.formula.structure.formula.connective.Or;
+import de.featjar.formula.structure.formula.predicate.Literal;
 import java.util.List;
 
 /**

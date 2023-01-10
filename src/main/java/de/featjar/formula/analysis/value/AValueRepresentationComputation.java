@@ -21,8 +21,8 @@
 package de.featjar.formula.analysis.value;
 
 import de.featjar.base.computation.*;
-import de.featjar.base.data.Result;
 import de.featjar.base.computation.Progress;
+import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.IVariableMapDependency;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.bool.*;
@@ -34,10 +34,11 @@ import de.featjar.formula.analysis.bool.*;
  */
 public abstract class AValueRepresentationComputation<T extends IBooleanRepresentation, U extends IValueRepresentation>
         extends AComputation<U> implements IAnalysis<T, U>, IVariableMapDependency {
-    protected final static Dependency<?> BOOLEAN_REPRESENTATION = newRequiredDependency();
-    protected final static Dependency<VariableMap> VARIABLE_MAP = newRequiredDependency();
+    protected static final Dependency<?> BOOLEAN_REPRESENTATION = newRequiredDependency();
+    protected static final Dependency<VariableMap> VARIABLE_MAP = newRequiredDependency();
 
-    public AValueRepresentationComputation(IComputation<T> booleanRepresentation, IComputation<VariableMap> variableMap) {
+    public AValueRepresentationComputation(
+            IComputation<T> booleanRepresentation, IComputation<VariableMap> variableMap) {
         dependOn(BOOLEAN_REPRESENTATION, VARIABLE_MAP);
         setInput(booleanRepresentation);
         setVariableMap(variableMap);

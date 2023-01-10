@@ -21,8 +21,8 @@
 package de.featjar.formula.io.textual;
 
 import de.featjar.base.data.Result;
-import de.featjar.base.io.input.AInputMapper;
 import de.featjar.base.io.format.IFormat;
+import de.featjar.base.io.input.AInputMapper;
 import de.featjar.formula.structure.IExpression;
 
 /**

@@ -21,8 +21,8 @@
 package de.featjar.formula.transformation;
 
 import de.featjar.base.computation.*;
-import de.featjar.base.data.Result;
 import de.featjar.base.computation.Progress;
+import de.featjar.base.data.Result;
 import de.featjar.base.tree.structure.ITree;
 import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.formula.IFormula;
@@ -30,7 +30,6 @@ import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.IConnective;
 import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.formula.structure.formula.predicate.Literal;
-
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -43,8 +42,7 @@ import java.util.stream.Collectors;
 public class ComputeNormalFormFormula extends AComputation<IFormula> implements ITransformation<IFormula> {
     protected static final Dependency<IFormula> NNF_FORMULA = newRequiredDependency();
 
-    public static class MaximumNumberOfLiteralsExceededException extends Exception {
-    }
+    public static class MaximumNumberOfLiteralsExceededException extends Exception {}
 
     private static class PathElement {
         IExpression expression;
@@ -56,7 +54,7 @@ public class ComputeNormalFormFormula extends AComputation<IFormula> implements 
         }
     }
 
-    private final IFormula.NormalForm normalForm; //todo: input as dependency
+    private final IFormula.NormalForm normalForm; // todo: input as dependency
     private final Class<? extends IConnective> clauseClass;
     private final Function<List<? extends IFormula>, IFormula> clauseConstructor;
 

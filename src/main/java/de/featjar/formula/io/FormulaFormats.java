@@ -28,5 +28,4 @@ import de.featjar.formula.structure.formula.IFormula;
  *
  * @author Sebastian Krieter
  */
-public class FormulaFormats extends AFormats<IFormula> {
-}
+public class FormulaFormats extends AFormats<IFormula> {}

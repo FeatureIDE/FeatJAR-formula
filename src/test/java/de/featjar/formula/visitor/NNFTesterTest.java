@@ -1,10 +1,10 @@
 package de.featjar.formula.visitor;
 
-import de.featjar.formula.structure.formula.IFormula;
-import org.junit.jupiter.api.Test;
-
 import static de.featjar.formula.structure.Expressions.*;
 import static org.junit.jupiter.api.Assertions.*;
+
+import de.featjar.formula.structure.formula.IFormula;
+import org.junit.jupiter.api.Test;
 
 class NNFTesterTest {
     @Test

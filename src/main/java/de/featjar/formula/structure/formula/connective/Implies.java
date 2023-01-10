@@ -20,10 +20,9 @@
  */
 package de.featjar.formula.structure.formula.connective;
 
-import de.featjar.formula.structure.IBinaryExpression;
 import de.featjar.formula.structure.ANonTerminalExpression;
+import de.featjar.formula.structure.IBinaryExpression;
 import de.featjar.formula.structure.formula.IFormula;
-
 import java.util.List;
 
 /**
@@ -35,8 +34,7 @@ import java.util.List;
  */
 public class Implies extends ANonTerminalExpression implements IConnective, IBinaryExpression {
 
-    protected Implies() {
-    }
+    protected Implies() {}
 
     public Implies(IFormula leftFormula, IFormula rightFormula) {
         super(leftFormula, rightFormula);

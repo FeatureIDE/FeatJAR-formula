@@ -23,11 +23,10 @@ package de.featjar.formula.io.value;
 import de.featjar.base.data.Problem;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.IO;
-import de.featjar.base.io.input.AInputMapper;
 import de.featjar.base.io.format.IFormat;
-import de.featjar.formula.analysis.value.ValueAssignment;
+import de.featjar.base.io.input.AInputMapper;
 import de.featjar.formula.analysis.value.AValueAssignmentList;
-
+import de.featjar.formula.analysis.value.ValueAssignment;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -40,16 +39,18 @@ import java.util.stream.Collectors;
  *
  * @author Elias Kuiter
  */
-public class ValueAssignmentListFormat<T extends AValueAssignmentList<?, U>, U extends ValueAssignment> implements IFormat<T> {
+public class ValueAssignmentListFormat<T extends AValueAssignmentList<?, U>, U extends ValueAssignment>
+        implements IFormat<T> {
     protected final Supplier<T> listConstructor;
     protected final ValueAssignmentFormat valueAssignmentFormat;
-    //todo: serialize as CSV, parse as CSV
+    // todo: serialize as CSV, parse as CSV
 
     public ValueAssignmentListFormat() {
         this(null, null);
     }
 
-    public ValueAssignmentListFormat(Supplier<T> listConstructor, Function<LinkedHashMap<String, Object>, ValueAssignment> constructor) {
+    public ValueAssignmentListFormat(
+            Supplier<T> listConstructor, Function<LinkedHashMap<String, Object>, ValueAssignment> constructor) {
         this.listConstructor = listConstructor;
         this.valueAssignmentFormat = new ValueAssignmentFormat(constructor);
     }
@@ -68,13 +69,14 @@ public class ValueAssignmentListFormat<T extends AValueAssignmentList<?, U>, U e
             return Result.empty(new Problem("cannot parse unknown value assignment", Problem.Severity.ERROR));
         T valueAssignmentList = listConstructor.get();
         List<Problem> problems = new ArrayList<>();
-        for (String valueClause : inputMapper.get().getLineStream()
+        for (String valueClause : inputMapper
+                .get()
+                .getLineStream()
                 .collect(Collectors.joining(";"))
                 .split(";")) {
             Result<ValueAssignment> valueAssignment = IO.load(valueClause.trim(), valueAssignmentFormat);
             problems.addAll(valueAssignment.getProblems());
-            if (valueAssignment.isPresent())
-                valueAssignmentList.add((U) valueAssignment.get());
+            if (valueAssignment.isPresent()) valueAssignmentList.add((U) valueAssignment.get());
         }
         return Result.of(valueAssignmentList, problems);
     }
