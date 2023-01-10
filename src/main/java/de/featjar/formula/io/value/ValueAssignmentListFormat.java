@@ -72,7 +72,7 @@ public class ValueAssignmentListFormat<T extends AValueAssignmentList<?, U>, U e
                 .collect(Collectors.joining(";"))
                 .split(";")) {
             Result<ValueAssignment> valueAssignment = IO.load(valueClause.trim(), valueAssignmentFormat);
-            problems.add(valueAssignment.getProblem().orElse(null));
+            problems.addAll(valueAssignment.getProblems());
             if (valueAssignment.isPresent())
                 valueAssignmentList.add((U) valueAssignment.get());
         }

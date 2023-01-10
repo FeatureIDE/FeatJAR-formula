@@ -109,7 +109,7 @@ public class VariableMap extends RangeMap<String> {
         List<Problem> problems = new ArrayList<>();
         for (ValueAssignment valueAssignment : valueAssignmentList.getAll()) {
             Result<U> booleanAssignment = toBoolean(valueAssignment, constructor);
-            problems.add(booleanAssignment.getProblem().orElse(null));
+            problems.addAll(booleanAssignment.getProblems());
             if (booleanAssignment.isPresent())
                 booleanAssignmentList.add(booleanAssignment.get());
         }
@@ -158,7 +158,7 @@ public class VariableMap extends RangeMap<String> {
         List<Problem> problems = new ArrayList<>();
         for (BooleanAssignment booleanAssignment : booleanAssignmentList.getAll()) {
             Result<U> valueAssignment = toValue(booleanAssignment, constructor);
-            problems.add(valueAssignment.getProblem().orElse(null));
+            problems.addAll(valueAssignment.getProblems());
             if (valueAssignment.isPresent())
                 valueAssignmentList.add(valueAssignment.get());
         }
@@ -202,7 +202,7 @@ public class VariableMap extends RangeMap<String> {
         List<Problem> problems = new ArrayList<>();
         for (BooleanAssignment booleanAssignment : booleanAssignmentList.getAll()) {
             Result<U> valueAssignment = toAnonymousValue(booleanAssignment, constructor);
-            problems.add(valueAssignment.getProblem().orElse(null));
+            problems.addAll(valueAssignment.getProblems());
             if (valueAssignment.isPresent())
                 valueAssignmentList.add(valueAssignment.get());
         }
