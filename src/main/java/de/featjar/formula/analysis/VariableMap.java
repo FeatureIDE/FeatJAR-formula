@@ -154,7 +154,7 @@ public class VariableMap extends RangeMap<String> {
             BooleanAssignment booleanAssignment, Function<LinkedHashMap<String, Object>, T> constructor) {
         LinkedHashMap<String, Object> variableValuePairs = Maps.empty();
         List<Problem> problems = new ArrayList<>();
-        for (int integer : booleanAssignment.getIntegers()) {
+        for (int integer : booleanAssignment.get()) {
             int index = Math.abs(integer);
             Result<String> variable = get(index);
             if (variable.isEmpty())
@@ -206,7 +206,7 @@ public class VariableMap extends RangeMap<String> {
             BooleanAssignment booleanAssignment, Function<LinkedHashMap<String, Object>, T> constructor) {
         LinkedHashMap<String, Object> variableValuePairs = Maps.empty();
         List<Problem> problems = new ArrayList<>();
-        for (int integer : booleanAssignment.getIntegers()) {
+        for (int integer : booleanAssignment.get()) {
             int index = Math.abs(integer);
             variableValuePairs.put(String.valueOf(index), integer > 0);
         }

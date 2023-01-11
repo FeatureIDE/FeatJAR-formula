@@ -29,7 +29,7 @@ import java.util.stream.Stream;
 
 /**
  * Assigns values to {@link de.featjar.formula.structure.term.value.Variable variables}.
- * Represents a {@link IClause} or a {@link ISolution} in a {@link ISolver}.
+ * Represents an {@link IClause} or an {@link ISolution} in an {@link ISolver}.
  * For a propositional implementation, see {@link BooleanAssignment},
  * for a first-order implementation, see {@link ValueAssignment}.
  *

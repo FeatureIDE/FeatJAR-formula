@@ -22,6 +22,7 @@ package de.featjar.formula.analysis.bool;
 
 import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
+import de.featjar.base.data.Sets;
 import de.featjar.formula.analysis.IClause;
 import de.featjar.formula.analysis.ISolver;
 import de.featjar.formula.analysis.VariableMap;
@@ -53,25 +54,19 @@ public class BooleanClause extends BooleanAssignment implements IClause<Integer>
         sort();
     }
 
-    public BooleanClause(BooleanAssignment booleanAssignment) {
-        super(booleanAssignment);
-        sort();
-    }
-
-    @Override
-    protected BooleanClause newIntegerList(int[] integers) {
-        return new BooleanClause(integers);
+    public BooleanClause(BooleanClause booleanClause) {
+        super(booleanClause);
     }
 
     protected void sort() {
-        Arrays.sort(this.integers);
-        hashCode = Arrays.hashCode(this.integers);
+        hashCodeValid = false;
+        Arrays.sort(this.array);
     }
 
     @Override
     public int countNegatives() {
         int count = 0;
-        for (int integer : integers) {
+        for (int integer : array) {
             if (integer < 0) {
                 count++;
             } else {
@@ -84,8 +79,8 @@ public class BooleanClause extends BooleanAssignment implements IClause<Integer>
     @Override
     public int countPositives() {
         int count = 0;
-        for (int i = integers.length - 1; i >= 0; i--) {
-            if (integers[i] > 0) {
+        for (int i = array.length - 1; i >= 0; i--) {
+            if (array[i] > 0) {
                 count++;
             } else {
                 break;
@@ -95,30 +90,28 @@ public class BooleanClause extends BooleanAssignment implements IClause<Integer>
     }
 
     @Override
-    public BooleanClause getPositives() {
-        int[] positiveIntegers = Arrays.copyOfRange(integers, integers.length - countPositives(), integers.length);
-        return newIntegerList(positiveIntegers);
+    public int[] getPositiveValues() {
+        return Arrays.copyOfRange(array, array.length - countPositives(), array.length);
     }
 
     @Override
-    public BooleanClause getNegatives() {
-        int[] negativeIntegers = Arrays.copyOfRange(integers, 0, countNegatives());
-        return newIntegerList(negativeIntegers);
+    public int[] getNegativeValues() {
+        return Arrays.copyOfRange(array, 0, countNegatives());
     }
 
     @Override
     public int indexOf(int integer) {
-        return Arrays.binarySearch(integers, integer);
+        return Arrays.binarySearch(array, integer);
     }
 
     @Override
-    public BooleanClause negate() {
-        final int[] negated = new int[integers.length];
+    public int[] getNegatedValues() {
+        final int[] negated = new int[array.length];
         final int highestIndex = negated.length - 1;
         for (int i = 0; i < negated.length; i++) {
-            negated[highestIndex - i] = -integers[i]; // TODO: what does this do?
+            negated[highestIndex - i] = -array[i];
         }
-        return newIntegerList(negated);
+        return negated;
     }
 
     @Override

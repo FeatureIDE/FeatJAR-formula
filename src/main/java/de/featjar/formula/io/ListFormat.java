@@ -48,7 +48,7 @@ public class ListFormat implements IFormat<ABooleanAssignmentList<?, ?>> {
         int configurationIndex = 0;
         for (final BooleanAssignment configuration : dnf.getAll()) {
             csv.append(configurationIndex++);
-            final int[] literals = configuration.getIntegers();
+            final int[] literals = configuration.get();
             for (int literal : literals) {
                 csv.append(';');
                 csv.append(literal < 0 ? 0 : 1);

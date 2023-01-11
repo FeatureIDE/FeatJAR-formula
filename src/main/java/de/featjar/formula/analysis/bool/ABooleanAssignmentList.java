@@ -90,7 +90,7 @@ public abstract class ABooleanAssignmentList<T extends ABooleanAssignmentList<?,
     // assumes that the maximum index corresponds to the number of variables
     public int getVariableCount() {
         return assignments.stream()
-                .flatMapToInt(assignment -> Arrays.stream(assignment.getIntegers()))
+                .flatMapToInt(assignment -> Arrays.stream(assignment.get()))
                 .max()
                 .orElse(0);
     }
@@ -107,7 +107,7 @@ public abstract class ABooleanAssignmentList<T extends ABooleanAssignmentList<?,
         protected int addLengths(ABooleanAssignmentList<?, ?> o) {
             int count = 0;
             for (final BooleanAssignment literalSet : o.assignments) {
-                count += literalSet.getIntegers().length;
+                count += literalSet.get().length;
             }
             return count;
         }
@@ -125,7 +125,7 @@ public abstract class ABooleanAssignmentList<T extends ABooleanAssignmentList<?,
         protected int addLengths(ABooleanAssignmentList<?, ?> o) {
             int count = 0;
             for (final BooleanAssignment literalSet : o.assignments) {
-                count += literalSet.getIntegers().length;
+                count += literalSet.get().length;
             }
             return count;
         }
