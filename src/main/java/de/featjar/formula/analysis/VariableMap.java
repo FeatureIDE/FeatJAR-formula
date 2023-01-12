@@ -73,12 +73,6 @@ public class VariableMap extends RangeMap<String> {
         return getVariableNames().size();
     }
 
-    @SuppressWarnings("MethodDoesntCallSuperMethod")
-    @Override
-    public VariableMap clone() {
-        return new VariableMap(this);
-    }
-
     public String print() {
         return stream()
                 .map(pair -> String.format("%d <-> %s", pair.getKey(), pair.getValue()))

@@ -89,12 +89,6 @@ public abstract class AValueAssignment implements IAssignment<String>, IValueRep
         return variableValuePairs;
     }
 
-    @SuppressWarnings({"MethodDoesntCallSuperMethod", "CloneDoesntDeclareCloneNotSupportedException"})
-    @Override
-    protected AValueAssignment clone() {
-        return toAssignment();
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
