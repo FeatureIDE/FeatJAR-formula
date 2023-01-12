@@ -20,11 +20,10 @@
  */
 package de.featjar.formula.analysis.value;
 
+import de.featjar.base.data.IHashable;
 import de.featjar.base.data.Sets;
-import de.featjar.base.io.IO;
 import de.featjar.formula.analysis.IAssignmentList;
-import de.featjar.formula.io.value.ValueAssignmentListFormat;
-import java.io.IOException;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -34,7 +33,7 @@ import java.util.stream.Collectors;
  * @param <T> the type of the literal list
  * @author Elias Kuiter
  */
-public abstract class AValueAssignmentList<T extends AValueAssignment> implements IAssignmentList<T>, IValueRepresentation {
+public abstract class AValueAssignmentList<T extends AValueAssignment> implements IAssignmentList<T>, IValueRepresentation, IHashable {
     protected final List<T> literalLists;
 
     public AValueAssignmentList() {
