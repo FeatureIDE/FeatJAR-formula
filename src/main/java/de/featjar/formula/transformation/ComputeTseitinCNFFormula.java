@@ -20,7 +20,6 @@
  */
 package de.featjar.formula.transformation;
 
-import de.featjar.base.data.IHashable;
 import de.featjar.base.data.Result;
 import de.featjar.base.tree.Trees;
 import de.featjar.base.tree.visitor.ITreeVisitor;
@@ -45,7 +44,7 @@ import java.util.Objects;
 @Deprecated
 public class ComputeTseitinCNFFormula implements ITreeVisitor<IExpression, IExpression> {
 
-    public static class Substitute implements IHashable {
+    public static class Substitute {
         private final IExpression orgExpression;
         private final Variable variable;
         private final List<IExpression> clauses;

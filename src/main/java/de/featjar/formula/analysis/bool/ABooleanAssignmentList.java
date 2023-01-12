@@ -20,12 +20,8 @@
  */
 package de.featjar.formula.analysis.bool;
 
-import de.featjar.base.data.IHashable;
 import de.featjar.base.data.Range;
-import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.IAssignmentList;
-import de.featjar.formula.analysis.VariableMap;
-import de.featjar.formula.analysis.value.IValueRepresentation;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -37,7 +33,7 @@ import java.util.stream.Collectors;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public abstract class ABooleanAssignmentList<T extends ABooleanAssignment> implements IAssignmentList<T>, IBooleanRepresentation, IHashable {
+public abstract class ABooleanAssignmentList<T extends ABooleanAssignment> implements IAssignmentList<T>, IBooleanRepresentation {
     protected final List<T> assignments;
 
     public ABooleanAssignmentList() {
