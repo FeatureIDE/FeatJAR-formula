@@ -39,7 +39,7 @@ import java.util.*;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class BooleanSolution extends BooleanAssignment implements ISolution<Integer> {
+public class BooleanSolution extends ABooleanAssignment implements ISolution<Integer> {
     public BooleanSolution(int... integers) {
         this(integers, true);
     }
@@ -123,6 +123,10 @@ public class BooleanSolution extends BooleanAssignment implements ISolution<Inte
     @Override
     public IComputation<ValueSolution> toValue(IComputation<VariableMap> variableMap) {
         return (IComputation<ValueSolution>) super.toValue(variableMap);
+    }
+
+    public String print() {
+        return VariableMap.toAnonymousValue(this).get().print();
     }
 
     @Override

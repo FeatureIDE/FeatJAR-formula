@@ -26,17 +26,16 @@ import de.featjar.formula.analysis.IAssignmentList;
 import de.featjar.formula.io.value.ValueAssignmentListFormat;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * A list of value assignments.
  *
- * @param <U> the type of the implementing subclass
  * @param <T> the type of the literal list
  * @author Elias Kuiter
  */
-public abstract class AValueAssignmentList<T extends AValueAssignmentList<?, U>, U extends ValueAssignment>
-        implements IAssignmentList<U>, IValueRepresentation {
-    protected final List<U> literalLists;
+public abstract class AValueAssignmentList<T extends AValueAssignment> implements IAssignmentList<T>, IValueRepresentation {
+    protected final List<T> literalLists;
 
     public AValueAssignmentList() {
         literalLists = new ArrayList<>();
@@ -46,31 +45,41 @@ public abstract class AValueAssignmentList<T extends AValueAssignmentList<?, U>,
         literalLists = new ArrayList<>(size);
     }
 
-    public AValueAssignmentList(AValueAssignmentList<T, U> other) {
-        this(other.literalLists);
-    }
-
-    public AValueAssignmentList(Collection<? extends U> literalLists) {
+    public AValueAssignmentList(Collection<? extends T> literalLists) {
         this.literalLists = new ArrayList<>(literalLists);
     }
 
-    protected abstract T newAssignmentList(List<U> literalLists);
-
-    @SuppressWarnings("MethodDoesntCallSuperMethod")
-    @Override
-    public T clone() {
-        return newAssignmentList(literalLists);
+    public AValueAssignmentList(AValueAssignmentList<T> other) {
+        this(other.getAll());
     }
 
     @Override
-    public List<U> getAll() {
+    public List<T> getAll() {
         return literalLists;
+    }
+
+    @Override
+    public ValueAssignmentList toAssignmentList() {
+        return new ValueAssignmentList(
+                literalLists.stream().map(AValueAssignment::toAssignment).collect(Collectors.toList()));
+    }
+
+    @Override
+    public ValueClauseList toClauseList() {
+        return new ValueClauseList(
+                literalLists.stream().map(AValueAssignment::toClause).collect(Collectors.toList()));
+    }
+
+    @Override
+    public ValueSolutionList toSolutionList() {
+        return new ValueSolutionList(
+                literalLists.stream().map(AValueAssignment::toSolution).collect(Collectors.toList()));
     }
 
     @Override
     public LinkedHashSet<String> getVariableNames() {
         return literalLists.stream()
-                .map(ValueAssignment::getVariableNames)
+                .map(AValueAssignment::getVariableNames)
                 .flatMap(LinkedHashSet::stream)
                 .collect(Sets.toSet());
     }
@@ -79,7 +88,7 @@ public abstract class AValueAssignmentList<T extends AValueAssignmentList<?, U>,
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AValueAssignmentList<?, ?> that = (AValueAssignmentList<?, ?>) o;
+        AValueAssignmentList<?> that = (AValueAssignmentList<?>) o;
         return Objects.equals(literalLists, that.literalLists);
     }
 
@@ -88,11 +97,5 @@ public abstract class AValueAssignmentList<T extends AValueAssignmentList<?, U>,
         return Objects.hash(literalLists);
     }
 
-    public String print() {
-        try {
-            return IO.print(this, new ValueAssignmentListFormat<>());
-        } catch (IOException e) {
-            return e.toString();
-        }
-    }
+    abstract public String print();
 }

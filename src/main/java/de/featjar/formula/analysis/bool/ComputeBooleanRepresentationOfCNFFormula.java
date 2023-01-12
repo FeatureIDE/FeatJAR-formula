@@ -31,9 +31,9 @@ import de.featjar.formula.structure.formula.predicate.Literal;
 import java.util.List;
 import java.util.Objects;
 
-public class ComputeBooleanRepresentationOfFormula
+public class ComputeBooleanRepresentationOfCNFFormula
         extends ABooleanRepresentationComputation<IFormula, BooleanClauseList> { // todo: assumption: is in CNF
-    public ComputeBooleanRepresentationOfFormula(IComputation<IFormula> valueRepresentation) {
+    public ComputeBooleanRepresentationOfCNFFormula(IComputation<IFormula> valueRepresentation) {
         super(valueRepresentation);
     }
 
@@ -80,6 +80,6 @@ public class ComputeBooleanRepresentationOfFormula
 
     @Override
     public ITree<IComputation<?>> cloneNode() {
-        return new ComputeBooleanRepresentationOfFormula(getInput());
+        return new ComputeBooleanRepresentationOfCNFFormula(getInput());
     }
 }

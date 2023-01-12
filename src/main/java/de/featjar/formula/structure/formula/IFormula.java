@@ -24,7 +24,7 @@ import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.bool.BooleanClauseList;
-import de.featjar.formula.analysis.bool.ComputeBooleanRepresentationOfFormula;
+import de.featjar.formula.analysis.bool.ComputeBooleanRepresentationOfCNFFormula;
 import de.featjar.formula.analysis.value.IValueRepresentation;
 import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.formula.connective.AQuantifier;
@@ -141,7 +141,7 @@ public interface IFormula extends IExpression, IValueRepresentation {
 
     @Override
     default Result<BooleanClauseList> toBoolean(VariableMap variableMap) {
-        return ComputeBooleanRepresentationOfFormula.toBooleanClauseList(this, variableMap);
+        return ComputeBooleanRepresentationOfCNFFormula.toBooleanClauseList(this, variableMap);
     }
 
     @SuppressWarnings("unchecked")

@@ -22,9 +22,13 @@ package de.featjar.formula.analysis.value;
 
 import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
+import de.featjar.base.io.IO;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.bool.BooleanSolutionList;
+import de.featjar.formula.io.value.ValueAssignmentListFormat;
 import de.featjar.formula.structure.formula.IFormula;
+
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,7 +42,7 @@ import java.util.stream.Collectors;
  *
  * @author Elias Kuiter
  */
-public class ValueSolutionList extends AValueAssignmentList<ValueSolutionList, ValueSolution> {
+public class ValueSolutionList extends AValueAssignmentList<ValueSolution> {
     public ValueSolutionList() {}
 
     public ValueSolutionList(int size) {
@@ -54,27 +58,6 @@ public class ValueSolutionList extends AValueAssignmentList<ValueSolutionList, V
     }
 
     @Override
-    protected ValueSolutionList newAssignmentList(List<ValueSolution> LiteralSolutions) {
-        return new ValueSolutionList(LiteralSolutions);
-    }
-
-    @Override
-    public String toString() {
-        return String.format("ValueSolutionList[%s]", print());
-    }
-
-    @Override
-    public ValueClauseList toClauseList() {
-        return new ValueClauseList(
-                literalLists.stream().map(ValueSolution::toClause).collect(Collectors.toList()));
-    }
-
-    @Override
-    public ValueSolutionList toSolutionList() {
-        return new ValueSolutionList(literalLists);
-    }
-
-    @Override
     public Result<BooleanSolutionList> toBoolean(VariableMap variableMap) {
         return variableMap.toBoolean(this);
     }
@@ -83,6 +66,19 @@ public class ValueSolutionList extends AValueAssignmentList<ValueSolutionList, V
     @Override
     public IComputation<BooleanSolutionList> toBoolean(IComputation<VariableMap> variableMap) {
         return (IComputation<BooleanSolutionList>) super.toBoolean(variableMap);
+    }
+
+    public String print() {
+        try {
+            return IO.print(this, new ValueAssignmentListFormat<>());
+        } catch (IOException e) {
+            return e.toString();
+        }
+    }
+
+    @Override
+    public String toString() {
+        return String.format("ValueSolutionList[%s]", print());
     }
 
     //    public SortedIntegerList getVariableAssignment(int variable) {

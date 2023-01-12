@@ -26,7 +26,9 @@ import de.featjar.base.data.Problem.Severity;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.format.IFormat;
 import de.featjar.base.io.input.AInputMapper;
+import de.featjar.formula.analysis.value.AValueAssignment;
 import de.featjar.formula.analysis.value.ValueAssignment;
+
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -36,19 +38,15 @@ import java.util.stream.Collectors;
  *
  * @author Elias Kuiter
  */
-public class ValueAssignmentFormat implements IFormat<ValueAssignment> {
-    protected final Function<LinkedHashMap<String, Object>, ValueAssignment> constructor;
+public class ValueAssignmentFormat<T extends AValueAssignment> implements IFormat<T> {
+    protected final Function<LinkedHashMap<String, Object>, T> constructor;
 
-    public ValueAssignmentFormat() {
-        this(ValueAssignment::new);
-    }
-
-    public ValueAssignmentFormat(Function<LinkedHashMap<String, Object>, ValueAssignment> constructor) {
+    public ValueAssignmentFormat(Function<LinkedHashMap<String, Object>, T> constructor) {
         this.constructor = constructor;
     }
 
     @Override
-    public Result<String> serialize(ValueAssignment valueAssignment) {
+    public Result<String> serialize(T valueAssignment) {
         return Result.of(valueAssignment.getAll().entrySet().stream()
                 .map(e -> {
                     String variable = e.getKey();
@@ -60,7 +58,7 @@ public class ValueAssignmentFormat implements IFormat<ValueAssignment> {
     }
 
     @Override
-    public Result<ValueAssignment> parse(AInputMapper inputMapper) {
+    public Result<T> parse(AInputMapper inputMapper) {
         LinkedHashMap<String, Object> variableValuePairs = Maps.empty();
         for (String variableValuePair : inputMapper
                 .get()

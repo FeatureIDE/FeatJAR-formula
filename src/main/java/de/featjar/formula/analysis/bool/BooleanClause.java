@@ -22,7 +22,6 @@ package de.featjar.formula.analysis.bool;
 
 import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
-import de.featjar.base.data.Sets;
 import de.featjar.formula.analysis.IClause;
 import de.featjar.formula.analysis.ISolver;
 import de.featjar.formula.analysis.VariableMap;
@@ -39,7 +38,7 @@ import java.util.*;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class BooleanClause extends BooleanAssignment implements IClause<Integer> {
+public class BooleanClause extends ABooleanAssignment implements IClause<Integer> {
     public BooleanClause(int... integers) {
         this(integers, true);
     }
@@ -123,6 +122,10 @@ public class BooleanClause extends BooleanAssignment implements IClause<Integer>
     @Override
     public IComputation<ValueClause> toValue(IComputation<VariableMap> variableMap) {
         return (IComputation<ValueClause>) super.toValue(variableMap);
+    }
+
+    public String print() {
+        return VariableMap.toAnonymousValue(this).get().print();
     }
 
     @Override

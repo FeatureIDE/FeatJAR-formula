@@ -23,43 +23,38 @@ package de.featjar.formula.analysis.bool;
 import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.VariableMap;
+import de.featjar.formula.analysis.value.ValueAssignmentList;
 import de.featjar.formula.analysis.value.ValueClauseList;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.transformation.ComputeCNFFormula;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * A list of Boolean clauses.
- * Typically used to express a conjunctive normal form.
- * Compared to a {@link IFormula} in CNF (e.g., computed with
- * {@link ComputeCNFFormula}), a {@link ValueClauseList} is a more low-level representation.
- * A Boolean clause list only contains indices into a {@link VariableMap}, which links
- * a {@link BooleanClauseList} to the {@link de.featjar.formula.structure.term.value.Variable variables}
- * in the original {@link IFormula}.
- * TODO: more error checking for consistency of clauses with variables
+ * Primary implementation of {@link ABooleanAssignmentList}.
+ * To be used when neither CNF nor DNF semantics are associated with an assignment list.
  *
- * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class BooleanClauseList extends ABooleanAssignmentList<BooleanClause> {
-    public BooleanClauseList() {}
+public class BooleanAssignmentList extends ABooleanAssignmentList<BooleanAssignment> {
+    public BooleanAssignmentList() {}
 
-    public BooleanClauseList(int size) {
+    public BooleanAssignmentList(int size) {
         super(size);
     }
 
-    public BooleanClauseList(Collection<? extends BooleanClause> clauses) {
-        super(clauses);
+    public BooleanAssignmentList(Collection<? extends BooleanAssignment> assignments) {
+        super(assignments);
     }
 
-    public BooleanClauseList(BooleanClauseList other) {
+    public BooleanAssignmentList(BooleanAssignmentList other) {
         super(other);
     }
 
     @Override
-    public Result<ValueClauseList> toValue(VariableMap variableMap) {
+    public Result<ValueAssignmentList> toValue(VariableMap variableMap) {
         return variableMap.toValue(this);
     }
 
@@ -75,6 +70,6 @@ public class BooleanClauseList extends ABooleanAssignmentList<BooleanClause> {
 
     @Override
     public String toString() {
-        return String.format("BooleanClauseList[%s]", print());
+        return String.format("BooleanAssignmentList[%s]", print());
     }
 }

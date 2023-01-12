@@ -23,7 +23,7 @@ package de.featjar.formula.structure;
 import static de.featjar.formula.structure.Expressions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import de.featjar.formula.analysis.value.ValueAssignment;
+import de.featjar.formula.analysis.value.AValueAssignment;
 import de.featjar.formula.structure.formula.connective.And;
 import org.junit.jupiter.api.Test;
 
@@ -53,10 +53,10 @@ class ExpressionsTest {
         And and = and(literal("x"), or(literal("y"), not(literal("x"))));
         assertEquals("and(+, or)", and.toString());
         assertEquals("x & (y | -x)", and.printParseable());
-        assertFalse((Boolean) and.evaluate(new ValueAssignment("x", false)));
-        assertNull(and.evaluate(new ValueAssignment("x", true)));
-        assertTrue((Boolean) and.evaluate(new ValueAssignment("x", true, "y", true)));
-        assertFalse((Boolean) and.evaluate(new ValueAssignment("x", true, "y", false)));
+        assertFalse((Boolean) and.evaluate(new AValueAssignment("x", false)));
+        assertNull(and.evaluate(new AValueAssignment("x", true)));
+        assertTrue((Boolean) and.evaluate(new AValueAssignment("x", true, "y", true)));
+        assertFalse((Boolean) and.evaluate(new AValueAssignment("x", true, "y", false)));
         assertThrows(NullPointerException.class, and::evaluate); // TODO: this throws, but it should return null!
     }
 

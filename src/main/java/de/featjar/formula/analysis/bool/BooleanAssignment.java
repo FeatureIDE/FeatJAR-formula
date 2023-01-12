@@ -21,28 +21,19 @@
 package de.featjar.formula.analysis.bool;
 
 import de.featjar.base.computation.IComputation;
-import de.featjar.base.data.*;
-import de.featjar.formula.analysis.IAssignment;
-import de.featjar.formula.analysis.ISolver;
+import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.VariableMap;
-import de.featjar.formula.analysis.value.ValueAssignment;
+import de.featjar.formula.analysis.value.AValueAssignment;
 
-import java.util.*;
-import java.util.stream.IntStream;
+import java.util.Collection;
 
 /**
- * Assigns Boolean values to integer-identified {@link de.featjar.formula.structure.term.value.Variable variables}.
- * Can be used to represent a set of literals for use in a satisfiability {@link ISolver}.
- * Implemented as an unordered list of indices to variables in some unspecified {@link VariableMap}.
- * An index can be negative, indicating a negated occurrence of its variable,
- * or 0, indicating no occurrence, and it may occur multiple times.
- * For specific use cases, consider using {@link BooleanClause} (a disjunction
- * of literals) or {@link BooleanSolution} (a conjunction of literals).
+ * Primary implementation of {@link ABooleanAssignment}.
+ * To be used when neither CNF nor DNF semantics are associated with an assignment.
  *
- * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class BooleanAssignment extends IntegerList implements IAssignment<Integer>, IBooleanRepresentation {
+public class BooleanAssignment extends ABooleanAssignment {
     public BooleanAssignment(int... integers) {
         super(integers);
     }
@@ -55,164 +46,15 @@ public class BooleanAssignment extends IntegerList implements IAssignment<Intege
         super(booleanAssignment);
     }
 
-    public int[] getNegatedValues() {
-        final int[] negated = new int[array.length];
-        for (int i = 0; i < negated.length; i++) {
-            negated[i] = -array[i];
-        }
-        return negated;
-    }
-
-    public int[] simplify() {
-        final LinkedHashSet<Integer> integerSet = Sets.empty();
-        for (final int integer : array) {
-            if (integer != 0 && integerSet.contains(-integer)) {
-                // If this assignment is a contradiction or tautology, it can be simplified.
-                return new int[]{integer, -integer};
-            } else {
-                integerSet.add(integer);
-            }
-        }
-        if (integerSet.size() == array.length) {
-            return copy();
-        }
-        int[] newArray = new int[integerSet.size()];
-        int i = 0;
-        for (final int lit : integerSet) {
-            newArray[i++] = lit;
-        }
-        return newArray;
-    }
-
-    public Result<int[]> adapt(VariableMap oldVariableMap, VariableMap newVariableMap) {
-        final int[] oldIntegers = array;
-        final int[] newIntegers = new int[oldIntegers.length];
-        for (int i = 0; i < oldIntegers.length; i++) {
-            final int l = oldIntegers[i];
-            final Result<String> name = oldVariableMap.get(Math.abs(l));
-            if (name.isPresent()) {
-                final Result<Integer> index = newVariableMap.get(name.get());
-                if (index.isPresent()) {
-                    newIntegers[i] = l < 0 ? -index.get() : index.get();
-                } else {
-                    return Result.empty(new Problem("No variable named " + name.get(), Problem.Severity.ERROR));
-                }
-            } else {
-                return Result.empty(new Problem("No variable with index " + l, Problem.Severity.ERROR));
-            }
-        }
-        return Result.of(newIntegers);
-    }
-
-    public boolean containsAnyVariable(int... integers) {
-        return Arrays.stream(integers).anyMatch(integer -> indexOfVariable(integer) >= 0);
-    }
-
-    public boolean containsAllVariables(int... integers) {
-        return Arrays.stream(integers).noneMatch(integer -> indexOfVariable(integer) >= 0);
-    }
-
-    public int indexOfVariable(int variableInteger) {
-        return IntStream.range(0, array.length)
-                .filter(i -> Math.abs(array[i]) == variableInteger)
-                .findFirst()
-                .orElse(-1);
-    }
-
-    protected int countVariables(int[] integers, boolean[] intersectionMarker) {
-        int count = 0;
-        for (int integer : integers) {
-            final int index = indexOfVariable(integer);
-            if (index >= 0) {
-                count++;
-                if (intersectionMarker != null) {
-                    intersectionMarker[index] = true;
-                }
-            }
-        }
-        return count;
-    }
-
-    public int[] removeAllVariables(int... integers) {
-        boolean[] intersectionMarker = new boolean[this.array.length];
-        int count = countVariables(integers, intersectionMarker);
-
-        int[] newIntegers = new int[this.array.length - count];
-        int j = 0;
-        for (int i = 0; i < this.array.length; i++) {
-            if (!intersectionMarker[i]) {
-                newIntegers[j++] = this.array[i];
-            }
-        }
-        return newIntegers;
-    }
-
-    public int[] retainAllVariables(int... integers) {
-        boolean[] intersectionMarker = new boolean[this.array.length];
-        int count = countVariables(integers, intersectionMarker);
-
-        int[] newIntegers = new int[count];
-        int j = 0;
-        for (int i = 0; i < this.array.length; i++) {
-            if (intersectionMarker[i]) {
-                newIntegers[j++] = this.array[i];
-            }
-        }
-        return newIntegers;
-    }
-
     @Override
-    public BooleanAssignment toAssignment() {
-        return new BooleanAssignment(array);
-    }
-
-    @Override
-    public BooleanClause toClause() {
-        return new BooleanClause(array);
-    }
-
-    @Override
-    public BooleanSolution toSolution() {
-        return new BooleanSolution(array);
-    }
-
-    @Override
-    public Result<? extends ValueAssignment> toValue(VariableMap variableMap) {
+    public Result<? extends AValueAssignment> toValue(VariableMap variableMap) {
         return variableMap.toValue(this);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public IComputation<? extends ValueAssignment> toValue(IComputation<VariableMap> variableMap) {
-        return (IComputation<? extends ValueAssignment>) IBooleanRepresentation.super.toValue(variableMap);
-    }
-
-    @Override
-    public LinkedHashMap<Integer, Object> getAll() {
-        LinkedHashMap<Integer, Object> map = Maps.empty();
-        for (int integer : array) {
-            if (integer > 0) map.put(integer, true);
-            else if (integer < 0) map.put(-integer, false);
-        }
-        return map;
-    }
-
-    @Override
-    public int size() {
-        return array.length;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return array.length == 0;
-    }
-
-    @Override
-    public Result<Object> getValue(Integer variable) {
-        int index = indexOfVariable(variable);
-        if (index < 0) return Result.empty();
-        int value = get(index);
-        return value == 0 ? Result.empty() : Result.of(value > 0);
+    public IComputation<? extends AValueAssignment> toValue(IComputation<VariableMap> variableMap) {
+        return (IComputation<? extends AValueAssignment>) super.toValue(variableMap);
     }
 
     public String print() {

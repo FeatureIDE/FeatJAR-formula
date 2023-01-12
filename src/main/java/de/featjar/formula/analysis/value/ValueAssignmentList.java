@@ -23,55 +23,59 @@ package de.featjar.formula.analysis.value;
 import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.IO;
-import de.featjar.formula.analysis.IClause;
-import de.featjar.formula.analysis.ISolver;
 import de.featjar.formula.analysis.VariableMap;
-import de.featjar.formula.analysis.bool.ABooleanAssignment;
-import de.featjar.formula.analysis.bool.BooleanAssignment;
-import de.featjar.formula.analysis.bool.BooleanClause;
-import de.featjar.formula.io.value.ValueAssignmentFormat;
+import de.featjar.formula.analysis.bool.ABooleanAssignmentList;
+import de.featjar.formula.analysis.bool.BooleanAssignmentList;
+import de.featjar.formula.analysis.bool.BooleanClauseList;
+import de.featjar.formula.io.value.ValueAssignmentListFormat;
+import de.featjar.formula.structure.formula.IFormula;
+import de.featjar.formula.transformation.ComputeCNFFormula;
 
 import java.io.IOException;
-import java.util.LinkedHashMap;
+import java.util.Collection;
 
 /**
- * Primary implementation of {@link AValueAssignment}.
- * To be used when neither CNF nor DNF semantics are associated with an assignment.
+ * Primary implementation of {@link AValueAssignmentList}.
+ * To be used when neither CNF nor DNF semantics are associated with an assignment list.
  *
  * @author Elias Kuiter
  */
-public class ValueAssignment extends AValueAssignment {
-    public ValueAssignment() {}
+public class ValueAssignmentList extends AValueAssignmentList<ValueAssignment> {
+    public ValueAssignmentList() {}
 
-    public ValueAssignment(LinkedHashMap<String, Object> variableValuePairs) {
-        super(variableValuePairs);
+    public ValueAssignmentList(int size) {
+        super(size);
     }
 
-    public ValueAssignment(ValueAssignment predicateClause) {
-        this(new LinkedHashMap<>(predicateClause.variableValuePairs));
+    public ValueAssignmentList(ValueAssignmentList other) {
+        super(other);
+    }
+
+    public ValueAssignmentList(Collection<? extends ValueAssignment> assignments) {
+        super(assignments);
     }
 
     @Override
-    public Result<BooleanAssignment> toBoolean(VariableMap variableMap) {
+    public Result<BooleanAssignmentList> toBoolean(VariableMap variableMap) {
         return variableMap.toBoolean(this);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public IComputation<BooleanAssignment> toBoolean(IComputation<VariableMap> variableMap) {
-        return (IComputation<BooleanAssignment>) super.toBoolean(variableMap);
-    }
-
-    public String print() {
-        try {
-            return IO.print(this, new ValueAssignmentFormat<>(ValueAssignment::new));
-        } catch (IOException e) {
-            return e.toString();
-        }
+    public IComputation<BooleanClauseList> toBoolean(IComputation<VariableMap> variableMap) {
+        return (IComputation<BooleanClauseList>) super.toBoolean(variableMap);
     }
 
     @Override
     public String toString() {
-        return String.format("ValueClause[%s]", print());
+        return String.format("ValueAssignmentList[%s]", print());
+    }
+
+    public String print() {
+        try {
+            return IO.print(this, new ValueAssignmentListFormat<>());
+        } catch (IOException e) {
+            return e.toString();
+        }
     }
 }

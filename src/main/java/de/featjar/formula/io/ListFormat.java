@@ -33,10 +33,10 @@ import java.util.List;
  * @deprecated
  */
 @Deprecated
-public class ListFormat implements IFormat<ABooleanAssignmentList<?, ?>> {
+public class ListFormat implements IFormat<ABooleanAssignmentList<?>> {
 
     @Override
-    public Result<String> serialize(ABooleanAssignmentList<?, ?> dnf) {
+    public Result<String> serialize(ABooleanAssignmentList<?> dnf) {
         final StringBuilder csv = new StringBuilder();
         csv.append("Configuration");
         final List<String> names = null; // dnf.getVariableMap().getVariableNames();
@@ -46,7 +46,7 @@ public class ListFormat implements IFormat<ABooleanAssignmentList<?, ?>> {
         }
         csv.append('\n');
         int configurationIndex = 0;
-        for (final BooleanAssignment configuration : dnf.getAll()) {
+        for (final ABooleanAssignment configuration : dnf.getAll()) {
             csv.append(configurationIndex++);
             final int[] literals = configuration.get();
             for (int literal : literals) {
@@ -59,7 +59,7 @@ public class ListFormat implements IFormat<ABooleanAssignmentList<?, ?>> {
     }
 
     @Override
-    public Result<ABooleanAssignmentList<?, ?>> parse(AInputMapper inputMapper) {
+    public Result<ABooleanAssignmentList<?>> parse(AInputMapper inputMapper) {
         //        int lineNumber = 0;
         //        final BooleanSolutionList dnf = new BooleanSolutionList();
         //        final Iterator<String> iterator = inputMapper.get().getLineStream().iterator();

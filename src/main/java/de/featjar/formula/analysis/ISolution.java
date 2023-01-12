@@ -37,9 +37,4 @@ import de.featjar.formula.analysis.value.ValueSolution;
  * @author Elias Kuiter
  */
 public interface ISolution<T> extends IAssignment<T> {
-    /**
-     * {@return a clause equivalent to this solution}
-     * You can use this method to re-interpret a (conjunctive) solution as a (disjunctive) clause.
-     */
-    IClause<T> toClause();
 }

@@ -22,10 +22,14 @@ package de.featjar.formula.analysis.value;
 
 import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
+import de.featjar.base.io.IO;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.bool.BooleanClauseList;
+import de.featjar.formula.io.value.ValueAssignmentListFormat;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.transformation.ComputeCNFFormula;
+
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,7 +42,7 @@ import java.util.stream.Collectors;
  *
  * @author Elias Kuiter
  */
-public class ValueClauseList extends AValueAssignmentList<ValueClauseList, ValueClause> {
+public class ValueClauseList extends AValueAssignmentList<ValueClause> {
     public ValueClauseList() {}
 
     public ValueClauseList(int size) {
@@ -54,11 +58,6 @@ public class ValueClauseList extends AValueAssignmentList<ValueClauseList, Value
     }
 
     @Override
-    protected ValueClauseList newAssignmentList(List<ValueClause> clauses) {
-        return new ValueClauseList(clauses);
-    }
-
-    @Override
     public Result<BooleanClauseList> toBoolean(VariableMap variableMap) {
         return variableMap.toBoolean(this);
     }
@@ -69,19 +68,16 @@ public class ValueClauseList extends AValueAssignmentList<ValueClauseList, Value
         return (IComputation<BooleanClauseList>) super.toBoolean(variableMap);
     }
 
+    public String print() {
+        try {
+            return IO.print(this, new ValueAssignmentListFormat<>());
+        } catch (IOException e) {
+            return e.toString();
+        }
+    }
+
     @Override
     public String toString() {
         return String.format("ValueClauseList[%s]", print());
-    }
-
-    @Override
-    public ValueClauseList toClauseList() {
-        return new ValueClauseList(literalLists);
-    }
-
-    @Override
-    public ValueSolutionList toSolutionList() {
-        return new ValueSolutionList(
-                literalLists.stream().map(ValueClause::toSolution).collect(Collectors.toList()));
     }
 }

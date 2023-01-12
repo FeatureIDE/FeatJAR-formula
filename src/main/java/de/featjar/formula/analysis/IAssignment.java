@@ -22,16 +22,16 @@ package de.featjar.formula.analysis;
 
 import de.featjar.base.data.Pair;
 import de.featjar.base.data.Result;
-import de.featjar.formula.analysis.bool.BooleanAssignment;
-import de.featjar.formula.analysis.value.ValueAssignment;
+import de.featjar.formula.analysis.bool.ABooleanAssignment;
+import de.featjar.formula.analysis.value.AValueAssignment;
 import java.util.LinkedHashMap;
 import java.util.stream.Stream;
 
 /**
  * Assigns values to {@link de.featjar.formula.structure.term.value.Variable variables}.
  * Represents an {@link IClause} or an {@link ISolution} in an {@link ISolver}.
- * For a propositional implementation, see {@link BooleanAssignment},
- * for a first-order implementation, see {@link ValueAssignment}.
+ * For a propositional implementation, see {@link ABooleanAssignment},
+ * for a first-order implementation, see {@link AValueAssignment}.
  *
  * @param <T> the index type of the variables
  * @author Sebastian Krieter

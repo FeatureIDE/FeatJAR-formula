@@ -26,7 +26,7 @@ import de.featjar.base.io.IO;
 import de.featjar.base.io.format.IFormat;
 import de.featjar.base.io.input.AInputMapper;
 import de.featjar.formula.analysis.value.AValueAssignmentList;
-import de.featjar.formula.analysis.value.ValueAssignment;
+import de.featjar.formula.analysis.value.AValueAssignment;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -39,10 +39,10 @@ import java.util.stream.Collectors;
  *
  * @author Elias Kuiter
  */
-public class ValueAssignmentListFormat<T extends AValueAssignmentList<?, U>, U extends ValueAssignment>
+public class ValueAssignmentListFormat<T extends AValueAssignmentList<U>, U extends AValueAssignment>
         implements IFormat<T> {
     protected final Supplier<T> listConstructor;
-    protected final ValueAssignmentFormat valueAssignmentFormat;
+    protected final ValueAssignmentFormat<U> valueAssignmentFormat;
     // todo: serialize as CSV, parse as CSV
 
     public ValueAssignmentListFormat() {
@@ -50,19 +50,18 @@ public class ValueAssignmentListFormat<T extends AValueAssignmentList<?, U>, U e
     }
 
     public ValueAssignmentListFormat(
-            Supplier<T> listConstructor, Function<LinkedHashMap<String, Object>, ValueAssignment> constructor) {
+            Supplier<T> listConstructor, Function<LinkedHashMap<String, Object>, U> constructor) {
         this.listConstructor = listConstructor;
-        this.valueAssignmentFormat = new ValueAssignmentFormat(constructor);
+        this.valueAssignmentFormat = new ValueAssignmentFormat<>(constructor);
     }
 
     @Override
     public Result<String> serialize(T valueAssignmentList) {
         return Result.of(valueAssignmentList.getAll().stream()
-                .map(ValueAssignment::print)
+                .map(AValueAssignment::print)
                 .collect(Collectors.joining("; ")));
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Result<T> parse(AInputMapper inputMapper) {
         if (listConstructor == null || valueAssignmentFormat == null)
@@ -74,9 +73,9 @@ public class ValueAssignmentListFormat<T extends AValueAssignmentList<?, U>, U e
                 .getLineStream()
                 .collect(Collectors.joining(";"))
                 .split(";")) {
-            Result<ValueAssignment> valueAssignment = IO.load(valueClause.trim(), valueAssignmentFormat);
+            Result<U> valueAssignment = IO.load(valueClause.trim(), valueAssignmentFormat);
             problems.addAll(valueAssignment.getProblems());
-            if (valueAssignment.isPresent()) valueAssignmentList.add((U) valueAssignment.get());
+            if (valueAssignment.isPresent()) valueAssignmentList.add(valueAssignment.get());
         }
         return Result.of(valueAssignmentList, problems);
     }

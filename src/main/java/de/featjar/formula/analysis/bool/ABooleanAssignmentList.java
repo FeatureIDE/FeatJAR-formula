@@ -20,20 +20,24 @@
  */
 package de.featjar.formula.analysis.bool;
 
+import de.featjar.base.data.Range;
+import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.IAssignmentList;
+import de.featjar.formula.analysis.VariableMap;
+import de.featjar.formula.analysis.value.IValueRepresentation;
+
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * A list of Boolean assignments.
  *
- * @param <U> the type of the implementing subclass
  * @param <T> the type of the literal list
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public abstract class ABooleanAssignmentList<T extends ABooleanAssignmentList<?, U>, U extends BooleanAssignment>
-        implements IAssignmentList<U>, IBooleanRepresentation {
-    protected final List<U> assignments;
+public abstract class ABooleanAssignmentList<T extends ABooleanAssignment> implements IAssignmentList<T>, IBooleanRepresentation {
+    protected final List<T> assignments;
 
     public ABooleanAssignmentList() {
         assignments = new ArrayList<>();
@@ -43,32 +47,42 @@ public abstract class ABooleanAssignmentList<T extends ABooleanAssignmentList<?,
         assignments = new ArrayList<>(size);
     }
 
-    public ABooleanAssignmentList(Collection<? extends U> assignments) {
+    public ABooleanAssignmentList(Collection<? extends T> assignments) {
         this.assignments = new ArrayList<>(assignments);
     }
 
-    public ABooleanAssignmentList(ABooleanAssignmentList<T, U> other) {
-        assignments = new ArrayList<>(other.getAll());
-    }
-
-    protected abstract T newAssignmentList(List<U> assignments);
-
-    @SuppressWarnings("MethodDoesntCallSuperMethod")
-    @Override
-    public T clone() {
-        return newAssignmentList(assignments);
+    public ABooleanAssignmentList(ABooleanAssignmentList<T> other) {
+        this(other.getAll());
     }
 
     @Override
-    public List<U> getAll() {
+    public List<T> getAll() {
         return assignments;
+    }
+
+    @Override
+    public BooleanAssignmentList toAssignmentList() {
+        return new BooleanAssignmentList(
+                assignments.stream().map(ABooleanAssignment::toAssignment).collect(Collectors.toList()));
+    }
+
+    @Override
+    public BooleanClauseList toClauseList() {
+        return new BooleanClauseList(
+                assignments.stream().map(ABooleanAssignment::toClause).collect(Collectors.toList()));
+    }
+
+    @Override
+    public BooleanSolutionList toSolutionList() {
+        return new BooleanSolutionList(
+                assignments.stream().map(ABooleanAssignment::toSolution).collect(Collectors.toList()));
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ABooleanAssignmentList<?, ?> that = (ABooleanAssignmentList<?, ?>) o;
+        ABooleanAssignmentList<?> that = (ABooleanAssignmentList<?>) o;
         return Objects.equals(assignments, that.assignments);
     }
 
@@ -77,17 +91,7 @@ public abstract class ABooleanAssignmentList<T extends ABooleanAssignmentList<?,
         return Objects.hash(assignments);
     }
 
-    /**
-     * {@return a literal matrix that negates all clauses in this literal matrix by applying De Morgan}
-     */
-    @SuppressWarnings("unchecked")
-    public T negate() {
-        final T negatedAssignmentList = newAssignmentList(new ArrayList<>());
-        stream().map(U::negate).forEach(literalList -> negatedAssignmentList.add((U) literalList));
-        return negatedAssignmentList;
-    }
-
-    // assumes that the maximum index corresponds to the number of variables
+    // todo: currently assumes that the maximum index corresponds to the number of variables
     public int getVariableCount() {
         return assignments.stream()
                 .flatMapToInt(assignment -> Arrays.stream(assignment.get()))
@@ -95,18 +99,23 @@ public abstract class ABooleanAssignmentList<T extends ABooleanAssignmentList<?,
                 .orElse(0);
     }
 
+    public Range getVariableRange() {
+        // todo: what if there are no variables?
+        return Range.of(1, getVariableCount());
+    }
+
     /**
      * Compares list of clauses by the number of literals.
      */
-    public static class AscendingLengthComparator implements Comparator<ABooleanAssignmentList<?, ?>> {
+    public static class AscendingLengthComparator implements Comparator<ABooleanAssignmentList<?>> {
         @Override
         public int compare(ABooleanAssignmentList o1, ABooleanAssignmentList o2) {
             return addLengths(o1) - addLengths(o2);
         }
 
-        protected int addLengths(ABooleanAssignmentList<?, ?> o) {
+        protected int addLengths(ABooleanAssignmentList<?> o) {
             int count = 0;
-            for (final BooleanAssignment literalSet : o.assignments) {
+            for (final ABooleanAssignment literalSet : o.assignments) {
                 count += literalSet.get().length;
             }
             return count;
@@ -116,18 +125,20 @@ public abstract class ABooleanAssignmentList<T extends ABooleanAssignmentList<?,
     /**
      * Compares list of clauses by the number of literals.
      */
-    public static class DescendingClauseListLengthComparator implements Comparator<ABooleanAssignmentList<?, ?>> {
+    public static class DescendingClauseListLengthComparator implements Comparator<ABooleanAssignmentList<?>> {
         @Override
         public int compare(ABooleanAssignmentList o1, ABooleanAssignmentList o2) {
             return addLengths(o2) - addLengths(o1);
         }
 
-        protected int addLengths(ABooleanAssignmentList<?, ?> o) {
+        protected int addLengths(ABooleanAssignmentList<?> o) {
             int count = 0;
-            for (final BooleanAssignment literalSet : o.assignments) {
+            for (final ABooleanAssignment literalSet : o.assignments) {
                 count += literalSet.get().length;
             }
             return count;
         }
     }
+
+    abstract public String print();
 }

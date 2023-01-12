@@ -143,6 +143,11 @@ public interface IAssignmentList<T extends IAssignment<?>> {
     }
 
     /**
+     * {@return an assignment list with the same contents of this assignment list}
+     */
+    IAssignmentList<?> toAssignmentList();
+
+    /**
      * {@return a clause list with the same contents of this assignment list}
      */
     IAssignmentList<?> toClauseList();

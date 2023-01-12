@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class BooleanSolutionList extends ABooleanAssignmentList<BooleanSolutionList, BooleanSolution> {
+public class BooleanSolutionList extends ABooleanAssignmentList<BooleanSolution> {
     public BooleanSolutionList() {}
 
     public BooleanSolutionList(int size) {
@@ -52,22 +52,6 @@ public class BooleanSolutionList extends ABooleanAssignmentList<BooleanSolutionL
 
     public BooleanSolutionList(BooleanSolutionList other) {
         super(other);
-    }
-
-    @Override
-    protected BooleanSolutionList newAssignmentList(List<BooleanSolution> solutions) {
-        return new BooleanSolutionList(solutions);
-    }
-
-    @Override
-    public BooleanClauseList toClauseList() {
-        return new BooleanClauseList(
-                assignments.stream().map(BooleanSolution::toClause).collect(Collectors.toList()));
-    }
-
-    @Override
-    public BooleanSolutionList toSolutionList() {
-        return new BooleanSolutionList(assignments);
     }
 
     @Override
