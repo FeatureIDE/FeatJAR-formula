@@ -22,8 +22,10 @@ package de.featjar.formula.analysis;
 
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.bool.ABooleanAssignmentList;
+import de.featjar.formula.analysis.bool.BooleanAssignment;
 import de.featjar.formula.analysis.value.AValueAssignmentList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -38,13 +40,18 @@ import java.util.stream.Stream;
  * @param <T> the type of the assignment
  * @author Elias Kuiter
  */
-public interface IAssignmentList<T extends IAssignment<?>> {
+public interface IAssignmentList<T extends IAssignment<?>> extends Iterable<T> {
     /**
      * {@return a list of all assignments in this assignment list}
      * The default implementations of the other methods assume that this list is mutable.
      * If it is not, the other methods must be overridden accordingly.
      */
     List<T> getAll();
+
+    @Override
+    default Iterator<T> iterator() {
+        return getAll().iterator();
+    }
 
     /**
      * {@return the number of assignments in this assignment list}

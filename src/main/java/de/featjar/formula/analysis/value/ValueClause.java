@@ -49,6 +49,10 @@ public class ValueClause extends AValueAssignment implements IClause<String> {
         this(new LinkedHashMap<>(predicateClause.variableValuePairs));
     }
 
+    public ValueClause(Object... variableValuePairs) {
+        super(variableValuePairs);
+    }
+
     @Override
     public Result<BooleanClause> toBoolean(VariableMap variableMap) {
         return variableMap.toBoolean(this);

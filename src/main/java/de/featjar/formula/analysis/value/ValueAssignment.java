@@ -21,6 +21,7 @@
 package de.featjar.formula.analysis.value;
 
 import de.featjar.base.computation.IComputation;
+import de.featjar.base.data.Maps;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.IO;
 import de.featjar.formula.analysis.IClause;
@@ -49,6 +50,10 @@ public class ValueAssignment extends AValueAssignment {
 
     public ValueAssignment(ValueAssignment predicateClause) {
         this(new LinkedHashMap<>(predicateClause.variableValuePairs));
+    }
+
+    public ValueAssignment(Object... variableValuePairs) {
+        super(variableValuePairs);
     }
 
     @Override

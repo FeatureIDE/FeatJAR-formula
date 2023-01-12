@@ -32,7 +32,7 @@ class TransformationTest {
     public static void traverseAndAssertSameFormula(
             IFormula oldFormula, Function<IComputation<IFormula>, IComputation<IFormula>> formulaComputationFunction) {
         Result<IFormula> result =
-                formulaComputationFunction.apply(Computations.of(oldFormula)).getResult();
+                formulaComputationFunction.apply(Computations.of(oldFormula)).get();
         assertTrue(result.isPresent());
         assertEquals(oldFormula, result.get());
     }
@@ -42,7 +42,7 @@ class TransformationTest {
             Function<IComputation<IFormula>, IComputation<IFormula>> formulaComputationFunction,
             IFormula assertFormula) {
         Result<IFormula> result =
-                formulaComputationFunction.apply(Computations.of(oldFormula)).getResult();
+                formulaComputationFunction.apply(Computations.of(oldFormula)).get();
         assertTrue(result.isPresent());
         System.out.println(oldFormula.printParseable());
         System.out.println(result.get().printParseable());

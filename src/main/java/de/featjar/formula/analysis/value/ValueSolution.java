@@ -49,6 +49,10 @@ public class ValueSolution extends AValueAssignment implements ISolution<String>
         this(new LinkedHashMap<>(predicateClause.variableValuePairs));
     }
 
+    public ValueSolution(Object... variableValuePairs) {
+        super(variableValuePairs);
+    }
+
     @Override
     public Result<BooleanSolution> toBoolean(VariableMap variableMap) {
         return variableMap.toBoolean(this);

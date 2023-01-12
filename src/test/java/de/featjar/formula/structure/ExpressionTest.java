@@ -25,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import de.featjar.base.data.Sets;
 import de.featjar.formula.analysis.value.AValueAssignment;
+import de.featjar.formula.analysis.value.ValueAssignment;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.term.ITerm;
 import de.featjar.formula.structure.term.value.Constant;
@@ -51,11 +52,11 @@ class ExpressionTest {
 
     @Test
     void evaluate() {
-        assertEquals(true, formula.evaluate(new AValueAssignment("a", false)));
-        assertEquals(false, formula.evaluate(new AValueAssignment("a", true)));
+        assertEquals(true, formula.evaluate(new ValueAssignment("a", false)));
+        assertEquals(false, formula.evaluate(new ValueAssignment("a", true)));
         assertThrows(NullPointerException.class, () -> formula.evaluate()); // TODO: this should not happen, fix this!
-        assertEquals(43L, term.evaluate(new AValueAssignment("x", 1L)));
-        assertNull(term.evaluate(new AValueAssignment("x", null)));
+        assertEquals(43L, term.evaluate(new ValueAssignment("x", 1L)));
+        assertNull(term.evaluate(new ValueAssignment("x", null)));
         assertNull(term.evaluate());
     }
 

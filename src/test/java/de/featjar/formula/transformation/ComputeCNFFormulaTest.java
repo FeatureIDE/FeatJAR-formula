@@ -59,7 +59,7 @@ class ComputeCNFFormulaTest {
         IFormula formula = FeatJAR.apply(featJAR -> Computations.of(
                         IO.load(fmDirectory.resolve("basic.xml"), FeatJAR.extensionPoint(FormulaFormats.class))
                                 .get())
-                .getResult()
+                .get()
                 .get());
         assertEquals(
                 and(
@@ -73,7 +73,7 @@ class ComputeCNFFormulaTest {
         formula = Computations.of(finalFormula)
                 .map(ComputeNNFFormula::new)
                 .map(ComputeCNFFormula::new)
-                .getResult()
+                .get()
                 .get();
         assertEquals(
                 and(
