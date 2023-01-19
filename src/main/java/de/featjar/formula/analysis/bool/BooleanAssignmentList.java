@@ -25,13 +25,8 @@ import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.value.ValueAssignmentList;
 import de.featjar.formula.analysis.value.ValueClauseList;
-import de.featjar.formula.structure.formula.IFormula;
-import de.featjar.formula.transformation.ComputeCNFFormula;
 
 import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Primary implementation of {@link ABooleanAssignmentList}.

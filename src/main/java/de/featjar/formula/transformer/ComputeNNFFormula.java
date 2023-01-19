@@ -18,19 +18,21 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.transformation;
+package de.featjar.formula.transformer;
 
 import de.featjar.base.computation.*;
 import de.featjar.base.computation.Progress;
 import de.featjar.base.data.Result;
 import de.featjar.base.tree.Trees;
 import de.featjar.base.tree.structure.ITree;
+import de.featjar.formula.structure.ExpressionKind;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.Reference;
+import de.featjar.formula.structure.term.value.Variable;
 import de.featjar.formula.visitor.*;
 
 /**
- * Transforms a formula into clausal negation normal form.
+ * Transforms a formula into strict negation normal form.
  *
  * @author Elias Kuiter
  */
@@ -50,9 +52,14 @@ public class ComputeNNFFormula extends AComputation<IFormula> implements ITransf
     @Override
     public Result<IFormula> compute(DependencyList dependencyList, Progress progress) {
         IFormula formula = dependencyList.get(FORMULA);
+        ExpressionKind.BOOLEAN.assertFor(formula);
+        if (formula.getVariables().isEmpty())
+            throw new IllegalArgumentException("requires at least one variable");
+        Variable variable = formula.getVariables().get(0);
         return Reference.mutateClone(formula, reference -> Trees.traverse(reference, new ConnectiveSimplifier())
                 .flatMap(_void -> Trees.traverse(reference, new DeMorganApplier()))
                 .flatMap(_void -> Trees.traverse(reference, new TrueFalseSimplifier()))
+                .flatMap(_void -> Trees.traverse(reference, new TrueFalseRemover(variable)))
                 .flatMap(_void -> Trees.traverse(reference, new AndOrSimplifier())));
     }
 

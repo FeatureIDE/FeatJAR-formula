@@ -29,9 +29,7 @@ import java.util.List;
  * Evaluates to {@code true} iff both children evaluate to different values.
  *
  * @author Sebastian Krieter
- * @deprecated currently not supported by any meaningful operations
  */
-@Deprecated
 public class NotEquals extends ANonTerminalExpression implements IBinaryPredicate, IInvertiblePredicate {
     protected NotEquals() {}
 

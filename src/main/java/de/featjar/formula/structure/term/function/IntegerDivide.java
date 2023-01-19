@@ -27,9 +27,7 @@ import java.util.List;
  * Divides the values of two integer terms.
  *
  * @author Sebastian Krieter
- * @deprecated currently not supported by any meaningful operations
  */
-@Deprecated
 public class IntegerDivide extends ADivide {
 
     protected IntegerDivide() {}

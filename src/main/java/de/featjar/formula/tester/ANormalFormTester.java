@@ -18,63 +18,75 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.visitor;
+package de.featjar.formula.tester;
 
 import de.featjar.base.data.Result;
+import de.featjar.base.tree.Trees;
 import de.featjar.base.tree.visitor.ITreeVisitor;
 import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.IConnective;
 import de.featjar.formula.structure.formula.predicate.IPredicate;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
- * Tests whether a formula is in (clausal) normal form.
- * Clausal normal form is a special case of each normal form and usually easier to process in an automated fashion.
- * Thus, we usually allow normal forms as input and use clausal normal form as output.
+ * Tests whether a formula is in (strict) normal form.
+ * Strict normal form is a special case of each normal form and usually easier to process in an automated fashion.
+ * Thus, we usually allow normal forms as input and use strict normal form as output.
  *
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public abstract class ANormalFormTester implements ITreeVisitor<IFormula, Boolean> {
-
+public abstract class ANormalFormTester implements ITreeVisitor<IFormula, Boolean>, Predicate<IFormula> {
     protected boolean isNormalForm = true;
-    protected boolean isClausalNormalForm = true;
+    protected boolean isStrictNormalForm = true;
+    protected final boolean isStrict;
+
+    public ANormalFormTester(boolean isStrict) {
+        this.isStrict = isStrict;
+    }
 
     @Override
     public void reset() {
         isNormalForm = true;
-        isClausalNormalForm = true;
+        isStrictNormalForm = true;
     }
 
     @Override
     public Result<Boolean> getResult() {
-        return Result.of(isNormalForm);
+        return Result.of(isStrict ? isStrictNormalForm : isNormalForm);
+    }
+
+    @Override
+    public boolean test(IFormula formula) {
+        Trees.traverse(formula, this);
+        return getResult().get();
     }
 
     public boolean isNormalForm() {
         return isNormalForm;
     }
 
-    public boolean isClausalNormalForm() {
-        return isClausalNormalForm;
+    public boolean isStrictNormalForm() {
+        return isStrictNormalForm;
     }
 
     protected TraversalAction processLevelOne(
             List<IFormula> path, IFormula formula, Class<? extends IConnective> connectiveClass) {
         if (path.size() > 1) {
             isNormalForm = false;
-            isClausalNormalForm = false;
+            isStrictNormalForm = false;
             return TraversalAction.SKIP_ALL;
         }
         for (final IExpression child : formula.getChildren()) {
             if (!connectiveClass.isInstance(child)) {
                 if (!(child instanceof IPredicate)) {
                     isNormalForm = false;
-                    isClausalNormalForm = false;
+                    isStrictNormalForm = false;
                     return TraversalAction.SKIP_ALL;
                 }
-                isClausalNormalForm = false;
+                isStrictNormalForm = false;
             }
         }
         return TraversalAction.CONTINUE;
@@ -83,16 +95,16 @@ public abstract class ANormalFormTester implements ITreeVisitor<IFormula, Boolea
     protected TraversalAction processLevelTwo(List<IFormula> path, IFormula formula) {
         if (path.size() > 2) {
             isNormalForm = false;
-            isClausalNormalForm = false;
+            isStrictNormalForm = false;
             return TraversalAction.SKIP_ALL;
         }
         if (path.size() < 2) {
-            isClausalNormalForm = false;
+            isStrictNormalForm = false;
         }
         for (final IExpression child : formula.getChildren()) {
             if (!(child instanceof IPredicate)) {
                 isNormalForm = false;
-                isClausalNormalForm = false;
+                isStrictNormalForm = false;
                 return TraversalAction.SKIP_ALL;
             }
         }
@@ -102,11 +114,11 @@ public abstract class ANormalFormTester implements ITreeVisitor<IFormula, Boolea
     protected TraversalAction processLevelThree(List<IFormula> path) {
         if (path.size() > 3) {
             isNormalForm = false;
-            isClausalNormalForm = false;
+            isStrictNormalForm = false;
             return TraversalAction.SKIP_ALL;
         }
         if (path.size() < 3) {
-            isClausalNormalForm = false;
+            isStrictNormalForm = false;
         }
         return TraversalAction.SKIP_CHILDREN;
     }

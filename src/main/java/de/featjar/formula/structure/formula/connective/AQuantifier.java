@@ -33,9 +33,7 @@ import java.util.Objects;
  * Evaluates to {@code true} iff there is a value of the bound variable such that the formula evaluates to {@code true}.
  *
  * @author Sebastian Krieter
- * @deprecated currently not supported by any meaningful operations
  */
-@Deprecated
 public abstract class AQuantifier extends ANonTerminalExpression implements IConnective, IUnaryExpression {
     protected Variable boundVariable;
 

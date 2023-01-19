@@ -18,7 +18,7 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.transformation;
+package de.featjar.formula.transformer;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -44,9 +44,17 @@ class TransformationTest {
         Result<IFormula> result =
                 formulaComputationFunction.apply(Computations.of(oldFormula)).get();
         assertTrue(result.isPresent());
-        System.out.println(oldFormula.printParseable());
-        System.out.println(result.get().printParseable());
+        System.out.println(oldFormula.print());
+        System.out.println(result.get().print());
         assertNotEquals(oldFormula, result.get());
         assertEquals(assertFormula, result.get());
+    }
+
+    public static void traverseAndAssertFail(
+            IFormula oldFormula,
+            Function<IComputation<IFormula>, IComputation<IFormula>> formulaComputationFunction) {
+        Result<IFormula> result =
+                formulaComputationFunction.apply(Computations.of(oldFormula)).get();
+        assertFalse(result.isPresent());
     }
 }

@@ -18,7 +18,7 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.transformation;
+package de.featjar.formula.transformer;
 
 import de.featjar.base.computation.*;
 import de.featjar.base.computation.Progress;
@@ -26,12 +26,12 @@ import de.featjar.base.data.Result;
 import de.featjar.base.tree.Trees;
 import de.featjar.base.tree.structure.ITree;
 import de.featjar.formula.structure.formula.IFormula;
+import de.featjar.formula.structure.formula.FormulaNormalForm;
 import de.featjar.formula.structure.formula.connective.Or;
-import de.featjar.formula.visitor.ANormalFormTester;
-import de.featjar.formula.visitor.NormalForms;
+import de.featjar.formula.tester.NormalForms;
 
 /**
- * Transforms a formula into clausal disjunctive normal form.
+ * Transforms a formula into strict disjunctive normal form.
  *
  * @author Sebastian Krieter
  * @deprecated does not currently work
@@ -58,23 +58,12 @@ public class ComputeDNFFormula extends AComputation<IFormula> implements ITransf
     @Override
     public Result<IFormula> compute(DependencyList dependencyList, Progress progress) {
         IFormula formula = dependencyList.get(NNF_FORMULA);
-        final ANormalFormTester normalFormTester = NormalForms.getNormalFormTester(formula, IFormula.NormalForm.DNF);
-        if (normalFormTester.isNormalForm()) {
-            if (!normalFormTester.isClausalNormalForm()) {
-                return NormalForms.toNormalForm((IFormula) Trees.clone(formula), IFormula.NormalForm.DNF, true);
-            } else {
-                return Result.of((IFormula) Trees.clone(formula));
-            }
-        } else {
-            formula = (IFormula) Trees.clone(formula);
-            ComputeNormalFormFormula formulaToDistributiveNFFormula = Computations.of(
-                            (formula instanceof Or) ? formula : new Or(formula))
-                    .map(c -> new ComputeNormalFormFormula(c, IFormula.NormalForm.DNF));
-            formulaToDistributiveNFFormula.setMaximumNumberOfLiterals(maximumNumberOfLiterals);
-            return formulaToDistributiveNFFormula
-                    .get()
-                    .map(f -> NormalForms.normalToClausalNormalForm(f, IFormula.NormalForm.DNF));
-        }
+        formula = (IFormula) Trees.clone(formula);
+        DistributiveTransformer formulaToDistributiveNFFormula = new DistributiveTransformer(false);
+        //todo formulaToDistributiveNFFormula.setMaximumNumberOfLiterals(maximumNumberOfLiterals);
+        IFormula newFormula = (formula instanceof Or) ? formula : new Or(formula);
+        return formulaToDistributiveNFFormula.apply(formula).map(_void ->
+                NormalForms.normalToStrictNormalForm(newFormula, FormulaNormalForm.DNF));
     }
 
     @Override

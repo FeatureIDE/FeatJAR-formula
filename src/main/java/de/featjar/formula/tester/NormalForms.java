@@ -18,20 +18,19 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.visitor;
+package de.featjar.formula.tester;
 
 import static de.featjar.base.computation.Computations.async;
 
-import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
-import de.featjar.base.tree.Trees;
 import de.featjar.formula.structure.formula.IFormula;
+import de.featjar.formula.structure.formula.FormulaNormalForm;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.formula.structure.formula.predicate.Literal;
-import de.featjar.formula.transformation.ComputeCNFFormula;
-import de.featjar.formula.transformation.ComputeDNFFormula;
-import de.featjar.formula.transformation.ComputeNNFFormula;
+import de.featjar.formula.transformer.ComputeCNFFormula;
+import de.featjar.formula.transformer.ComputeDNFFormula;
+import de.featjar.formula.transformer.ComputeNNFFormula;
 
 /**
  * Tests and transforms formulas for and into normal forms.
@@ -39,37 +38,22 @@ import de.featjar.formula.transformation.ComputeNNFFormula;
  * @author Sebastian Krieter
  */
 public class NormalForms {
-
-    public static ANormalFormTester getNormalFormTester(IFormula formula, IFormula.NormalForm normalForm) {
-        ANormalFormTester normalFormTester = normalForm == IFormula.NormalForm.NNF
-                ? new NNFTester()
-                : normalForm == IFormula.NormalForm.CNF ? new CNFTester() : new DNFTester();
-        Trees.traverse(formula, normalFormTester);
-        return normalFormTester;
-    }
-
-    public static boolean isNormalForm(IFormula formula, IFormula.NormalForm normalForm) {
-        return getNormalFormTester(formula, normalForm).isNormalForm();
-    }
-
-    public static boolean isClausalNormalForm(IFormula formula, IFormula.NormalForm normalForm) {
-        return getNormalFormTester(formula, normalForm).isClausalNormalForm();
-    }
-
-    public static Result<IFormula> toNormalForm(IFormula formula, IFormula.NormalForm normalForm, boolean isClausal) {
-        IComputation<IFormula> normalFormFormula = async(formula)
+    // todo: use computation framework, always return strict normal form
+    public static Result<IFormula> toNormalForm(IFormula formula, FormulaNormalForm formulaNormalForm, boolean isStrict) {
+        return async(formula)
                 .map(
-                        normalForm == IFormula.NormalForm.NNF
+                        formulaNormalForm == FormulaNormalForm.NNF
                                 ? ComputeNNFFormula::new
-                                : normalForm == IFormula.NormalForm.CNF
+                                : formulaNormalForm == FormulaNormalForm.CNF
                                         ? ComputeCNFFormula::new
-                                        : ComputeDNFFormula::new);
-        Result<IFormula> res = normalFormFormula.get();
-        return res.map(f -> isClausal ? normalToClausalNormalForm(formula, normalForm) : f);
+                                        : ComputeDNFFormula::new)
+                .get()
+                .map(f -> isStrict ? normalToStrictNormalForm(formula, formulaNormalForm) : f);
     }
 
-    public static IFormula normalToClausalNormalForm(IFormula formula, IFormula.NormalForm normalForm) {
-        switch (normalForm) {
+    // todo: make this a computation? assumes that normal form is already there
+    public static IFormula normalToStrictNormalForm(IFormula formula, FormulaNormalForm formulaNormalForm) {
+        switch (formulaNormalForm) {
             case NNF:
                 // TODO: currently not implemented
                 throw new UnsupportedOperationException();

@@ -27,9 +27,7 @@ import java.util.List;
  * Multiplies the values of two real terms.
  *
  * @author Sebastian Krieter
- * @deprecated currently not supported by any meaningful operations
  */
-@Deprecated
 public class RealMultiply extends AMultiply {
 
     protected RealMultiply() {}

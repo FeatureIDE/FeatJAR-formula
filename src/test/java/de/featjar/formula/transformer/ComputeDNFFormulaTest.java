@@ -18,7 +18,7 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.transformation;
+package de.featjar.formula.transformer;
 
 import static de.featjar.formula.structure.Expressions.*;
 

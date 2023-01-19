@@ -20,21 +20,39 @@
  */
 package de.featjar.formula.visitor;
 
+import de.featjar.base.data.Result;
+import de.featjar.base.data.Void;
+import de.featjar.base.tree.visitor.ITreeVisitor;
+import de.featjar.formula.structure.Expressions;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.IConnective;
-import de.featjar.formula.structure.formula.connective.Not;
 import de.featjar.formula.structure.formula.connective.Or;
+import de.featjar.formula.structure.formula.connective.Reference;
+import de.featjar.formula.structure.formula.predicate.False;
 import de.featjar.formula.structure.formula.predicate.IPredicate;
+import de.featjar.formula.structure.formula.predicate.Literal;
+import de.featjar.formula.structure.formula.predicate.True;
+import de.featjar.formula.structure.term.value.Variable;
+
 import java.util.List;
 
 /**
- * Tests whether a formula is in negation normal form.
- * The formula {@code new Not(new Not(new Literal("x")))} is neither in NNF nor in clausal NNF.
- * The formula {@code new Not(new Literal("x"))} is in NNF, but not in clausal NNF.
- * The formula {@code new Literal(false, "x")} is in NNF and in clausal NNF.
+ * Removes occurrences of {@link True} and {@link False} with a tautology or contradiction, respectively.
+ *
+ * @author Elias Kuiter
  */
-public class NNFTester extends ANormalFormTester {
+public class TrueFalseRemover implements ITreeVisitor<IFormula, Void> {
+    protected final Variable variable;
+
+    public TrueFalseRemover(Variable variable) {
+        this.variable = variable;
+    }
+
+    @Override
+    public Result<Void> nodeValidator(List<IFormula> path) {
+        return rootValidator(path, root -> root instanceof Reference, "expected formula reference");
+    }
 
     @Override
     public TraversalAction firstVisit(List<IFormula> path) {
@@ -42,18 +60,26 @@ public class NNFTester extends ANormalFormTester {
         if (formula instanceof IPredicate) {
             return TraversalAction.SKIP_CHILDREN;
         } else if (formula instanceof IConnective) {
-            if (formula instanceof Not) {
-                isClausalNormalForm = false;
-                if (!(((Not) formula).getExpression() instanceof IPredicate)) {
-                    isNormalForm = false;
-                }
-            } else if (!(formula instanceof And) && !(formula instanceof Or)) {
-                isNormalForm = false;
-                isClausalNormalForm = false;
-            }
             return TraversalAction.CONTINUE;
         } else {
             return TraversalAction.FAIL;
         }
+    }
+
+    @Override
+    public TraversalAction lastVisit(List<IFormula> path) {
+        final IFormula formula = getCurrentNode(path);
+        formula.replaceChildren(c ->
+                c.equals(Expressions.False)
+                        ? new And(new Literal(variable), new Literal(false, variable)) :
+                        c.equals(Expressions.True)
+                                ? new Or(new Literal(variable), new Literal(false, variable))
+                                : null);
+        return TraversalAction.CONTINUE;
+    }
+
+    @Override
+    public Result<Void> getResult() {
+        return Result.ofVoid();
     }
 }

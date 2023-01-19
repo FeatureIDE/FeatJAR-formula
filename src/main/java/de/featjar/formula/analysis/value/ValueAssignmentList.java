@@ -24,12 +24,9 @@ import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.IO;
 import de.featjar.formula.analysis.VariableMap;
-import de.featjar.formula.analysis.bool.ABooleanAssignmentList;
 import de.featjar.formula.analysis.bool.BooleanAssignmentList;
 import de.featjar.formula.analysis.bool.BooleanClauseList;
 import de.featjar.formula.io.value.ValueAssignmentListFormat;
-import de.featjar.formula.structure.formula.IFormula;
-import de.featjar.formula.transformation.ComputeCNFFormula;
 
 import java.io.IOException;
 import java.util.Collection;

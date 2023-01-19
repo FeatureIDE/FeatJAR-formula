@@ -31,7 +31,8 @@ import de.featjar.formula.structure.formula.connective.AQuantifier;
 import de.featjar.formula.structure.formula.connective.IConnective;
 import de.featjar.formula.structure.formula.predicate.IPredicate;
 import de.featjar.formula.structure.term.value.Variable;
-import de.featjar.formula.visitor.NormalForms;
+import de.featjar.formula.tester.*;
+
 import java.util.LinkedHashSet;
 
 /**
@@ -46,92 +47,91 @@ import java.util.LinkedHashSet;
  * @author Elias Kuiter
  */
 public interface IFormula extends IExpression, IValueRepresentation {
-    /**
-     * Normal form of a formula.
-     */
-    enum NormalForm {
-        NNF,
-        CNF,
-        DNF
-        // TODO: add other normal forms (e.g., d-dNNF)
-    }
 
     default Class<?> getType() {
         return Boolean.class;
     }
 
-    /**
-     * {@return whether this formula is in the given normal form}
-     *
-     * @param normalForm the normal form
-     */
-    default boolean isNormalForm(NormalForm normalForm) {
-        return NormalForms.isNormalForm(this, normalForm);
+    private boolean isNormalForm(FormulaNormalForm formulaNormalForm, boolean isStrict) {
+        ANormalFormTester normalFormTester = formulaNormalForm == FormulaNormalForm.NNF
+                ? new NNFTester(isStrict)
+                : formulaNormalForm == FormulaNormalForm.CNF ? new CNFTester(isStrict) : new DNFTester(isStrict);
+        return normalFormTester.test(this);
     }
 
     /**
-     * {@return whether this formula is in the given clausal normal form}
+     * {@return whether this formula is in the given normal form}
      *
-     * @param normalForm the clausal normal form
+     * @param formulaNormalForm the normal form
      */
-    default boolean isClausalNormalForm(NormalForm normalForm) {
-        return NormalForms.isClausalNormalForm(this, normalForm);
+    default boolean isNormalForm(FormulaNormalForm formulaNormalForm) {
+        return isNormalForm(formulaNormalForm, false);
+    }
+
+    /**
+     * {@return whether this formula is in the given strict normal form}
+     *
+     * @param formulaNormalForm the strict normal form
+     */
+    default boolean isStrictNormalForm(FormulaNormalForm formulaNormalForm) {
+        return isNormalForm(formulaNormalForm, true);
     }
 
     /**
      * {@return whether this formula is in negation normal form}
      */
     default boolean isNNF() {
-        return isNormalForm(NormalForm.NNF);
+        return isNormalForm(FormulaNormalForm.NNF);
     }
 
     /**
      * {@return whether this formula is in conjunctive normal form}
      */
     default boolean isCNF() {
-        return isNormalForm(NormalForm.CNF);
+        return isNormalForm(FormulaNormalForm.CNF);
     }
 
     /**
      * {@return whether this formula is in disjunctive normal form}
      */
     default boolean isDNF() {
-        return isNormalForm(NormalForm.DNF);
+        return isNormalForm(FormulaNormalForm.DNF);
     }
 
     /**
      * {@return a formula in the given normal form that is equivalent to this formula}
      */
-    default Result<IFormula> toNormalForm(NormalForm normalForm) {
-        return NormalForms.toNormalForm(this, normalForm, false);
+    // todo: use computations
+    default Result<IFormula> toNormalForm(FormulaNormalForm formulaNormalForm) {
+        return NormalForms.toNormalForm(this, formulaNormalForm, false);
     }
 
     /**
-     * {@return a formula in the given clausal normal form that is equivalent to this formula}
+     * {@return a formula in the given strict normal form that is equivalent to this formula}
      */
-    default Result<IFormula> toClausalNormalForm(NormalForm normalForm) {
-        return NormalForms.toNormalForm(this, normalForm, true);
+    default Result<IFormula> toStrictNormalForm(FormulaNormalForm formulaNormalForm) {
+        return NormalForms.toNormalForm(this, formulaNormalForm, true);
     }
 
     /**
-     * {@return a formula in clausal negation normal form that is equivalent to this formula}
+     * {@return a formula in strict negation normal form that is equivalent to this formula}
      */
     default Result<IFormula> toNNF() {
-        return toClausalNormalForm(NormalForm.NNF);
+        return toStrictNormalForm(FormulaNormalForm.NNF);
     }
 
     /**
-     * {@return a formula in clausal conjunctive normal form that is equivalent to this formula}
+     * {@return a formula in strict conjunctive normal form that is equivalent to this formula}
      */
     default Result<IFormula> toCNF() {
-        return toClausalNormalForm(NormalForm.CNF);
+        return toStrictNormalForm(FormulaNormalForm.CNF);
     }
 
     /**
-     * {@return a formula in clausal disjunctive normal form that is equivalent to this formula}
+     * {@return a formula in strict disjunctive normal form that is equivalent to this formula}
      */
     default Result<IFormula> toDNF() {
-        return toClausalNormalForm(NormalForm.DNF);
+        return toStrictNormalForm(FormulaNormalForm.DNF);
     }
 
     @Override

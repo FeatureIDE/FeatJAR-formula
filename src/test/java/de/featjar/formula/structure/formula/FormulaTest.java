@@ -61,20 +61,20 @@ class FormulaTest {
 
     @Test
     void isClausalCNF() {
-        assertFalse(formula.isClausalNormalForm(IFormula.NormalForm.CNF));
-        assertFalse(cnf.isClausalNormalForm(IFormula.NormalForm.CNF));
-        assertTrue(clausalCnf.isClausalNormalForm(IFormula.NormalForm.CNF));
-        assertFalse(dnf.isClausalNormalForm(IFormula.NormalForm.CNF));
-        assertFalse(clausalDnf.isClausalNormalForm(IFormula.NormalForm.CNF));
+        assertFalse(formula.isStrictNormalForm(FormulaNormalForm.CNF));
+        assertFalse(cnf.isStrictNormalForm(FormulaNormalForm.CNF));
+        assertTrue(clausalCnf.isStrictNormalForm(FormulaNormalForm.CNF));
+        assertFalse(dnf.isStrictNormalForm(FormulaNormalForm.CNF));
+        assertFalse(clausalDnf.isStrictNormalForm(FormulaNormalForm.CNF));
     }
 
     @Test
     void isClausalDNF() {
-        assertFalse(formula.isClausalNormalForm(IFormula.NormalForm.DNF));
-        assertFalse(cnf.isClausalNormalForm(IFormula.NormalForm.DNF));
-        assertFalse(clausalCnf.isClausalNormalForm(IFormula.NormalForm.DNF));
-        assertFalse(dnf.isClausalNormalForm(IFormula.NormalForm.DNF));
-        assertTrue(clausalDnf.isClausalNormalForm(IFormula.NormalForm.DNF));
+        assertFalse(formula.isStrictNormalForm(FormulaNormalForm.DNF));
+        assertFalse(cnf.isStrictNormalForm(FormulaNormalForm.DNF));
+        assertFalse(clausalCnf.isStrictNormalForm(FormulaNormalForm.DNF));
+        assertFalse(dnf.isStrictNormalForm(FormulaNormalForm.DNF));
+        assertTrue(clausalDnf.isStrictNormalForm(FormulaNormalForm.DNF));
     }
 
     @Test

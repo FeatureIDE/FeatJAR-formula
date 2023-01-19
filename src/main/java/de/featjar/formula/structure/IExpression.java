@@ -23,7 +23,6 @@ package de.featjar.formula.structure;
 import de.featjar.base.io.IO;
 import de.featjar.base.tree.Trees;
 import de.featjar.base.tree.structure.ITree;
-import de.featjar.formula.analysis.value.AValueAssignment;
 import de.featjar.formula.analysis.value.ValueAssignment;
 import de.featjar.formula.io.textual.ExpressionFormat;
 import de.featjar.formula.structure.formula.IFormula;
@@ -31,6 +30,7 @@ import de.featjar.formula.structure.term.ITerm;
 import de.featjar.formula.structure.term.value.Constant;
 import de.featjar.formula.structure.term.value.Variable;
 import de.featjar.formula.visitor.Evaluator;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.LinkedHashSet;
@@ -163,5 +163,13 @@ public interface IExpression extends ITree<IExpression> {
         } catch (IOException e) {
             return "";
         }
+    }
+
+    default boolean isKind(ExpressionKind expressionKind) {
+        return expressionKind.test(this);
+    }
+
+    default ExpressionKind getKind() {
+        return ExpressionKind.getExpressionKind(this);
     }
 }

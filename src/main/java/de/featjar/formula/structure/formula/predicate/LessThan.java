@@ -29,9 +29,7 @@ import java.util.List;
  * Evaluates to {@code true} iff the left child evaluates to a smaller value as the right child.
  *
  * @author Sebastian Krieter
- * @deprecated currently not supported by any meaningful operations
  */
-@Deprecated
 public class LessThan extends ANonTerminalExpression implements IBinaryPredicate, IInvertiblePredicate {
     protected LessThan() {}
 
