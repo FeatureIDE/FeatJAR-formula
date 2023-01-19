@@ -21,7 +21,6 @@
 package de.featjar.formula.transformer;
 
 import de.featjar.base.data.Result;
-import de.featjar.base.data.Void;
 import de.featjar.base.tree.structure.ITree;
 import de.featjar.formula.structure.ExpressionKind;
 import de.featjar.formula.structure.IExpression;

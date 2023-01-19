@@ -47,7 +47,7 @@ import java.util.function.Consumer;
 public class ComputeCNFFormula extends AComputation<IFormula> implements ITransformation<IFormula> {
     protected static final Dependency<IFormula> NNF_FORMULA = newRequiredDependency();
     protected static final Dependency<Boolean> IS_PLAISTED_GREENBAUM = newOptionalDependency(false);
-    protected static final Dependency<Integer> MAXIMUM_NUMBER_OF_LITERALS = newOptionalDependency(Integer.MAX_VALUE);
+    protected static final Dependency<Integer> MAXIMUM_NUMBER_OF_LITERALS = newOptionalDependency(Integer.MAX_VALUE); // todo: doesn't work right now?
     protected static final Dependency<Boolean> IS_PARALLEL = newOptionalDependency(false); // does not guarantee determinism
 
 
@@ -61,27 +61,27 @@ public class ComputeCNFFormula extends AComputation<IFormula> implements ITransf
         return NNF_FORMULA;
     }
 
-    IComputation<Boolean> isPlaistedGreenbaum() {
+    public IComputation<Boolean> isPlaistedGreenbaum() {
         return getDependency(IS_PLAISTED_GREENBAUM);
     }
 
-    void isPlaistedGreenbaum(IComputation<Boolean> isPlaistedGreenbaum) {
+    public void isPlaistedGreenbaum(IComputation<Boolean> isPlaistedGreenbaum) {
         setDependency(IS_PLAISTED_GREENBAUM, isPlaistedGreenbaum);
     }
 
-    IComputation<Integer> getMaximumNumberOfLiterals() {
+    public IComputation<Integer> getMaximumNumberOfLiterals() {
         return getDependency(MAXIMUM_NUMBER_OF_LITERALS);
     }
 
-    void setMaximumNumberOfLiterals(IComputation<Integer> maximumNumberOfLiterals) {
+    public void setMaximumNumberOfLiterals(IComputation<Integer> maximumNumberOfLiterals) {
         setDependency(MAXIMUM_NUMBER_OF_LITERALS, maximumNumberOfLiterals);
     }
 
-    IComputation<Boolean> isParallel() {
+    public IComputation<Boolean> isParallel() {
         return getDependency(IS_PARALLEL);
     }
 
-    void setParallel(IComputation<Boolean> isParallel) {
+    public void setParallel(IComputation<Boolean> isParallel) {
         setDependency(IS_PARALLEL, isParallel);
     }
 

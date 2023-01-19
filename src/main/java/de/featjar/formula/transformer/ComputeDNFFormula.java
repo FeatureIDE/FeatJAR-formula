@@ -34,12 +34,9 @@ import de.featjar.formula.tester.NormalForms;
  * Transforms a formula into strict disjunctive normal form.
  *
  * @author Sebastian Krieter
- * @deprecated does not currently work
  */
-@Deprecated
 public class ComputeDNFFormula extends AComputation<IFormula> implements ITransformation<IFormula> {
     protected static final Dependency<IFormula> NNF_FORMULA = newRequiredDependency();
-    protected int maximumNumberOfLiterals;
 
     public ComputeDNFFormula(IComputation<IFormula> nnfFormula) {
         dependOn(NNF_FORMULA);
@@ -51,19 +48,12 @@ public class ComputeDNFFormula extends AComputation<IFormula> implements ITransf
         return NNF_FORMULA;
     }
 
-    public void setMaximumNumberOfLiterals(int maximumNumberOfLiterals) {
-        this.maximumNumberOfLiterals = maximumNumberOfLiterals;
-    }
-
     @Override
     public Result<IFormula> compute(DependencyList dependencyList, Progress progress) {
         IFormula formula = dependencyList.get(NNF_FORMULA);
-        formula = (IFormula) Trees.clone(formula);
         DistributiveTransformer formulaToDistributiveNFFormula = new DistributiveTransformer(false);
-        //todo formulaToDistributiveNFFormula.setMaximumNumberOfLiterals(maximumNumberOfLiterals);
-        IFormula newFormula = (formula instanceof Or) ? formula : new Or(formula);
-        return formulaToDistributiveNFFormula.apply(formula).map(_void ->
-                NormalForms.normalToStrictNormalForm(newFormula, FormulaNormalForm.DNF));
+        return formulaToDistributiveNFFormula.apply(formula).map(f ->
+                NormalForms.normalToStrictNormalForm(f, FormulaNormalForm.DNF));
     }
 
     @Override
