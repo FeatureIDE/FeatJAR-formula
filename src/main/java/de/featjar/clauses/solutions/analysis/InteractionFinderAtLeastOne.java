@@ -106,6 +106,8 @@ public class InteractionFinderAtLeastOne extends AbstractInteractionFinder {
             LiteralList config = complete(interaction, LiteralList.merge(interactionsRight));
             if (config != null) {
                 potentialConfs.add(config);
+            } else {
+            	// TODO remove interaction from list
             }
         }
         return potentialConfs;

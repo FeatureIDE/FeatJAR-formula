@@ -30,6 +30,8 @@ import de.featjar.util.job.Executor;
 import de.featjar.util.job.InternalMonitor;
 import de.featjar.util.job.MonitorableFunction;
 import de.featjar.util.tree.Trees;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -63,7 +65,7 @@ public final class FormulaToCNF implements MonitorableFunction<Formula, CNF> {
         final VariableMap mapping = variableMapping != null
                 ? variableMapping
                 : node.getVariableMap().orElseGet(VariableMap::new);
-        final ClauseList clauses = new ClauseList();
+        final List<LiteralList> clauses = new ArrayList<>();
         final Optional<Object> formulaValue = Formulas.evaluate(node, new VariableAssignment(mapping));
         if (formulaValue.isPresent()) {
             if (formulaValue.get() == Boolean.FALSE) {

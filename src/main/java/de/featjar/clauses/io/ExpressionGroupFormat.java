@@ -20,34 +20,34 @@
  */
 package de.featjar.clauses.io;
 
-import de.featjar.clauses.ClauseList;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+
 import de.featjar.clauses.LiteralList;
 import de.featjar.util.data.Result;
 import de.featjar.util.io.InputMapper;
 import de.featjar.util.io.format.Format;
 import de.featjar.util.io.format.ParseProblem;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * Reads and writes grouped propositional expressions in CNF.
  *
  * @author Sebastian Krieter
  */
-public class ExpressionGroupFormat implements Format<List<List<ClauseList>>> {
+public class ExpressionGroupFormat implements Format<List<List<List<LiteralList>>>> {
 
     public static final String ID = ExpressionGroupFormat.class.getSimpleName();
 
     @Override
-    public String serialize(List<List<ClauseList>> expressionGroups) {
+    public String serialize(List<List<List<LiteralList>>> expressionGroups) {
         final StringBuilder sb = new StringBuilder();
-        for (final List<? extends ClauseList> expressionGroup : expressionGroups) {
+        for (final List<? extends List<LiteralList>> expressionGroup : expressionGroups) {
             sb.append("g ");
             sb.append(expressionGroup.size());
             sb.append(System.lineSeparator());
-            for (final ClauseList expression : expressionGroup) {
+            for (final List<LiteralList> expression : expressionGroup) {
                 sb.append("e ");
                 for (final LiteralList literalSet : expression) {
                     for (final int literal : literalSet.getLiterals()) {
@@ -63,9 +63,9 @@ public class ExpressionGroupFormat implements Format<List<List<ClauseList>>> {
     }
 
     @Override
-    public Result<List<List<ClauseList>>> parse(InputMapper inputMapper) {
-        final ArrayList<List<ClauseList>> expressionGroups = new ArrayList<>();
-        ArrayList<ClauseList> expressionGroup = null;
+    public Result<List<List<List<LiteralList>>>> parse(InputMapper inputMapper) {
+        final ArrayList<List<List<LiteralList>>> expressionGroups = new ArrayList<>();
+        ArrayList<List<LiteralList>> expressionGroup = null;
         final Iterator<String> lineIterator = inputMapper.get().getLineStream().iterator();
         int lineCount = 0;
         try {
@@ -85,7 +85,7 @@ public class ExpressionGroupFormat implements Format<List<List<ClauseList>>> {
                         }
                         final String expressionString = line.substring(2).trim();
                         final String[] clauseStrings = expressionString.split("\\|");
-                        final ClauseList expression = new ClauseList();
+                        final List<LiteralList> expression = new ArrayList<>();
                         for (final String clauseString : clauseStrings) {
                             final String[] literalStrings = clauseString.split("\\s+");
                             final int[] literals = new int[literalStrings.length];
