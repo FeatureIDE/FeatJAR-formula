@@ -107,7 +107,7 @@ public class InteractionFinderAtLeastOne extends AbstractInteractionFinder {
             if (config != null) {
                 potentialConfs.add(config);
             } else {
-            	// TODO remove interaction from list
+                // TODO remove interaction from list
             }
         }
         return potentialConfs;

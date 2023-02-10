@@ -30,7 +30,6 @@ import de.featjar.util.job.Executor;
 import de.featjar.util.job.InternalMonitor;
 import de.featjar.util.job.MonitorableFunction;
 import de.featjar.util.tree.Trees;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
