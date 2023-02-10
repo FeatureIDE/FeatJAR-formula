@@ -41,7 +41,6 @@ public class InverseLexicographicIterator extends ACombinationIterator {
 
     @Override
     protected int[] computeCombination(long index) {
-        counter++;
         int i = t - 1;
         for (; i >= 0; i--) {
             if (i == 0) {
