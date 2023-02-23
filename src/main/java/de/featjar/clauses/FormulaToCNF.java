@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Sebastian Krieter, Elias Kuiter
+ * Copyright (C) 2023 Sebastian Krieter, Elias Kuiter
  *
  * This file is part of formula.
  *
