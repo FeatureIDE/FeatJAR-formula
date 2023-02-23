@@ -27,7 +27,7 @@ package de.featjar.clauses.solutions.combinations;
  *
  * @author Sebastian Krieter
  */
-public class PartitionIterator extends ACombinationIterator {
+public class PartitionIterator extends ABinomialCombinationIterator {
 
     protected final int[][] dim;
     private final int[] pos;
@@ -38,7 +38,7 @@ public class PartitionIterator extends ACombinationIterator {
     }
 
     protected PartitionIterator(int t, int size, int dimNumber) {
-        super(t, size);
+        super(size, t);
 
         final int numDim = dimNumber * t;
         radix = (int) Math.ceil(Math.pow(numCombinations, 1.0 / numDim));

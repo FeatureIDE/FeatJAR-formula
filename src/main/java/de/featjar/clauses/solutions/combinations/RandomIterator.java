@@ -20,35 +20,38 @@
  */
 package de.featjar.clauses.solutions.combinations;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.Random;
+import java.util.stream.LongStream;
 
 /**
- * An iterator for combinations.
+ * Combination iterator that uses the combinatorial number system to enumerate
+ * all combinations and then iterates from first to last combination.
  *
  * @author Sebastian Krieter
  */
-public interface CombinationIterator extends Iterator<int[]>, Iterable<int[]> {
+public class RandomIterator extends ABinomialCombinationIterator {
 
-    public static <T> T[] select(List<T> items, int[] indices, T[] selection) {
-        for (int i = 0; i < indices.length; i++) {
-            selection[i] = items.get(indices[i]);
+    long[] index;
+
+    public RandomIterator(int t, int size) {
+        super(size, t);
+        if (numCombinations > Integer.MAX_VALUE) {
+            throw new RuntimeException();
         }
-        return selection;
-    }
 
-    public static <T> T[] select(T[] items, int[] indices, T[] selection) {
-        for (int i = 0; i < indices.length; i++) {
-            selection[i] = items[indices[i]];
+        index = LongStream.range(0, numCombinations).toArray();
+        final Random rand = new Random(123);
+
+        for (int i = 0; i < index.length; i++) {
+            final int randomIndexToSwap = rand.nextInt(index.length);
+            final long temp = index[randomIndexToSwap];
+            index[randomIndexToSwap] = index[i];
+            index[i] = temp;
         }
-        return selection;
     }
 
-    default Iterator<int[]> iterator() {
-        return this;
+    @Override
+    protected long nextIndex() {
+        return index[(int) (counter - 1)];
     }
-
-    void reset();
-
-    long size();
 }

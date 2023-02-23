@@ -20,35 +20,28 @@
  */
 package de.featjar.clauses.solutions.combinations;
 
-import java.util.Iterator;
-import java.util.List;
-
 /**
- * An iterator for combinations.
+ * Abstract iterator that implements parts of {@link CombinationIterator}.
  *
  * @author Sebastian Krieter
  */
-public interface CombinationIterator extends Iterator<int[]>, Iterable<int[]> {
+public abstract class ABinomialCombinationIterator extends ACombinationIterator {
 
-    public static <T> T[] select(List<T> items, int[] indices, T[] selection) {
-        for (int i = 0; i < indices.length; i++) {
-            selection[i] = items.get(indices[i]);
-        }
-        return selection;
+    protected final BinomialCalculator binomialCalculator;
+
+    public ABinomialCombinationIterator(int size, int t) {
+        this(size, t, new BinomialCalculator(size, t));
     }
 
-    public static <T> T[] select(T[] items, int[] indices, T[] selection) {
-        for (int i = 0; i < indices.length; i++) {
-            selection[i] = items[indices[i]];
-        }
-        return selection;
+    public ABinomialCombinationIterator(int size, int t, BinomialCalculator binomialCalculator) {
+        super(size, t, binomialCalculator);
+        this.binomialCalculator = binomialCalculator;
     }
 
-    default Iterator<int[]> iterator() {
-        return this;
+    @Override
+    protected int[] computeNext() {
+        return binomialCalculator.combination(nextIndex());
     }
 
-    void reset();
-
-    long size();
+    protected abstract long nextIndex();
 }

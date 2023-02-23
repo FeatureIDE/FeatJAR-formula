@@ -51,7 +51,7 @@ public class DiagonalIterator extends ACombinationIterator {
     int dist = 0;
 
     public DiagonalIterator(int t, int size) {
-        super(t, size);
+        super(size, t);
         if (t != 2) {
             throw new IllegalArgumentException("t != 2");
         }
@@ -60,7 +60,7 @@ public class DiagonalIterator extends ACombinationIterator {
     }
 
     @Override
-    protected int[] computeCombination(long index) {
+    protected int[] computeNext() {
         if (c[1] == n - 1) {
             if (dist == n - 2) {
                 return null;
@@ -74,20 +74,6 @@ public class DiagonalIterator extends ACombinationIterator {
             }
         }
         return c;
-    }
-
-    @Override
-    protected long nextIndex() {
-        return 0;
-    }
-
-    @Override
-    public long getIndex() {
-        long index = 0;
-        for (int i = 0; i < c.length; i++) {
-            index += binomialCalculator.binomial(c[i], i + 1);
-        }
-        return index;
     }
 
     @Override

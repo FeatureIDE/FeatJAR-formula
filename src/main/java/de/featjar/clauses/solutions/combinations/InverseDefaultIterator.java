@@ -25,10 +25,10 @@ package de.featjar.clauses.solutions.combinations;
  *
  * @author Sebastian Krieter
  */
-public class InverseDefaultIterator extends ACombinationIterator {
+public class InverseDefaultIterator extends ABinomialCombinationIterator {
 
     public InverseDefaultIterator(int t, int size) {
-        super(t, size);
+        super(size, t);
     }
 
     @Override

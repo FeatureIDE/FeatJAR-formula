@@ -368,6 +368,37 @@ public class LiteralList implements Cloneable, Comparable<LiteralList>, Serializ
         }
     }
 
+    public int countNonNull() {
+        int count = 0;
+        switch (order) {
+            case UNORDERED:
+            case INDEX:
+                for (final int literal : literals) {
+                    if (literal != 0) {
+                        count++;
+                    }
+                }
+                break;
+            case NATURAL:
+                int i = 0;
+                for (; i < literals.length; i++) {
+                    if (literals[i] < 0) {
+                        count++;
+                    } else {
+                        break;
+                    }
+                }
+                for (; i < literals.length; i++) {
+                    if (literals[i] > 0) {
+                        break;
+                    }
+                }
+                count += literals.length - i;
+                break;
+        }
+        return count;
+    }
+
     public int countNegative() {
         int count = 0;
         switch (order) {
