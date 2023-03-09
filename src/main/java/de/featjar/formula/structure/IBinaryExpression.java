@@ -40,7 +40,7 @@ public interface IBinaryExpression extends IExpression {
         replaceChild(0, expression);
     }
 
-    default IExpression getRightFormula() {
+    default IExpression getRightExpression() {
         return getLastChild().get();
     }
 

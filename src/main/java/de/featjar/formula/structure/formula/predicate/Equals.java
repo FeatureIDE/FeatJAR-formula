@@ -54,7 +54,7 @@ public class Equals extends ANonTerminalExpression implements IBinaryPredicate, 
 
     @Override
     public NotEquals invert() {
-        return new NotEquals((ITerm) getLeftExpression(), (ITerm) getRightFormula());
+        return new NotEquals((ITerm) getLeftExpression(), (ITerm) getRightExpression());
     }
 
     @Override

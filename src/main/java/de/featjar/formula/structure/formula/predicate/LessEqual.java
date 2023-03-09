@@ -53,7 +53,7 @@ public class LessEqual extends ANonTerminalExpression implements IBinaryPredicat
 
     @Override
     public GreaterThan invert() {
-        return new GreaterThan((ITerm) getLeftExpression(), (ITerm) getRightFormula());
+        return new GreaterThan((ITerm) getLeftExpression(), (ITerm) getRightExpression());
     }
 
     @Override
