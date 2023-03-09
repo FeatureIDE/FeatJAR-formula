@@ -24,20 +24,16 @@ import de.featjar.clauses.LiteralList;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InteractionFinderCombinationBackward extends InteractionFinderCombination {
+public class InteractionFinderCombinationBackward2 extends InteractionFinderCombination {
 
-    public InteractionFinderCombinationBackward() {
+    public InteractionFinderCombinationBackward2() {
         super(new SingleInteractionFinder());
     }
 
     public List<LiteralList> find(int t) {
-        List<List<LiteralList>> results = new ArrayList<>(t);
-        for (int ti = 1; ti <= t; ti++) {
-            results.add(finder.find(ti));
-        }
         List<LiteralList> lastResult = null;
-        for (int i = t - 1; i >= 0; i--) {
-            final List<LiteralList> result = results.get(i);
+        for (int i = t; i > 0; i--) {
+            final List<LiteralList> result = finder.find(i);
             if (result.isEmpty()) {
                 return lastResult == null ? new ArrayList<>() : lastResult;
             } else {

@@ -24,38 +24,36 @@ import de.featjar.clauses.LiteralList;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InteractionFinderCombinationForward implements InteractionFinder {
+public class InteractionFinderCombinationForward extends InteractionFinderCombination {
 
-    private final InteractionFinder finder;
-
-    public InteractionFinderCombinationForward(InteractionFinder finder) {
-        this.finder = finder;
+    public InteractionFinderCombinationForward() {
+        super(new SingleInteractionFinder());
     }
 
-    public List<LiteralList> find(int maxT, int n) {
+    public List<LiteralList> find(int t) {
         List<LiteralList> lastResult = null;
-        for (int t = 1; t <= maxT; t++) {
-            final List<LiteralList> result = finder.find(t, n);
+        for (int ti = 1; ti <= t; ti++) {
+            final List<LiteralList> result = finder.find(ti);
             if (result.isEmpty()) {
                 return lastResult == null ? new ArrayList<>() : lastResult;
             } else {
                 if (lastResult == null) {
                     lastResult = result;
                 } else {
-                    LiteralList merge1 = merge(lastResult);
-                    LiteralList merge2 = merge(result);
+                    LiteralList merge1 = LiteralList.merge(lastResult);
+                    LiteralList merge2 = LiteralList.merge(result);
                     if (merge2.containsAll(merge1)) {
                         if (merge1.containsAll(merge2)) {
                             return lastResult;
                         }
-                        LiteralList update1 = update(merge1);
+                        LiteralList update1 = finder.update(merge1);
                         if (update1.containsAll(merge2)) {
                             return lastResult;
                         }
-                        LiteralList update2 = update(merge2);
+                        LiteralList update2 = finder.update(merge2);
                         LiteralList removeAll = update2.removeAll(update1);
-                        LiteralList complete = complete(update1, removeAll);
-                        if (complete == null || !verify(complete)) {
+                        LiteralList complete = finder.complete(update1, removeAll);
+                        if (complete == null || !finder.verify(complete)) {
                             return lastResult;
                         }
                     }
@@ -64,55 +62,5 @@ public class InteractionFinderCombinationForward implements InteractionFinder {
             }
         }
         return lastResult == null ? new ArrayList<>() : lastResult;
-    }
-
-    @Override
-    public boolean verify(LiteralList solution) {
-        return finder.verify(solution);
-    }
-
-    @Override
-    public void setCore(LiteralList coreDead) {
-        finder.setCore(coreDead);
-    }
-
-    @Override
-    public int getConfigurationCount() {
-        return finder.getConfigurationCount();
-    }
-
-    @Override
-    public List<?> getInteractionCounter() {
-        return finder.getInteractionCounter();
-    }
-
-    @Override
-    public LiteralList getCore() {
-        return finder.getCore();
-    }
-
-    @Override
-    public LiteralList merge(List<LiteralList> result) {
-        return finder.merge(result);
-    }
-
-    @Override
-    public LiteralList complete(LiteralList include, LiteralList... exclude) {
-        return finder.complete(include, exclude);
-    }
-
-    @Override
-    public LiteralList update(LiteralList result) {
-        return finder.update(result);
-    }
-
-    @Override
-    public int getConfigCreationCount() {
-        return finder.getConfigCreationCount();
-    }
-
-    @Override
-    public int getVerifyCount() {
-        return finder.getVerifyCount();
     }
 }

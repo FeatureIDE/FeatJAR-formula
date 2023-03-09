@@ -50,7 +50,7 @@ public class ParallelLexicographicIterator implements Spliterator<int[]> {
         this.t = t;
         n = size;
         binomialCalculator = new BinomialCalculator(t, size);
-        end = binomialCalculator.binomial(n, t);
+        end = binomialCalculator.binomial();
         index = -1;
 
         c = new int[t];

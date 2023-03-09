@@ -22,46 +22,16 @@ package de.featjar.clauses.solutions.analysis;
 
 import de.featjar.clauses.LiteralList;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Detect interactions from given set of configurations.
  *
  * @author Sebastian Krieter
  */
-public class InteractionFinderAtLeastOne extends AbstractInteractionFinder {
+public class SingleInteractionFinder extends AInteractionFinder {
 
-    public InteractionFinderAtLeastOne(
-            Collection<LiteralList> sample,
-            SolutionUpdater configurationGenerator,
-            Predicate<LiteralList> configurationChecker) {
-        super(sample, configurationGenerator, configurationChecker);
-    }
-
-    public List<LiteralList> find(int t, int numberOfFeatures) {
-        List<LiteralList> interactionsAll = computePotentialInteractions(t);
-        while (interactionsAll.size() > 1) {
-            addInteractionCount(interactionsAll.size());
-            final LiteralList configuration = findConfig(interactionsAll);
-
-            if (configuration != null) {
-                Stream<LiteralList> interactionStream = interactionsAll.parallelStream();
-                interactionStream = verify(configuration) //
-                        ? interactionStream.filter(combo -> !configuration.containsAll(combo)) //
-                        : interactionStream.filter(combo -> configuration.containsAll(combo));
-                interactionsAll = interactionStream.collect(Collectors.toList());
-            } else {
-                break;
-            }
-        }
-        return interactionsAll;
-    }
-
-    private LiteralList findConfig(List<LiteralList> interactionsAll) {
+    protected LiteralList findConfig(List<LiteralList> interactionsAll) {
         if (interactionsAll.size() < 5000) {
             List<LiteralList> configs = new ArrayList<>(interactionsAll.size());
             configs.addAll(getAtLeastOneConfigs(interactionsAll));
@@ -75,18 +45,6 @@ public class InteractionFinderAtLeastOne extends AbstractInteractionFinder {
                     ? bestConfig
                     : findBestConfig(interactionsAll, getAtLeastOneConfigs(interactionsAll));
         }
-    }
-
-    private List<LiteralList> getRandomConfigs(int numberOfConfigurations) {
-        List<LiteralList> potentialConfs = new ArrayList<>();
-        for (int i = 0; i < numberOfConfigurations; i++) {
-            LiteralList config = complete(null);
-            if (config == null) {
-                break;
-            }
-            potentialConfs.add(config);
-        }
-        return potentialConfs;
     }
 
     private List<LiteralList> getAtLeastOneConfigs(List<LiteralList> interactionsAll) {
@@ -111,22 +69,5 @@ public class InteractionFinderAtLeastOne extends AbstractInteractionFinder {
             }
         }
         return potentialConfs;
-    }
-
-    private LiteralList findBestConfig(List<LiteralList> interactionsAll, List<LiteralList> potentialConfs) {
-        LiteralList bestConfig = null;
-        double bestRatio = 0.5;
-        for (LiteralList config : potentialConfs) {
-            final double ratio = Math.abs(0.5
-                    - (((double) interactionsAll.parallelStream()
-                                    .filter(config::containsAll)
-                                    .count())
-                            / interactionsAll.size()));
-            if (ratio < bestRatio) {
-                bestRatio = ratio;
-                bestConfig = config;
-            }
-        }
-        return bestConfig;
     }
 }

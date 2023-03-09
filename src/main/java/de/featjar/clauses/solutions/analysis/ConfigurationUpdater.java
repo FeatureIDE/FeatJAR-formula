@@ -21,18 +21,26 @@
 package de.featjar.clauses.solutions.analysis;
 
 import de.featjar.clauses.LiteralList;
+import java.util.List;
 import java.util.Optional;
 
 /**
  * Update and complete partial solutions.
  *
- * @author Jens Meinicke
  * @author Sebastian Krieter
  *
  */
-public interface SolutionUpdater {
-
-    Optional<LiteralList> complete(LiteralList partialSolution, LiteralList... excludeClause);
+public interface ConfigurationUpdater {
 
     Optional<LiteralList> update(LiteralList partialSolution);
+
+    Optional<LiteralList> complete(LiteralList partialSolution, List<LiteralList> excludeClause);
+
+    default Optional<LiteralList> complete(LiteralList partialSolution, LiteralList... excludeClause) {
+        return complete(partialSolution, List.of(excludeClause));
+    }
+
+    default Optional<LiteralList> merge(List<LiteralList> list) {
+        return update(LiteralList.merge(list));
+    }
 }

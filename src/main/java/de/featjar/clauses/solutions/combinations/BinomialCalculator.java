@@ -51,6 +51,10 @@ public class BinomialCalculator {
         return f;
     }
 
+    public long binomial() {
+        return binomial(maxN, maxK);
+    }
+
     public long binomial(int n, int k) {
         long b = binomial[n][k];
         if (b == 0) {

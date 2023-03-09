@@ -21,35 +21,75 @@
 package de.featjar.clauses.solutions.analysis;
 
 import de.featjar.clauses.LiteralList;
+import java.util.Collection;
 import java.util.List;
 
 /**
  * Detect interactions from given set of configurations.
  *
  * @author Sebastian Krieter
- *
  */
 public interface InteractionFinder {
 
-    List<LiteralList> find(int t, int x);
+    public static class Statistic {
+        private final int t;
+        private final int interactionCounter;
+        private final int creationCounter;
+        private final int verifyCounter;
+        private final int iterationCounter;
 
-    void setCore(LiteralList coreDead);
+        public Statistic(int t, int interactionCounter, int creationCounter, int verifyCounter, int iterationCounter) {
+            this.t = t;
+            this.interactionCounter = interactionCounter;
+            this.creationCounter = creationCounter;
+            this.verifyCounter = verifyCounter;
+            this.iterationCounter = iterationCounter;
+        }
 
-    int getConfigurationCount();
+        public int getT() {
+            return t;
+        }
 
-    List<?> getInteractionCounter();
+        public int getInteractionCounter() {
+            return interactionCounter;
+        }
+
+        public int getCreationCounter() {
+            return creationCounter;
+        }
+
+        public int getVerifyCounter() {
+            return verifyCounter;
+        }
+
+        public int getIterationCounter() {
+            return iterationCounter;
+        }
+    }
 
     LiteralList getCore();
 
-    LiteralList merge(List<LiteralList> result);
+    ConfigurationVerifyer getVerifier();
 
-    boolean verify(LiteralList solution);
+    ConfigurationUpdater getUpdater();
 
-    LiteralList complete(LiteralList include, LiteralList... exclude);
+    void setCore(LiteralList core);
 
-    LiteralList update(LiteralList result);
+    void setUpdater(ConfigurationUpdater updater);
 
-    int getConfigCreationCount();
+    void setVerifier(ConfigurationVerifyer verifier);
 
-    int getVerifyCount();
+    void setConfigurationVerificationLimit(int configurationVerificationLimit);
+
+    void setConfigurationCreationLimit(int configurationCreationLimit);
+
+    void addConfigurations(Collection<LiteralList> configurations);
+
+    List<LiteralList> find(int t);
+
+    List<Statistic> getStatistics();
+
+    List<LiteralList> getSample();
+
+    void reset();
 }
