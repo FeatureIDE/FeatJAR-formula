@@ -51,7 +51,7 @@ public class ComputeDNFFormula extends AComputation<IFormula> implements ITransf
     @Override
     public Result<IFormula> compute(DependencyList dependencyList, Progress progress) {
         IFormula formula = dependencyList.get(NNF_FORMULA);
-        DistributiveTransformer formulaToDistributiveNFFormula = new DistributiveTransformer(false);
+        DistributiveTransformer formulaToDistributiveNFFormula = new DistributiveTransformer(false, null);
         return formulaToDistributiveNFFormula.apply(formula).map(f ->
                 NormalForms.normalToStrictNormalForm(f, FormulaNormalForm.DNF));
     }

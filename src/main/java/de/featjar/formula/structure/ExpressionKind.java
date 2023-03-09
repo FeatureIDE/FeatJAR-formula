@@ -21,9 +21,14 @@ import java.util.stream.Stream;
  */
 public interface ExpressionKind extends Predicate<IExpression> {
     /**
+     * {@return the name of this expression kind}
+     */
+    String getName();
+
+    /**
      * Represents Boolean expressions in strict negation normal form.
      */
-    ExpressionKind NNF = of(Variable.class, Literal.class, And.class, Or.class);
+    ExpressionKind NNF = of("NNF", Variable.class, Literal.class, And.class, Or.class);
 
     /**
      * Represents arbitrary Boolean expressions.
@@ -31,7 +36,7 @@ public interface ExpressionKind extends Predicate<IExpression> {
      * Simplification of {@link True} and {@link False} is only possible if the formula has at least one {@link Variable}.
      */
     ExpressionKind BOOLEAN =
-            extend(NNF,
+            extend("Boolean", NNF,
                     Not.class,
                     Implies.class, BiImplies.class,
                     True.class, False.class,
@@ -40,13 +45,13 @@ public interface ExpressionKind extends Predicate<IExpression> {
     /**
      * Represents quantified Boolean expressions.
      */
-    ExpressionKind QBF = extend(BOOLEAN, Exists.class, ForAll.class);
+    ExpressionKind QBF = extend("QBF", BOOLEAN, Exists.class, ForAll.class);
 
     /**
      Represents first-order expressions.
      */
     ExpressionKind FIRST_ORDER =
-            extend(BOOLEAN,
+            extend("first order", BOOLEAN,
                     Constant.class,
                     Equals.class, NotEquals.class,
                     GreaterEqual.class, GreaterThan.class, LessEqual.class, LessThan.class,
@@ -57,7 +62,7 @@ public interface ExpressionKind extends Predicate<IExpression> {
      * Represents all expressions.
      */
     ExpressionKind ARBITRARY =
-            extend(FIRST_ORDER,
+            extend("arbitrary", FIRST_ORDER,
                     ProblemFormula.class, Reference.class);
 
 
@@ -72,20 +77,40 @@ public interface ExpressionKind extends Predicate<IExpression> {
 
     default void assertFor(IExpression expression) {
         if (!test(expression))
-            throw new ExpressionKindNotSupportedException(getClass().getSimpleName());
+            throw new ExpressionKindNotSupportedException(this);
     }
 
     @SafeVarargs
-    static ExpressionKind of(Class<? extends IExpression>... allowedClasses) {
+    static ExpressionKind of(String name, Class<? extends IExpression>... allowedClasses) {
         LinkedHashSet<Class<? extends IExpression>> allowedClassesSet = Sets.of(allowedClasses);
-        return () -> allowedClassesSet;
+        return new ExpressionKind() {
+            @Override
+            public String getName() {
+                return name;
+            }
+
+            @Override
+            public Collection<Class<? extends IExpression>> getAllowedClasses() {
+                return allowedClassesSet;
+            }
+        };
     }
 
     @SafeVarargs
-    static ExpressionKind extend(ExpressionKind expressionKind, Class<? extends IExpression>... allowedClasses) {
+    static ExpressionKind extend(String name, ExpressionKind expressionKind, Class<? extends IExpression>... allowedClasses) {
         LinkedHashSet<Class<? extends IExpression>> allowedClassesSet =
                 Sets.union(expressionKind.getAllowedClasses(), List.of(allowedClasses));
-        return () -> allowedClassesSet;
+        return new ExpressionKind() {
+            @Override
+            public String getName() {
+                return name;
+            }
+
+            @Override
+            public Collection<Class<? extends IExpression>> getAllowedClasses() {
+                return allowedClassesSet;
+            }
+        };
     }
 
     static ExpressionKind getExpressionKind(IExpression expression) {

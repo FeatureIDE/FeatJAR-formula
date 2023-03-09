@@ -36,25 +36,45 @@ import java.util.stream.Collectors;
 
 /**
  * Transforms a formula into strict normal form using the distributive law.
+ * Does not modify its input.
  *
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
 public class DistributiveTransformer implements Function<IFormula, Result<IFormula>> {
+    /**
+     * Thrown to show that an ongoing distributive transformation has been cancelled.
+     */
     public static class CancelledException extends Exception {
+        /**
+         * Creates a new cancelled exception.
+         *
+         * @param cause the cause
+         */
         public CancelledException(Throwable cause) {
             super(cause);
         }
     }
 
+    /**
+     * Predicate for determining whether to cancel an ongoing distributive transformation.
+     */
     public interface ICancelPredicate extends Function<LinkedHashSet<Literal>, Throwable> {
-        default void reset() {}
     }
 
+    /**
+     * Cancels an ongoing distributive transformation when a given maximum number of literals has been exceeded.
+     * Limits the maximum number of literals in the resulting formula.
+     */
     public static class MaximumNumberOfLiteralsCancelPredicate implements ICancelPredicate {
         protected final int maximumNumberOfLiterals;
         int currentNumberOfLiterals = 0;
 
+        /**
+         * Creates a maximum number of literals cancel predicate.
+         *
+         * @param maximumNumberOfLiterals the maximum number of literals
+         */
         public MaximumNumberOfLiteralsCancelPredicate(int maximumNumberOfLiterals) {
             this.maximumNumberOfLiterals = maximumNumberOfLiterals;
         }
@@ -66,11 +86,6 @@ public class DistributiveTransformer implements Function<IFormula, Result<IFormu
                     ? new RuntimeException("exceeded maximum number of literals " +
                     maximumNumberOfLiterals + " with clause of size " + currentNumberOfLiterals)
                     : null;
-        }
-
-        @Override
-        public void reset() {
-            currentNumberOfLiterals = 0;
         }
     }
 
@@ -89,12 +104,21 @@ public class DistributiveTransformer implements Function<IFormula, Result<IFormu
     protected final Function<List<? extends IFormula>, IFormula> clauseConstructor;
     protected final ICancelPredicate cancelPredicate;
 
-    public DistributiveTransformer(boolean isCNF) {
-        this(isCNF, clause -> null);
+    /**
+     * Creates a new distributive transformer.
+     */
+    public DistributiveTransformer() {
+        this(true, null);
     }
 
+    /**
+     * Creates a new distributive transformer.
+     *
+     * @param isCNF whether strict CNF or DNF should be computed
+     * @param cancelPredicate the cancel predicate, if any
+     */
     public DistributiveTransformer(boolean isCNF, ICancelPredicate cancelPredicate) {
-        this.cancelPredicate = cancelPredicate;
+        this.cancelPredicate = cancelPredicate != null ? cancelPredicate : clause -> null;
         this.isCNF = isCNF;
         if (this.isCNF) {
             clauseClass = Or.class;
@@ -163,7 +187,6 @@ public class DistributiveTransformer implements Function<IFormula, Result<IFormu
         if (formula instanceof Literal) {
             return new ArrayList<>();
         } else {
-            cancelPredicate.reset();
             ArrayList<LinkedHashSet<Literal>> clauses = new ArrayList<>();
             List<IFormula> children = new ArrayList<>((List<IFormula>) formula.getChildren());
             children.sort(Comparator.comparingInt(ITree::getChildrenCount));

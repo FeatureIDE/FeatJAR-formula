@@ -32,6 +32,8 @@ import de.featjar.formula.transformer.ComputeCNFFormula;
 import de.featjar.formula.transformer.ComputeDNFFormula;
 import de.featjar.formula.transformer.ComputeNNFFormula;
 
+import java.util.stream.Collectors;
+
 /**
  * Tests and transforms formulas for and into normal forms.
  *
@@ -63,7 +65,9 @@ public class NormalForms {
                 } else if (formula instanceof Or) {
                     formula = new And(formula);
                 } else {
-                    formula.replaceChildren(child -> (child instanceof Literal ? new Or((IFormula) child) : child));
+                    formula = new And(formula.getChildren().stream()
+                            .map(child -> (IFormula) (child instanceof Literal ? new Or((IFormula) child) : child))
+                            .collect(Collectors.toList()));
                 }
                 break;
             case DNF:
@@ -72,7 +76,9 @@ public class NormalForms {
                 } else if (formula instanceof And) {
                     formula = new Or(new And(formula));
                 } else {
-                    formula.replaceChildren(child -> (child instanceof Literal ? new And((IFormula) child) : child));
+                    formula = new And(formula.getChildren().stream()
+                            .map(child -> (IFormula) (child instanceof Literal ? new And((IFormula) child) : child))
+                            .collect(Collectors.toList()));
                 }
                 break;
         }

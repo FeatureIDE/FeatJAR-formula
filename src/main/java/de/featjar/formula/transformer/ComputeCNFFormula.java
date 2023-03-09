@@ -23,11 +23,8 @@ package de.featjar.formula.transformer;
 import de.featjar.base.computation.*;
 import de.featjar.base.computation.Progress;
 import de.featjar.base.data.Result;
-import de.featjar.base.data.Void;
-import de.featjar.base.tree.Trees;
 import de.featjar.base.tree.structure.ITree;
 import de.featjar.formula.structure.ExpressionKind;
-import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.FormulaNormalForm;
 import de.featjar.formula.structure.formula.connective.And;
@@ -47,10 +44,15 @@ import java.util.function.Consumer;
 public class ComputeCNFFormula extends AComputation<IFormula> implements ITransformation<IFormula> {
     protected static final Dependency<IFormula> NNF_FORMULA = newRequiredDependency();
     protected static final Dependency<Boolean> IS_PLAISTED_GREENBAUM = newOptionalDependency(false);
-    protected static final Dependency<Integer> MAXIMUM_NUMBER_OF_LITERALS = newOptionalDependency(Integer.MAX_VALUE); // todo: doesn't work right now?
-    protected static final Dependency<Boolean> IS_PARALLEL = newOptionalDependency(false); // does not guarantee determinism
+    protected static final Dependency<Integer> MAXIMUM_NUMBER_OF_LITERALS = newOptionalDependency(Integer.MAX_VALUE); // be careful, this creates new variables that may clash on composition
+    protected static final Dependency<Boolean> IS_PARALLEL = newOptionalDependency(false); // be careful, this does not guarantee determinism
 
 
+    /**
+     * Creates a new CNF formula computation.
+     *
+     * @param nnfFormula the input NNF formula computation
+     */
     public ComputeCNFFormula(IComputation<IFormula> nnfFormula) {
         dependOn(NNF_FORMULA, IS_PLAISTED_GREENBAUM, MAXIMUM_NUMBER_OF_LITERALS, IS_PARALLEL);
         setInput(nnfFormula);
@@ -61,26 +63,61 @@ public class ComputeCNFFormula extends AComputation<IFormula> implements ITransf
         return NNF_FORMULA;
     }
 
+    /**
+     * {@return whether this computation uses the Plaisted-Greenbaum optimization}
+     * If {@code true}, auxiliary variables are defined with {@link de.featjar.formula.structure.formula.connective.Implies} instead
+     * of {@link de.featjar.formula.structure.formula.connective.BiImplies}, which yields smaller formulas that are not model-count-preserving.
+     */
     public IComputation<Boolean> isPlaistedGreenbaum() {
         return getDependency(IS_PLAISTED_GREENBAUM);
     }
 
-    public void isPlaistedGreenbaum(IComputation<Boolean> isPlaistedGreenbaum) {
+    /**
+     * Sets whether this computation uses the Plaisted-Greenbaum optimization.
+     *
+     * @param isPlaistedGreenbaum whether this computation uses the Plaisted-Greenbaum optimization
+     */
+    public void setPlaistedGreenbaum(IComputation<Boolean> isPlaistedGreenbaum) {
         setDependency(IS_PLAISTED_GREENBAUM, isPlaistedGreenbaum);
     }
 
+    /**
+     * {@return the maximum number of literals available for distributive transformation}
+     * When this number is exceeded for a constraint in the formula, it is instead transformed using the {@link TseitinTransformer}.
+     */
     public IComputation<Integer> getMaximumNumberOfLiterals() {
         return getDependency(MAXIMUM_NUMBER_OF_LITERALS);
     }
 
+    /**
+     * Sets the maximum number of literals available for distributive transformation.
+     * @param maximumNumberOfLiterals the maximum number of literals
+     */
     public void setMaximumNumberOfLiterals(IComputation<Integer> maximumNumberOfLiterals) {
         setDependency(MAXIMUM_NUMBER_OF_LITERALS, maximumNumberOfLiterals);
     }
 
+    /**
+     * Sets whether this computation introduces auxiliary variables.
+     * @param tseitin whether this computation introduces auxiliary variables
+     */
+    public void setTseitin(IComputation<Boolean> tseitin) {
+        setDependency(MAXIMUM_NUMBER_OF_LITERALS,
+                tseitin.mapResult(ComputeCNFFormula.class, "setTseitin", b -> b ? 0 : Integer.MAX_VALUE));
+    }
+
+    /**
+     * {@return whether this computation is parallel}
+     */
     public IComputation<Boolean> isParallel() {
         return getDependency(IS_PARALLEL);
     }
 
+    /**
+     * Sets whether this computation is parallel.
+     *
+     * @param isParallel whether this computation is parallel
+     */
     public void setParallel(IComputation<Boolean> isParallel) {
         setDependency(IS_PARALLEL, isParallel);
     }
@@ -121,19 +158,16 @@ public class ComputeCNFFormula extends AComputation<IFormula> implements ITransf
 
     @SuppressWarnings("unchecked")
     private void transform(IFormula formula, List<IFormula> clauseFormulas, List<TseitinTransformer.Substitution> substitutions, boolean isPlaistedGreenbaum, int maximumNumberOfLiterals) {
-//        if ((formulaClone).isCNF()) {
-//            if (formulaClone instanceof And) {
-//                distributiveClauses.addAll((List<? extends IFormula>) formulaClone.getChildren());
-//            } else {
-//                distributiveClauses.add(formulaClone);
-//            }
-        if (maximumNumberOfLiterals > 0) {
-            Result<IFormula> transformationResult = distributiveTransform(formula,
-                    new DistributiveTransformer.MaximumNumberOfLiteralsCancelPredicate(maximumNumberOfLiterals));
-            if (transformationResult.isPresent()) {
-                clauseFormulas.addAll((List<? extends IFormula>) transformationResult.get().getChildren());
-                return;
-            }
+        if (formula.isStrictNormalForm(FormulaNormalForm.CNF)) {
+                clauseFormulas.addAll((List<? extends IFormula>) formula.getChildren());
+        } else if (formula.isNormalForm(FormulaNormalForm.CNF)) {
+            clauseFormulas.add(NormalForms.normalToStrictNormalForm(formula, FormulaNormalForm.CNF));
+        }
+        Result<IFormula> transformationResult = distributiveTransform(formula,
+                new DistributiveTransformer.MaximumNumberOfLiteralsCancelPredicate(maximumNumberOfLiterals));
+        if (transformationResult.isPresent()) {
+            clauseFormulas.addAll((List<? extends IFormula>) transformationResult.get().getChildren());
+            return;
         }
         substitutions.addAll(tseitinTransform(formula, isPlaistedGreenbaum));
     }

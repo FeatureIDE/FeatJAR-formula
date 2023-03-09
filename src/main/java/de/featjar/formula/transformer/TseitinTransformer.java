@@ -39,13 +39,23 @@ import java.util.stream.Collectors;
 
 /**
  * Transforms a formula into strict normal form by introducing auxiliary variables.
+ * Does not modify its input.
+ * Auxiliary variables are incrementally numbered and may clash if composed with other formulas.
+ * todo: encode the original formula in the variable name (e.g., lossless base64), this would also make unification unnecessary
  *
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
 public class TseitinTransformer implements ITreeVisitor<IExpression, IExpression>, Function<IFormula, List<TseitinTransformer.Substitution>> {
-    public static final String AUXILIARY_VARIABLE_NAME_PREFIX = "__";
+    /**
+     * Prefix for naming auxiliary variables.
+     */
+    public static final String AUXILIARY_VARIABLE_NAME_PREFIX = "_aux_";
 
+    /**
+     * A substitution of a formula with an auxiliary variable.
+     * Hashed over the original (i.e., substituted) formula to simplify unification (i.e., using the same variable for the same substituted formula).
+     */
     public static class Substitution {
         protected final IFormula originalFormula;
         protected final Variable auxiliaryVariable;
@@ -70,10 +80,17 @@ public class TseitinTransformer implements ITreeVisitor<IExpression, IExpression
             this.clauseFormulas = new ArrayList<>(clauseFormulas);
         }
 
+        /**
+         * {@return this substitute's auxiliary variable}
+         */
         public Variable getAuxiliaryVariable() {
             return auxiliaryVariable;
         }
 
+        /**
+         * {@return this substitute's clause formulas}
+         * This formula encodes the definition of the auxiliary variable as the original formula.
+         */
         public List<IFormula> getClauseFormulas() {
             return clauseFormulas;
         }
@@ -95,6 +112,11 @@ public class TseitinTransformer implements ITreeVisitor<IExpression, IExpression
         }
     }
 
+    /**
+     * Unifies a given list of substitutions.
+     * That is, removes all duplicate substitutions.
+     * @param substitutions the list of substitutions
+     */
     public static void unify(List<Substitution> substitutions) {
         int currentAuxiliaryVariableIndex = 0;
         LinkedHashMap<Substitution, Substitution> unifiedSubstitutions = Maps.empty();
@@ -117,6 +139,12 @@ public class TseitinTransformer implements ITreeVisitor<IExpression, IExpression
         substitutions.addAll(unifiedSubstitutions.keySet());
     }
 
+    /**
+     * {@return the clause formulas for a given list of substitutions}
+     * Thus, encodes the definitions of all given substitutions.
+     *
+     * @param substitutions the list of substitutions
+     */
     public static List<IFormula> getClauseFormulas(List<Substitution> substitutions) {
         return substitutions.stream()
                 .map(Substitution::getClauseFormulas)
@@ -129,10 +157,18 @@ public class TseitinTransformer implements ITreeVisitor<IExpression, IExpression
     protected final boolean isPlaistedGreenbaum;
     protected int currentAuxiliaryVariableIndex = 0;
 
+    /**
+     * Creates a new Tseitin transformer.
+     */
     public TseitinTransformer() {
         this(false);
     }
 
+    /**
+     * Creates a new Tseitin transformer.
+     *
+     * @param isPlaistedGreenbaum whether to use the Plaisted-Greenbaum optimization
+     */
     public TseitinTransformer(boolean isPlaistedGreenbaum) {
         this.isPlaistedGreenbaum = isPlaistedGreenbaum;
     }

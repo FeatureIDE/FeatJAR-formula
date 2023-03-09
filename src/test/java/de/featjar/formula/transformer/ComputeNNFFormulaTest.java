@@ -23,13 +23,14 @@ package de.featjar.formula.transformer;
 import static de.featjar.formula.structure.Expressions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import de.featjar.formula.structure.ExpressionKind;
 import de.featjar.formula.structure.formula.IFormula;
 import org.junit.jupiter.api.Test;
 
 class ComputeNNFFormulaTest {
     void nnf(IFormula formula, IFormula newFormula) {
         TransformationTest.traverseAndAssertFormulaEquals(formula, ComputeNNFFormula::new, newFormula);
-        assertTrue(newFormula.isSimpleBoolean());
+        assertTrue(newFormula.isKind(ExpressionKind.BOOLEAN));
     }
 
     void fails(IFormula formula) {

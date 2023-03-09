@@ -20,6 +20,7 @@
  */
 package de.featjar.formula.transformer;
 
+import static de.featjar.base.computation.Computations.async;
 import static de.featjar.formula.structure.Expressions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,10 +28,13 @@ import de.featjar.base.FeatJAR;
 import de.featjar.base.computation.Computations;
 import de.featjar.base.computation.IComputation;
 import de.featjar.base.io.IO;
+import de.featjar.formula.analysis.bool.ComputeBooleanRepresentationOfCNFFormula;
 import de.featjar.formula.io.FormulaFormats;
 import de.featjar.formula.structure.formula.IFormula;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
 import org.junit.jupiter.api.Test;
 
 class ComputeCNFFormulaTest {
@@ -83,5 +87,21 @@ class ComputeCNFFormulaTest {
                         or(literal("A")),
                         or(literal("B"))),
                 formula);
+    }
+
+    @Test
+    void tseitin() {
+        IFormula formula = not(or(and(literal("C"), biImplies(or(literal("D"), literal("E")), literal("C"))), and(or(literal("E")))));
+        IFormula distributiveCNF = async(formula)
+                .map(ComputeNNFFormula::new)
+                .map(ComputeCNFFormula::new)
+                .peek((ComputeCNFFormula c) -> c.setTseitin(async(false)))
+                .get().get();
+        IFormula tseitinCNF = async(formula)
+                .map(ComputeNNFFormula::new)
+                .map(ComputeCNFFormula::new)
+                .peek((ComputeCNFFormula c) -> c.setTseitin(async(true)))
+                .get().get();
+        // todo: check whether both formulas have same model count
     }
 }
