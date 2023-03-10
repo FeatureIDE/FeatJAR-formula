@@ -53,7 +53,7 @@ public abstract class AInteractionFinder implements InteractionFinder {
     protected int verifyCounter = 0;
     protected int iterationCounter = 0;
 
-    private ArrayList<Statistic> statistics;
+    protected ArrayList<Statistic> statistics;
 
     @Override
     public void reset() {
@@ -135,6 +135,10 @@ public abstract class AInteractionFinder implements InteractionFinder {
     }
 
     public List<LiteralList> find(int t) {
+        if (t <= 0) {
+            statistics.add(new Statistic(0, 0, 0, 0, 0));
+            return Collections.emptyList();
+        }
         List<LiteralList> interactionsAll = computePotentialInteractions(t);
 
         while (interactionsAll.size() > 1 //
@@ -157,7 +161,7 @@ public abstract class AInteractionFinder implements InteractionFinder {
         }
         statistics.add(new Statistic(t, interactionsAll.size(), creationCounter, verifyCounter, iterationCounter));
 
-        if (updater.complete(null, interactionsAll).isPresent()) {
+        if (updater.complete(null, interactionsAll).filter(this::verify).isPresent()) {
             return interactionsAll;
         } else {
             return Collections.emptyList();

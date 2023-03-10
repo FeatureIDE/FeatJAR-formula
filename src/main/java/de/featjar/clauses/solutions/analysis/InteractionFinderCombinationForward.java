@@ -32,13 +32,15 @@ public class InteractionFinderCombinationForward extends InteractionFinderCombin
 
     public List<LiteralList> find(int t) {
         List<LiteralList> lastResult = null;
-        for (int ti = 1; ti <= t; ti++) {
+        for (int ti = 0; ti <= t; ti++) {
             final List<LiteralList> result = finder.find(ti);
             if (result.isEmpty()) {
                 return lastResult == null ? new ArrayList<>() : lastResult;
             } else {
                 if (lastResult == null) {
-                    lastResult = result;
+                    if (!result.isEmpty()) {
+                        lastResult = result;
+                    }
                 } else {
                     LiteralList merge1 = LiteralList.merge(lastResult);
                     LiteralList merge2 = LiteralList.merge(result);

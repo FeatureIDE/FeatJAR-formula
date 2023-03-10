@@ -49,14 +49,14 @@ public class SingleInteractionFinder extends AInteractionFinder {
 
     private List<LiteralList> getAtLeastOneConfigs(List<LiteralList> interactionsAll) {
         List<LiteralList> potentialConfs = new ArrayList<>();
-        interationLoop:
+        interactionLoop:
         for (int i = 0; i < interactionsAll.size(); i++) {
             LiteralList interaction = interactionsAll.get(i);
             if (potentialConfs.parallelStream()
                     .filter(c -> c.containsAll(interaction))
                     .findAny()
                     .isPresent()) {
-                continue interationLoop;
+                continue interactionLoop;
             }
             List<LiteralList> interactionsRight = new ArrayList<>(interactionsAll.size() - 1);
             interactionsRight.addAll(interactionsAll.subList(0, i));

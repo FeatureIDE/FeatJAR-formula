@@ -49,14 +49,19 @@ public class ParallelLexicographicIterator implements Spliterator<int[]> {
     public ParallelLexicographicIterator(int t, int size) {
         this.t = t;
         n = size;
-        binomialCalculator = new BinomialCalculator(t, size);
-        end = binomialCalculator.binomial();
-        index = -1;
-
         c = new int[t];
-        c[0] = -1;
-        for (int i = 1; i < t; i++) {
-            c[i] = i;
+        if (t > 0) {
+            binomialCalculator = new BinomialCalculator(t, size);
+            end = binomialCalculator.binomial();
+            index = -1;
+
+            c[0] = -1;
+            for (int i = 1; i < t; i++) {
+                c[i] = i;
+            }
+        } else {
+            end = 0;
+            binomialCalculator = null;
         }
     }
 
