@@ -34,11 +34,10 @@ import java.util.stream.Collectors;
 
 /**
  * Parses feature-model formula files created by KConfigReader.
+ * TODO: this is currently mostly a hack and should be parsed properly as first-order formulas
  *
  * @author Elias Kuiter
- * @deprecated this is currently mostly a hack and should be parsed properly as first-order formulas
  */
-@Deprecated
 public class KConfigReaderFormat implements IFormat<IExpression> {
 
     @Override
