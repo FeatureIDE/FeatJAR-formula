@@ -91,6 +91,7 @@ public class ComputeCNFFormula extends AComputation<IFormula> implements ITransf
 
     /**
      * Sets the maximum number of literals available for distributive transformation.
+     *
      * @param maximumNumberOfLiterals the maximum number of literals
      */
     public void setMaximumNumberOfLiterals(IComputation<Integer> maximumNumberOfLiterals) {
@@ -99,6 +100,7 @@ public class ComputeCNFFormula extends AComputation<IFormula> implements ITransf
 
     /**
      * Sets whether this computation introduces auxiliary variables.
+     *
      * @param tseitin whether this computation introduces auxiliary variables
      */
     public void setTseitin(IComputation<Boolean> tseitin) {
@@ -159,17 +161,18 @@ public class ComputeCNFFormula extends AComputation<IFormula> implements ITransf
     @SuppressWarnings("unchecked")
     private void transform(IFormula formula, List<IFormula> clauseFormulas, List<TseitinTransformer.Substitution> substitutions, boolean isPlaistedGreenbaum, int maximumNumberOfLiterals) {
         if (formula.isStrictNormalForm(FormulaNormalForm.CNF)) {
-                clauseFormulas.addAll((List<? extends IFormula>) formula.getChildren());
+            clauseFormulas.addAll((List<? extends IFormula>) formula.getChildren());
         } else if (formula.isNormalForm(FormulaNormalForm.CNF)) {
-            clauseFormulas.add(NormalForms.normalToStrictNormalForm(formula, FormulaNormalForm.CNF));
+            clauseFormulas.addAll((List<? extends IFormula>) NormalForms.normalToStrictNormalForm(formula, FormulaNormalForm.CNF).getChildren());
+        } else {
+            Result<IFormula> transformationResult = distributiveTransform(formula,
+                    new DistributiveTransformer.MaximumNumberOfLiteralsCancelPredicate(maximumNumberOfLiterals));
+            if (transformationResult.isPresent()) {
+                clauseFormulas.addAll((List<? extends IFormula>) transformationResult.get().getChildren());
+                return;
+            }
+            substitutions.addAll(tseitinTransform(formula, isPlaistedGreenbaum));
         }
-        Result<IFormula> transformationResult = distributiveTransform(formula,
-                new DistributiveTransformer.MaximumNumberOfLiteralsCancelPredicate(maximumNumberOfLiterals));
-        if (transformationResult.isPresent()) {
-            clauseFormulas.addAll((List<? extends IFormula>) transformationResult.get().getChildren());
-            return;
-        }
-        substitutions.addAll(tseitinTransform(formula, isPlaistedGreenbaum));
     }
 
     protected Result<IFormula> distributiveTransform(IFormula formula, DistributiveTransformer.ICancelPredicate cancelPredicate) {
