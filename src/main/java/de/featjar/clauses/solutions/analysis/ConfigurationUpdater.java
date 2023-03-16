@@ -40,7 +40,7 @@ public interface ConfigurationUpdater {
         return complete(partialSolution, List.of(excludeClause));
     }
 
-    default Optional<LiteralList> merge(List<LiteralList> list) {
+    default Optional<LiteralList> mergeAndUpdate(List<LiteralList> list) {
         return update(LiteralList.merge(list));
     }
 }

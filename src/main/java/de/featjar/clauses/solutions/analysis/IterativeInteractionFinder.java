@@ -21,19 +21,18 @@
 package de.featjar.clauses.solutions.analysis;
 
 import de.featjar.clauses.LiteralList;
-import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Detect interactions from given set of configurations.
- *
- * @author Sebastian Krieter
- */
-public class SingleRandomInteractionFinder extends AInteractionFinder {
+public class IterativeInteractionFinder extends InteractionFinderCombination {
 
-    protected LiteralList findConfig(List<LiteralList> interactionsAll) {
-        List<LiteralList> configs = new ArrayList<>(interactionsAll.size());
-        configs.addAll(getRandomConfigs(1));
-        return findBestConfig(interactionsAll, configs);
+    public IterativeInteractionFinder(AInteractionFinder finder) {
+        super(finder);
+    }
+
+    public List<LiteralList> find(int t) {
+        for (int ti = 1; ti < t; ti++) {
+            finder.find(ti);
+        }
+        return finder.find(t);
     }
 }

@@ -21,11 +21,7 @@
 package de.featjar.clauses.solutions.analysis;
 
 import de.featjar.clauses.LiteralList;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Detect interactions from given set of configurations.
@@ -34,39 +30,8 @@ import java.util.stream.Stream;
  */
 public class NaiveRandomInteractionFinder extends AInteractionFinder {
 
-    public List<LiteralList> find(int t) {
-        if (t <= 0) {
-            statistics.add(new Statistic(0, 0, 0, 0, 0));
-            return Collections.emptyList();
-        }
-        List<LiteralList> interactionsAll = computePotentialInteractions(t);
-
-        while (interactionsAll.size() > 1 //
-                && verifyCounter < configurationVerificationLimit //
-                && creationCounter < configurationCreationLimit) {
-            statistics.add(
-                    new Statistic(t, interactionsAll.size(), creationCounter, verifyCounter, iterationCounter++));
-
-            final LiteralList configuration = findConfig(interactionsAll);
-
-            if (configuration != null) {
-                Stream<LiteralList> interactionStream = interactionsAll.parallelStream();
-                interactionStream = verify(configuration) //
-                        ? interactionStream.filter(combo -> !configuration.containsAll(combo)) //
-                        : interactionStream.filter(combo -> configuration.containsAll(combo));
-                interactionsAll = interactionStream.collect(Collectors.toList());
-            } else {
-                break;
-            }
-        }
-        statistics.add(new Statistic(t, interactionsAll.size(), creationCounter, verifyCounter, iterationCounter));
-
-        return interactionsAll;
-    }
-
     protected LiteralList findConfig(List<LiteralList> interactionsAll) {
-        List<LiteralList> configs = new ArrayList<>(interactionsAll.size());
-        configs.addAll(getRandomConfigs(1));
-        return findBestConfig(interactionsAll, configs);
+        final List<LiteralList> randomConfigs = getRandomConfigs(1);
+        return randomConfigs.isEmpty() ? null : randomConfigs.get(0);
     }
 }

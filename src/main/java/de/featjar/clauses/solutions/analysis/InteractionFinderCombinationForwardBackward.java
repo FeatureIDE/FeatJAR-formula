@@ -22,6 +22,7 @@ package de.featjar.clauses.solutions.analysis;
 
 import de.featjar.clauses.LiteralList;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class InteractionFinderCombinationForwardBackward extends InteractionFinderCombination {
@@ -32,34 +33,52 @@ public class InteractionFinderCombinationForwardBackward extends InteractionFind
 
     public List<LiteralList> find(int t) {
         List<List<LiteralList>> results = new ArrayList<>(t);
+        List<LiteralList> mergedResults = new ArrayList<>(t);
         for (int ti = 0; ti <= t; ti++) {
             results.add(finder.find(ti));
+            mergedResults.add(LiteralList.merge(results.get(ti)));
         }
-        List<LiteralList> lastResult = null;
-        for (int i = results.size() - 1; i >= 0; i--) {
-            final List<LiteralList> result = results.get(i);
-            if (result.isEmpty()) {
-                return lastResult == null ? new ArrayList<>() : lastResult;
+
+        boolean[] forwardResults = new boolean[t + 1];
+        for (int i = 0; i <= t; i++) {
+            LiteralList inverseConfig = finder.complete(null, results.get(i));
+            if (inverseConfig != null) {
+                if (finder.verify(inverseConfig)) {
+                    forwardResults[i] = true;
+                }
             } else {
-                if (lastResult == null) {
-                    lastResult = result;
-                } else {
-                    LiteralList merge1 = finder.update(LiteralList.merge(result));
-                    LiteralList merge2 = finder.update(LiteralList.merge(lastResult));
-                    if (merge2.containsAll(merge1)) {
-                        if (!merge1.containsAll(merge2)) {
-                            LiteralList complete = finder.complete(merge1, merge2.removeAll(merge1));
-                            if (complete != null && finder.verify(complete)) {
-                                return lastResult;
+                break;
+            }
+        }
+
+        int lastI = -1;
+
+        for (int i = t; i >= 1; i--) {
+            if (lastI == -1 && forwardResults[i]) {
+                lastI = i;
+            } else {
+                if (forwardResults[i]) {
+                    LiteralList lastMergedResult = mergedResults.get(lastI);
+                    LiteralList curMergedResult = mergedResults.get(i);
+                    if (lastMergedResult.containsAll(curMergedResult)) {
+                        if (!curMergedResult.containsAll(lastMergedResult)) {
+                            LiteralList complete =
+                                    finder.complete(curMergedResult, lastMergedResult.removeAll(curMergedResult));
+                            if (complete == null) {
+                                if (!finder.update(curMergedResult).containsAll(lastMergedResult)) {
+                                    return results.get(lastI);
+                                }
+                            } else if (finder.verify(complete)) {
+                                return results.get(lastI);
                             }
                         }
-                        lastResult = result;
+                        lastI = i;
                     } else {
-                        return lastResult;
+                        return results.get(lastI);
                     }
                 }
             }
         }
-        return lastResult == null ? new ArrayList<>() : lastResult;
+        return lastI == -1 ? Collections.emptyList() : results.get(lastI);
     }
 }

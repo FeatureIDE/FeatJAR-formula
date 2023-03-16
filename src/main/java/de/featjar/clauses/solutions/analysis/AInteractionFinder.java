@@ -161,11 +161,7 @@ public abstract class AInteractionFinder implements InteractionFinder {
         }
         statistics.add(new Statistic(t, interactionsAll.size(), creationCounter, verifyCounter, iterationCounter));
 
-        if (updater.complete(null, interactionsAll).filter(this::verify).isPresent()) {
-            return interactionsAll;
-        } else {
-            return Collections.emptyList();
-        }
+        return interactionsAll;
     }
 
     protected abstract LiteralList findConfig(List<LiteralList> interactionsAll);
@@ -205,6 +201,11 @@ public abstract class AInteractionFinder implements InteractionFinder {
     }
 
     protected LiteralList complete(LiteralList include, LiteralList... exclude) {
+        creationCounter++;
+        return updater.complete(include, exclude).orElse(null);
+    }
+
+    protected LiteralList complete(LiteralList include, List<LiteralList> exclude) {
         creationCounter++;
         return updater.complete(include, exclude).orElse(null);
     }
