@@ -40,15 +40,15 @@ import java.util.stream.Stream;
  */
 public abstract class AInteractionFinder implements InteractionFinder {
 
-    private ConfigurationUpdater updater;
-    private ConfigurationVerifyer verifier;
-    private LiteralList core;
+    protected ConfigurationUpdater updater;
+    protected ConfigurationVerifyer verifier;
+    protected LiteralList core;
 
     protected int configurationVerificationLimit = Integer.MAX_VALUE;
     protected int configurationCreationLimit = Integer.MAX_VALUE;
 
-    private List<LiteralList> succeedingConfs;
-    private List<LiteralList> failingConfs;
+    protected List<LiteralList> succeedingConfs;
+    protected List<LiteralList> failingConfs;
     protected int creationCounter = 0;
     protected int verifyCounter = 0;
     protected int iterationCounter = 0;
@@ -144,8 +144,8 @@ public abstract class AInteractionFinder implements InteractionFinder {
         while (interactionsAll.size() > 1 //
                 && verifyCounter < configurationVerificationLimit //
                 && creationCounter < configurationCreationLimit) {
-            statistics.add(
-                    new Statistic(t, interactionsAll.size(), creationCounter, verifyCounter, iterationCounter++));
+            addStatisticEntry(t, interactionsAll);
+            iterationCounter++;
 
             final LiteralList configuration = findConfig(interactionsAll);
 
@@ -159,9 +159,18 @@ public abstract class AInteractionFinder implements InteractionFinder {
                 break;
             }
         }
-        statistics.add(new Statistic(t, interactionsAll.size(), creationCounter, verifyCounter, iterationCounter));
+        addStatisticEntry(t, interactionsAll);
 
-        return interactionsAll;
+        return interactionsAll.isEmpty() ? null : interactionsAll;
+    }
+
+    protected void addStatisticEntry(int t, List<LiteralList> interactionsAll) {
+        statistics.add(new Statistic(
+                t,
+                interactionsAll == null ? 0 : interactionsAll.size(),
+                creationCounter,
+                verifyCounter,
+                iterationCounter));
     }
 
     protected abstract LiteralList findConfig(List<LiteralList> interactionsAll);
@@ -252,5 +261,17 @@ public abstract class AInteractionFinder implements InteractionFinder {
             }
         }
         return bestConfig;
+    }
+
+    protected boolean isPotentialInteraction(List<LiteralList> interaction) {
+        if (interaction == null) {
+            return false;
+        }
+        LiteralList testConfig = complete(LiteralList.merge(interaction), Collections.emptyList());
+        if (testConfig == null || verify(testConfig)) {
+            return false;
+        }
+        LiteralList inverseConfig = complete(null, interaction);
+        return inverseConfig != null && verify(inverseConfig);
     }
 }

@@ -31,41 +31,26 @@ import java.util.List;
  */
 public class SingleInteractionFinder extends AInteractionFinder {
 
-    protected LiteralList findConfig(List<LiteralList> interactionsAll) {
-        if (interactionsAll.size() < 5000) {
-            List<LiteralList> configs = new ArrayList<>(interactionsAll.size());
-            configs.addAll(getAtLeastOneConfigs(interactionsAll));
-            configs.addAll(getRandomConfigs((int) Math.ceil(Math.log(interactionsAll.size()))));
-            return findBestConfig(interactionsAll, configs);
-        } else {
-            LiteralList bestConfig = findBestConfig(
-                    interactionsAll, getRandomConfigs((int) Math.ceil(2 * Math.log(interactionsAll.size()))));
+    protected LiteralList findConfig(List<LiteralList> interactions) {
+        final int limit = (int) Math.ceil(2 * (Math.log(interactions.size()) / Math.log(2)) + 1);
+        LiteralList bestConfig = findBestConfig(interactions, getRandomConfigs(limit));
 
-            return bestConfig != null
-                    ? bestConfig
-                    : findBestConfig(interactionsAll, getAtLeastOneConfigs(interactionsAll));
-        }
+        return bestConfig != null ? bestConfig : findBestConfig(interactions, getAtLeastOneConfigs(interactions));
     }
 
     private List<LiteralList> getAtLeastOneConfigs(List<LiteralList> interactionsAll) {
         List<LiteralList> potentialConfs = new ArrayList<>();
+        LiteralList merge = LiteralList.merge(interactionsAll);
         interactionLoop:
         for (int i = 0; i < interactionsAll.size(); i++) {
             LiteralList interaction = interactionsAll.get(i);
-            if (potentialConfs.parallelStream()
-                    .filter(c -> c.containsAll(interaction))
-                    .findAny()
-                    .isPresent()) {
+            if (potentialConfs.stream().anyMatch(c -> c.containsAll(interaction))) {
                 continue interactionLoop;
             }
-            List<LiteralList> interactionsRight = new ArrayList<>(interactionsAll.size() - 1);
-            interactionsRight.addAll(interactionsAll.subList(0, i));
-            interactionsRight.addAll(interactionsAll.subList(i + 1, interactionsAll.size()));
-            LiteralList config = complete(interaction, LiteralList.merge(interactionsRight));
+            LiteralList config = complete(interaction, merge.removeAll(interaction));
             if (config != null) {
                 potentialConfs.add(config);
-            } else {
-                // TODO remove interaction from list
+//                return potentialConfs;
             }
         }
         return potentialConfs;

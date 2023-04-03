@@ -22,7 +22,6 @@ package de.featjar.clauses.solutions.analysis;
 
 import de.featjar.clauses.LiteralList;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class InteractionFinderCombinationForwardBackward extends InteractionFinderCombination {
@@ -32,53 +31,59 @@ public class InteractionFinderCombinationForwardBackward extends InteractionFind
     }
 
     public List<LiteralList> find(int t) {
-        List<List<LiteralList>> results = new ArrayList<>(t);
-        List<LiteralList> mergedResults = new ArrayList<>(t);
-        for (int ti = 0; ti <= t; ti++) {
-            results.add(finder.find(ti));
-            mergedResults.add(LiteralList.merge(results.get(ti)));
+        @SuppressWarnings("unchecked")
+        List<LiteralList>[] results = new List[t + 1];
+        for (int ti = 1; ti <= t; ti++) {
+            results[ti] = finder.find(ti);
         }
 
-        boolean[] forwardResults = new boolean[t + 1];
-        for (int i = 0; i <= t; i++) {
-            LiteralList inverseConfig = finder.complete(null, results.get(i));
-            if (inverseConfig != null) {
-                if (finder.verify(inverseConfig)) {
-                    forwardResults[i] = true;
-                }
+        LiteralList[] mergedResults = new LiteralList[t + 1];
+        for (int ti = 1; ti <= t; ti++) {
+            final List<LiteralList> res = results[ti];
+            if (finder.isPotentialInteraction(res)) {
+                mergedResults[ti] = LiteralList.merge(res);
             } else {
-                break;
+                results[ti] = null;
             }
         }
 
         int lastI = -1;
 
         for (int i = t; i >= 1; i--) {
-            if (lastI == -1 && forwardResults[i]) {
+            if (lastI == -1 && mergedResults[i] != null) {
                 lastI = i;
             } else {
-                if (forwardResults[i]) {
-                    LiteralList lastMergedResult = mergedResults.get(lastI);
-                    LiteralList curMergedResult = mergedResults.get(i);
+                if (mergedResults[i] != null) {
+                    LiteralList lastMergedResult = mergedResults[lastI];
+                    LiteralList curMergedResult = mergedResults[i];
                     if (lastMergedResult.containsAll(curMergedResult)) {
                         if (!curMergedResult.containsAll(lastMergedResult)) {
-                            LiteralList complete =
-                                    finder.complete(curMergedResult, lastMergedResult.removeAll(curMergedResult));
-                            if (complete == null) {
-                                if (!finder.update(curMergedResult).containsAll(lastMergedResult)) {
-                                    return results.get(lastI);
+                            ArrayList<LiteralList> exclude = new ArrayList<>();
+                            for (LiteralList r : results[lastI]) {
+                                LiteralList removeAll = r.removeAll(curMergedResult);
+                                if (removeAll != null) {
+                                    exclude.add(removeAll);
+                                } else {
+                                    exclude = null;
+                                    break;
                                 }
-                            } else if (finder.verify(complete)) {
-                                return results.get(lastI);
+                            }
+                            if (exclude != null) {
+                                LiteralList complete = finder.complete(curMergedResult, exclude);
+                                if (complete != null && finder.verify(complete)) {
+                                    return results[lastI];
+                                }
                             }
                         }
                         lastI = i;
                     } else {
-                        return results.get(lastI);
+                        return results[lastI];
                     }
                 }
             }
         }
-        return lastI == -1 ? Collections.emptyList() : results.get(lastI);
+        List<LiteralList> result = lastI == -1 ? null : results[lastI];
+        finder.addStatisticEntry(t, result);
+        return result;
     }
 }

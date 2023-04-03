@@ -23,16 +23,25 @@ package de.featjar.clauses.solutions.analysis;
 import de.featjar.clauses.LiteralList;
 import java.util.List;
 
-public class IterativeInteractionFinder extends InteractionFinderCombination {
+public class InteractionFinderWrapper extends InteractionFinderCombination {
 
-    public IterativeInteractionFinder(AInteractionFinder finder) {
+    private final boolean checkResult, beIterative;
+
+    public InteractionFinderWrapper(AInteractionFinder finder, boolean checkResult, boolean beIterative) {
         super(finder);
+        this.checkResult = checkResult;
+        this.beIterative = beIterative;
     }
 
     public List<LiteralList> find(int t) {
-        for (int ti = 1; ti < t; ti++) {
-            finder.find(ti);
+        if (beIterative) {
+            for (int ti = 1; ti < t; ti++) {
+                finder.find(ti);
+            }
         }
-        return finder.find(t);
+        List<LiteralList> result = finder.find(t);
+        boolean check = checkResult && !finder.isPotentialInteraction(result);
+        finder.addStatisticEntry(t, result);
+        return check ? null : result;
     }
 }
