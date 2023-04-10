@@ -40,8 +40,8 @@ public class InteractionFinderWrapper extends InteractionFinderCombination {
             }
         }
         List<LiteralList> result = finder.find(t);
-        boolean check = checkResult && !finder.isPotentialInteraction(result);
+        boolean failed = checkResult && !finder.isPotentialInteraction(result);
         finder.addStatisticEntry(t, result);
-        return check ? null : result;
+        return failed ? null : result;
     }
 }
