@@ -164,11 +164,19 @@ public class LiteralList implements Cloneable, Comparable<LiteralList>, Serializ
                 .distinct();
     }
 
-    public static LiteralList merge(Collection<LiteralList> collection) {
-        return new LiteralList(collection.stream()
-                .flatMapToInt(l -> Arrays.stream(l.getLiterals()))
-                .distinct()
-                .toArray());
+    public static LiteralList merge(Collection<LiteralList> collection, int max) {
+        if (collection.size() < max) {
+            return new LiteralList(collection.stream()
+                    .flatMapToInt(l -> Arrays.stream(l.getLiterals()))
+                    .distinct()
+                    .toArray());
+        } else {
+            int[] literals = new int[max + 1];
+            collection.stream()
+                    .flatMapToInt(l -> Arrays.stream(l.getLiterals()))
+                    .forEach(i -> literals[Math.abs(i)] = i);
+            return new LiteralList(Arrays.stream(literals).filter(e -> e != 0).toArray());
+        }
     }
 
     /**

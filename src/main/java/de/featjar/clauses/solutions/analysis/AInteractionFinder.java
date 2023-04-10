@@ -30,8 +30,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ConcurrentMap;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Detect interactions from given set of configurations.
@@ -52,6 +53,7 @@ public abstract class AInteractionFinder implements InteractionFinder {
     protected int creationCounter = 0;
     protected int verifyCounter = 0;
     protected int iterationCounter = 0;
+    protected LiteralList lastMerge;
 
     protected ArrayList<Statistic> statistics;
 
@@ -63,6 +65,7 @@ public abstract class AInteractionFinder implements InteractionFinder {
         creationCounter = 0;
         verifyCounter = 0;
         iterationCounter = 0;
+        lastMerge = null;
     }
 
     @Override
@@ -140,28 +143,67 @@ public abstract class AInteractionFinder implements InteractionFinder {
             return Collections.emptyList();
         }
         List<LiteralList> interactionsAll = computePotentialInteractions(t);
+        List<LiteralList> curInteractionList;
+        List<LiteralList> lastInteractionList;
+        if (lastMerge != null) {
+            LiteralList lastLiterals = (lastMerge != null) //
+                    ? new LiteralList(lastMerge, Order.INDEX) //
+                    : null;
+            ConcurrentMap<Boolean, List<LiteralList>> partitions = interactionsAll.parallelStream()
+                    .collect(Collectors.groupingByConcurrent(
+                            i -> lastLiterals.containsAll(i), Collectors.toCollection(ArrayList::new)));
+            lastInteractionList = partitions.get(Boolean.TRUE);
+            curInteractionList = partitions.get(Boolean.FALSE);
+            if (curInteractionList == null) {
+                curInteractionList = new ArrayList<>();
+            }
+            curInteractionList.add(lastMerge);
+        } else {
+            curInteractionList = interactionsAll;
+            lastInteractionList = null;
+        }
 
-        while (interactionsAll.size() > 1 //
+        while (curInteractionList.size() > 1 //
                 && verifyCounter < configurationVerificationLimit //
                 && creationCounter < configurationCreationLimit) {
-            addStatisticEntry(t, interactionsAll);
+            addStatisticEntry(t, curInteractionList);
             iterationCounter++;
 
-            final LiteralList configuration = findConfig(interactionsAll);
+            final LiteralList configuration = findConfig(curInteractionList);
 
             if (configuration != null) {
-                Stream<LiteralList> interactionStream = interactionsAll.parallelStream();
-                interactionStream = verify(configuration) //
-                        ? interactionStream.filter(combo -> !configuration.containsAll(combo)) //
-                        : interactionStream.filter(combo -> configuration.containsAll(combo));
-                interactionsAll = interactionStream.collect(Collectors.toList());
+                if (lastMerge != null) {
+                    curInteractionList = curInteractionList.subList(0, curInteractionList.size() - 1);
+                }
+                final Predicate<? super LiteralList> predicate = verify(configuration)
+                        ? literalList -> !configuration.containsAll(literalList)
+                        : literalList -> configuration.containsAll(literalList);
+                curInteractionList = curInteractionList.parallelStream()
+                        .filter(predicate)
+                        .collect(Collectors.toCollection(ArrayList::new));
+                if (lastMerge != null) {
+                    if (predicate.test(lastMerge)) {
+                        curInteractionList.add(lastMerge);
+                    } else {
+                        lastMerge = null;
+                    }
+                }
             } else {
                 break;
             }
         }
-        addStatisticEntry(t, interactionsAll);
 
-        return interactionsAll.isEmpty() ? null : interactionsAll;
+        if (lastMerge != null) {
+            curInteractionList.remove(curInteractionList.size() - 1);
+            if (lastInteractionList != null) {
+                curInteractionList.addAll(lastInteractionList);
+            }
+        }
+        addStatisticEntry(t, curInteractionList);
+
+        lastMerge = LiteralList.merge(curInteractionList, failingConfs.get(0).size());
+
+        return curInteractionList.isEmpty() ? null : curInteractionList;
     }
 
     protected void addStatisticEntry(int t, List<LiteralList> interactionsAll) {
@@ -209,12 +251,17 @@ public abstract class AInteractionFinder implements InteractionFinder {
                 .collect(Collectors.toList());
     }
 
-    protected LiteralList complete(LiteralList include, LiteralList... exclude) {
+    protected LiteralList complete(LiteralList include, List<LiteralList> exclude) {
         creationCounter++;
         return updater.complete(include, exclude).orElse(null);
     }
 
-    protected LiteralList complete(LiteralList include, List<LiteralList> exclude) {
+    protected LiteralList choose(List<LiteralList> clauses) {
+        creationCounter++;
+        return updater.choose(clauses).orElse(null);
+    }
+
+    protected LiteralList complete(LiteralList include, Collection<LiteralList> exclude) {
         creationCounter++;
         return updater.complete(include, exclude).orElse(null);
     }
@@ -237,7 +284,7 @@ public abstract class AInteractionFinder implements InteractionFinder {
     protected List<LiteralList> getRandomConfigs(int numberOfConfigurations) {
         List<LiteralList> potentialConfs = new ArrayList<>();
         for (int i = 0; i < numberOfConfigurations; i++) {
-            LiteralList config = complete(null);
+            LiteralList config = complete(null, null);
             if (config == null) {
                 break;
             }
@@ -267,11 +314,13 @@ public abstract class AInteractionFinder implements InteractionFinder {
         if (interaction == null) {
             return false;
         }
-        LiteralList testConfig = complete(LiteralList.merge(interaction), Collections.emptyList());
+        LiteralList merge =
+                LiteralList.merge(interaction, this.failingConfs.get(0).size());
+        LiteralList testConfig = complete(merge, null);
         if (testConfig == null || verify(testConfig)) {
             return false;
         }
-        LiteralList inverseConfig = complete(null, interaction);
-        return inverseConfig != null && verify(inverseConfig);
+        LiteralList inverseConfig = complete(null, List.of(merge));
+        return inverseConfig == null || verify(inverseConfig);
     }
 }

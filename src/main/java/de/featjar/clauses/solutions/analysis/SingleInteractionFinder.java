@@ -21,7 +21,6 @@
 package de.featjar.clauses.solutions.analysis;
 
 import de.featjar.clauses.LiteralList;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,24 +34,10 @@ public class SingleInteractionFinder extends AInteractionFinder {
         final int limit = (int) Math.ceil(2 * (Math.log(interactions.size()) / Math.log(2)) + 1);
         LiteralList bestConfig = findBestConfig(interactions, getRandomConfigs(limit));
 
-        return bestConfig != null ? bestConfig : findBestConfig(interactions, getAtLeastOneConfigs(interactions));
+        return bestConfig != null ? bestConfig : getAtLeastOneConfigs(interactions);
     }
 
-    private List<LiteralList> getAtLeastOneConfigs(List<LiteralList> interactionsAll) {
-        List<LiteralList> potentialConfs = new ArrayList<>();
-        LiteralList merge = LiteralList.merge(interactionsAll);
-        interactionLoop:
-        for (int i = 0; i < interactionsAll.size(); i++) {
-            LiteralList interaction = interactionsAll.get(i);
-            if (potentialConfs.stream().anyMatch(c -> c.containsAll(interaction))) {
-                continue interactionLoop;
-            }
-            LiteralList config = complete(interaction, merge.removeAll(interaction));
-            if (config != null) {
-                potentialConfs.add(config);
-//                return potentialConfs;
-            }
-        }
-        return potentialConfs;
+    private LiteralList getAtLeastOneConfigs(List<LiteralList> interactionsAll) {
+        return choose(interactionsAll);
     }
 }

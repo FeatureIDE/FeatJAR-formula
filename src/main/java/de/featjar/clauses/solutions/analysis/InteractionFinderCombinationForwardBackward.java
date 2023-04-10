@@ -21,7 +21,7 @@
 package de.featjar.clauses.solutions.analysis;
 
 import de.featjar.clauses.LiteralList;
-import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 public class InteractionFinderCombinationForwardBackward extends InteractionFinderCombination {
@@ -41,7 +41,8 @@ public class InteractionFinderCombinationForwardBackward extends InteractionFind
         for (int ti = 1; ti <= t; ti++) {
             final List<LiteralList> res = results[ti];
             if (finder.isPotentialInteraction(res)) {
-                mergedResults[ti] = LiteralList.merge(res);
+                mergedResults[ti] =
+                        LiteralList.merge(res, finder.failingConfs.get(0).size());
             } else {
                 results[ti] = null;
             }
@@ -58,7 +59,7 @@ public class InteractionFinderCombinationForwardBackward extends InteractionFind
                     LiteralList curMergedResult = mergedResults[i];
                     if (lastMergedResult.containsAll(curMergedResult)) {
                         if (!curMergedResult.containsAll(lastMergedResult)) {
-                            ArrayList<LiteralList> exclude = new ArrayList<>();
+                            LinkedHashSet<LiteralList> exclude = new LinkedHashSet<>();
                             for (LiteralList r : results[lastI]) {
                                 LiteralList removeAll = r.removeAll(curMergedResult);
                                 if (removeAll != null) {
