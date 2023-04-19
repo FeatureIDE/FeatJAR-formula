@@ -21,7 +21,6 @@
 package de.featjar.clauses.solutions.analysis;
 
 import de.featjar.clauses.LiteralList;
-import java.util.Collection;
 import java.util.List;
 
 public abstract class InteractionFinderCombination implements InteractionFinder {
@@ -88,7 +87,17 @@ public abstract class InteractionFinderCombination implements InteractionFinder 
     }
 
     @Override
-    public void addConfigurations(Collection<LiteralList> configurations) {
+    public void addConfigurations(List<LiteralList> configurations) {
         finder.addConfigurations(configurations);
+    }
+
+    @Override
+    public int getLimitFactor() {
+        return finder.getLimitFactor();
+    }
+
+    @Override
+    public void setLimitFactor(int limitFactor) {
+        finder.setLimitFactor(limitFactor);
     }
 }

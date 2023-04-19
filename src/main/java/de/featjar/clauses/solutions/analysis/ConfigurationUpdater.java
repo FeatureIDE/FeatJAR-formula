@@ -22,6 +22,7 @@ package de.featjar.clauses.solutions.analysis;
 
 import de.featjar.clauses.LiteralList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -36,5 +37,9 @@ public interface ConfigurationUpdater {
 
     Optional<LiteralList> complete(LiteralList partialSolution, Collection<LiteralList> excludeClause);
 
-    Optional<LiteralList> choose(Collection<LiteralList> clauses);
+    LiteralList choose(List<int[]> clauses);
+
+    LiteralList random();
+
+    LiteralList getConfig(List<int[]> include, List<int[]> exclude, List<int[]> choose);
 }

@@ -41,7 +41,7 @@ public class InteractionFinderWrapper extends InteractionFinderCombination {
         }
         List<LiteralList> result = finder.find(t);
         boolean failed = checkResult && !finder.isPotentialInteraction(result);
-        finder.addStatisticEntry(t, result);
+        finder.addStatisticEntry(result);
         return failed ? null : result;
     }
 }

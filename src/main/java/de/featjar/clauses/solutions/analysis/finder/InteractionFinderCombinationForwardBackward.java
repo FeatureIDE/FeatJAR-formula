@@ -18,9 +18,10 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.clauses.solutions.analysis;
+package de.featjar.clauses.solutions.analysis.finder;
 
 import de.featjar.clauses.LiteralList;
+import de.featjar.clauses.solutions.analysis.InteractionFinderCombination;
 import java.util.LinkedHashSet;
 import java.util.List;
 
@@ -32,48 +33,39 @@ public class InteractionFinderCombinationForwardBackward extends InteractionFind
 
     public List<LiteralList> find(int t) {
         @SuppressWarnings("unchecked")
-        List<LiteralList>[] results = new List[t + 1];
-        for (int ti = 1; ti <= t; ti++) {
-            results[ti] = finder.find(ti);
-        }
-
-        LiteralList[] mergedResults = new LiteralList[t + 1];
-        for (int ti = 1; ti <= t; ti++) {
-            final List<LiteralList> res = results[ti];
-            if (finder.isPotentialInteraction(res)) {
-                mergedResults[ti] =
-                        LiteralList.merge(res, finder.failingConfs.get(0).size());
-            } else {
-                results[ti] = null;
+        List<LiteralList>[] results = new List[t];
+        LiteralList[] mergedResults = new LiteralList[t];
+        for (int ti = 1; ti <= t; ++ti) {
+            List<LiteralList> res = finder.find(ti);
+            if (res != null) {
+                mergedResults[ti - 1] = LiteralList.merge(res);
+                results[ti - 1] = res;
             }
         }
 
         int lastI = -1;
 
-        for (int i = t; i >= 1; i--) {
-            if (lastI == -1 && mergedResults[i] != null) {
-                lastI = i;
-            } else {
-                if (mergedResults[i] != null) {
-                    LiteralList lastMergedResult = mergedResults[lastI];
-                    LiteralList curMergedResult = mergedResults[i];
+        loop:
+        for (int i = t - 1; i >= 0; --i) {
+            if (mergedResults[i] != null) {
+                if (lastI == -1) {
+                    lastI = i;
+                } else {
+                    final LiteralList lastMergedResult = mergedResults[lastI];
+                    final LiteralList curMergedResult = mergedResults[i];
                     if (lastMergedResult.containsAll(curMergedResult)) {
                         if (!curMergedResult.containsAll(lastMergedResult)) {
-                            LinkedHashSet<LiteralList> exclude = new LinkedHashSet<>();
+                            final LinkedHashSet<LiteralList> exclude = new LinkedHashSet<>();
                             for (LiteralList r : results[lastI]) {
-                                LiteralList removeAll = r.removeAll(curMergedResult);
-                                if (removeAll != null) {
-                                    exclude.add(removeAll);
-                                } else {
-                                    exclude = null;
-                                    break;
+                                final LiteralList removeAll = r.removeAll(curMergedResult);
+                                if (removeAll.isEmpty()) {
+                                    continue loop;
                                 }
+                                exclude.add(removeAll);
                             }
-                            if (exclude != null) {
-                                LiteralList complete = finder.complete(curMergedResult, exclude);
-                                if (complete != null && finder.verify(complete)) {
-                                    return results[lastI];
-                                }
+                            final LiteralList complete = finder.complete(curMergedResult, exclude);
+                            if (complete != null && finder.verify(complete)) {
+                                return results[lastI];
                             }
                         }
                         lastI = i;
@@ -83,8 +75,12 @@ public class InteractionFinderCombinationForwardBackward extends InteractionFind
                 }
             }
         }
+
         List<LiteralList> result = lastI == -1 ? null : results[lastI];
-        finder.addStatisticEntry(t, result);
+        if (!finder.isPotentialInteraction(result)) {
+            return null;
+        }
+        finder.addStatisticEntry(result);
         return result;
     }
 }

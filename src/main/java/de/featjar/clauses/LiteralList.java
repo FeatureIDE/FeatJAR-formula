@@ -25,6 +25,7 @@ import de.featjar.formula.structure.atomic.literal.VariableMap;
 import de.featjar.util.data.Problem;
 import de.featjar.util.data.Problem.Severity;
 import de.featjar.util.data.Result;
+import de.featjar.util.logging.Logger;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,6 +33,11 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 // TODO add methods for adding literals (e.g. addAll, union, ...)
@@ -164,18 +170,73 @@ public class LiteralList implements Cloneable, Comparable<LiteralList>, Serializ
                 .distinct();
     }
 
-    public static LiteralList merge(Collection<LiteralList> collection, int max) {
+    public static LiteralList merge(List<LiteralList> collection) {
+        return new LiteralList(collection.stream()
+                .flatMapToInt(l -> Arrays.stream(l.getLiterals()))
+                .distinct()
+                .toArray());
+    }
+
+    public static LiteralList merge(Collection<int[]> collection, int max) {
         if (collection.size() < max) {
             return new LiteralList(collection.stream()
-                    .flatMapToInt(l -> Arrays.stream(l.getLiterals()))
+                    .flatMapToInt(l -> Arrays.stream(l))
                     .distinct()
                     .toArray());
         } else {
             int[] literals = new int[max + 1];
-            collection.stream()
-                    .flatMapToInt(l -> Arrays.stream(l.getLiterals()))
-                    .forEach(i -> literals[Math.abs(i)] = i);
+            collection.stream().flatMapToInt(l -> Arrays.stream(l)).forEach(i -> literals[Math.abs(i)] = i);
             return new LiteralList(Arrays.stream(literals).filter(e -> e != 0).toArray());
+        }
+    }
+
+    public static LiteralList mergeParallel(List<int[]> collection, int max) {
+        if (collection.size() < max) {
+            return new LiteralList(collection.stream()
+                    .flatMapToInt(l -> Arrays.stream(l))
+                    .distinct()
+                    .toArray());
+        } else {
+            final int p = Runtime.getRuntime().availableProcessors();
+
+            final int size = collection.size() / p;
+            final int largerGroupIndex = collection.size() % p;
+            List<List<int[]>> partions = IntStream.range(0, p)
+                    .mapToObj(i -> {
+                        final int start = size * i;
+                        return collection.subList(start, start + size + (i < largerGroupIndex ? 1 : 0));
+                    })
+                    .collect(Collectors.toList());
+
+            final ArrayList<Callable<int[]>> mergers = new ArrayList<>(p);
+            for (int i = 0; i < p; i++) {
+                List<int[]> list = partions.get(i);
+                mergers.add(() -> {
+                    final int[] literals = new int[max];
+                    list.stream().flatMapToInt(l -> Arrays.stream(l)).forEach(l -> literals[Math.abs(l) - 1] = l);
+                    return literals;
+                });
+            }
+            try {
+                List<Future<int[]>> invokeAll = Executors.newCachedThreadPool().invokeAll(mergers);
+                int[] merge = null;
+                for (Future<int[]> future : invokeAll) {
+                    int[] result = future.get();
+                    if (merge == null) {
+                        merge = result;
+                    } else {
+                        for (int i = 0; i < result.length; i++) {
+                            if (merge[i] == 0) {
+                                merge[i] = result[i];
+                            }
+                        }
+                    }
+                }
+                return new LiteralList(Arrays.stream(merge).filter(e -> e != 0).toArray());
+            } catch (InterruptedException | ExecutionException e) {
+                Logger.logError(e);
+            }
+            return null;
         }
     }
 
@@ -525,7 +586,12 @@ public class LiteralList implements Cloneable, Comparable<LiteralList>, Serializ
                 newLiterals[j++] = literals[i];
             }
         }
-        return new LiteralList(newLiterals, Order.UNORDERED, false);
+        switch (order) {
+            case NATURAL:
+                return new LiteralList(newLiterals, Order.NATURAL, false);
+            default:
+                return new LiteralList(newLiterals, Order.UNORDERED, false);
+        }
     }
 
     public LiteralList retainVariables(LiteralList variables) {

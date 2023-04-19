@@ -124,7 +124,7 @@ public class ParallelLexicographicIterator implements Spliterator<int[]> {
         int i = 0;
         for (; i < t - 1; i++) {
             if (c[i] + 1 < c[i + 1]) {
-                c[i]++;
+                ++c[i];
                 for (int j = i - 1; j >= 0; j--) {
                     c[j] = j;
                 }

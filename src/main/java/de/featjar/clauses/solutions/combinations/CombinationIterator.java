@@ -45,7 +45,7 @@ public interface CombinationIterator extends Iterator<int[]>, Iterable<int[]> {
         return selection;
     }
 
-    public static <T> int[] select(LiteralList items, int[] indices, int[] selection) {
+    public static int[] select(LiteralList items, int[] indices, int[] selection) {
         for (int i = 0; i < indices.length; i++) {
             selection[i] = items.get(indices[i]);
         }

@@ -18,10 +18,10 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.clauses.solutions.analysis;
+package de.featjar.clauses.solutions.analysis.finder;
 
 import de.featjar.clauses.LiteralList;
-import java.util.ArrayList;
+import de.featjar.clauses.solutions.analysis.AInteractionFinder;
 import java.util.List;
 
 /**
@@ -29,15 +29,17 @@ import java.util.List;
  *
  * @author Sebastian Krieter
  */
-public class RandomInteractionFinder extends AInteractionFinder {
+public class NaiveRandomInteractionFinder extends AInteractionFinder {
 
-    protected LiteralList findConfig(List<LiteralList> interactionsAll) {
-        List<LiteralList> configs = new ArrayList<>(interactionsAll.size());
-        configs.addAll(getRandomConfigs((int) Math.ceil(Math.log(interactionsAll.size()))));
-        if (configs.isEmpty()) {
-            return null;
-        }
-        LiteralList findBestConfig = findBestConfig(interactionsAll, configs);
-        return findBestConfig != null ? findBestConfig : configs.get(0);
+    @Override
+    protected List<int[]> computePotentialInteractions() {
+        List<int[]> interactions = super.computePotentialInteractions();
+        configurationVerificationLimit = (int) Math.ceil(10 * (Math.log(interactions.size()) / Math.log(2)) + 1);
+        return interactions;
+    }
+
+    protected LiteralList findConfig(List<int[]> interactionsAll) {
+        final List<LiteralList> randomConfigs = getRandomConfigs(1);
+        return randomConfigs.isEmpty() ? null : randomConfigs.get(0);
     }
 }
