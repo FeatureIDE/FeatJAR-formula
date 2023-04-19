@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
@@ -217,8 +218,9 @@ public class LiteralList implements Cloneable, Comparable<LiteralList>, Serializ
                     return literals;
                 });
             }
+            ExecutorService newCachedThreadPool = Executors.newCachedThreadPool();
             try {
-                List<Future<int[]>> invokeAll = Executors.newCachedThreadPool().invokeAll(mergers);
+                List<Future<int[]>> invokeAll = newCachedThreadPool.invokeAll(mergers);
                 int[] merge = null;
                 for (Future<int[]> future : invokeAll) {
                     int[] result = future.get();
@@ -235,6 +237,8 @@ public class LiteralList implements Cloneable, Comparable<LiteralList>, Serializ
                 return new LiteralList(Arrays.stream(merge).filter(e -> e != 0).toArray());
             } catch (InterruptedException | ExecutionException e) {
                 Logger.logError(e);
+            } finally {
+                newCachedThreadPool.shutdown();
             }
             return null;
         }
