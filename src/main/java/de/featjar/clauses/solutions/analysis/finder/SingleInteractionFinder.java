@@ -128,7 +128,7 @@ public class SingleInteractionFinder extends AInteractionFinder {
     }
 
     private ConcurrentMap<Boolean, List<int[]>> group(List<int[]> list, final LiteralList newConfig) {
-        return list.parallelStream()
+        return list.stream()
                 .collect(Collectors.groupingByConcurrent(
                         i -> newConfig.containsAll(i), Collectors.toCollection(ArrayList::new)));
     }
