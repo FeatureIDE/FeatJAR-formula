@@ -22,7 +22,9 @@ package de.featjar.clauses.solutions.analysis.finder;
 
 import de.featjar.clauses.LiteralList;
 import de.featjar.clauses.solutions.analysis.AInteractionFinder;
+import de.featjar.util.logging.Logger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -128,7 +130,7 @@ public class SingleInteractionFinder extends AInteractionFinder {
     }
 
     private ConcurrentMap<Boolean, List<int[]>> group(List<int[]> list, final LiteralList newConfig) {
-        return list.parallelStream()
+        return list.stream()
                 .collect(Collectors.groupingByConcurrent(
                         i -> newConfig.containsAll(i), Collectors.toCollection(ArrayList::new)));
     }
@@ -148,6 +150,10 @@ public class SingleInteractionFinder extends AInteractionFinder {
         if (curInteractionList == null) {
             return null;
         }
+        Logger.logError("Interactions: " + curInteractionList.stream()
+                .map(Arrays::toString)
+                .reduce((a, b) -> a + ", " + b)
+                .orElse(""));
 
         while (curInteractionList.size() > 1 //
                 && verifyCounter < configurationVerificationLimit) {
@@ -157,11 +163,28 @@ public class SingleInteractionFinder extends AInteractionFinder {
 
             if (configuration != null) {
                 final boolean pass = verify(configuration);
+                Logger.logError("Interactions: " + curInteractionList.stream()
+                        .map(Arrays::toString)
+                        .reduce((a, b) -> a + ", " + b)
+                        .orElse(""));
+                Logger.logError("\t"+pass + ": " + configuration);
+                Logger.logError("\t\t"
+                        + include.stream()
+                                .map(Arrays::toString)
+                                .reduce((a, b) -> a + ", " + b)
+                                .orElse(""));
+                Logger.logError("\t\t"
+                        + exclude.stream()
+                                .map(Arrays::toString)
+                                .reduce((a, b) -> a + ", " + b)
+                                .orElse(""));
+
                 curInteractionList = pass ? exclude : include;
                 if (lastMerge != null && pass == configuration.containsAll(lastMerge.getLiterals())) {
                     lastMerge = null;
                 }
             } else {
+            	Logger.logError("Interactions: No configuration found");
                 break;
             }
         }

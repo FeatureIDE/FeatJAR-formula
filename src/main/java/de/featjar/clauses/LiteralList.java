@@ -192,6 +192,10 @@ public class LiteralList implements Cloneable, Comparable<LiteralList>, Serializ
     }
 
     public static LiteralList mergeParallel(List<int[]> collection, int max) {
+        return merge(collection, max);
+    }
+
+    public static LiteralList mergeParallel2(List<int[]> collection, int max) {
         if (collection.size() < max) {
             return new LiteralList(collection.stream()
                     .flatMapToInt(l -> Arrays.stream(l))
