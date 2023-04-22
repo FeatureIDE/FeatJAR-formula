@@ -54,7 +54,7 @@ public abstract class AInteractionFinder implements InteractionFinder {
     protected int iterationCounter;
     protected int t;
     protected int limit;
-    protected int limitFactor = 0;
+    protected int limitFactor = 1;
     protected LiteralList lastMerge;
 
     protected ArrayList<Statistic> statistics;
