@@ -30,18 +30,17 @@ import java.util.List;
  */
 public interface InteractionFinder {
 
-	void reset();
+    void reset();
 
-	void setCore(LiteralList core);
+    void setCore(LiteralList core);
 
-	void setVerifier(ConfigurationVerifyer verifier);
+    void setVerifier(ConfigurationVerifyer verifier);
 
-	void setUpdater(ConfigurationUpdater updater);
+    void setUpdater(ConfigurationUpdater updater);
 
-	void addConfigurations(List<LiteralList> configurations);
+    void addConfigurations(List<LiteralList> configurations);
 
-	List<LiteralList> find(int t);
+    List<LiteralList> find(int t);
 
-	int getVerifyCounter();
-
+    int getVerifyCounter();
 }

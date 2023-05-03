@@ -316,8 +316,8 @@ public abstract class AInteractionFinder implements InteractionFinder {
         return inverseConfig == null || verify(inverseConfig);
     }
 
-	@Override
-	public int getVerifyCounter() {
-		return verifyCounter;
-	}
+    @Override
+    public int getVerifyCounter() {
+        return verifyCounter;
+    }
 }

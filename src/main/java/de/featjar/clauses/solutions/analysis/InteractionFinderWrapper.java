@@ -43,5 +43,4 @@ public class InteractionFinderWrapper extends InteractionFinderCombination {
         boolean failed = checkResult && !finder.isPotentialInteraction(result);
         return failed ? null : result;
     }
-
 }

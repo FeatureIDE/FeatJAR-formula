@@ -25,71 +25,71 @@ import java.util.List;
 
 public abstract class InteractionFinderCombination implements InteractionFinder {
 
-	protected final AInteractionFinder finder;
+    protected final AInteractionFinder finder;
 
-	public InteractionFinderCombination(AInteractionFinder finder) {
-		this.finder = finder;
-	}
+    public InteractionFinderCombination(AInteractionFinder finder) {
+        this.finder = finder;
+    }
 
-	public List<LiteralList> getSample() {
-		return finder.getSample();
-	}
+    public List<LiteralList> getSample() {
+        return finder.getSample();
+    }
 
-	public void setConfigurationVerificationLimit(int configurationVerificationLimit) {
-		finder.setConfigurationVerificationLimit(configurationVerificationLimit);
-	}
+    public void setConfigurationVerificationLimit(int configurationVerificationLimit) {
+        finder.setConfigurationVerificationLimit(configurationVerificationLimit);
+    }
 
-	public void setConfigurationCreationLimit(int configurationCreationLimit) {
-		finder.setConfigurationCreationLimit(configurationCreationLimit);
-	}
+    public void setConfigurationCreationLimit(int configurationCreationLimit) {
+        finder.setConfigurationCreationLimit(configurationCreationLimit);
+    }
 
-	public ConfigurationUpdater getUpdater() {
-		return finder.getUpdater();
-	}
+    public ConfigurationUpdater getUpdater() {
+        return finder.getUpdater();
+    }
 
-	public ConfigurationVerifyer getVerifier() {
-		return finder.getVerifier();
-	}
+    public ConfigurationVerifyer getVerifier() {
+        return finder.getVerifier();
+    }
 
-	@Override
-	public void setUpdater(ConfigurationUpdater updater) {
-		finder.setUpdater(updater);
-	}
+    @Override
+    public void setUpdater(ConfigurationUpdater updater) {
+        finder.setUpdater(updater);
+    }
 
-	@Override
-	public void setVerifier(ConfigurationVerifyer verifier) {
-		finder.setVerifier(verifier);
-	}
+    @Override
+    public void setVerifier(ConfigurationVerifyer verifier) {
+        finder.setVerifier(verifier);
+    }
 
-	public LiteralList getCore() {
-		return finder.getCore();
-	}
+    public LiteralList getCore() {
+        return finder.getCore();
+    }
 
-	@Override
-	public void setCore(LiteralList core) {
-		finder.setCore(core);
-	}
+    @Override
+    public void setCore(LiteralList core) {
+        finder.setCore(core);
+    }
 
-	@Override
-	public void reset() {
-		finder.reset();
-	}
+    @Override
+    public void reset() {
+        finder.reset();
+    }
 
-	@Override
-	public void addConfigurations(List<LiteralList> configurations) {
-		finder.addConfigurations(configurations);
-	}
+    @Override
+    public void addConfigurations(List<LiteralList> configurations) {
+        finder.addConfigurations(configurations);
+    }
 
-	public int getLimitFactor() {
-		return finder.getLimitFactor();
-	}
+    public int getLimitFactor() {
+        return finder.getLimitFactor();
+    }
 
-	public void setLimitFactor(int limitFactor) {
-		finder.setLimitFactor(limitFactor);
-	}
+    public void setLimitFactor(int limitFactor) {
+        finder.setLimitFactor(limitFactor);
+    }
 
-	@Override
-	public int getVerifyCounter() {
-		return finder.getVerifyCounter();
-	}
+    @Override
+    public int getVerifyCounter() {
+        return finder.getVerifyCounter();
+    }
 }

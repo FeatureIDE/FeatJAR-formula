@@ -71,8 +71,8 @@ public class SingleInteractionFinder extends AInteractionFinder {
     }
 
     protected LiteralList findConfig(List<int[]> interactions) {
-    	include = null;
-    	exclude = null;
+        include = null;
+        exclude = null;
         LiteralList config = findInitialConfig(interactions);
         if (config == null) {
             return null;
