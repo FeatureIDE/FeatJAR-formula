@@ -20,6 +20,7 @@
  */
 package de.featjar.clauses.solutions.combinations;
 
+import java.util.Arrays;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -67,18 +68,14 @@ public class ParallelLexicographicIterator implements Spliterator<int[]> {
     private ParallelLexicographicIterator(ParallelLexicographicIterator it) {
         t = it.t;
         n = it.n;
-        c = new int[t];
+        binomialCalculator = it.binomialCalculator;
+        index = it.index;
+        c = Arrays.copyOf(it.c, it.c.length);
 
-        if (t > 0) {
-            binomialCalculator = it.binomialCalculator;
-            end = it.index;
-            index = it.index;
+        final long diff = it.end - it.index;
+        it.setC(it.index + (diff >> 1) - 1);
 
-            it.setC(it.index + ((it.end - it.index) / 2) - 1);
-        } else {
-            end = 0;
-            binomialCalculator = null;
-        }
+        end = it.index;
     }
 
     private void setC(long start) {
