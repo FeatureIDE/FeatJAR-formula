@@ -80,7 +80,6 @@ public class InteractionFinderCombinationForwardBackwardOld extends InteractionF
         if (!finder.isPotentialInteraction(result)) {
             return null;
         }
-        finder.addStatisticEntry(result);
         return result;
     }
 }

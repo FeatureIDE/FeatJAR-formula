@@ -57,13 +57,10 @@ public abstract class AInteractionFinder implements InteractionFinder {
     protected int limitFactor = 1;
     protected LiteralList lastMerge;
 
-    protected ArrayList<Statistic> statistics;
-
     @Override
     public void reset() {
         succeedingConfs = new ArrayList<>();
         failingConfs = new ArrayList<>();
-        statistics = new ArrayList<>();
         verifyCounter = 0;
         iterationCounter = 0;
         t = 0;
@@ -71,7 +68,6 @@ public abstract class AInteractionFinder implements InteractionFinder {
         lastMerge = null;
     }
 
-    @Override
     public ConfigurationUpdater getUpdater() {
         return updater;
     }
@@ -81,7 +77,6 @@ public abstract class AInteractionFinder implements InteractionFinder {
         this.updater = updater;
     }
 
-    @Override
     public ConfigurationVerifyer getVerifier() {
         return verifier;
     }
@@ -91,7 +86,6 @@ public abstract class AInteractionFinder implements InteractionFinder {
         this.verifier = verifier;
     }
 
-    @Override
     public LiteralList getCore() {
         return core;
     }
@@ -105,7 +99,6 @@ public abstract class AInteractionFinder implements InteractionFinder {
         return configurationVerificationLimit;
     }
 
-    @Override
     public void setConfigurationVerificationLimit(int configurationVerificationLimit) {
         this.configurationVerificationLimit = configurationVerificationLimit;
     }
@@ -114,27 +107,18 @@ public abstract class AInteractionFinder implements InteractionFinder {
         return configurationCreationLimit;
     }
 
-    @Override
     public void setConfigurationCreationLimit(int configurationCreationLimit) {
         this.configurationCreationLimit = configurationCreationLimit;
     }
 
-    @Override
-    public List<Statistic> getStatistics() {
-        return statistics;
-    }
-
-    @Override
     public int getLimitFactor() {
         return limitFactor;
     }
 
-    @Override
     public void setLimitFactor(int limitFactor) {
         this.limitFactor = limitFactor;
     }
 
-    @Override
     public List<LiteralList> getSample() {
         ArrayList<LiteralList> sample = new ArrayList<>(succeedingConfs.size() + failingConfs.size());
         sample.addAll(succeedingConfs);
@@ -152,7 +136,6 @@ public abstract class AInteractionFinder implements InteractionFinder {
 
     public List<LiteralList> find(int t) {
         if (t <= 0) {
-            statistics.add(new Statistic(0, 0, 0, 0));
             return Collections.emptyList();
         }
         this.t = t;
@@ -187,8 +170,6 @@ public abstract class AInteractionFinder implements InteractionFinder {
             }
         }
 
-        addStatisticEntry(curInteractionList);
-
         if (curInteractionList.isEmpty()) {
             return null;
         } else {
@@ -196,11 +177,6 @@ public abstract class AInteractionFinder implements InteractionFinder {
                     curInteractionList, failingConfs.get(0).size());
             return curInteractionList.stream().map(LiteralList::new).collect(Collectors.toList());
         }
-    }
-
-    public void addStatisticEntry(List<?> interactionsAll) {
-        statistics.add(new Statistic(
-                t, interactionsAll == null ? 0 : interactionsAll.size(), verifyCounter, iterationCounter));
     }
 
     protected abstract LiteralList findConfig(List<int[]> interactionsAll);
@@ -339,4 +315,9 @@ public abstract class AInteractionFinder implements InteractionFinder {
         final LiteralList inverseConfig = complete(null, List.of(merge));
         return inverseConfig == null || verify(inverseConfig);
     }
+
+	@Override
+	public int getVerifyCounter() {
+		return verifyCounter;
+	}
 }

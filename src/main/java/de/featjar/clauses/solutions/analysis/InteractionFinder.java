@@ -30,63 +30,18 @@ import java.util.List;
  */
 public interface InteractionFinder {
 
-    public static class Statistic {
-        private final int t;
-        private final int interactionCounter;
-        private final int verifyCounter;
-        private final int iterationCounter;
+	void reset();
 
-        public Statistic(int t, int interactionCounter, int verifyCounter, int iterationCounter) {
-            this.t = t;
-            this.interactionCounter = interactionCounter;
-            this.verifyCounter = verifyCounter;
-            this.iterationCounter = iterationCounter;
-        }
+	void setCore(LiteralList core);
 
-        public int getT() {
-            return t;
-        }
+	void setVerifier(ConfigurationVerifyer verifier);
 
-        public int getInteractionCounter() {
-            return interactionCounter;
-        }
+	void setUpdater(ConfigurationUpdater updater);
 
-        public int getVerifyCounter() {
-            return verifyCounter;
-        }
+	void addConfigurations(List<LiteralList> configurations);
 
-        public int getIterationCounter() {
-            return iterationCounter;
-        }
-    }
+	List<LiteralList> find(int t);
 
-    LiteralList getCore();
+	int getVerifyCounter();
 
-    ConfigurationVerifyer getVerifier();
-
-    ConfigurationUpdater getUpdater();
-
-    void setCore(LiteralList core);
-
-    void setUpdater(ConfigurationUpdater updater);
-
-    void setVerifier(ConfigurationVerifyer verifier);
-
-    void setConfigurationVerificationLimit(int configurationVerificationLimit);
-
-    void setConfigurationCreationLimit(int configurationCreationLimit);
-
-    void addConfigurations(List<LiteralList> configurations);
-
-    List<LiteralList> find(int t);
-
-    List<Statistic> getStatistics();
-
-    List<LiteralList> getSample();
-
-    int getLimitFactor();
-
-    void setLimitFactor(int limitFactor);
-
-    void reset();
 }

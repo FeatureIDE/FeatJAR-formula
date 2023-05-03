@@ -45,12 +45,10 @@ public class SingleInteractionFinder extends AInteractionFinder {
     }
 
     protected LiteralList findInitialConfig(List<int[]> interactions) {
-        final int randomLimit = limit;
-
         final long middle = interactions.size();
         LiteralList bestConfig = null;
         long bestRatio = middle;
-        int count = randomLimit;
+        int count = limit;
 
         while (count > 0) {
             LiteralList config = random();
@@ -65,7 +63,7 @@ public class SingleInteractionFinder extends AInteractionFinder {
                 if (ratio != middle && (bestConfig == null || ratio < bestRatio)) {
                     bestConfig = config;
                     bestRatio = ratio;
-                    count = randomLimit;
+                    count = limit;
                 }
             }
         }
@@ -73,9 +71,9 @@ public class SingleInteractionFinder extends AInteractionFinder {
     }
 
     protected LiteralList findConfig(List<int[]> interactions) {
+    	include = null;
+    	exclude = null;
         LiteralList config = findInitialConfig(interactions);
-        include = null;
-        exclude = null;
         if (config == null) {
             return null;
         }
@@ -135,7 +133,6 @@ public class SingleInteractionFinder extends AInteractionFinder {
 
     public List<LiteralList> find(int t) {
         if (t <= 0) {
-            statistics.add(new Statistic(0, 0, 0, 0));
             return Collections.emptyList();
         }
         this.t = t;
@@ -165,8 +162,6 @@ public class SingleInteractionFinder extends AInteractionFinder {
                 break;
             }
         }
-
-        addStatisticEntry(curInteractionList);
 
         if (curInteractionList.isEmpty()) {
             return null;
