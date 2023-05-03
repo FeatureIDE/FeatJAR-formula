@@ -258,11 +258,12 @@ public class IncInteractionFinder implements InteractionFinder {
             int lastDiff = diff;
 
             while (diff > 1) {
-                final LiteralList config = updater.getConfig(null, exclude, include);
-                if (config == null) {
-                    break;
-                }
+                LiteralList config;
                 if (include.size() > exclude.size()) {
+                    config = updater.getConfig(null, exclude, include);
+                    if (config == null) {
+                        break;
+                    }
                     partitions = group(include, config);
                     diff = Math.abs(
                             (exclude.size() + partitions.get(Boolean.FALSE).size())
@@ -270,9 +271,13 @@ public class IncInteractionFinder implements InteractionFinder {
                     if (diff >= lastDiff) {
                         break;
                     }
-                    include = partitions.get(Boolean.TRUE);
                     exclude.addAll(partitions.get(Boolean.FALSE));
+                    include = partitions.get(Boolean.TRUE);
                 } else {
+                    config = updater.getConfig(include, null, exclude);
+                    if (config == null) {
+                        break;
+                    }
                     partitions = group(exclude, config);
                     diff = Math.abs(
                             (include.size() + partitions.get(Boolean.TRUE).size())
