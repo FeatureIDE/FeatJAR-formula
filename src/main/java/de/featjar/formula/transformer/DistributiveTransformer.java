@@ -29,7 +29,6 @@ import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.IConnective;
 import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.formula.structure.formula.predicate.Literal;
-
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -59,8 +58,7 @@ public class DistributiveTransformer implements Function<IFormula, Result<IFormu
     /**
      * Predicate for determining whether to cancel an ongoing distributive transformation.
      */
-    public interface ICancelPredicate extends Function<LinkedHashSet<Literal>, Throwable> {
-    }
+    public interface ICancelPredicate extends Function<LinkedHashSet<Literal>, Throwable> {}
 
     /**
      * Cancels an ongoing distributive transformation when a given maximum number of literals has been exceeded.
@@ -83,8 +81,8 @@ public class DistributiveTransformer implements Function<IFormula, Result<IFormu
         public Throwable apply(LinkedHashSet<Literal> clause) {
             currentNumberOfLiterals += clause.size();
             return currentNumberOfLiterals > maximumNumberOfLiterals
-                    ? new RuntimeException("exceeded maximum number of literals " +
-                    maximumNumberOfLiterals + " with clause of size " + currentNumberOfLiterals)
+                    ? new RuntimeException("exceeded maximum number of literals " + maximumNumberOfLiterals
+                            + " with clause of size " + currentNumberOfLiterals)
                     : null;
         }
     }
@@ -133,10 +131,8 @@ public class DistributiveTransformer implements Function<IFormula, Result<IFormu
     public Result<IFormula> apply(IFormula formula) {
         ExpressionKind.NNF.assertFor(formula);
         formula = (IFormula) formula.cloneTree();
-        if (isCNF)
-            formula = (formula instanceof And) ? (And) formula : new And(formula);
-        else
-            formula = (formula instanceof Or) ? (Or) formula : new Or(formula);
+        if (isCNF) formula = (formula instanceof And) ? (And) formula : new And(formula);
+        else formula = (formula instanceof Or) ? (Or) formula : new Or(formula);
 
         ArrayList<PathElement> path = new ArrayList<>();
         ArrayDeque<IFormula> stack = new ArrayDeque<>();
@@ -215,7 +211,9 @@ public class DistributiveTransformer implements Function<IFormula, Result<IFormu
     }
 
     @SuppressWarnings("unchecked")
-    private void transform(List<IFormula> children, List<LinkedHashSet<Literal>> clauses, LinkedHashSet<Literal> literals, int index) throws CancelledException {
+    private void transform(
+            List<IFormula> children, List<LinkedHashSet<Literal>> clauses, LinkedHashSet<Literal> literals, int index)
+            throws CancelledException {
         if (index == children.size()) {
             LinkedHashSet<Literal> newClause = new LinkedHashSet<>(literals);
             Throwable cancelThrowable = cancelPredicate.apply(newClause);

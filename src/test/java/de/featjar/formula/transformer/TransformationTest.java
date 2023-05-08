@@ -51,8 +51,7 @@ class TransformationTest {
     }
 
     public static void traverseAndAssertFail(
-            IFormula oldFormula,
-            Function<IComputation<IFormula>, IComputation<IFormula>> formulaComputationFunction) {
+            IFormula oldFormula, Function<IComputation<IFormula>, IComputation<IFormula>> formulaComputationFunction) {
         Result<IFormula> result =
                 formulaComputationFunction.apply(Computations.of(oldFormula)).get();
         assertFalse(result.isPresent());

@@ -24,7 +24,6 @@ import static de.featjar.formula.structure.Expressions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.featjar.base.data.Sets;
-import de.featjar.formula.analysis.value.AValueAssignment;
 import de.featjar.formula.analysis.value.ValueAssignment;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.term.ITerm;

@@ -26,8 +26,6 @@ import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.value.ValueSolutionList;
 import de.featjar.formula.structure.formula.IFormula;
 import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * A list of Boolean solutions.

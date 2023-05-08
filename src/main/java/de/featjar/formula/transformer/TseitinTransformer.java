@@ -21,7 +21,6 @@
 package de.featjar.formula.transformer;
 
 import de.featjar.base.data.Maps;
-import de.featjar.base.data.Result;
 import de.featjar.base.tree.visitor.ITreeVisitor;
 import de.featjar.formula.structure.ExpressionKind;
 import de.featjar.formula.structure.IExpression;
@@ -32,7 +31,6 @@ import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.formula.structure.formula.predicate.IPredicate;
 import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.structure.term.value.Variable;
-
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -46,7 +44,8 @@ import java.util.stream.Collectors;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class TseitinTransformer implements ITreeVisitor<IExpression, IExpression>, Function<IFormula, List<TseitinTransformer.Substitution>> {
+public class TseitinTransformer
+        implements ITreeVisitor<IExpression, IExpression>, Function<IFormula, List<TseitinTransformer.Substitution>> {
     /**
      * Prefix for naming auxiliary variables.
      */
@@ -74,7 +73,8 @@ public class TseitinTransformer implements ITreeVisitor<IExpression, IExpression
             clauseFormulas.add(clause);
         }
 
-        protected Substitution(IFormula originalFormula, Variable auxiliaryVariable, List<? extends IFormula> clauseFormulas) {
+        protected Substitution(
+                IFormula originalFormula, Variable auxiliaryVariable, List<? extends IFormula> clauseFormulas) {
             this.originalFormula = originalFormula;
             this.auxiliaryVariable = auxiliaryVariable;
             this.clauseFormulas = new ArrayList<>(clauseFormulas);
@@ -231,8 +231,7 @@ public class TseitinTransformer implements ITreeVisitor<IExpression, IExpression
             ArrayList<Literal> flippedChildren = new ArrayList<>();
             for (Literal l : newChildren) {
                 substitution.addClauseFormula(new Or(auxiliaryLiteral.invert(), l));
-                if (!isPlaistedGreenbaum)
-                    flippedChildren.add(l.invert());
+                if (!isPlaistedGreenbaum) flippedChildren.add(l.invert());
             }
             if (!isPlaistedGreenbaum) {
                 flippedChildren.add(auxiliaryLiteral);
@@ -241,8 +240,7 @@ public class TseitinTransformer implements ITreeVisitor<IExpression, IExpression
         } else if (originalFormula instanceof Or) {
             ArrayList<Literal> flippedChildren = new ArrayList<>();
             for (Literal l : newChildren) {
-                if (!isPlaistedGreenbaum)
-                    substitution.addClauseFormula(new Or(auxiliaryLiteral, l.invert()));
+                if (!isPlaistedGreenbaum) substitution.addClauseFormula(new Or(auxiliaryLiteral, l.invert()));
                 flippedChildren.add(l);
             }
             flippedChildren.add(auxiliaryLiteral.invert());

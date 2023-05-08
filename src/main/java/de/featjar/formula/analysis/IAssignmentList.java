@@ -22,7 +22,6 @@ package de.featjar.formula.analysis;
 
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.bool.ABooleanAssignmentList;
-import de.featjar.formula.analysis.bool.BooleanAssignment;
 import de.featjar.formula.analysis.value.AValueAssignmentList;
 import java.util.Collection;
 import java.util.Iterator;

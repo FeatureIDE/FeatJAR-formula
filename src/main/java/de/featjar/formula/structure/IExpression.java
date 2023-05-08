@@ -30,7 +30,6 @@ import de.featjar.formula.structure.term.ITerm;
 import de.featjar.formula.structure.term.value.Constant;
 import de.featjar.formula.structure.term.value.Variable;
 import de.featjar.formula.visitor.Evaluator;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.LinkedHashSet;

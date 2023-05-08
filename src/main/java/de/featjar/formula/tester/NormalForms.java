@@ -23,15 +23,14 @@ package de.featjar.formula.tester;
 import static de.featjar.base.computation.Computations.async;
 
 import de.featjar.base.data.Result;
-import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.FormulaNormalForm;
+import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.transformer.ComputeCNFFormula;
 import de.featjar.formula.transformer.ComputeDNFFormula;
 import de.featjar.formula.transformer.ComputeNNFFormula;
-
 import java.util.stream.Collectors;
 
 /**
@@ -41,7 +40,8 @@ import java.util.stream.Collectors;
  */
 public class NormalForms {
     // todo: use computation framework, always return strict normal form
-    public static Result<IFormula> toNormalForm(IFormula formula, FormulaNormalForm formulaNormalForm, boolean isStrict) {
+    public static Result<IFormula> toNormalForm(
+            IFormula formula, FormulaNormalForm formulaNormalForm, boolean isStrict) {
         return async(formula)
                 .map(
                         formulaNormalForm == FormulaNormalForm.NNF

@@ -23,7 +23,6 @@ package de.featjar.formula.analysis.value;
 import de.featjar.base.data.Maps;
 import de.featjar.formula.analysis.IAssignment;
 import de.featjar.formula.analysis.ISolver;
-
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Objects;
@@ -96,5 +95,5 @@ public abstract class AValueAssignment implements IAssignment<String>, IValueRep
         return Objects.hash(variableValuePairs);
     }
 
-    abstract public String print();
+    public abstract String print();
 }

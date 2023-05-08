@@ -28,7 +28,6 @@ import de.featjar.formula.analysis.ISolver;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.bool.BooleanSolution;
 import de.featjar.formula.io.value.ValueAssignmentFormat;
-
 import java.io.IOException;
 import java.util.LinkedHashMap;
 

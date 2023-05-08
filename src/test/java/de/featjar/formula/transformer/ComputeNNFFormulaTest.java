@@ -42,29 +42,16 @@ class ComputeNNFFormulaTest {
         fails(and());
         fails(True);
         fails(implies(literal("a"), forAll(variable("x"), True)));
-        nnf(
-                and(literal("a")),
-                literal("a")
-        );
-        nnf(
-                and(literal("a"), True),
-                literal("a")
-        );
-        nnf(
-                implies(literal("a"), False),
-                literal(false, "a")
-        );
-        nnf(
-                not(or(literal("a"), literal("b"))),
-                and(literal(false, "a"), literal(false, "b"))
-        );
+        nnf(and(literal("a")), literal("a"));
+        nnf(and(literal("a"), True), literal("a"));
+        nnf(implies(literal("a"), False), literal(false, "a"));
+        nnf(not(or(literal("a"), literal("b"))), and(literal(false, "a"), literal(false, "b")));
         nnf(
                 and(not(or(literal("a"), literal("b"))), literal("c")),
-                and(literal(false, "a"), literal(false, "b"), literal("c"))
-        );
+                and(literal(false, "a"), literal(false, "b"), literal("c")));
         nnf(
                 and(True, and(True, and(True), or(False), or(True, False)), literal("x")),
                 and(or(), or(literal("x"), literal(false, "x")), literal("x")) // todo: also remove empty or
-        );
+                );
     }
 }

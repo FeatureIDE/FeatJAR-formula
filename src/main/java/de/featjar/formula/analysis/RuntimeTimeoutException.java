@@ -18,34 +18,32 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.analysis.combinations;
-
-import java.util.Random;
+package de.featjar.formula.analysis;
 
 /**
- * Combination iterator that uses the combinatorial number system to enumerate
- * all combinations and then alternately iterates over certain randomized
- * partitions of the combination space.
+ * Exception thrown when an {@link Analysis analysis} experiences a solver
+ * timeout.<br>
+ * Doesn't need to be caught explicitly.
  *
  * @author Sebastian Krieter
  */
-public class RandomPartitionIterator extends PartitionIterator {
+public class RuntimeTimeoutException extends RuntimeException {
 
-    public RandomPartitionIterator(int t, int size) {
-        this(t, size, new Random(42));
+    private static final long serialVersionUID = -6922001608864037759L;
+
+    public RuntimeTimeoutException() {
+        super();
     }
 
-    public RandomPartitionIterator(int t, int size, Random random) {
-        super(t, size, 4);
+    public RuntimeTimeoutException(String message) {
+        super(message);
+    }
 
-        for (int i = 0; i < dim.length; i++) {
-            final int[] dimArray = dim[i];
-            for (int j = dimArray.length - 1; j >= 0; j--) {
-                final int index = random.nextInt(j + 1);
-                final int a = dimArray[index];
-                dimArray[index] = dimArray[j];
-                dimArray[j] = a;
-            }
-        }
+    public RuntimeTimeoutException(Throwable cause) {
+        super(cause);
+    }
+
+    public RuntimeTimeoutException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

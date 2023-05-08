@@ -22,7 +22,6 @@ package de.featjar.formula.analysis.bool;
 
 import de.featjar.base.data.Range;
 import de.featjar.formula.analysis.IAssignmentList;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -33,7 +32,8 @@ import java.util.stream.Collectors;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public abstract class ABooleanAssignmentList<T extends ABooleanAssignment> implements IAssignmentList<T>, IBooleanRepresentation {
+public abstract class ABooleanAssignmentList<T extends ABooleanAssignment>
+        implements IAssignmentList<T>, IBooleanRepresentation {
     protected final List<T> assignments;
 
     public ABooleanAssignmentList() {
@@ -106,7 +106,7 @@ public abstract class ABooleanAssignmentList<T extends ABooleanAssignment> imple
      */
     public static class AscendingLengthComparator implements Comparator<ABooleanAssignmentList<?>> {
         @Override
-        public int compare(ABooleanAssignmentList o1, ABooleanAssignmentList o2) {
+        public int compare(ABooleanAssignmentList<?> o1, ABooleanAssignmentList<?> o2) {
             return addLengths(o1) - addLengths(o2);
         }
 
@@ -124,7 +124,7 @@ public abstract class ABooleanAssignmentList<T extends ABooleanAssignment> imple
      */
     public static class DescendingClauseListLengthComparator implements Comparator<ABooleanAssignmentList<?>> {
         @Override
-        public int compare(ABooleanAssignmentList o1, ABooleanAssignmentList o2) {
+        public int compare(ABooleanAssignmentList<?> o1, ABooleanAssignmentList<?> o2) {
             return addLengths(o2) - addLengths(o1);
         }
 
@@ -137,5 +137,5 @@ public abstract class ABooleanAssignmentList<T extends ABooleanAssignment> imple
         }
     }
 
-    abstract public String print();
+    public abstract String print();
 }

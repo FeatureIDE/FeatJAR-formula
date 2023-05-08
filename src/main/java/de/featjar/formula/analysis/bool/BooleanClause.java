@@ -29,11 +29,11 @@ import de.featjar.formula.analysis.value.ValueClause;
 import java.util.*;
 
 /**
- * A Boolean clause; that is, a disjunction of literals.
- * Implemented as a sorted list of indices.
- * Often used as input to a SAT {@link ISolver}.
- * Indices are ordered naturally; that is, in ascending order, so negative indices come before positive indices.
- * The same index may occur multiple times, but no index may be 0.
+ * A Boolean clause; that is, a disjunction of literals. Implemented as a sorted
+ * list of indices. Often used as input to a SAT {@link ISolver}. Indices are
+ * ordered naturally; that is, in ascending order, so negative indices come
+ * before positive indices. The same index may occur multiple times, but no
+ * index may be 0.
  *
  * @author Sebastian Krieter
  * @author Elias Kuiter
@@ -41,25 +41,36 @@ import java.util.*;
 public class BooleanClause extends ABooleanAssignment implements IClause<Integer> {
     public BooleanClause(int... integers) {
         this(integers, true);
+        assert Arrays.stream(integers).noneMatch(a -> a == 0) : "contains zero: " + Arrays.toString(integers);
     }
 
     public BooleanClause(int[] integers, boolean sort) {
         super(integers);
+        assert Arrays.stream(integers).noneMatch(a -> a == 0) : "contains zero: " + Arrays.toString(integers);
+        assert sort
+                        || Arrays.stream(integers)
+                                        .reduce((a, b) -> a != 0 && a < b ? b : 0)
+                                        .orElse(1)
+                                != 0
+                : "unsorted: " + Arrays.toString(integers);
         if (sort) sort();
     }
 
     public BooleanClause(Collection<Integer> integers) {
         super(integers);
+        assert integers.stream().noneMatch(a -> a == 0) : "contains zero: " + integers.toString();
         sort();
     }
 
     public BooleanClause(BooleanClause booleanClause) {
         super(booleanClause);
+        // TODO implement as test
+        assert Objects.equals(this, booleanClause) : this + " != " + booleanClause;
     }
 
     protected void sort() {
         hashCodeValid = false;
-        Arrays.sort(this.array);
+        Arrays.sort(array);
     }
 
     @Override

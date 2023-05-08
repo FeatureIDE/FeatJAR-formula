@@ -34,7 +34,6 @@ import de.featjar.formula.structure.formula.predicate.IPredicate;
 import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.structure.formula.predicate.True;
 import de.featjar.formula.structure.term.value.Variable;
-
 import java.util.List;
 
 /**
@@ -69,12 +68,9 @@ public class TrueFalseRemover implements ITreeVisitor<IFormula, Void> {
     @Override
     public TraversalAction lastVisit(List<IFormula> path) {
         final IFormula formula = getCurrentNode(path);
-        formula.replaceChildren(c ->
-                c.equals(Expressions.False)
-                        ? new And(new Literal(variable), new Literal(false, variable)) :
-                        c.equals(Expressions.True)
-                                ? new Or(new Literal(variable), new Literal(false, variable))
-                                : null);
+        formula.replaceChildren(c -> c.equals(Expressions.False)
+                ? new And(new Literal(variable), new Literal(false, variable))
+                : c.equals(Expressions.True) ? new Or(new Literal(variable), new Literal(false, variable)) : null);
         return TraversalAction.CONTINUE;
     }
 

@@ -22,7 +22,6 @@ package de.featjar.formula.analysis.value;
 
 import de.featjar.base.data.Sets;
 import de.featjar.formula.analysis.IAssignmentList;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -32,7 +31,8 @@ import java.util.stream.Collectors;
  * @param <T> the type of the literal list
  * @author Elias Kuiter
  */
-public abstract class AValueAssignmentList<T extends AValueAssignment> implements IAssignmentList<T>, IValueRepresentation {
+public abstract class AValueAssignmentList<T extends AValueAssignment>
+        implements IAssignmentList<T>, IValueRepresentation {
     protected final List<T> literalLists;
 
     public AValueAssignmentList() {
@@ -95,5 +95,5 @@ public abstract class AValueAssignmentList<T extends AValueAssignment> implement
         return Objects.hash(literalLists);
     }
 
-    abstract public String print();
+    public abstract String print();
 }

@@ -53,8 +53,7 @@ public class ComputeNNFFormula extends AComputation<IFormula> implements ITransf
     public Result<IFormula> compute(DependencyList dependencyList, Progress progress) {
         IFormula formula = dependencyList.get(FORMULA);
         ExpressionKind.BOOLEAN.assertFor(formula);
-        if (formula.getVariables().isEmpty())
-            throw new IllegalArgumentException("requires at least one variable");
+        if (formula.getVariables().isEmpty()) throw new IllegalArgumentException("requires at least one variable");
         Variable variable = formula.getVariables().get(0);
         return Reference.mutateClone(formula, reference -> Trees.traverse(reference, new ConnectiveSimplifier())
                 .flatMap(_void -> Trees.traverse(reference, new DeMorganApplier()))

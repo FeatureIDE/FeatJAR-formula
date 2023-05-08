@@ -78,8 +78,7 @@ public class BooleanSolution extends ABooleanAssignment implements ISolution<Int
     }
 
     public static int[] removeConflicts(int[] integers1, int[] integers2) {
-        if (integers1.length != integers2.length)
-            throw new IllegalArgumentException();
+        if (integers1.length != integers2.length) throw new IllegalArgumentException();
         int[] integers = new int[integers1.length];
         for (int i = 0; i < integers1.length; i++) {
             final int x = integers1[i];

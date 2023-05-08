@@ -24,7 +24,6 @@ import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.value.AValueAssignment;
-
 import java.util.Collection;
 
 /**

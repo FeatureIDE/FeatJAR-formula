@@ -21,17 +21,11 @@
 package de.featjar.formula.analysis.value;
 
 import de.featjar.base.computation.IComputation;
-import de.featjar.base.data.Maps;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.IO;
-import de.featjar.formula.analysis.IClause;
-import de.featjar.formula.analysis.ISolver;
 import de.featjar.formula.analysis.VariableMap;
-import de.featjar.formula.analysis.bool.ABooleanAssignment;
 import de.featjar.formula.analysis.bool.BooleanAssignment;
-import de.featjar.formula.analysis.bool.BooleanClause;
 import de.featjar.formula.io.value.ValueAssignmentFormat;
-
 import java.io.IOException;
 import java.util.LinkedHashMap;
 

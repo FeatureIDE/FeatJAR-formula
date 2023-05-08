@@ -23,11 +23,9 @@ package de.featjar.formula.transformer;
 import de.featjar.base.computation.*;
 import de.featjar.base.computation.Progress;
 import de.featjar.base.data.Result;
-import de.featjar.base.tree.Trees;
 import de.featjar.base.tree.structure.ITree;
-import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.FormulaNormalForm;
-import de.featjar.formula.structure.formula.connective.Or;
+import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.tester.NormalForms;
 
 /**
@@ -52,8 +50,9 @@ public class ComputeDNFFormula extends AComputation<IFormula> implements ITransf
     public Result<IFormula> compute(DependencyList dependencyList, Progress progress) {
         IFormula formula = dependencyList.get(NNF_FORMULA);
         DistributiveTransformer formulaToDistributiveNFFormula = new DistributiveTransformer(false, null);
-        return formulaToDistributiveNFFormula.apply(formula).map(f ->
-                NormalForms.normalToStrictNormalForm(f, FormulaNormalForm.DNF));
+        return formulaToDistributiveNFFormula
+                .apply(formula)
+                .map(f -> NormalForms.normalToStrictNormalForm(f, FormulaNormalForm.DNF));
     }
 
     @Override

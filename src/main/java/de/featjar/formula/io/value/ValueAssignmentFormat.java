@@ -27,8 +27,6 @@ import de.featjar.base.data.Result;
 import de.featjar.base.io.format.IFormat;
 import de.featjar.base.io.input.AInputMapper;
 import de.featjar.formula.analysis.value.AValueAssignment;
-import de.featjar.formula.analysis.value.ValueAssignment;
-
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;

@@ -25,7 +25,6 @@ import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.value.ValueAssignmentList;
 import de.featjar.formula.analysis.value.ValueClauseList;
-
 import java.util.Collection;
 
 /**

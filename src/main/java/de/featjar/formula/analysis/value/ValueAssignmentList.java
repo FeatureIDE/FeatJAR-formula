@@ -27,7 +27,6 @@ import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.bool.BooleanAssignmentList;
 import de.featjar.formula.analysis.bool.BooleanClauseList;
 import de.featjar.formula.io.value.ValueAssignmentListFormat;
-
 import java.io.IOException;
 import java.util.Collection;
 

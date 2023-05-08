@@ -32,7 +32,6 @@ import de.featjar.formula.structure.formula.connective.IConnective;
 import de.featjar.formula.structure.formula.predicate.IPredicate;
 import de.featjar.formula.structure.term.value.Variable;
 import de.featjar.formula.tester.*;
-
 import java.util.LinkedHashSet;
 
 /**

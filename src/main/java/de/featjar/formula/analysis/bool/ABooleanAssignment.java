@@ -24,7 +24,6 @@ import de.featjar.base.data.*;
 import de.featjar.formula.analysis.IAssignment;
 import de.featjar.formula.analysis.ISolver;
 import de.featjar.formula.analysis.VariableMap;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -69,7 +68,7 @@ public abstract class ABooleanAssignment extends IntegerList implements IAssignm
         for (final int integer : array) {
             if (integer != 0 && integerSet.contains(-integer)) {
                 // If this assignment is a contradiction or tautology, it can be simplified.
-                return new int[]{integer, -integer};
+                return new int[] {integer, -integer};
             } else {
                 integerSet.add(integer);
             }
@@ -205,5 +204,5 @@ public abstract class ABooleanAssignment extends IntegerList implements IAssignm
         return value == 0 ? Result.empty() : Result.of(value > 0);
     }
 
-    abstract public String print();
+    public abstract String print();
 }

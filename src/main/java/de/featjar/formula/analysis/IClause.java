@@ -35,5 +35,4 @@ import de.featjar.formula.analysis.value.ValueClause;
  * @param <T> the index type of the variables
  * @author Elias Kuiter
  */
-public interface IClause<T> extends IAssignment<T> {
-}
+public interface IClause<T> extends IAssignment<T> {}
