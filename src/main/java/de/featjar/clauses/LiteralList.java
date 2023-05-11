@@ -30,6 +30,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
@@ -38,7 +39,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 // TODO add methods for adding literals (e.g. addAll, union, ...)
@@ -191,11 +191,7 @@ public class LiteralList implements Cloneable, Comparable<LiteralList>, Serializ
         }
     }
 
-    public static LiteralList mergeParallel(List<int[]> collection, int max) {
-        return merge(collection, max);
-    }
-
-    public static LiteralList mergeParallel2(List<int[]> collection, int max) {
+    public static LiteralList mergeParallel(Collection<int[]> collection, int max) {
         if (collection.size() < max) {
             return new LiteralList(collection.stream()
                     .flatMapToInt(l -> Arrays.stream(l))
@@ -206,19 +202,23 @@ public class LiteralList implements Cloneable, Comparable<LiteralList>, Serializ
 
             final int size = collection.size() / p;
             final int largerGroupIndex = collection.size() % p;
-            List<List<int[]>> partions = IntStream.range(0, p)
-                    .mapToObj(i -> {
-                        final int start = size * i;
-                        return collection.subList(start, start + size + (i < largerGroupIndex ? 1 : 0));
-                    })
-                    .collect(Collectors.toList());
+            List<List<int[]>> partitions = new ArrayList<>(p);
+            Iterator<int[]> iterator = collection.iterator();
+            for (int i = 0; i < p; i++) {
+                final int end = i < largerGroupIndex ? size + 1 : size;
+                final ArrayList<int[]> partition = new ArrayList<>(end);
+                for (int j = 0; j < end; j++) {
+                    partition.add(iterator.next());
+                }
+                partitions.add(partition);
+            }
 
             final ArrayList<Callable<int[]>> mergers = new ArrayList<>(p);
             for (int i = 0; i < p; i++) {
-                List<int[]> list = partions.get(i);
+                List<int[]> partition = partitions.get(i);
                 mergers.add(() -> {
                     final int[] literals = new int[max];
-                    list.stream().flatMapToInt(l -> Arrays.stream(l)).forEach(l -> literals[Math.abs(l) - 1] = l);
+                    partition.stream().flatMapToInt(l -> Arrays.stream(l)).forEach(l -> literals[Math.abs(l) - 1] = l);
                     return literals;
                 });
             }

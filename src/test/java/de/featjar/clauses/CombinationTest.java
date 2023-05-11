@@ -24,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.featjar.clauses.solutions.combinations.LexicographicIterator;
-import de.featjar.clauses.solutions.combinations.ParallelLexicographicIterator;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -41,10 +40,12 @@ public class CombinationTest {
     }
 
     private void testForNandT(int t, int n) {
-        List<String> pSet =
-                ParallelLexicographicIterator.stream(t, n).map(Arrays::toString).collect(Collectors.toList());
-        List<String> sSet =
-                LexicographicIterator.stream(t, n).map(Arrays::toString).collect(Collectors.toList());
+        List<String> pSet = LexicographicIterator.parallelStream(t, n)
+                .map(c -> Arrays.toString(c.elementIndices))
+                .collect(Collectors.toList());
+        List<String> sSet = LexicographicIterator.stream(t, n)
+                .map(c -> Arrays.toString(c.elementIndices))
+                .collect(Collectors.toList());
         assertEquals(pSet.size(), sSet.size());
 
         assertTrue(new HashSet<>(pSet).containsAll(sSet));
