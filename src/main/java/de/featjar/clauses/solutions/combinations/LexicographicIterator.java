@@ -168,7 +168,6 @@ public final class LexicographicIterator
             }
         }
 
-        combination.elementIndices[t] = combination.combinationIndex;
         action.accept(combination);
         return true;
     }
