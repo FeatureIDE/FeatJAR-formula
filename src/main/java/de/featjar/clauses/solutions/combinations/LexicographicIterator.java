@@ -136,7 +136,7 @@ public final class LexicographicIterator
 
     @Override
     public Spliterator<Combination> trySplit() {
-        return (end - combination.combinationIndex < 10) ? null : new LexicographicIterator(this);
+        return (end - combination.combinationIndex < 100) ? null : new LexicographicIterator(this);
     }
 
     @Override

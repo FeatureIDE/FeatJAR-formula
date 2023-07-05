@@ -35,4 +35,6 @@ public interface ConfigurationUpdater {
     Optional<LiteralList> update(LiteralList partialSolution);
 
     Optional<LiteralList> complete(Collection<int[]> include, Collection<int[]> exclude, Collection<int[]> choose);
+
+    ConfigurationUpdater clone();
 }
