@@ -3,6 +3,7 @@
 	<point id="de.featjar.formula.io.FormulaFormatManager">
 	    <extension id="de.featjar.formula.io.dimacs.DIMACSFormat" />
 	    <extension id="de.featjar.formula.io.xml.XMLFeatureModelCNFFormat" />
+	    <extension id="de.featjar.formula.io.textual.ACTSFormat" />
 	    <extension id="de.featjar.formula.io.textual.FormulaFormat" />
 	    <extension id="de.featjar.formula.io.KConfigReaderFormat" />
 	</point>

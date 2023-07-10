@@ -61,6 +61,21 @@ public class FormatTest {
         }
     }
 
+    public static void testSave(Formula formula1, String name, Format<Formula> format) {
+        assertEquals(format.getClass().getCanonicalName(), format.getIdentifier());
+        assertTrue(format.supportsSerialize());
+        final String serializedFormula1 = save(formula1, format);
+        for (final Path file : getFileList(name, format)) {
+            try {
+                String readFormula = Files.readString(file);
+                assertEquals(readFormula, serializedFormula1);
+            } catch (IOException e) {
+                e.printStackTrace();
+                fail(e.getMessage());
+            }
+        }
+    }
+
     public static void testLoadAndSave(Formula formula1, String name, Format<Formula> format) {
         assertEquals(format.getClass().getCanonicalName(), format.getIdentifier());
         assertTrue(format.supportsParse());
@@ -105,6 +120,13 @@ public class FormatTest {
         if (formula1 != null) {
             assertEquals(formula1.getVariableMap(), formula2.getVariableMap(), "Variables are different");
         }
+    }
+
+    private static <T> String save(T object, Format<T> format) {
+        if (object == null) {
+            return null;
+        }
+        return format.serialize(object);
     }
 
     private static <T> T saveAndLoad(T object, Format<T> format) {

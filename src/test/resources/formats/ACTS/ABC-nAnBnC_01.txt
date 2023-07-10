@@ -1,0 +1,9 @@
+[System]
+name: system
+[Parameter]
+A (boolean) : true, false
+B (boolean) : true, false
+C (boolean) : true, false
+[Constraint]
+A || B || C
+!A || !B || !C
