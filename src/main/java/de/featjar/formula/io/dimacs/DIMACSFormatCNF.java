@@ -22,7 +22,11 @@ package de.featjar.formula.io.dimacs;
 
 import de.featjar.clauses.CNF;
 import de.featjar.clauses.LiteralList;
+import de.featjar.util.data.Result;
+import de.featjar.util.io.InputMapper;
 import de.featjar.util.io.format.Format;
+import de.featjar.util.io.format.ParseProblem;
+import java.text.ParseException;
 import java.util.Objects;
 
 /**
@@ -75,6 +79,25 @@ public class DIMACSFormatCNF implements Format<CNF> {
 
     @Override
     public boolean supportsSerialize() {
+        return true;
+    }
+
+    @Override
+    public Result<CNF> parse(InputMapper inputMapper) {
+        final DimacsCNFReader r = new DimacsCNFReader();
+        r.setReadingVariableDirectory(true);
+        try {
+            // TODO use getLines() instead
+            return Result.of(r.read(inputMapper.get().readText().get()));
+        } catch (final ParseException e) {
+            return Result.empty(new ParseProblem(e, e.getErrorOffset()));
+        } catch (final Exception e) {
+            return Result.empty(e);
+        }
+    }
+
+    @Override
+    public boolean supportsParse() {
         return true;
     }
 

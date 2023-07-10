@@ -20,11 +20,8 @@
  */
 package de.featjar.formula.io.dimacs;
 
-import de.featjar.formula.structure.Formula;
-import de.featjar.formula.structure.atomic.literal.BooleanLiteral;
-import de.featjar.formula.structure.atomic.literal.Literal;
-import de.featjar.formula.structure.compound.And;
-import de.featjar.formula.structure.compound.Or;
+import de.featjar.clauses.CNF;
+import de.featjar.clauses.LiteralList;
 import de.featjar.util.io.NonEmptyLineIterator;
 import java.io.IOException;
 import java.text.ParseException;
@@ -33,14 +30,14 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-public class DimacsReader extends ADimacsReader<Formula> {
+public class DimacsCNFReader extends ADimacsReader<CNF> {
 
     @Override
-    protected Formula get(final NonEmptyLineIterator nonemptyLineIterator) throws ParseException, IOException {
-        final List<Or> clauses = readClauses(nonemptyLineIterator);
+    protected CNF get(final NonEmptyLineIterator nonemptyLineIterator) throws ParseException, IOException {
+        final List<LiteralList> clauses = readClauses(nonemptyLineIterator);
         checkVariableCount(indexVariables.size());
         checkClauseCount(clauses.size());
-        return new And(clauses);
+        return new CNF(map, clauses);
     }
 
     /**
@@ -51,9 +48,10 @@ public class DimacsReader extends ADimacsReader<Formula> {
      *                        format
      * @throws IOException
      */
-    private List<Or> readClauses(NonEmptyLineIterator nonemptyLineIterator) throws ParseException, IOException {
+    private List<LiteralList> readClauses(NonEmptyLineIterator nonemptyLineIterator)
+            throws ParseException, IOException {
         final LinkedList<String> literalQueue = new LinkedList<>();
-        final List<Or> clauses = new ArrayList<>(clauseCount);
+        final List<LiteralList> clauses = new ArrayList<>(clauseCount);
         int readClausesCount = 0;
         for (String line = nonemptyLineIterator.currentLine(); line != null; line = nonemptyLineIterator.get()) {
             if (commentPattern.matcher(line).matches()) {
@@ -71,7 +69,7 @@ public class DimacsReader extends ADimacsReader<Formula> {
                 if (clauseSize < 0) {
                     throw new ParseException("Invalid clause", nonemptyLineIterator.getLineCount());
                 } else if (clauseSize == 0) {
-                    clauses.add(new Or());
+                    clauses.add(new LiteralList());
                 } else {
                     clauses.add(parseClause(readClausesCount, clauseSize, literalQueue, nonemptyLineIterator));
                 }
@@ -93,7 +91,7 @@ public class DimacsReader extends ADimacsReader<Formula> {
         return clauses;
     }
 
-    private Or parseClause(
+    private LiteralList parseClause(
             int readClausesCount,
             int clauseSize,
             LinkedList<String> literalQueue,
@@ -102,7 +100,7 @@ public class DimacsReader extends ADimacsReader<Formula> {
         if (readClausesCount == clauseCount) {
             throw new ParseException(String.format("Found more than %d clauses", clauseCount), 1);
         }
-        final Literal[] literals = new Literal[clauseSize];
+        final int[] literals = new int[clauseSize];
         for (int j = 0; j < literals.length; j++) {
             final String token = literalQueue.removeFirst();
             final int index;
@@ -123,9 +121,8 @@ public class DimacsReader extends ADimacsReader<Formula> {
             if (map.getVariableIndex(variableName).isEmpty()) {
                 map.addBooleanVariable(variableName);
             }
-            literals[j] =
-                    new BooleanLiteral(map.getVariableSignature(variableName).get(), index > 0);
+            literals[j] = index;
         }
-        return new Or(literals);
+        return new LiteralList(literals);
     }
 }
