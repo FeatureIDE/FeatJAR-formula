@@ -20,19 +20,43 @@
  */
 package de.featjar.formula.analysis;
 
-import de.featjar.base.data.*;
-import de.featjar.formula.analysis.bool.*;
-import de.featjar.formula.analysis.value.*;
+import de.featjar.base.data.IntegerList;
+import de.featjar.base.data.Maps;
+import de.featjar.base.data.Pair;
+import de.featjar.base.data.Problem;
+import de.featjar.base.data.RangeMap;
+import de.featjar.base.data.Result;
+import de.featjar.formula.analysis.bool.ABooleanAssignment;
+import de.featjar.formula.analysis.bool.ABooleanAssignmentList;
+import de.featjar.formula.analysis.bool.BooleanAssignment;
+import de.featjar.formula.analysis.bool.BooleanAssignmentList;
+import de.featjar.formula.analysis.bool.BooleanClause;
+import de.featjar.formula.analysis.bool.BooleanClauseList;
+import de.featjar.formula.analysis.bool.BooleanSolution;
+import de.featjar.formula.analysis.bool.BooleanSolutionList;
+import de.featjar.formula.analysis.value.AValueAssignment;
+import de.featjar.formula.analysis.value.AValueAssignmentList;
+import de.featjar.formula.analysis.value.IValueRepresentation;
+import de.featjar.formula.analysis.value.ValueAssignment;
+import de.featjar.formula.analysis.value.ValueAssignmentList;
+import de.featjar.formula.analysis.value.ValueClause;
+import de.featjar.formula.analysis.value.ValueClauseList;
+import de.featjar.formula.analysis.value.ValueSolution;
+import de.featjar.formula.analysis.value.ValueSolutionList;
 import de.featjar.formula.structure.formula.IFormula;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
- * Maps variable names to indices and vice versa.
- * Used to link a literal index in a {@link ABooleanAssignment} to a {@link de.featjar.formula.structure.term.value.Variable}
- * in a {@link IFormula}.
+ * Maps variable names to indices and vice versa. Used to link a literal index
+ * in a {@link ABooleanAssignment} to a
+ * {@link de.featjar.formula.structure.term.value.Variable} in a
+ * {@link IFormula}.
  *
  * @author Elias Kuiter
  */
@@ -63,6 +87,13 @@ public class VariableMap extends RangeMap<String> {
 
     public List<String> getVariableNames() {
         return getObjects().stream().filter(Objects::nonNull).collect(Collectors.toList());
+    }
+
+    public List<String> getVariableNames(IntegerList indices) {
+        return indices.stream()
+                .filter(i -> isValidIndex(Math.abs(i)))
+                .mapToObj(i -> i > 0 ? indexToObject.get(i) : "-" + indexToObject.get(-i))
+                .collect(Collectors.toList());
     }
 
     public List<Integer> getVariableIndices() {
@@ -124,9 +155,8 @@ public class VariableMap extends RangeMap<String> {
 
     protected <T extends ABooleanAssignmentList<U>, U extends ABooleanAssignment> Result<T> toBoolean(
             AValueAssignmentList<?> valueAssignmentList,
-            Supplier<T> listConstructor,
+            T booleanAssignmentList,
             Function<List<Integer>, U> constructor) {
-        T booleanAssignmentList = listConstructor.get();
         List<Problem> problems = new ArrayList<>();
         for (AValueAssignment valueAssignment : valueAssignmentList.getAll()) {
             Result<U> booleanAssignment = toBoolean(valueAssignment, constructor);
@@ -137,15 +167,16 @@ public class VariableMap extends RangeMap<String> {
     }
 
     public Result<BooleanAssignmentList> toBoolean(ValueAssignmentList valueAssignmentList) {
-        return toBoolean(valueAssignmentList, BooleanAssignmentList::new, BooleanAssignment::new);
+        return toBoolean(valueAssignmentList, new BooleanAssignmentList(), BooleanAssignment::new);
     }
 
     public Result<BooleanClauseList> toBoolean(ValueClauseList valueClauseList) {
-        return toBoolean(valueClauseList, BooleanClauseList::new, BooleanClause::new);
+        return toBoolean(
+                valueClauseList, new BooleanClauseList(valueClauseList.getVariableCount()), BooleanClause::new);
     }
 
     public Result<BooleanSolutionList> toBoolean(ValueSolutionList valueSolutionList) {
-        return toBoolean(valueSolutionList, BooleanSolutionList::new, BooleanSolution::new);
+        return toBoolean(valueSolutionList, new BooleanSolutionList(), BooleanSolution::new);
     }
 
     protected <T extends AValueAssignment> Result<T> toValue(
@@ -180,9 +211,8 @@ public class VariableMap extends RangeMap<String> {
 
     protected <T extends AValueAssignmentList<U>, U extends AValueAssignment> Result<T> toValue(
             ABooleanAssignmentList<?> booleanAssignmentList,
-            Supplier<T> listConstructor,
+            T valueAssignmentList,
             Function<LinkedHashMap<String, Object>, U> constructor) {
-        T valueAssignmentList = listConstructor.get();
         List<Problem> problems = new ArrayList<>();
         for (ABooleanAssignment booleanAssignment : booleanAssignmentList.getAll()) {
             Result<U> valueAssignment = toValue(booleanAssignment, constructor);
@@ -193,15 +223,15 @@ public class VariableMap extends RangeMap<String> {
     }
 
     public Result<ValueAssignmentList> toValue(BooleanAssignmentList booleanAssignmentList) {
-        return toValue(booleanAssignmentList, ValueAssignmentList::new, ValueAssignment::new);
+        return toValue(booleanAssignmentList, new ValueAssignmentList(), ValueAssignment::new);
     }
 
     public Result<ValueClauseList> toValue(BooleanClauseList booleanClauseList) {
-        return toValue(booleanClauseList, ValueClauseList::new, ValueClause::new);
+        return toValue(booleanClauseList, new ValueClauseList(booleanClauseList.getVariableCount()), ValueClause::new);
     }
 
     public Result<ValueSolutionList> toValue(BooleanSolutionList booleanSolutionList) {
-        return toValue(booleanSolutionList, ValueSolutionList::new, ValueSolution::new);
+        return toValue(booleanSolutionList, new ValueSolutionList(), ValueSolution::new);
     }
 
     protected static <T extends AValueAssignment> Result<T> toAnonymousValue(
@@ -229,9 +259,8 @@ public class VariableMap extends RangeMap<String> {
 
     protected static <T extends AValueAssignmentList<U>, U extends AValueAssignment> Result<T> toAnonymousValue(
             ABooleanAssignmentList<?> booleanAssignmentList,
-            Supplier<T> listConstructor,
+            T valueAssignmentList,
             Function<LinkedHashMap<String, Object>, U> constructor) {
-        T valueAssignmentList = listConstructor.get();
         List<Problem> problems = new ArrayList<>();
         for (ABooleanAssignment booleanAssignment : booleanAssignmentList.getAll()) {
             Result<U> valueAssignment = toAnonymousValue(booleanAssignment, constructor);
@@ -242,36 +271,16 @@ public class VariableMap extends RangeMap<String> {
     }
 
     public static Result<ValueAssignmentList> toAnonymousValue(BooleanAssignmentList booleanAssignmentList) {
-        return toAnonymousValue(booleanAssignmentList, ValueAssignmentList::new, ValueAssignment::new);
+        return toAnonymousValue(booleanAssignmentList, new ValueAssignmentList(), ValueAssignment::new);
     }
 
     public static Result<ValueClauseList> toAnonymousValue(BooleanClauseList booleanClauseList) {
-        return toAnonymousValue(booleanClauseList, ValueClauseList::new, ValueClause::new);
+        return toAnonymousValue(
+                booleanClauseList, new ValueClauseList(booleanClauseList.getVariableCount()), ValueClause::new);
     }
 
     public static Result<ValueSolutionList> toAnonymousValue(BooleanSolutionList booleanSolutionList) {
-        return toAnonymousValue(booleanSolutionList, ValueSolutionList::new, ValueSolution::new);
+        return toAnonymousValue(booleanSolutionList, new ValueSolutionList(), ValueSolution::new);
     }
 
-    /*
-    @SuppressWarnings("unchecked")
-    protected Result<T> adapt(VariableMap oldVariableMap, VariableMap newVariableMap) {
-        final T adaptedAssignmentList = newAssignmentList(new ArrayList<>());
-        for (final BooleanAssignment booleanAssignment : assignments) {
-            final Result<BooleanAssignment> adapted = booleanAssignment.adapt(oldVariableMap, newVariableMap);
-            if (adapted.isEmpty()) {
-                return Result.empty(adapted.getProblems());
-            }
-            adaptedAssignmentList.add((U) adapted.get());
-        }
-        return Result.of(adaptedAssignmentList);
-    }
-
-    public Result<T> adapt(VariableMap variableMap) {
-        return adapt(this.variableMap, variableMap).map(clauseList -> {
-            clauseList.setVariableMap(variableMap);
-            return clauseList;
-        });
-    }
-     */
 }

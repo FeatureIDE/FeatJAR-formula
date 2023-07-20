@@ -108,7 +108,7 @@ public interface IAssignmentList<T extends IAssignment<?>> extends Iterable<T> {
      *
      * @param assignments the assignments
      */
-    default void addAll(Collection<T> assignments) {
+    default void addAll(Collection<? extends T> assignments) {
         getAll().addAll(assignments);
     }
 
@@ -117,7 +117,7 @@ public interface IAssignmentList<T extends IAssignment<?>> extends Iterable<T> {
      *
      * @param assignments the assignments
      */
-    default void addAll(IAssignmentList<T> assignments) {
+    default void addAll(IAssignmentList<? extends T> assignments) {
         addAll(assignments.getAll());
     }
 
@@ -156,7 +156,7 @@ public interface IAssignmentList<T extends IAssignment<?>> extends Iterable<T> {
     /**
      * {@return a clause list with the same contents of this assignment list}
      */
-    IAssignmentList<?> toClauseList();
+    IAssignmentList<?> toClauseList(int variableCount);
 
     /**
      * {@return a solution list with the same contents of this assignment list}

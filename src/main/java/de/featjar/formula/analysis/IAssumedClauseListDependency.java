@@ -22,6 +22,7 @@ package de.featjar.formula.analysis;
 
 import de.featjar.base.computation.Dependency;
 import de.featjar.base.computation.IComputation;
+import de.featjar.base.computation.IDependent;
 
 /**
  * An analysis that can be passed a further list of clauses to assume.
@@ -30,7 +31,7 @@ import de.featjar.base.computation.IComputation;
  *
  * @param <T> type of the clause list
  */
-public interface IAssumedClauseListDependency<T extends IAssignmentList<? extends IClause<?>>> {
+public interface IAssumedClauseListDependency<T extends IAssignmentList<? extends IClause<?>>> extends IDependent {
     Dependency<T> getAssumedClauseListDependency();
 
     /**
@@ -39,7 +40,7 @@ public interface IAssumedClauseListDependency<T extends IAssignmentList<? extend
      * disjunctions of literals or equalities (i.e., a CNF).
      */
     default IComputation<T> getAssumedClauseList() {
-        return getAssumedClauseListDependency().get((IComputation<?>) this);
+        return getDependency(getAssumedClauseListDependency()).orElse(null);
     }
 
     /**
@@ -49,7 +50,7 @@ public interface IAssumedClauseListDependency<T extends IAssignmentList<? extend
      * @return this analysis
      */
     default IAssumedClauseListDependency<T> setAssumedClauseList(IComputation<T> clauseList) {
-        getAssumedClauseListDependency().set((IComputation<?>) this, clauseList);
+        setDependency(getAssumedClauseListDependency(), clauseList);
         return this;
     }
 }

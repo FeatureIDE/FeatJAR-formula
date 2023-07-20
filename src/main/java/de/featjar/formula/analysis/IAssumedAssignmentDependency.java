@@ -22,6 +22,7 @@ package de.featjar.formula.analysis;
 
 import de.featjar.base.computation.Dependency;
 import de.featjar.base.computation.IComputation;
+import de.featjar.base.computation.IDependent;
 
 /**
  * An analysis that can be passed a further assignment to assume.
@@ -29,7 +30,7 @@ import de.featjar.base.computation.IComputation;
  *
  * @param <T> the type of the assignment
  */
-public interface IAssumedAssignmentDependency<T extends IAssignment<?>> {
+public interface IAssumedAssignmentDependency<T extends IAssignment<?>> extends IDependent {
     Dependency<T> getAssumedAssignmentDependency();
 
     /**
@@ -38,7 +39,7 @@ public interface IAssumedAssignmentDependency<T extends IAssignment<?>> {
      * Usually, it is interpreted as a conjunction (i.e., similar to a {@link ISolution}).
      */
     default IComputation<T> getAssumedAssignment() {
-        return getAssumedAssignmentDependency().get((IComputation<?>) this);
+        return getDependency(getAssumedAssignmentDependency()).orElse(null);
     }
 
     /**
@@ -48,7 +49,7 @@ public interface IAssumedAssignmentDependency<T extends IAssignment<?>> {
      * @return this analysis
      */
     default IAssumedAssignmentDependency<T> setAssumedAssignment(IComputation<T> assignment) {
-        getAssumedAssignmentDependency().set((IComputation<?>) this, assignment);
+        setDependency(getAssumedAssignmentDependency(), assignment);
         return this;
     }
 }

@@ -21,6 +21,8 @@
 package de.featjar.formula.structure;
 
 public class ExpressionKindNotSupportedException extends RuntimeException {
+    private static final long serialVersionUID = 2492855002779117922L;
+
     public ExpressionKindNotSupportedException() {}
 
     public ExpressionKindNotSupportedException(ExpressionKind expressionKind) {

@@ -20,9 +20,12 @@
  */
 package de.featjar.formula.analysis.bool;
 
-import de.featjar.base.data.Range;
 import de.featjar.formula.analysis.IAssignmentList;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -64,9 +67,9 @@ public abstract class ABooleanAssignmentList<T extends ABooleanAssignment>
     }
 
     @Override
-    public BooleanClauseList toClauseList() {
+    public BooleanClauseList toClauseList(int variableCount) {
         return new BooleanClauseList(
-                assignments.stream().map(ABooleanAssignment::toClause).collect(Collectors.toList()));
+                assignments.stream().map(ABooleanAssignment::toClause).collect(Collectors.toList()), variableCount);
     }
 
     @Override
@@ -86,19 +89,6 @@ public abstract class ABooleanAssignmentList<T extends ABooleanAssignment>
     @Override
     public int hashCode() {
         return Objects.hash(assignments);
-    }
-
-    // todo: currently assumes that the maximum index corresponds to the number of variables
-    public int getVariableCount() {
-        return assignments.stream()
-                .flatMapToInt(assignment -> Arrays.stream(assignment.get()))
-                .max()
-                .orElse(0);
-    }
-
-    public Range getVariableRange() {
-        // todo: what if there are no variables?
-        return Range.of(1, getVariableCount());
     }
 
     /**

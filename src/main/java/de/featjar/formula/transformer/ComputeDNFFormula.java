@@ -21,9 +21,7 @@
 package de.featjar.formula.transformer;
 
 import de.featjar.base.computation.*;
-import de.featjar.base.computation.Progress;
 import de.featjar.base.data.Result;
-import de.featjar.base.tree.structure.ITree;
 import de.featjar.formula.structure.formula.FormulaNormalForm;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.tester.NormalForms;
@@ -33,17 +31,16 @@ import de.featjar.formula.tester.NormalForms;
  *
  * @author Sebastian Krieter
  */
-public class ComputeDNFFormula extends AComputation<IFormula> implements ITransformation<IFormula> {
-    protected static final Dependency<IFormula> NNF_FORMULA = newRequiredDependency();
+public class ComputeDNFFormula extends AComputation<IFormula> {
+    protected static final Dependency<IFormula> NNF_FORMULA =
+            Dependency.newDependency(ComputeDNFFormula.class, IFormula.class);
 
     public ComputeDNFFormula(IComputation<IFormula> nnfFormula) {
-        dependOn(NNF_FORMULA);
-        setInput(nnfFormula);
+        super(nnfFormula);
     }
 
-    @Override
-    public Dependency<IFormula> getInputDependency() {
-        return NNF_FORMULA;
+    protected ComputeDNFFormula(ComputeDNFFormula other) {
+        super(other);
     }
 
     @Override
@@ -53,10 +50,5 @@ public class ComputeDNFFormula extends AComputation<IFormula> implements ITransf
         return formulaToDistributiveNFFormula
                 .apply(formula)
                 .map(f -> NormalForms.normalToStrictNormalForm(f, FormulaNormalForm.DNF));
-    }
-
-    @Override
-    public ITree<IComputation<?>> cloneNode() {
-        return new ComputeDNFFormula(getInput());
     }
 }

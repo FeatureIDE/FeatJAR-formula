@@ -21,7 +21,6 @@
 package de.featjar.formula.transformer;
 
 import de.featjar.base.computation.*;
-import de.featjar.base.computation.Progress;
 import de.featjar.base.data.Result;
 import de.featjar.base.tree.structure.ITree;
 import de.featjar.formula.structure.ExpressionKind;
@@ -40,13 +39,15 @@ import java.util.function.Consumer;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class ComputeCNFFormula extends AComputation<IFormula> implements ITransformation<IFormula> {
-    protected static final Dependency<IFormula> NNF_FORMULA = newRequiredDependency();
-    protected static final Dependency<Boolean> IS_PLAISTED_GREENBAUM = newOptionalDependency(false);
-    protected static final Dependency<Integer> MAXIMUM_NUMBER_OF_LITERALS = newOptionalDependency(
-            Integer.MAX_VALUE); // be careful, this creates new variables that may clash on composition
-    protected static final Dependency<Boolean> IS_PARALLEL =
-            newOptionalDependency(false); // be careful, this does not guarantee determinism
+public class ComputeCNFFormula extends AComputation<IFormula> {
+    public static final Dependency<IFormula> NNF_FORMULA =
+            Dependency.newDependency(ComputeCNFFormula.class, IFormula.class);
+    public static final Dependency<Boolean> IS_PLAISTED_GREENBAUM =
+            Dependency.newDependency(ComputeCNFFormula.class, Boolean.class);
+    public static final Dependency<Integer> MAXIMUM_NUMBER_OF_LITERALS =
+            Dependency.newDependency(ComputeCNFFormula.class, Integer.class);
+    public static final Dependency<Boolean> IS_PARALLEL = Dependency.newDependency(
+            ComputeCNFFormula.class, Boolean.class); // be careful, this does not guarantee determinism
 
     /**
      * Creates a new CNF formula computation.
@@ -54,13 +55,15 @@ public class ComputeCNFFormula extends AComputation<IFormula> implements ITransf
      * @param nnfFormula the input NNF formula computation
      */
     public ComputeCNFFormula(IComputation<IFormula> nnfFormula) {
-        dependOn(NNF_FORMULA, IS_PLAISTED_GREENBAUM, MAXIMUM_NUMBER_OF_LITERALS, IS_PARALLEL);
-        setInput(nnfFormula);
+        super(
+                nnfFormula,
+                Computations.of(Boolean.FALSE),
+                Computations.of(Integer.MAX_VALUE),
+                Computations.of(Boolean.FALSE));
     }
 
-    @Override
-    public Dependency<IFormula> getInputDependency() {
-        return NNF_FORMULA;
+    protected ComputeCNFFormula(ComputeCNFFormula other) {
+        super(other);
     }
 
     /**
@@ -69,7 +72,7 @@ public class ComputeCNFFormula extends AComputation<IFormula> implements ITransf
      * of {@link de.featjar.formula.structure.formula.connective.BiImplies}, which yields smaller formulas that are not model-count-preserving.
      */
     public IComputation<Boolean> isPlaistedGreenbaum() {
-        return getDependency(IS_PLAISTED_GREENBAUM);
+        return getDependency(IS_PLAISTED_GREENBAUM).orElse(null);
     }
 
     /**
@@ -86,7 +89,7 @@ public class ComputeCNFFormula extends AComputation<IFormula> implements ITransf
      * When this number is exceeded for a constraint in the formula, it is instead transformed using the {@link TseitinTransformer}.
      */
     public IComputation<Integer> getMaximumNumberOfLiterals() {
-        return getDependency(MAXIMUM_NUMBER_OF_LITERALS);
+        return getDependency(MAXIMUM_NUMBER_OF_LITERALS).orElse(null);
     }
 
     /**
@@ -113,7 +116,7 @@ public class ComputeCNFFormula extends AComputation<IFormula> implements ITransf
      * {@return whether this computation is parallel}
      */
     public IComputation<Boolean> isParallel() {
-        return getDependency(IS_PARALLEL);
+        return getDependency(IS_PARALLEL).orElse(null);
     }
 
     /**
@@ -132,7 +135,7 @@ public class ComputeCNFFormula extends AComputation<IFormula> implements ITransf
         boolean isPlaistedGreenbaum = dependencyList.get(IS_PLAISTED_GREENBAUM);
         int maximumNumberOfLiterals = dependencyList.get(MAXIMUM_NUMBER_OF_LITERALS);
         boolean isParallel = dependencyList.get(IS_PARALLEL);
-        ExpressionKind.NNF.assertFor(nnfFormula);
+        assert ExpressionKind.NNF.test(nnfFormula);
 
         List<IFormula> clauseFormulas =
                 isParallel ? Collections.synchronizedList(new ArrayList<>()) : new ArrayList<>();
@@ -198,6 +201,6 @@ public class ComputeCNFFormula extends AComputation<IFormula> implements ITransf
 
     @Override
     public ITree<IComputation<?>> cloneNode() {
-        return new ComputeCNFFormula(getInput());
+        return new ComputeCNFFormula(this);
     }
 }

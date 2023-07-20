@@ -20,10 +20,12 @@
  */
 package de.featjar.formula.analysis.bool;
 
-import de.featjar.base.computation.IComputation;
+import de.featjar.base.FeatJAR;
+import de.featjar.base.computation.*;
+import de.featjar.base.data.Pair;
 import de.featjar.base.data.Result;
-import de.featjar.base.tree.structure.ITree;
 import de.featjar.formula.analysis.VariableMap;
+import de.featjar.formula.analysis.value.*;
 import de.featjar.formula.structure.Expressions;
 import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.formula.IFormula;
@@ -31,20 +33,20 @@ import de.featjar.formula.structure.formula.predicate.Literal;
 import java.util.List;
 import java.util.Objects;
 
-public class ComputeBooleanRepresentationOfCNFFormula
-        extends ABooleanRepresentationComputation<IFormula, BooleanClauseList> { // todo: assumption: is in CNF
-    public ComputeBooleanRepresentationOfCNFFormula(IComputation<IFormula> valueRepresentation) {
-        super(valueRepresentation);
-    }
+/**
+ * Transforms a formula, which is assumed to be in conjunctive normal form, into an indexed CNF representation.
+ *
+ * @author Sebastian Krieter
+ * @author Elias Kuiter
+ */
+public class BooleanRepresentationComputation<T extends IValueRepresentation, U extends IBooleanRepresentation>
+        extends AComputation<Pair<U, VariableMap>> {
+
+    protected static final Dependency<Object> VALUE_REPRESENTATION =
+            Dependency.newDependency(BooleanRepresentationComputation.class);
 
     public static Result<BooleanClauseList> toBooleanClauseList(IFormula formula, VariableMap variableMap) {
-        final BooleanClauseList clauseList = new BooleanClauseList();
-        // final Object formulaValue = formula.evaluate();
-        //                    if (formulaValue != null) { //TODO
-        //                        if (formulaValue == Boolean.FALSE) {
-        //                            clauseList.add(new LiteralList());
-        //                        }
-        //                    } else {
+        final BooleanClauseList clauseList = new BooleanClauseList(variableMap.getVariableCount());
         formula.getChildren().stream()
                 .map(expression -> getClause((IFormula) expression, variableMap))
                 .filter(Objects::nonNull)
@@ -78,8 +80,21 @@ public class ComputeBooleanRepresentationOfCNFFormula
         }
     }
 
+    public BooleanRepresentationComputation(IComputation<T> valueRepresentation) {
+        super(valueRepresentation);
+    }
+
+    protected BooleanRepresentationComputation(BooleanRepresentationComputation<T, U> other) {
+        super(other);
+    }
+
+    @SuppressWarnings("unchecked")
     @Override
-    public ITree<IComputation<?>> cloneNode() {
-        return new ComputeBooleanRepresentationOfCNFFormula(getInput());
+    public Result<Pair<U, VariableMap>> compute(List<Object> dependencyList, Progress progress) {
+        T vp = (T) VALUE_REPRESENTATION.get(dependencyList);
+        FeatJAR.log().debug("initializing variable map for " + vp.getClass().getName());
+        VariableMap variableMap = VariableMap.of(vp);
+        FeatJAR.log().debug(variableMap);
+        return vp.toBoolean(variableMap).map(u -> new Pair<>((U) u, variableMap));
     }
 }

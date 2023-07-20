@@ -21,6 +21,7 @@
 package de.featjar.formula.analysis.value;
 
 import de.featjar.base.computation.IComputation;
+import de.featjar.base.data.Range;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.IO;
 import de.featjar.formula.analysis.VariableMap;
@@ -32,26 +33,47 @@ import java.io.IOException;
 import java.util.Collection;
 
 /**
- * A list of value clauses.
- * Typically used to express a conjunctive normal form.
+ * A list of value clauses. Typically used to express a conjunctive normal form.
  * Compared to a {@link IFormula} in CNF (e.g., computed with
- * {@link ComputeCNFFormula}), a {@link ValueClauseList} is a more low-level representation.
+ * {@link ComputeCNFFormula}), a {@link ValueClauseList} is a more low-level
+ * representation.
  *
  * @author Elias Kuiter
  */
 public class ValueClauseList extends AValueAssignmentList<ValueClause> {
-    public ValueClauseList() {}
 
-    public ValueClauseList(int size) {
+    protected int variableCount;
+
+    public ValueClauseList(int variableCount) {
+        super();
+        this.variableCount = variableCount;
+    }
+
+    public ValueClauseList(int size, int variableCount) {
         super(size);
+        this.variableCount = variableCount;
+    }
+
+    public ValueClauseList(Collection<? extends ValueClause> clauses, int variableCount) {
+        super(clauses);
+        this.variableCount = variableCount;
     }
 
     public ValueClauseList(ValueClauseList other) {
         super(other);
+        this.variableCount = other.variableCount;
     }
 
-    public ValueClauseList(Collection<? extends ValueClause> clauses) {
-        super(clauses);
+    public void setVariableCount(int variableCount) {
+        this.variableCount = variableCount;
+    }
+
+    public int getVariableCount() {
+        return variableCount;
+    }
+
+    public Range getVariableRange() {
+        return Range.of(1, getVariableCount());
     }
 
     @Override

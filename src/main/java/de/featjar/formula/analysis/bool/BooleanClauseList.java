@@ -21,6 +21,7 @@
 package de.featjar.formula.analysis.bool;
 
 import de.featjar.base.computation.IComputation;
+import de.featjar.base.data.Range;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.value.ValueClauseList;
@@ -42,18 +43,39 @@ import java.util.Collection;
  * @author Elias Kuiter
  */
 public class BooleanClauseList extends ABooleanAssignmentList<BooleanClause> {
-    public BooleanClauseList() {}
 
-    public BooleanClauseList(int size) {
-        super(size);
+    protected int variableCount;
+
+    public BooleanClauseList(int variableCount) {
+        super();
+        this.variableCount = variableCount;
     }
 
-    public BooleanClauseList(Collection<? extends BooleanClause> clauses) {
-        super(clauses);
+    public BooleanClauseList(int size, int variableCount) {
+        super(size);
+        this.variableCount = variableCount;
+    }
+
+    public BooleanClauseList(Collection<? extends BooleanClause> assignments, int variableCount) {
+        super(assignments);
+        this.variableCount = variableCount;
     }
 
     public BooleanClauseList(BooleanClauseList other) {
         super(other);
+        this.variableCount = other.variableCount;
+    }
+
+    public void setVariableCount(int variableCount) {
+        this.variableCount = variableCount;
+    }
+
+    public int getVariableCount() {
+        return variableCount;
+    }
+
+    public Range getVariableRange() {
+        return Range.of(1, getVariableCount());
     }
 
     @Override

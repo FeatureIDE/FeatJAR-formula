@@ -32,22 +32,20 @@ import de.featjar.formula.analysis.bool.*;
  *
  * @author Elias Kuiter
  */
-public abstract class AValueRepresentationComputation<T extends IBooleanRepresentation, U extends IValueRepresentation>
-        extends AComputation<U> implements IAnalysis<T, U>, IVariableMapDependency {
-    protected static final Dependency<?> BOOLEAN_REPRESENTATION = newRequiredDependency();
-    protected static final Dependency<VariableMap> VARIABLE_MAP = newRequiredDependency();
+public class ValueRepresentationComputation<T extends IBooleanRepresentation, U extends IValueRepresentation>
+        extends AComputation<U> implements IVariableMapDependency {
+    protected static final Dependency<?> BOOLEAN_REPRESENTATION =
+            Dependency.newDependency(ValueRepresentationComputation.class);
+    protected static final Dependency<VariableMap> VARIABLE_MAP =
+            Dependency.newDependency(ValueRepresentationComputation.class, VariableMap.class);
 
-    public AValueRepresentationComputation(
+    public ValueRepresentationComputation(
             IComputation<T> booleanRepresentation, IComputation<VariableMap> variableMap) {
-        dependOn(BOOLEAN_REPRESENTATION, VARIABLE_MAP);
-        setInput(booleanRepresentation);
-        setVariableMap(variableMap);
+        super(booleanRepresentation, variableMap);
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public Dependency<T> getInputDependency() {
-        return (Dependency<T>) BOOLEAN_REPRESENTATION;
+    protected ValueRepresentationComputation(ValueRepresentationComputation<T, U> other) {
+        super(other);
     }
 
     @Override

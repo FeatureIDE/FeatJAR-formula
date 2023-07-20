@@ -21,10 +21,8 @@
 package de.featjar.formula.transformer;
 
 import de.featjar.base.computation.*;
-import de.featjar.base.computation.Progress;
 import de.featjar.base.data.Result;
 import de.featjar.base.tree.Trees;
-import de.featjar.base.tree.structure.ITree;
 import de.featjar.formula.structure.ExpressionKind;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.Reference;
@@ -36,17 +34,16 @@ import de.featjar.formula.visitor.*;
  *
  * @author Elias Kuiter
  */
-public class ComputeNNFFormula extends AComputation<IFormula> implements ITransformation<IFormula> {
-    protected static final Dependency<IFormula> FORMULA = newRequiredDependency();
+public class ComputeNNFFormula extends AComputation<IFormula> {
+    protected static final Dependency<IFormula> FORMULA =
+            Dependency.newDependency(ComputeNNFFormula.class, IFormula.class);
 
     public ComputeNNFFormula(IComputation<IFormula> formula) {
-        dependOn(FORMULA);
-        setInput(formula);
+        super(formula);
     }
 
-    @Override
-    public Dependency<IFormula> getInputDependency() {
-        return FORMULA;
+    protected ComputeNNFFormula(ComputeNNFFormula other) {
+        super(other);
     }
 
     @Override
@@ -60,10 +57,5 @@ public class ComputeNNFFormula extends AComputation<IFormula> implements ITransf
                 .flatMap(_void -> Trees.traverse(reference, new TrueFalseSimplifier()))
                 .flatMap(_void -> Trees.traverse(reference, new TrueFalseRemover(variable)))
                 .flatMap(_void -> Trees.traverse(reference, new AndOrSimplifier())));
-    }
-
-    @Override
-    public ITree<IComputation<?>> cloneNode() {
-        return new ComputeNNFFormula(getInput());
     }
 }

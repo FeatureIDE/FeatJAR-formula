@@ -63,7 +63,7 @@ public interface IAssignment<T> {
     /**
      * {@return a stream of variable-value pairs in this assignment}
      */
-    default Stream<Pair<T, Object>> stream() {
+    default Stream<Pair<T, Object>> streamValues() {
         return getAll().entrySet().stream().map(Pair::of);
     }
 

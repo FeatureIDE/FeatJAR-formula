@@ -34,7 +34,10 @@ import java.util.Collection;
  * @author Elias Kuiter
  */
 public class BooleanAssignmentList extends ABooleanAssignmentList<BooleanAssignment> {
-    public BooleanAssignmentList() {}
+
+    public BooleanAssignmentList() {
+        super();
+    }
 
     public BooleanAssignmentList(int size) {
         super(size);

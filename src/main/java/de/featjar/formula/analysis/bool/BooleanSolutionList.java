@@ -38,14 +38,15 @@ import java.util.Collection;
  * @author Elias Kuiter
  */
 public class BooleanSolutionList extends ABooleanAssignmentList<BooleanSolution> {
+
     public BooleanSolutionList() {}
 
     public BooleanSolutionList(int size) {
         super(size);
     }
 
-    public BooleanSolutionList(Collection<? extends BooleanSolution> solutions) {
-        super(solutions);
+    public BooleanSolutionList(Collection<? extends BooleanSolution> assignments) {
+        super(assignments);
     }
 
     public BooleanSolutionList(BooleanSolutionList other) {

@@ -45,6 +45,8 @@ public class DistributiveTransformer implements Function<IFormula, Result<IFormu
      * Thrown to show that an ongoing distributive transformation has been cancelled.
      */
     public static class CancelledException extends Exception {
+        private static final long serialVersionUID = -383875723565837234L;
+
         /**
          * Creates a new cancelled exception.
          *

@@ -63,9 +63,9 @@ public abstract class AValueAssignmentList<T extends AValueAssignment>
     }
 
     @Override
-    public ValueClauseList toClauseList() {
+    public ValueClauseList toClauseList(int variableCount) {
         return new ValueClauseList(
-                literalLists.stream().map(AValueAssignment::toClause).collect(Collectors.toList()));
+                literalLists.stream().map(AValueAssignment::toClause).collect(Collectors.toList()), variableCount);
     }
 
     @Override

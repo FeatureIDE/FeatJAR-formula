@@ -22,19 +22,20 @@ package de.featjar.formula.analysis;
 
 import de.featjar.base.computation.Dependency;
 import de.featjar.base.computation.IComputation;
+import de.featjar.base.computation.IDependent;
 
 /**
  * An analysis that can be passed a variable map.
  * Assumes that the implementing class can be cast to {@link IComputation}.
  */
-public interface IVariableMapDependency {
+public interface IVariableMapDependency extends IDependent {
     Dependency<VariableMap> getVariableMapDependency();
 
     /**
      * {@return a computation for the variable map used by this analysis}
      */
     default IComputation<VariableMap> getVariableMap() {
-        return getVariableMapDependency().get((IComputation<?>) this);
+        return getDependency(getVariableMapDependency()).orElse(null);
     }
 
     /**
@@ -44,7 +45,7 @@ public interface IVariableMapDependency {
      * @return this analysis
      */
     default IVariableMapDependency setVariableMap(IComputation<VariableMap> variableMap) {
-        getVariableMapDependency().set((IComputation<?>) this, variableMap);
+        setDependency(getVariableMapDependency(), variableMap);
         return this;
     }
 }
