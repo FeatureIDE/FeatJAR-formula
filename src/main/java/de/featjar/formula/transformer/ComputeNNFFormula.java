@@ -35,8 +35,7 @@ import de.featjar.formula.visitor.*;
  * @author Elias Kuiter
  */
 public class ComputeNNFFormula extends AComputation<IFormula> {
-    protected static final Dependency<IFormula> FORMULA =
-            Dependency.newDependency(ComputeNNFFormula.class, IFormula.class);
+    protected static final Dependency<IFormula> FORMULA = Dependency.newDependency(IFormula.class);
 
     public ComputeNNFFormula(IComputation<IFormula> formula) {
         super(formula);

@@ -42,8 +42,7 @@ import java.util.Objects;
 public class BooleanRepresentationComputation<T extends IValueRepresentation, U extends IBooleanRepresentation>
         extends AComputation<Pair<U, VariableMap>> {
 
-    protected static final Dependency<Object> VALUE_REPRESENTATION =
-            Dependency.newDependency(BooleanRepresentationComputation.class);
+    protected static final Dependency<Object> VALUE_REPRESENTATION = Dependency.newDependency();
 
     public static Result<BooleanClauseList> toBooleanClauseList(IFormula formula, VariableMap variableMap) {
         final BooleanClauseList clauseList = new BooleanClauseList(variableMap.getVariableCount());

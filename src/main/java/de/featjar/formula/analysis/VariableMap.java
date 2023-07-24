@@ -282,5 +282,4 @@ public class VariableMap extends RangeMap<String> {
     public static Result<ValueSolutionList> toAnonymousValue(BooleanSolutionList booleanSolutionList) {
         return toAnonymousValue(booleanSolutionList, new ValueSolutionList(), ValueSolution::new);
     }
-
 }

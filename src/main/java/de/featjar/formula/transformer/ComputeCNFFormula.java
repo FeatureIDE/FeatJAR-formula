@@ -40,14 +40,11 @@ import java.util.function.Consumer;
  * @author Elias Kuiter
  */
 public class ComputeCNFFormula extends AComputation<IFormula> {
-    public static final Dependency<IFormula> NNF_FORMULA =
-            Dependency.newDependency(ComputeCNFFormula.class, IFormula.class);
-    public static final Dependency<Boolean> IS_PLAISTED_GREENBAUM =
-            Dependency.newDependency(ComputeCNFFormula.class, Boolean.class);
-    public static final Dependency<Integer> MAXIMUM_NUMBER_OF_LITERALS =
-            Dependency.newDependency(ComputeCNFFormula.class, Integer.class);
-    public static final Dependency<Boolean> IS_PARALLEL = Dependency.newDependency(
-            ComputeCNFFormula.class, Boolean.class); // be careful, this does not guarantee determinism
+    public static final Dependency<IFormula> NNF_FORMULA = Dependency.newDependency(IFormula.class);
+    public static final Dependency<Boolean> IS_PLAISTED_GREENBAUM = Dependency.newDependency(Boolean.class);
+    public static final Dependency<Integer> MAXIMUM_NUMBER_OF_LITERALS = Dependency.newDependency(Integer.class);
+    public static final Dependency<Boolean> IS_PARALLEL =
+            Dependency.newDependency(Boolean.class); // be careful, this does not guarantee determinism
 
     /**
      * Creates a new CNF formula computation.

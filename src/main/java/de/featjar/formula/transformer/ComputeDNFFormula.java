@@ -32,8 +32,7 @@ import de.featjar.formula.tester.NormalForms;
  * @author Sebastian Krieter
  */
 public class ComputeDNFFormula extends AComputation<IFormula> {
-    protected static final Dependency<IFormula> NNF_FORMULA =
-            Dependency.newDependency(ComputeDNFFormula.class, IFormula.class);
+    protected static final Dependency<IFormula> NNF_FORMULA = Dependency.newDependency(IFormula.class);
 
     public ComputeDNFFormula(IComputation<IFormula> nnfFormula) {
         super(nnfFormula);

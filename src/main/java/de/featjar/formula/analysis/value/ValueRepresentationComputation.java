@@ -34,10 +34,8 @@ import de.featjar.formula.analysis.bool.*;
  */
 public class ValueRepresentationComputation<T extends IBooleanRepresentation, U extends IValueRepresentation>
         extends AComputation<U> implements IVariableMapDependency {
-    protected static final Dependency<?> BOOLEAN_REPRESENTATION =
-            Dependency.newDependency(ValueRepresentationComputation.class);
-    protected static final Dependency<VariableMap> VARIABLE_MAP =
-            Dependency.newDependency(ValueRepresentationComputation.class, VariableMap.class);
+    protected static final Dependency<?> BOOLEAN_REPRESENTATION = Dependency.newDependency();
+    protected static final Dependency<VariableMap> VARIABLE_MAP = Dependency.newDependency(VariableMap.class);
 
     public ValueRepresentationComputation(
             IComputation<T> booleanRepresentation, IComputation<VariableMap> variableMap) {
