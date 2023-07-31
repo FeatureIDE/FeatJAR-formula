@@ -28,6 +28,7 @@ import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.Reference;
 import de.featjar.formula.structure.term.value.Variable;
 import de.featjar.formula.visitor.*;
+import java.util.List;
 
 /**
  * Transforms a formula into strict negation normal form.
@@ -46,8 +47,8 @@ public class ComputeNNFFormula extends AComputation<IFormula> {
     }
 
     @Override
-    public Result<IFormula> compute(DependencyList dependencyList, Progress progress) {
-        IFormula formula = dependencyList.get(FORMULA);
+    public Result<IFormula> compute(List<Object> dependencyList, Progress progress) {
+        IFormula formula = FORMULA.get(dependencyList);
         ExpressionKind.BOOLEAN.assertFor(formula);
         if (formula.getVariables().isEmpty()) throw new IllegalArgumentException("requires at least one variable");
         Variable variable = formula.getVariables().get(0);

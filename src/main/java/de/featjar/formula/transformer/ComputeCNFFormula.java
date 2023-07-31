@@ -127,11 +127,11 @@ public class ComputeCNFFormula extends AComputation<IFormula> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public Result<IFormula> compute(DependencyList dependencyList, Progress progress) {
-        IFormula nnfFormula = dependencyList.get(NNF_FORMULA);
-        boolean isPlaistedGreenbaum = dependencyList.get(IS_PLAISTED_GREENBAUM);
-        int maximumNumberOfLiterals = dependencyList.get(MAXIMUM_NUMBER_OF_LITERALS);
-        boolean isParallel = dependencyList.get(IS_PARALLEL);
+    public Result<IFormula> compute(List<Object> dependencyList, Progress progress) {
+        IFormula nnfFormula = NNF_FORMULA.get(dependencyList);
+        boolean isPlaistedGreenbaum = IS_PLAISTED_GREENBAUM.get(dependencyList);
+        int maximumNumberOfLiterals = MAXIMUM_NUMBER_OF_LITERALS.get(dependencyList);
+        boolean isParallel = IS_PARALLEL.get(dependencyList);
         assert ExpressionKind.NNF.test(nnfFormula);
 
         List<IFormula> clauseFormulas =

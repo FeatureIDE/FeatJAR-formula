@@ -25,6 +25,7 @@ import de.featjar.base.data.Result;
 import de.featjar.formula.structure.formula.FormulaNormalForm;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.tester.NormalForms;
+import java.util.List;
 
 /**
  * Transforms a formula into strict disjunctive normal form.
@@ -43,8 +44,8 @@ public class ComputeDNFFormula extends AComputation<IFormula> {
     }
 
     @Override
-    public Result<IFormula> compute(DependencyList dependencyList, Progress progress) {
-        IFormula formula = dependencyList.get(NNF_FORMULA);
+    public Result<IFormula> compute(List<Object> dependencyList, Progress progress) {
+        IFormula formula = NNF_FORMULA.get(dependencyList);
         DistributiveTransformer formulaToDistributiveNFFormula = new DistributiveTransformer(false, null);
         return formulaToDistributiveNFFormula
                 .apply(formula)
