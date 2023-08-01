@@ -23,6 +23,7 @@ package de.featjar.formula.analysis.combinations;
 import java.util.Arrays;
 import java.util.Spliterator;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -32,61 +33,78 @@ import java.util.stream.StreamSupport;
  *
  * @author Sebastian Krieter
  */
-public final class LexicographicIterator
-        implements Spliterator<de.featjar.formula.analysis.combinations.LexicographicIterator.Combination> {
+public final class LexicographicIterator<T>
+        implements Spliterator<de.featjar.formula.analysis.combinations.LexicographicIterator.Combination<T>> {
 
-    public static class Combination {
-        private Combination orgCombination;
-        private int nextSpliteratorId;
-
+    public static final class Combination<U> {
         public final int spliteratorId;
+        public final U environment;
+
         public final int[] elementIndices;
         public int combinationIndex;
 
-        public Combination(int t) {
-            this.spliteratorId = 0;
-            this.combinationIndex = -1;
+        private Combination(int t, Function<Combination<U>, U> environmentCreator) {
+            spliteratorId = 0;
+            combinationIndex = -1;
             elementIndices = new int[t];
             elementIndices[0] = -1;
             for (int i = 1; i < t; i++) {
                 elementIndices[i] = i;
             }
-
-            orgCombination = this;
-            nextSpliteratorId = spliteratorId + 1;
+            environment = environmentCreator.apply(this);
         }
 
-        public Combination(Combination other) {
+        private Combination(
+                Combination<U> other, int[] nextSpliteratorId, Function<Combination<U>, U> environmentCreator) {
             combinationIndex = other.combinationIndex;
             elementIndices = Arrays.copyOf(other.elementIndices, other.elementIndices.length);
 
-            orgCombination = other.orgCombination;
-            synchronized (orgCombination) {
-                this.spliteratorId = orgCombination.nextSpliteratorId++;
+            synchronized (nextSpliteratorId) {
+                spliteratorId = nextSpliteratorId[0]++;
             }
+            environment = environmentCreator.apply(this);
+        }
+
+        @Override
+        public String toString() {
+            return "Combination [elementIndices=" + Arrays.toString(elementIndices) + ", combinationIndex="
+                    + combinationIndex + "]";
         }
     }
 
-    public static Stream<Combination> stream(int t, int size) {
-        return StreamSupport.stream(new LexicographicIterator(t, size), false);
+    public static <V> Stream<Combination<V>> stream(int t, int size) {
+        return StreamSupport.stream(new LexicographicIterator<>(t, size, c -> null), false);
     }
 
-    public static Stream<Combination> parallelStream(int t, int size) {
-        return StreamSupport.stream(new LexicographicIterator(t, size), true);
+    public static <V> Stream<Combination<V>> parallelStream(int t, int size) {
+        return StreamSupport.stream(new LexicographicIterator<>(t, size, c -> null), true);
     }
 
-    private final int t, n;
+    public static <V> Stream<Combination<V>> stream(int t, int size, Function<Combination<V>, V> environmentCreator) {
+        return StreamSupport.stream(new LexicographicIterator<>(t, size, environmentCreator), false);
+    }
+
+    public static <V> Stream<Combination<V>> parallelStream(
+            int t, int size, Function<Combination<V>, V> environmentCreator) {
+        return StreamSupport.stream(new LexicographicIterator<>(t, size, environmentCreator), true);
+    }
+
+    private static final int MINIMUM_SPLIT_SIZE = 10;
+
+    private final int t, n, end;
     private final BinomialCalculator binomialCalculator;
+    private final Combination<T> combination;
 
-    private final int end;
-    private final Combination combination;
+    private final int[] nextSpliteratorId = {1};
+    private final Function<Combination<T>, T> environmentCreator;
 
-    public LexicographicIterator(int t, int size) {
+    public LexicographicIterator(int t, int n, Function<Combination<T>, T> environmentCreator) {
         this.t = t;
-        n = size;
-        combination = new Combination(t);
+        this.n = n;
+        this.environmentCreator = environmentCreator;
+        combination = new Combination<>(t, environmentCreator);
         if (t > 0) {
-            binomialCalculator = new BinomialCalculator(t, size);
+            binomialCalculator = new BinomialCalculator(t, n);
             end = Math.toIntExact(binomialCalculator.binomial());
         } else {
             binomialCalculator = null;
@@ -94,13 +112,15 @@ public final class LexicographicIterator
         }
     }
 
-    private LexicographicIterator(LexicographicIterator it) {
+    private LexicographicIterator(LexicographicIterator<T> it) {
         t = it.t;
         n = it.n;
-        binomialCalculator = it.binomialCalculator;
-        combination = new Combination(it.combination);
+        environmentCreator = it.environmentCreator;
+        combination = new Combination<>(it.combination, nextSpliteratorId, environmentCreator);
 
-        it.setC(it.combination.combinationIndex + ((it.end - it.combination.combinationIndex) / 2) - 1);
+        binomialCalculator = it.binomialCalculator;
+        final int diff = it.end - it.combination.combinationIndex;
+        it.setC(it.combination.combinationIndex + (diff / 2) - 1);
         end = it.combination.combinationIndex;
     }
 
@@ -135,12 +155,12 @@ public final class LexicographicIterator
     }
 
     @Override
-    public Spliterator<Combination> trySplit() {
-        return (end - combination.combinationIndex < 100) ? null : new LexicographicIterator(this);
+    public Spliterator<Combination<T>> trySplit() {
+        return (end - combination.combinationIndex < MINIMUM_SPLIT_SIZE) ? null : new LexicographicIterator<>(this);
     }
 
     @Override
-    public boolean tryAdvance(Consumer<? super Combination> action) {
+    public boolean tryAdvance(Consumer<? super Combination<T>> action) {
         if (combination.combinationIndex == end) {
             return false;
         }
