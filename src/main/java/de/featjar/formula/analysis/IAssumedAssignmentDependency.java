@@ -49,7 +49,7 @@ public interface IAssumedAssignmentDependency<T extends IAssignment<?>> extends 
      * @return this analysis
      */
     default IAssumedAssignmentDependency<T> setAssumedAssignment(IComputation<T> assignment) {
-        setDependency(getAssumedAssignmentDependency(), assignment);
+        setDependencyComputation(getAssumedAssignmentDependency(), assignment);
         return this;
     }
 }

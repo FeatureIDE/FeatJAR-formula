@@ -41,8 +41,17 @@ import java.util.function.Consumer;
  */
 public class ComputeCNFFormula extends AComputation<IFormula> {
     public static final Dependency<IFormula> NNF_FORMULA = Dependency.newDependency(IFormula.class);
+    /**
+     * Determines whether this computation uses the Plaisted-Greenbaum optimization.
+     */
     public static final Dependency<Boolean> IS_PLAISTED_GREENBAUM = Dependency.newDependency(Boolean.class);
+    /**
+     * Determines the maximum number of literals available for distributive transformation.
+     */
     public static final Dependency<Integer> MAXIMUM_NUMBER_OF_LITERALS = Dependency.newDependency(Integer.class);
+    /**
+     * Determines whether this computation is parallel.
+     */
     public static final Dependency<Boolean> IS_PARALLEL =
             Dependency.newDependency(Boolean.class); // be careful, this does not guarantee determinism
 
@@ -64,65 +73,14 @@ public class ComputeCNFFormula extends AComputation<IFormula> {
     }
 
     /**
-     * {@return whether this computation uses the Plaisted-Greenbaum optimization}
-     * If {@code true}, auxiliary variables are defined with {@link de.featjar.formula.structure.formula.connective.Implies} instead
-     * of {@link de.featjar.formula.structure.formula.connective.BiImplies}, which yields smaller formulas that are not model-count-preserving.
-     */
-    public IComputation<Boolean> isPlaistedGreenbaum() {
-        return getDependency(IS_PLAISTED_GREENBAUM).orElse(null);
-    }
-
-    /**
-     * Sets whether this computation uses the Plaisted-Greenbaum optimization.
-     *
-     * @param isPlaistedGreenbaum whether this computation uses the Plaisted-Greenbaum optimization
-     */
-    public void setPlaistedGreenbaum(IComputation<Boolean> isPlaistedGreenbaum) {
-        setDependency(IS_PLAISTED_GREENBAUM, isPlaistedGreenbaum);
-    }
-
-    /**
-     * {@return the maximum number of literals available for distributive transformation}
-     * When this number is exceeded for a constraint in the formula, it is instead transformed using the {@link TseitinTransformer}.
-     */
-    public IComputation<Integer> getMaximumNumberOfLiterals() {
-        return getDependency(MAXIMUM_NUMBER_OF_LITERALS).orElse(null);
-    }
-
-    /**
-     * Sets the maximum number of literals available for distributive transformation.
-     *
-     * @param maximumNumberOfLiterals the maximum number of literals
-     */
-    public void setMaximumNumberOfLiterals(IComputation<Integer> maximumNumberOfLiterals) {
-        setDependency(MAXIMUM_NUMBER_OF_LITERALS, maximumNumberOfLiterals);
-    }
-
-    /**
      * Sets whether this computation introduces auxiliary variables.
      *
      * @param tseitin whether this computation introduces auxiliary variables
      */
     public void setTseitin(IComputation<Boolean> tseitin) {
-        setDependency(
+        setDependencyComputation(
                 MAXIMUM_NUMBER_OF_LITERALS,
                 tseitin.mapResult(ComputeCNFFormula.class, "setTseitin", b -> b ? 0 : Integer.MAX_VALUE));
-    }
-
-    /**
-     * {@return whether this computation is parallel}
-     */
-    public IComputation<Boolean> isParallel() {
-        return getDependency(IS_PARALLEL).orElse(null);
-    }
-
-    /**
-     * Sets whether this computation is parallel.
-     *
-     * @param isParallel whether this computation is parallel
-     */
-    public void setParallel(IComputation<Boolean> isParallel) {
-        setDependency(IS_PARALLEL, isParallel);
     }
 
     @SuppressWarnings("unchecked")

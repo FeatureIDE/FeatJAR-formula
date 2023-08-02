@@ -50,7 +50,7 @@ public interface IAssumedClauseListDependency<T extends IAssignmentList<? extend
      * @return this analysis
      */
     default IAssumedClauseListDependency<T> setAssumedClauseList(IComputation<T> clauseList) {
-        setDependency(getAssumedClauseListDependency(), clauseList);
+        setDependencyComputation(getAssumedClauseListDependency(), clauseList);
         return this;
     }
 }

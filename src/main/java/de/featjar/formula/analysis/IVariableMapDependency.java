@@ -45,7 +45,7 @@ public interface IVariableMapDependency extends IDependent {
      * @return this analysis
      */
     default IVariableMapDependency setVariableMap(IComputation<VariableMap> variableMap) {
-        setDependency(getVariableMapDependency(), variableMap);
+        setDependencyComputation(getVariableMapDependency(), variableMap);
         return this;
     }
 }
