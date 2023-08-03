@@ -32,6 +32,7 @@ import de.featjar.formula.structure.term.value.Variable;
 import de.featjar.formula.visitor.Evaluator;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.function.Predicate;
@@ -158,7 +159,7 @@ public interface IExpression extends ITree<IExpression> {
     default String printParseable() {
         try (final ByteArrayOutputStream s = new ByteArrayOutputStream()) {
             IO.save(this, s, new ExpressionFormat());
-            return s.toString();
+            return s.toString(StandardCharsets.UTF_8);
         } catch (IOException e) {
             return "";
         }

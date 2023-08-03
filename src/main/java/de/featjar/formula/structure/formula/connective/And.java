@@ -48,10 +48,10 @@ public class And extends ANonTerminalExpression implements IConnective {
 
     @Override
     public Object evaluate(List<?> values) {
-        if (values.stream().anyMatch(v -> v == Boolean.FALSE)) {
+        if (values.stream().anyMatch(v -> Boolean.FALSE.equals(v))) {
             return Boolean.FALSE;
         }
-        return values.stream().filter(v -> v == Boolean.TRUE).count() == getChildrenCount() ? Boolean.TRUE : null;
+        return values.stream().filter(v -> Boolean.TRUE.equals(v)).count() == getChildrenCount() ? Boolean.TRUE : null;
     }
 
     @Override

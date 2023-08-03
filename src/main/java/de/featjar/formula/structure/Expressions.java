@@ -42,11 +42,11 @@ public class Expressions {
     /**
      * A tautology.
      */
-    public static final True True = de.featjar.formula.structure.formula.predicate.True.getInstance();
+    public static final True True = de.featjar.formula.structure.formula.predicate.True.INSTANCE;
     /**
      * A contradiction.
      */
-    public static final False False = de.featjar.formula.structure.formula.predicate.False.getInstance();
+    public static final False False = de.featjar.formula.structure.formula.predicate.False.INSTANCE;
 
     /**
      * {@return a formula that evaluates to {@code true} iff all of the given formulas evaluate to {@code true}}

@@ -31,13 +31,9 @@ import java.util.List;
  */
 public class False extends ATerminalExpression implements IPolarPredicate {
 
-    private static final False INSTANCE = new False();
+    public static final False INSTANCE = new False();
 
     protected False() {}
-
-    public static False getInstance() {
-        return INSTANCE;
-    }
 
     @Override
     public String getName() {
@@ -56,7 +52,7 @@ public class False extends ATerminalExpression implements IPolarPredicate {
 
     @Override
     public True invert() {
-        return True.getInstance();
+        return True.INSTANCE;
     }
 
     @Override

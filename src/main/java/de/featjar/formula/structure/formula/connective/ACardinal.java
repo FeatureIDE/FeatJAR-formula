@@ -75,7 +75,7 @@ public abstract class ACardinal extends ANonTerminalExpression implements IConne
     @Override
     public Object evaluate(List<?> values) {
         final int trueCount =
-                (int) values.stream().filter(v -> v == Boolean.TRUE).count();
+                (int) values.stream().filter(v -> Boolean.TRUE.equals(v)).count();
         final int nullCount = (int) values.stream().filter(Objects::isNull).count();
         if (!range.testLowerBound(trueCount + nullCount) || !range.testUpperBound(trueCount)) {
             return Boolean.FALSE;
