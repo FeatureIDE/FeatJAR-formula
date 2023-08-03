@@ -53,7 +53,7 @@ public class LexicographicIteratorTest {
         Random random = new Random(1);
         LexicographicIterator.parallelStream(k, n).map(c -> c.combinationIndex).forEach(c -> {
             try {
-                Thread.sleep(random.nextLong(20));
+                Thread.sleep((long) (20 * random.nextDouble()));
             } catch (Exception e) {
             }
             synchronized (counts) {

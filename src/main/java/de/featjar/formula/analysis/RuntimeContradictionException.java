@@ -21,7 +21,7 @@
 package de.featjar.formula.analysis;
 
 /**
- * Exception thrown when a {@link SatSolver solver} detects an obvious
+ * Exception thrown when a solver detects an obvious
  * contradiction when adding new clauses.<br>
  * Doesn't need to be caught explicitly.
  *

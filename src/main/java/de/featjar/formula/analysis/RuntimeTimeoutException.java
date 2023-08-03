@@ -21,7 +21,7 @@
 package de.featjar.formula.analysis;
 
 /**
- * Exception thrown when an {@link Analysis analysis} experiences a solver
+ * Exception thrown when an analysis experiences a solver
  * timeout.<br>
  * Doesn't need to be caught explicitly.
  *
