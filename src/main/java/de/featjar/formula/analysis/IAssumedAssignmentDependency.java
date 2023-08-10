@@ -30,7 +30,7 @@ import de.featjar.base.computation.IDependent;
  *
  * @param <T> the type of the assignment
  */
-public interface IAssumedAssignmentDependency<T extends IAssignment<?>> extends IDependent {
+public interface IAssumedAssignmentDependency<T extends IAssignment<?, ?>> extends IDependent {
     Dependency<T> getAssumedAssignmentDependency();
 
     /**

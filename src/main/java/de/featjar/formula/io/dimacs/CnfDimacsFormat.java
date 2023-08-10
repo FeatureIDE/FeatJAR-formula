@@ -22,47 +22,48 @@ package de.featjar.formula.io.dimacs;
 
 import de.featjar.base.data.Result;
 import de.featjar.base.io.format.IFormat;
-import de.featjar.base.io.format.ParseProblem;
-import de.featjar.base.io.input.AInputMapper;
-import de.featjar.formula.structure.formula.IFormula;
-import java.text.ParseException;
+import de.featjar.formula.analysis.bool.BooleanClause;
+import de.featjar.formula.analysis.bool.BooleanClauseList;
+import java.util.Objects;
 
 /**
- * Reads and writes feature models in the DIMACS CNF format.
+ * Serializes a {@link BooleanClauseList} to a String in DIMACS format.
  *
  * @author Sebastian Krieter
- * @author Timo G&uuml;nther
  */
-public class DIMACSFormulaFormat implements IFormat<IFormula> {
+public class CnfDimacsFormat implements IFormat<BooleanClauseList> {
 
     @Override
-    public Result<String> serialize(IFormula formula) {
-        final DIMACSSerializer w = new DIMACSSerializer(formula);
-        w.setWritingVariableDirectory(true);
-        return Result.of(w.serialize());
-    }
+    public Result<String> serialize(BooleanClauseList cnf) {
+        Objects.requireNonNull(cnf);
 
-    @Override
-    public Result<IFormula> parse(AInputMapper inputMapper) {
-        final DIMACSParser r = new DIMACSParser();
-        r.setReadingVariableDirectory(true);
-        try {
-            // TODO use getLines() instead
-            return Result.of(r.parse(inputMapper.get().read().get()));
-        } catch (final ParseException e) {
-            return Result.empty(new ParseProblem(e, e.getErrorOffset()));
-        } catch (final Exception e) {
-            return Result.empty(e);
+        final StringBuilder sb = new StringBuilder();
+
+        // Problem
+        sb.append(DimacsConstants.PROBLEM);
+        sb.append(' ');
+        sb.append(DimacsConstants.CNF);
+        sb.append(' ');
+        sb.append(cnf.getVariableCount());
+        sb.append(' ');
+        sb.append(cnf.size());
+        sb.append(System.lineSeparator());
+
+        // Clauses
+        for (final BooleanClause clause : cnf.getAll()) {
+            for (final int l : clause.get()) {
+                sb.append(l);
+                sb.append(' ');
+            }
+            sb.append(DimacsConstants.CLAUSE_END);
+            sb.append(System.lineSeparator());
         }
+
+        return Result.of(sb.toString());
     }
 
     @Override
     public boolean supportsSerialize() {
-        return true;
-    }
-
-    @Override
-    public boolean supportsParse() {
         return true;
     }
 

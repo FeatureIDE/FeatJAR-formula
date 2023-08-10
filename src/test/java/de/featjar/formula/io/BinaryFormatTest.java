@@ -20,12 +20,14 @@
  */
 package de.featjar.formula.io;
 
-import static de.featjar.formula.structure.Expressions.*;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import de.featjar.base.io.format.IFormat;
-import de.featjar.formula.io.textual.ExpressionFormat;
-import de.featjar.formula.structure.formula.IFormula;
+import de.featjar.base.computation.Computations;
+import de.featjar.formula.analysis.bool.BooleanAssignmentSpace;
+import de.featjar.formula.analysis.bool.BooleanAssignmentSpaceComputation;
+import de.featjar.formula.analysis.bool.BooleanRepresentationComputation;
+import de.featjar.formula.io.binary.BooleanAssignmentSpaceBinaryFormat;
+import de.featjar.formula.test.CommonFormulas;
+import de.featjar.formula.transformer.ComputeCNFFormula;
+import de.featjar.formula.transformer.ComputeNNFFormula;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -33,16 +35,11 @@ import org.junit.jupiter.api.Test;
  *
  * @author Sebastian Krieter
  */
-public class ExpressionFormatTest {
+public class BinaryFormatTest {
 
-    // @Test //TODO
+    @Test
     public void Formula_ABC_nAnBnC() {
         test("ABC-nAnBnC");
-    }
-
-    // @Test //TODO
-    public void Formula_empty() {
-        test("faulty");
     }
 
     @Test
@@ -56,28 +53,13 @@ public class ExpressionFormatTest {
     }
 
     private static void test(String name) {
-        FormatTest.testLoadAndSave(getFormula(name), name, (IFormat) new ExpressionFormat());
-    }
+        final BooleanAssignmentSpace assignmentSpace = Computations.of(CommonFormulas.getFormula(name))
+                .map(ComputeNNFFormula::new)
+                .map(ComputeCNFFormula::new)
+                .map(BooleanRepresentationComputation::new)
+                .map(BooleanAssignmentSpaceComputation::new)
+                .compute();
 
-    private static IFormula getFormula(String name) {
-        switch (name) {
-            case "faulty": {
-                return null;
-            }
-            case "ABC-nAnBnC": {
-                return and(
-                        or(literal("A"), literal("B"), literal("C")),
-                        or(not(literal("A")), or(not(literal("B")), not(literal("C")))));
-            }
-            case "nA": {
-                return not(literal("A"));
-            }
-            case "nAB": {
-                return or(not(literal("A")), literal("B"));
-            }
-            default:
-                fail(name);
-                return null;
-        }
+        FormatTest.testSaveAndLoad(assignmentSpace, name, new BooleanAssignmentSpaceBinaryFormat());
     }
 }

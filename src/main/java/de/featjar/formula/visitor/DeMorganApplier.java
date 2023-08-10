@@ -39,12 +39,12 @@ import java.util.stream.Collectors;
 public class DeMorganApplier implements ITreeVisitor<IFormula, Void> {
     @Override
     public Result<Void> nodeValidator(List<IFormula> path) {
-        return rootValidator(path, root -> root instanceof Reference, "expected formula reference");
+        return ITreeVisitor.rootValidator(path, root -> root instanceof Reference, "expected formula reference");
     }
 
     @Override
     public TraversalAction firstVisit(List<IFormula> path) {
-        final IFormula formula = getCurrentNode(path);
+        final IFormula formula = ITreeVisitor.getCurrentNode(path);
         if (formula instanceof IPredicate) {
             return TraversalAction.SKIP_CHILDREN;
         } else if (formula instanceof IConnective) {

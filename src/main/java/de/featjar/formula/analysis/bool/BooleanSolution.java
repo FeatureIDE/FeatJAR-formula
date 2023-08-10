@@ -29,28 +29,34 @@ import de.featjar.formula.analysis.value.ValueSolution;
 import java.util.*;
 
 /**
- * A (partial) Boolean solution; that is, a conjunction of literals.
- * Implemented as a sorted list of indices.
- * Often holds output of a SAT {@link ISolver}.
- * Indices are ordered such that the array index {@code i - 1} either holds {@code -i}, {@code 0}, or {@code i}.
- * That is, the largest occurring index mandates the minimum length of the underlying array.
- * The same index may not occur multiple times, but indices may be 0 for partial solutions.
+ * A (partial) Boolean solution; that is, a conjunction of literals. Implemented
+ * as a sorted list of indices. Often holds output of a SAT {@link ISolver}.
+ * Indices are ordered such that the array index {@code i - 1} either holds
+ * {@code -i}, {@code 0}, or {@code i}. That is, the largest occurring index
+ * mandates the minimum length of the underlying array. The same index may not
+ * occur multiple times, but indices may be 0 for partial solutions.
  *
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class BooleanSolution extends ABooleanAssignment implements ISolution<Integer> {
+public class BooleanSolution extends ABooleanAssignment implements ISolution<Integer, Boolean> {
     public BooleanSolution(int... integers) {
         this(integers, true);
     }
 
     public BooleanSolution(int[] integers, boolean sort) {
         super(integers);
+        assert Arrays.stream(integers).map(Math::abs).max().getAsInt() == integers.length;
+        assert sort
+                        || Arrays.stream(integers).map(Math::abs).reduce(0, (a, b) -> a + 1 == b ? b : -2)
+                                != integers.length
+                : "unsorted: " + Arrays.toString(integers);
         if (sort) sort();
     }
 
     public BooleanSolution(Collection<Integer> integers) {
         super(integers);
+        assert integers.stream().mapToInt(a -> a).map(Math::abs).max().getAsInt() == integers.size();
         sort();
     }
 

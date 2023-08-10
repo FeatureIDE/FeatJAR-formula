@@ -65,7 +65,7 @@ public class Evaluator implements ITreeVisitor<IExpression, Object> {
 
     @Override
     public TraversalAction lastVisit(List<IExpression> path) {
-        final IExpression expression = getCurrentNode(path);
+        final IExpression expression = ITreeVisitor.getCurrentNode(path);
         if (expression instanceof Variable) {
             final Variable variable = (Variable) expression;
             final String variableName = variable.getName();

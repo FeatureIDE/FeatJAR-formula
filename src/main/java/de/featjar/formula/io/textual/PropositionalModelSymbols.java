@@ -20,8 +20,11 @@
  */
 package de.featjar.formula.io.textual;
 
-import de.featjar.base.data.Pair;
-import java.util.Arrays;
+import de.featjar.formula.structure.formula.connective.And;
+import de.featjar.formula.structure.formula.connective.BiImplies;
+import de.featjar.formula.structure.formula.connective.Implies;
+import de.featjar.formula.structure.formula.connective.Not;
+import de.featjar.formula.structure.formula.connective.Or;
 
 /**
  * Symbols for a representation like in Java. These are inherently incomplete
@@ -34,13 +37,11 @@ public class PropositionalModelSymbols extends Symbols {
     public static final Symbols INSTANCE = new PropositionalModelSymbols();
 
     private PropositionalModelSymbols() {
-        super(
-                Arrays.asList(
-                        new Pair<>(Operator.NOT, "!"),
-                        new Pair<>(Operator.AND, "&"),
-                        new Pair<>(Operator.OR, "|"),
-                        new Pair<>(Operator.BIIMPLIES, "=="),
-                        new Pair<>(Operator.IMPLIES, "=>")),
-                false);
+        super(false);
+        setSymbol(Not.class, "!");
+        setSymbol(And.class, "&");
+        setSymbol(Or.class, "|");
+        setSymbol(Implies.class, "=>");
+        setSymbol(BiImplies.class, "==");
     }
 }

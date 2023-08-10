@@ -25,9 +25,7 @@ import de.featjar.base.data.Problem.Severity;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.format.ParseException;
 import de.featjar.base.io.format.ParseProblem;
-import de.featjar.formula.io.textual.Symbols.Operator;
 import de.featjar.formula.structure.IExpression;
-import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.BiImplies;
 import de.featjar.formula.structure.formula.connective.Implies;
@@ -36,7 +34,6 @@ import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.formula.structure.formula.predicate.Literal;
 import de.featjar.formula.structure.formula.predicate.ProblemFormula;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -113,12 +110,6 @@ public class ExpressionParser {
 
     private static final String symbolPatternString = "\\s*(%s)\\s*";
 
-    private static final Operator[] operators = Operator.values();
-
-    static {
-        Arrays.sort(operators, (o1, o2) -> o2.getPriority() - o1.getPriority());
-    }
-
     private Symbols symbols = ShortSymbols.INSTANCE;
 
     private ErrorHandling ignoreMissingFeatures = ErrorHandling.THROW;
@@ -177,8 +168,7 @@ public class ExpressionParser {
         }
         source = SPACE + source + SPACE;
         // traverse all symbols
-        for (final Operator operator : operators) {
-            final String symbol = getSymbols().getSymbol(operator);
+        for (final String symbol : symbols.getSymbols()) {
             final String symbolPattern = String.format(symbolPatternString, Pattern.quote(symbol));
             final Matcher matcher = Pattern.compile(symbolPattern).matcher(source);
             if (matcher.find()) {
@@ -187,20 +177,23 @@ public class ExpressionParser {
 
                 // recursion for children nodes
 
-                final IExpression expression1, expression2;
+                final List<IExpression> children = new ArrayList<>(2);
                 String substring = source.substring(index + symbol.length());
-                if (operator == Operator.NOT) {
+                final Result<Class<? extends IExpression>> operator = symbols.parseSymbol(symbol);
+                if (operator.valueEquals(Not.class)) {
                     final String rightSide = substring.trim();
-                    expression1 = null;
+                    IExpression subExpression;
                     if (rightSide.isEmpty()) {
-                        expression2 = handleInvalidExpression(ErrorMessage.MISSING_NAME, source);
+                        subExpression = handleInvalidExpression(ErrorMessage.MISSING_NAME, source);
                     } else {
-                        expression2 = checkExpression(rightSide, quotedVariables, subExpressions);
+                        subExpression = checkExpression(rightSide, quotedVariables, subExpressions);
                     }
-                    if (expression2 == null) {
+                    if (subExpression == null) {
                         return null;
                     }
+                    children.add(subExpression);
                 } else {
+                    IExpression expression1, expression2;
                     final String leftSide = source.substring(0, index).trim();
                     if (leftSide.isEmpty()) {
                         expression1 = handleInvalidExpression(ErrorMessage.MISSING_NAME_LEFT, source);
@@ -219,34 +212,14 @@ public class ExpressionParser {
                     if (expression2 == null) {
                         return null;
                     }
+                    children.add(expression1);
+                    children.add(expression2);
                 }
 
-                switch (operator) {
-                    case BIIMPLIES: {
-                        return new BiImplies((IFormula) expression1, (IFormula) expression2);
-                    }
-                    case IMPLIES: {
-                        return new Implies((IFormula) expression1, (IFormula) expression2);
-                    }
-                    case OR: {
-                        return new Or((IFormula) expression1, (IFormula) expression2);
-                    }
-                    case AND: {
-                        return new And((IFormula) expression1, (IFormula) expression2);
-                    }
-                    case NOT: {
-                        return new Not((IFormula) expression2);
-                    }
-                    case ATLEAST:
-                    case ATMOST:
-                    case BETWEEN:
-                    case CHOOSE:
-                    case EXISTS:
-                    case FORALL:
-                    case UNKNOWN:
-                        return null;
-                    default:
-                        throw new IllegalStateException(String.valueOf(operator));
+                try {
+                    return operator.orElseThrow().getConstructor(List.class).newInstance(children);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
                 }
             }
         }

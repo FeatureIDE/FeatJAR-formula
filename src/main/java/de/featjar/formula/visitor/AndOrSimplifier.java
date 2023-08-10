@@ -39,7 +39,7 @@ import java.util.List;
 public class AndOrSimplifier implements ITreeVisitor<IFormula, Void> {
     @Override
     public TraversalAction firstVisit(List<IFormula> path) {
-        final IFormula formula = getCurrentNode(path);
+        final IFormula formula = ITreeVisitor.getCurrentNode(path);
         if (formula instanceof IPredicate) {
             return TraversalAction.SKIP_CHILDREN;
         } else if (formula instanceof IConnective) {
@@ -51,7 +51,7 @@ public class AndOrSimplifier implements ITreeVisitor<IFormula, Void> {
 
     @Override
     public TraversalAction lastVisit(List<IFormula> path) {
-        final IFormula formula = getCurrentNode(path);
+        final IFormula formula = ITreeVisitor.getCurrentNode(path);
         if (formula instanceof And) {
             formula.flatReplaceChildren(this::mergeAnd);
         } else if (formula instanceof Or) {

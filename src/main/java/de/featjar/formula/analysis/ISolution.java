@@ -36,4 +36,4 @@ import de.featjar.formula.analysis.value.ValueSolution;
  * @param <T> the index type of the variables
  * @author Elias Kuiter
  */
-public interface ISolution<T> extends IAssignment<T> {}
+public interface ISolution<T, R> extends IAssignment<T, R> {}

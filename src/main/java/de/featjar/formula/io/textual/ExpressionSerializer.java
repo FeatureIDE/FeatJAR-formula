@@ -20,7 +20,10 @@
  */
 package de.featjar.formula.io.textual;
 
-import de.featjar.formula.io.textual.Symbols.Operator;
+import de.featjar.base.data.Result;
+import de.featjar.base.tree.visitor.IInOrderTreeVisitor;
+import de.featjar.base.tree.visitor.ITreeVisitor;
+import de.featjar.formula.structure.ATerminalExpression;
 import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.AtLeast;
@@ -30,7 +33,6 @@ import de.featjar.formula.structure.formula.connective.BiImplies;
 import de.featjar.formula.structure.formula.connective.Choose;
 import de.featjar.formula.structure.formula.connective.Exists;
 import de.featjar.formula.structure.formula.connective.ForAll;
-import de.featjar.formula.structure.formula.connective.IConnective;
 import de.featjar.formula.structure.formula.connective.Implies;
 import de.featjar.formula.structure.formula.connective.Not;
 import de.featjar.formula.structure.formula.connective.Or;
@@ -38,17 +40,11 @@ import de.featjar.formula.structure.formula.predicate.Literal;
 import java.util.List;
 
 /**
- * Serializes expressions.
- * Currently only supports a subset of expressions.
- * TODO: write new serializer for all expression types
+ * Serializes expressions as readable text.
  *
- * @author Thomas Thüm
- * @author Timo Günther
  * @author Sebastian Krieter
- * @deprecated does not work reliably at the moment
  */
-@Deprecated
-public class ExpressionSerializer {
+public class ExpressionSerializer implements IInOrderTreeVisitor<IExpression, String> {
 
     /**
      * The type of notation of the formula.
@@ -95,25 +91,9 @@ public class ExpressionSerializer {
          * </ul>
          */
         POSTFIX,
-    }
-
-    /**
-     * The line format used.
-     *
-     * @author Timo Günther
-     */
-    public enum LineFormat {
         /**
-         * <p>
-         * Return a single line without any line breaks.
-         * </p>
-         */
-        SINGLE,
-        /**
-         * <p>
-         * Return multiple lines with indentation corresponding to nesting depth of the
-         * nodes.
-         * </p>
+         * The tree notation. Operators and operands are written in pre-order.
+         * Each operator and operand is written in a single line with indentation corresponding to its nesting depth.
          */
         TREE,
     }
@@ -126,13 +106,11 @@ public class ExpressionSerializer {
     private Symbols symbols = ShortSymbols.INSTANCE;
     /** The notation to use. */
     private Notation notation = Notation.INFIX;
-    /** The line format to use. */
-    private LineFormat lineFormat = LineFormat.SINGLE;
     /**
      * If true, this writer will always place brackets, even if they are
      * semantically irrelevant.
      */
-    private boolean enforceBrackets = false;
+    private boolean enforceParentheses = false;
     /** If true, this writer will enquote variables if they contain whitespace. */
     private boolean enquoteWhitespace = false;
 
@@ -168,9 +146,7 @@ public class ExpressionSerializer {
     }
 
     /**
-     * Returns the symbols to use for the operations.
-     *
-     * @return the symbols to use for the operations
+     * {@return the symbols to use for the operations.}
      */
     protected Symbols getSymbols() {
         return symbols;
@@ -187,20 +163,10 @@ public class ExpressionSerializer {
     }
 
     /**
-     * Returns the notation to use.
-     *
-     * @return the notation to use
+     * {@return the notation to use.}
      */
     protected Notation getNotation() {
         return notation;
-    }
-
-    public LineFormat getLineFormat() {
-        return lineFormat;
-    }
-
-    public void setLineFormat(LineFormat lineFormat) {
-        this.lineFormat = lineFormat;
     }
 
     public void setSeparator(String separator) {
@@ -231,20 +197,18 @@ public class ExpressionSerializer {
      * Sets the enforcing brackets flag. If {@code true}, this writer will always
      * place brackets, even if they are semantically irrelevant.
      *
-     * @param enforceBrackets if {@code true} the writer will use parentheses for
+     * @param enforceParentheses if {@code true} the writer will use parentheses for
      *                        every sub-expression.
      */
-    public void setEnforceBrackets(boolean enforceBrackets) {
-        this.enforceBrackets = enforceBrackets;
+    public void setEnforceParentheses(boolean enforceParentheses) {
+        this.enforceParentheses = enforceParentheses;
     }
 
     /**
-     * Returns the enforcing brackets flag.
-     *
-     * @return the enforcing brackets flag
+     * {@return the enforcing parentheses flag.}
      */
-    protected boolean isEnforceBrackets() {
-        return enforceBrackets;
+    protected boolean isEnforceParentheses() {
+        return enforceParentheses;
     }
 
     /**
@@ -267,79 +231,140 @@ public class ExpressionSerializer {
         return enquoteWhitespace;
     }
 
-    /**
-     * Converts the given node into the specified textual representation.
-     *
-     * @param expression the formula to write
-     * @return the textual representation; not null
-     */
-    public String serialize(IExpression expression) {
-        final StringBuilder sb = new StringBuilder();
-        nodeToString(expression, null, sb, -1);
-        return sb.toString();
-    }
+    private StringBuilder sb = new StringBuilder();
 
-    public void serialize(IExpression expression, StringBuilder sb) {
-        nodeToString(expression, null, sb, -1);
-    }
-
-    private void nodeToString(IExpression expression, Operator parent, StringBuilder sb, int depth) {
-        if (expression == null) {
-            sb.append((String) null);
+    @Override
+    public TraversalAction firstVisit(List<IExpression> path) {
+        final IExpression node = ITreeVisitor.getCurrentNode(path);
+        if (node instanceof ATerminalExpression) {
+            if (notation == Notation.TREE) {
+                alignLine(path.size());
+            }
+            sb.append(variableToString(node));
+        } else if (node instanceof Literal) {
+            printLiteral(node);
         } else {
-            if (expression instanceof Not) {
-                final IExpression child = expression.getFirstChild().orElse(null);
-                if (child instanceof Literal) {
-                    literalToString(((Literal) child.cloneTree()).invert(), sb, depth + 1);
-                    return;
-                }
-            }
-            if (expression instanceof Literal) {
-                literalToString((Literal) expression, sb, depth + 1);
-            } else {
-                operationToString((IConnective) expression, parent, sb, depth + 1);
-            }
-        }
-    }
-
-    /**
-     * Converts a literal into the specified textual representation.
-     *
-     * @param l      a literal to convert; not null
-     * @param sb     the {@link StringBuilder} containing the textual
-     *               representation.
-     */
-    private void literalToString(Literal l, StringBuilder sb, int depth) {
-        alignLine(sb, depth);
-        final String s = variableToString(l.getExpression().getName());
-        if (!l.isPositive()) {
-            final Notation notation = getNotation();
             switch (notation) {
-                case INFIX:
-                    sb.append(getSymbols().getSymbol(Operator.NOT));
-                    sb.append(getSymbols().isTextual() ? " " : "");
-                    sb.append(s);
+                case TREE:
+                    alignLine(path.size());
+                    sb.append(symbols.getSymbol(node));
                     break;
                 case PREFIX:
+                    sb.append(symbols.getSymbol(node));
                     sb.append('(');
-                    sb.append(getSymbols().getSymbol(Operator.NOT));
-                    sb.append(' ');
-                    sb.append(s);
-                    sb.append(')');
+                    break;
+                case INFIX:
+                    if (!isInfix(node)) {
+                        sb.append(symbols.getSymbol(node));
+                        if (needsParentheses(path, node)) {
+                            sb.append('(');
+                        } else if (symbols.isTextual()) {
+                            sb.append(' ');
+                        }
+                    } else {
+                        if (needsParentheses(path, node)) {
+                            sb.append('(');
+                        }
+                    }
                     break;
                 case POSTFIX:
-                    sb.append('(');
-                    sb.append(s);
-                    sb.append(' ');
-                    sb.append(getSymbols().getSymbol(Operator.NOT));
-                    sb.append(')');
+                    if (needsParentheses(path, node)) {
+                        sb.append('(');
+                    }
                     break;
                 default:
-                    throw new IllegalStateException("Unknown notation: " + notation);
+                    break;
             }
-        } else {
-            sb.append(s);
         }
+        return TraversalAction.CONTINUE;
+    }
+
+    @Override
+    public TraversalAction visit(List<IExpression> path) {
+        final IExpression node = ITreeVisitor.getCurrentNode(path);
+        if (!(node instanceof Literal)) {
+            switch (notation) {
+                case TREE:
+                    break;
+                case PREFIX:
+                    sb.append(' ');
+                    break;
+                case INFIX:
+                    sb.append(' ');
+                    if (isInfix(node)) {
+                        sb.append(symbols.getSymbol(node));
+                        sb.append(' ');
+                    }
+                    break;
+                case POSTFIX:
+                    sb.append(' ');
+                    break;
+                default:
+                    break;
+            }
+        }
+        return TraversalAction.CONTINUE;
+    }
+
+    @Override
+    public TraversalAction lastVisit(List<IExpression> path) {
+        final IExpression node = ITreeVisitor.getCurrentNode(path);
+        if (!(node instanceof ATerminalExpression) && !(node instanceof Literal)) {
+            switch (notation) {
+                case TREE:
+                    break;
+                case PREFIX:
+                    sb.append(')');
+                    break;
+                case INFIX:
+                    if (needsParentheses(path, node)) {
+                        sb.append(')');
+                    }
+                    break;
+                case POSTFIX:
+                    if (needsParentheses(path, node)) {
+                        sb.append(')');
+                    } else if (symbols.isTextual()) {
+                        sb.append(' ');
+                    }
+                    sb.append(symbols.getSymbol(node));
+                    break;
+                default:
+                    break;
+            }
+        }
+        return TraversalAction.CONTINUE;
+    }
+
+    private boolean isInfix(final IExpression node) {
+        return symbols.getInfix(node).orElse(false) && node.getChildrenCount() > 1;
+    }
+
+    private void printLiteral(final IExpression node) {
+        if (!((Literal) node).isPositive()) {
+            sb.append(symbols.getSymbol(Not.class));
+            if (symbols.isTextual()) {
+                sb.append(' ');
+            }
+        }
+    }
+
+    private boolean needsParentheses(List<IExpression> path, final IExpression node) {
+        return enforceParentheses
+                || symbols.getPriority(node).orElse(-1)
+                        <= ITreeVisitor.getParentNode(path)
+                                .flatMap(symbols::getPriority)
+                                .orElse(-2);
+    }
+
+    @Override
+    public void reset() {
+        sb = new StringBuilder();
+    }
+
+    @Override
+    public Result<String> getResult() {
+        return Result.of(sb.toString());
     }
 
     /**
@@ -348,127 +373,16 @@ public class ExpressionSerializer {
      * @param variable a variable to convert; not null
      * @return the textual representation; not null
      */
-    private String variableToString(String variable) {
-        return (isEnquoteWhitespace() && (containsWhitespace(variable) || equalsSymbol(variable)))
-                ? '"' + variable + '"'
-                : variable;
+    private String variableToString(IExpression variable) {
+        final String name = variable.getName();
+        return (enquoteWhitespace && (containsWhitespace(name) || equalsSymbol(name))) ? '"' + name + '"' : name;
     }
 
-    /**
-     * Converts an operation (i.e. a node that is not a literal) into the specified
-     * textual representation.
-     *
-     * @param node   an operation to convert; not null
-     * @param parent the class of the node's parent; null if not available (i.e. the
-     *               current node is the root node)
-     * @param sb     the {@link StringBuilder} containing the textual
-     *               representation.
-     */
-    private void operationToString(IConnective node, Operator parent, StringBuilder sb, int depth) {
-        alignLine(sb, depth);
-        final List<? extends IExpression> children = node.getChildren();
-        if (children.size() == 0) {
-            sb.append("()");
-            return;
+    private void alignLine(int depth) {
+        if (depth > 1) {
+            sb.append(newLine);
+            sb.append(tab.repeat(depth));
         }
-
-        final Operator operator = Symbols.getOperator(node);
-        final Notation notation = getNotation();
-        switch (notation) {
-            case INFIX:
-                if (isInfixCompatibleOperation(node)) {
-                    final int orderParent;
-                    final int orderChild;
-                    final boolean parenthesis = (isEnforceBrackets()
-                            || ((orderParent = getSymbols().getOrder(parent))
-                                    > (orderChild = getSymbols().getOrder(operator)))
-                            || ((orderParent == orderChild)
-                                    && (orderParent == getSymbols().getOrder(Operator.IMPLIES))));
-                    if (parenthesis) {
-                        sb.append('(');
-                    }
-                    nodeToString(children.get(0), operator, sb, depth);
-                    for (int i = 1; i < children.size(); i++) {
-                        sb.append(' ');
-                        sb.append(getSymbols().getSymbol(operator));
-                        sb.append(' ');
-                        nodeToString(children.get(i), operator, sb, depth);
-                    }
-                    if (parenthesis) {
-                        sb.append(')');
-                    }
-                } else {
-                    sb.append(getSymbols().getSymbol(operator));
-                    if ((node instanceof Not) && (getSymbols().isTextual())) {
-                        sb.append(' ');
-                    }
-                    sb.append('(');
-                    nodeToString(children.get(0), operator, sb, depth);
-                    for (int i = 1; i < children.size(); i++) {
-                        sb.append(getSeparator());
-                        nodeToString(children.get(i), operator, sb, depth);
-                    }
-                    sb.append(')');
-                }
-                break;
-            case PREFIX:
-                sb.append('(');
-                sb.append(getSymbols().getSymbol(operator));
-                sb.append(' ');
-                nodeToString(children.get(0), operator, sb, depth);
-                for (int i = 1; i < children.size(); i++) {
-                    sb.append(' ');
-                    nodeToString(children.get(i), operator, sb, depth);
-                }
-                sb.append(')');
-
-                break;
-            case POSTFIX:
-                sb.append('(');
-                nodeToString(children.get(0), operator, sb, depth);
-                for (int i = 1; i < children.size(); i++) {
-                    sb.append(' ');
-                    nodeToString(children.get(i), operator, sb, depth);
-                }
-                sb.append(' ');
-                sb.append(getSymbols().getSymbol(operator));
-                sb.append(')');
-                break;
-            default:
-                throw new IllegalStateException("Unknown notation: " + notation);
-        }
-    }
-
-    private void alignLine(StringBuilder sb, int depth) {
-        switch (lineFormat) {
-            case SINGLE:
-                break;
-            case TREE:
-                if (depth > 0) {
-                    sb.append('\n');
-                    sb.append("\t".repeat(depth));
-                }
-                break;
-            default:
-                throw new IllegalStateException("Unknown line format: " + lineFormat);
-        }
-    }
-
-    /**
-     * Returns true iff the given operation can be written in infix notation. For
-     * example, this is true for operations such as {@link And}, which can be
-     * written as <em>A and B</em> instead of <em>and(A, B)</em>. By contrast, this
-     * is false for unary operations (i.e. {@link Not}). This is also false for
-     * {@link Choose}, {@link AtLeast} and {@link AtMost}.
-     *
-     * @param expression operation in question
-     * @return true iff the given operation can be written in infix notation
-     */
-    private boolean isInfixCompatibleOperation(IExpression expression) {
-        return (expression instanceof And)
-                || (expression instanceof Or)
-                || (expression instanceof Implies)
-                || (expression instanceof BiImplies);
     }
 
     /**
@@ -478,7 +392,7 @@ public class ExpressionSerializer {
      * @return whether the string equals one of the symbols
      */
     private boolean equalsSymbol(String s) {
-        return getSymbols().parseSymbol(s) != Operator.UNKNOWN;
+        return getSymbols().parseSymbol(s).isPresent();
     }
 
     /**

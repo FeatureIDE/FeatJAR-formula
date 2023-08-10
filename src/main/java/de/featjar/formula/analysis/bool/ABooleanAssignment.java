@@ -42,7 +42,8 @@ import java.util.stream.IntStream;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public abstract class ABooleanAssignment extends IntegerList implements IAssignment<Integer>, IBooleanRepresentation {
+public abstract class ABooleanAssignment extends IntegerList
+        implements IAssignment<Integer, Boolean>, IBooleanRepresentation {
     public ABooleanAssignment(int... integers) {
         super(integers);
     }
@@ -177,8 +178,8 @@ public abstract class ABooleanAssignment extends IntegerList implements IAssignm
     }
 
     @Override
-    public LinkedHashMap<Integer, Object> getAll() {
-        LinkedHashMap<Integer, Object> map = Maps.empty();
+    public LinkedHashMap<Integer, Boolean> getAll() {
+        LinkedHashMap<Integer, Boolean> map = Maps.empty();
         for (int integer : array) {
             if (integer > 0) map.put(integer, true);
             else if (integer < 0) map.put(-integer, false);
@@ -197,7 +198,7 @@ public abstract class ABooleanAssignment extends IntegerList implements IAssignm
     }
 
     @Override
-    public Result<Object> getValue(Integer variable) {
+    public Result<Boolean> getValue(Integer variable) {
         int index = indexOfVariable(variable);
         if (index < 0) return Result.empty();
         int value = get(index);

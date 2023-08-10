@@ -18,31 +18,20 @@
  *
  * See <https://github.com/FeatJAR> for further information.
  */
-package de.featjar.formula.io.textual;
+package de.featjar.formula.analysis.value;
 
-import de.featjar.formula.structure.formula.connective.And;
-import de.featjar.formula.structure.formula.connective.BiImplies;
-import de.featjar.formula.structure.formula.connective.Implies;
-import de.featjar.formula.structure.formula.connective.Not;
-import de.featjar.formula.structure.formula.connective.Or;
+import de.featjar.formula.analysis.AAssignmentSpace;
+import de.featjar.formula.analysis.VariableMap;
+import java.util.List;
 
 /**
- * Symbols for a short textual representation. Best used for serialization since
- * they fall in the ASCII range but are still relatively short.
+ * Combines multiple groups of lists of {@link AValueAssignment assignments} with a corresponding {@link VariableMap variable map}.
  *
- * @author Timo Günther
  * @author Sebastian Krieter
  */
-public class ShortSymbols extends Symbols {
+public class ValueAssignmentSpace extends AAssignmentSpace<AValueAssignment> {
 
-    public static final Symbols INSTANCE = new ShortSymbols();
-
-    private ShortSymbols() {
-        super(false);
-        setSymbol(Not.class, "-");
-        setSymbol(And.class, "&");
-        setSymbol(Or.class, "|");
-        setSymbol(Implies.class, "=>");
-        setSymbol(BiImplies.class, "<=>");
+    public ValueAssignmentSpace(VariableMap variableMap, List<List<AValueAssignment>> assignment) {
+        super(variableMap, assignment);
     }
 }

@@ -184,7 +184,7 @@ public class TseitinTransformer
 
     @Override
     public TraversalAction firstVisit(List<IExpression> path) {
-        IExpression expression = getCurrentNode(path);
+        IExpression expression = ITreeVisitor.getCurrentNode(path);
         if (expression instanceof IPredicate) {
             return TraversalAction.SKIP_CHILDREN;
         } else if ((expression instanceof IConnective)) {
@@ -197,7 +197,7 @@ public class TseitinTransformer
 
     @Override
     public TraversalAction lastVisit(List<IExpression> path) {
-        IFormula formula = (IFormula) getCurrentNode(path);
+        IFormula formula = (IFormula) ITreeVisitor.getCurrentNode(path);
         if (formula instanceof IPredicate) {
             stack.push(formula);
         } else {

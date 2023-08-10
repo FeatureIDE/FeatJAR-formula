@@ -20,8 +20,11 @@
  */
 package de.featjar.formula.io.textual;
 
-import de.featjar.base.data.Pair;
-import java.util.Arrays;
+import de.featjar.formula.structure.formula.connective.And;
+import de.featjar.formula.structure.formula.connective.BiImplies;
+import de.featjar.formula.structure.formula.connective.Implies;
+import de.featjar.formula.structure.formula.connective.Not;
+import de.featjar.formula.structure.formula.connective.Or;
 
 /**
  * Symbols for a long textual representation. These are best used for editing by
@@ -35,13 +38,11 @@ public class TextualSymbols extends Symbols {
     public static final Symbols INSTANCE = new TextualSymbols();
 
     private TextualSymbols() {
-        super(
-                Arrays.asList(
-                        new Pair<>(Operator.NOT, "not"),
-                        new Pair<>(Operator.AND, "and"),
-                        new Pair<>(Operator.OR, "or"),
-                        new Pair<>(Operator.IMPLIES, "implies"),
-                        new Pair<>(Operator.BIIMPLIES, "iff")),
-                true);
+        super(true);
+        setSymbol(Not.class, "not");
+        setSymbol(And.class, "and");
+        setSymbol(Or.class, "or");
+        setSymbol(Implies.class, "implies");
+        setSymbol(BiImplies.class, "iff");
     }
 }

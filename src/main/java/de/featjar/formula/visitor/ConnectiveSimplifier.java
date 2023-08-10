@@ -51,12 +51,12 @@ public class ConnectiveSimplifier implements ITreeVisitor<IFormula, Void> {
 
     @Override
     public Result<Void> nodeValidator(List<IFormula> path) {
-        return rootValidator(path, root -> root instanceof Reference, "expected formula reference");
+        return ITreeVisitor.rootValidator(path, root -> root instanceof Reference, "expected formula reference");
     }
 
     @Override
     public TraversalAction firstVisit(List<IFormula> path) {
-        final IFormula formula = getCurrentNode(path);
+        final IFormula formula = ITreeVisitor.getCurrentNode(path);
         if (formula instanceof IPredicate) {
             return TraversalAction.SKIP_CHILDREN;
         } else if (formula instanceof IConnective) {
@@ -71,7 +71,7 @@ public class ConnectiveSimplifier implements ITreeVisitor<IFormula, Void> {
 
     @Override
     public TraversalAction lastVisit(List<IFormula> path) {
-        final IFormula formula = getCurrentNode(path);
+        final IFormula formula = ITreeVisitor.getCurrentNode(path);
         if (!(formula instanceof IPredicate)) formula.replaceChildren(this::replace);
         if (fail) {
             return TraversalAction.FAIL;

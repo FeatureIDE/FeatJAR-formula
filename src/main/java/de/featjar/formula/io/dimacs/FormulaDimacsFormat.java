@@ -20,72 +20,36 @@
  */
 package de.featjar.formula.io.dimacs;
 
+import de.featjar.base.data.Result;
+import de.featjar.base.io.format.IFormat;
+import de.featjar.base.io.format.ParseProblem;
+import de.featjar.base.io.input.AInputMapper;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.formula.structure.formula.predicate.Literal;
+import java.text.ParseException;
 
-public class DIMACSSerializer {
+/**
+ * Reads and writes feature models in the DIMACS CNF format.
+ *
+ * @author Sebastian Krieter
+ * @author Timo G&uuml;nther
+ */
+public class FormulaDimacsFormat implements IFormat<IFormula> {
 
-    /**
-     * Whether the writer should write a variable directory listing the names of the
-     * variables.
-     */
-    private boolean writingVariableDirectory = true;
-
-    private final IFormula formula;
-    private final VariableMap variableMap;
-
-    /**
-     * Constructs a new instance of this class with the given CNF.
-     *
-     * @param formula the formula to transform; not null
-     * @throws IllegalArgumentException if the input is null or not in CNF
-     */
-    public DIMACSSerializer(IFormula formula) throws IllegalArgumentException {
+    @Override
+    public Result<String> serialize(IFormula formula) {
         if (!formula.isCNF()) {
-            throw new IllegalArgumentException();
+            return Result.empty(new IllegalArgumentException("Formula is not in CNF"));
         }
-        this.formula = formula;
-        variableMap = VariableMap.of(formula);
-    }
-
-    /**
-     * <p>
-     * Sets the writing variable directory flag. If true, the writer will write a
-     * variable directory at the start of the output. This is a set of comments
-     * naming the variables. This can later be used during reading so the variables
-     * are not just numbers.
-     * </p>
-     *
-     * <p>
-     * Defaults to false.
-     * </p>
-     *
-     * @param writingVariableDirectory whether to write the variable directory
-     */
-    public void setWritingVariableDirectory(boolean writingVariableDirectory) {
-        this.writingVariableDirectory = writingVariableDirectory;
-    }
-
-    public boolean isWritingVariableDirectory() {
-        return writingVariableDirectory;
-    }
-
-    /**
-     * Writes the DIMACS CNF file format.
-     *
-     * @return the transformed CNF; not null
-     */
-    public String serialize() {
+        VariableMap variableMap = VariableMap.of(formula);
         final StringBuilder sb = new StringBuilder();
-        if (writingVariableDirectory) {
-            writeVariableDirectory(sb);
-        }
-        writeProblem(sb);
-        writeClauses(sb);
-        return sb.toString();
+        writeVariableDirectory(sb, variableMap);
+        writeProblem(sb, formula);
+        writeClauses(sb, formula, variableMap);
+        return Result.of(sb.toString());
     }
 
     /**
@@ -93,7 +57,7 @@ public class DIMACSSerializer {
      *
      * @param sb the string builder that builds the document
      */
-    private void writeVariableDirectory(StringBuilder sb) {
+    private void writeVariableDirectory(StringBuilder sb, VariableMap variableMap) {
         variableMap.stream().forEach(p -> writeVariableDirectoryEntry(sb, p.getKey(), p.getValue()));
     }
 
@@ -104,7 +68,7 @@ public class DIMACSSerializer {
      * @param index    index of the variable
      */
     private void writeVariableDirectoryEntry(StringBuilder sb, int index, String name) {
-        sb.append(DIMACSConstants.COMMENT_START);
+        sb.append(DimacsConstants.COMMENT_START);
         sb.append(index);
         sb.append(' ');
         sb.append(name);
@@ -116,10 +80,10 @@ public class DIMACSSerializer {
      *
      * @param sb the string builder that builds the document
      */
-    private void writeProblem(StringBuilder sb) {
-        sb.append(DIMACSConstants.PROBLEM);
+    private void writeProblem(StringBuilder sb, IFormula formula) {
+        sb.append(DimacsConstants.PROBLEM);
         sb.append(' ');
-        sb.append(DIMACSConstants.CNF);
+        sb.append(DimacsConstants.CNF);
         sb.append(' ');
         sb.append(formula.getVariables().size());
         sb.append(' ');
@@ -133,14 +97,14 @@ public class DIMACSSerializer {
      * @param sb     the string builder that builds the document
      * @param clause clause to transform; not null
      */
-    private void writeClause(StringBuilder sb, Or clause) {
+    private void writeClause(StringBuilder sb, Or clause, VariableMap variableMap) {
         for (final IExpression child : clause.getChildren()) {
             final Literal l = (Literal) child;
             final Integer index = variableMap.get(l.getExpression().getName()).orElseThrow();
             sb.append(l.isPositive() ? index : -index);
             sb.append(' ');
         }
-        sb.append(DIMACSConstants.CLAUSE_END);
+        sb.append(DimacsConstants.CLAUSE_END);
         sb.append(System.lineSeparator());
     }
 
@@ -149,9 +113,42 @@ public class DIMACSSerializer {
      *
      * @param sb the string builder that builds the document
      */
-    private void writeClauses(StringBuilder sb) {
+    private void writeClauses(StringBuilder sb, IFormula formula, VariableMap variableMap) {
         for (final IExpression clause : formula.getChildren()) {
-            writeClause(sb, (Or) clause);
+            writeClause(sb, (Or) clause, variableMap);
         }
+    }
+
+    @Override
+    public Result<IFormula> parse(AInputMapper inputMapper) {
+        final FormulaDimacsParser r = new FormulaDimacsParser();
+        r.setReadingVariableDirectory(true);
+        try {
+            return Result.of(r.parse(inputMapper.get().getNonEmptyLineIterator()));
+        } catch (final ParseException e) {
+            return Result.empty(new ParseProblem(e, e.getErrorOffset()));
+        } catch (final Exception e) {
+            return Result.empty(e);
+        }
+    }
+
+    @Override
+    public boolean supportsSerialize() {
+        return true;
+    }
+
+    @Override
+    public boolean supportsParse() {
+        return true;
+    }
+
+    @Override
+    public String getName() {
+        return "DIMACS";
+    }
+
+    @Override
+    public String getFileExtension() {
+        return "dimacs";
     }
 }

@@ -39,7 +39,7 @@ import java.util.stream.Stream;
  * @param <T> the type of the assignment
  * @author Elias Kuiter
  */
-public interface IAssignmentList<T extends IAssignment<?>> extends Iterable<T> {
+public interface IAssignmentList<T extends IAssignment<?, ?>> extends Iterable<T> {
     /**
      * {@return a list of all assignments in this assignment list}
      * The default implementations of the other methods assume that this list is mutable.

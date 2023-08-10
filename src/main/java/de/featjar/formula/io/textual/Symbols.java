@@ -21,130 +21,152 @@
 package de.featjar.formula.io.textual;
 
 import de.featjar.base.data.Maps;
-import de.featjar.base.data.Pair;
+import de.featjar.base.data.Result;
+import de.featjar.base.data.Trie;
 import de.featjar.formula.structure.IExpression;
-import de.featjar.formula.structure.formula.connective.*;
-import java.util.Collection;
+import de.featjar.formula.structure.formula.connective.And;
+import de.featjar.formula.structure.formula.connective.AtLeast;
+import de.featjar.formula.structure.formula.connective.AtMost;
+import de.featjar.formula.structure.formula.connective.Between;
+import de.featjar.formula.structure.formula.connective.BiImplies;
+import de.featjar.formula.structure.formula.connective.Choose;
+import de.featjar.formula.structure.formula.connective.Exists;
+import de.featjar.formula.structure.formula.connective.ForAll;
+import de.featjar.formula.structure.formula.connective.Implies;
+import de.featjar.formula.structure.formula.connective.Not;
+import de.featjar.formula.structure.formula.connective.Or;
+import de.featjar.formula.structure.formula.predicate.Literal;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Symbols {
 
-    public enum Operator {
-        NOT("not", 0),
-        AND("and", 6),
-        OR("or", 5),
-        IMPLIES("implies", 4),
-        BIIMPLIES("biimplies", 3),
-        CHOOSE("choose", 2),
-        ATLEAST("atleast", 2),
-        BETWEEN("between", 2),
-        ATMOST("atmost", 2),
-        EXISTS("exists", 1),
-        FORALL("forall", 1),
-        UNKNOWN("?", -1);
+    public static final Symbols JAVA = JavaSymbols.INSTANCE;
+    public static final Symbols LOGICAL = LogicalSymbols.INSTANCE;
+    public static final Symbols PROPOSITIONAL = PropositionalModelSymbols.INSTANCE;
+    public static final Symbols SHORT = ShortSymbols.INSTANCE;
+    public static final Symbols TEXTUAL = TextualSymbols.INSTANCE;
 
-        private final String defaultName;
-        private final int priority;
-
-        Operator(String defaultName, int priority) {
-            this.defaultName = defaultName;
-            this.priority = priority;
-        }
-
-        public int getPriority() {
-            return priority;
-        }
+    private static class OperatorProperties {
+        Boolean infix = null;
+        String name = null;
+        Integer priority = null;
     }
 
-    private final LinkedHashMap<String, Operator> symbolToOperator = Maps.empty();
-    private final LinkedHashMap<Operator, String> operatorToSymbol = Maps.empty();
+    private final LinkedHashMap<String, Class<? extends IExpression>> symbolToOperator = Maps.empty();
+    private final LinkedHashMap<Class<? extends IExpression>, OperatorProperties> operatorToProperties = Maps.empty();
+    private final Trie operatorNames = new Trie();
 
     private final boolean textual;
 
-    public Symbols(Collection<Pair<Operator, String>> symbols, boolean textual) {
-        this(symbols, textual, true);
-    }
-
-    public Symbols(Collection<Pair<Operator, String>> symbols, boolean textual, boolean addTextualSymbols) {
+    public Symbols(boolean textual) {
         this.textual = textual;
-        if (addTextualSymbols) {
-            for (final Operator operator : Operator.values()) {
-                setSymbol(operator, operator.defaultName);
-            }
-        }
-        for (final Pair<Operator, String> pair : symbols) {
-            setSymbol(pair.getKey(), pair.getValue());
-        }
+        setSymbol(Literal.class, "", 8, false);
+        setSymbol(Not.class, "not", 7, false);
+        setSymbol(And.class, "and", 6, true);
+        setSymbol(Or.class, "or", 5, true);
+        setSymbol(Implies.class, "implies", 4, true);
+        setSymbol(BiImplies.class, "biimplies", 3, true);
+        setSymbol(Choose.class, "choose", 2, false);
+        setSymbol(AtLeast.class, "atleast", 2, false);
+        setSymbol(Between.class, "between", 2, false);
+        setSymbol(AtMost.class, "atmost", 2, false);
+        setSymbol(Exists.class, "exists", 1, false);
+        setSymbol(ForAll.class, "forall", 1, false);
     }
 
-    private void setSymbol(Operator operator, String name) {
+    private OperatorProperties getProperties(Class<? extends IExpression> operator) {
+        OperatorProperties properties = operatorToProperties.get(operator);
+        if (properties == null) {
+            properties = new OperatorProperties();
+            operatorToProperties.put(operator, properties);
+        }
+        return properties;
+    }
+
+    public void setSymbol(Class<? extends IExpression> operator, String name) {
         symbolToOperator.put(name, operator);
-        operatorToSymbol.put(operator, name);
-    }
-
-    public Operator parseSymbol(String symbol) {
-        final Operator operator = symbolToOperator.get(symbol);
-        return operator != null ? operator : Operator.UNKNOWN;
-    }
-
-    public String getSymbol(Operator operator) {
-        final String symbol = operatorToSymbol.get(operator);
-        return symbol != null ? symbol : operator.defaultName;
-    }
-
-    public static Operator getOperator(IExpression expression) throws IllegalArgumentException {
-        if (expression instanceof IConnective) {
-            if (expression instanceof Not) {
-                return Operator.NOT;
-            }
-            if (expression instanceof And) {
-                return Operator.AND;
-            }
-            if (expression instanceof Or) {
-                return Operator.OR;
-            }
-            if (expression instanceof Implies) {
-                return Operator.IMPLIES;
-            }
-            if (expression instanceof BiImplies) {
-                return Operator.BIIMPLIES;
-            }
-            if (expression instanceof AtLeast) {
-                return Operator.ATLEAST;
-            }
-            if (expression instanceof AtMost) {
-                return Operator.ATMOST;
-            }
-            if (expression instanceof Choose) {
-                return Operator.CHOOSE;
-            }
-            if (expression instanceof Between) {
-                return Operator.BETWEEN;
-            }
-            if (expression instanceof ForAll) {
-                return Operator.FORALL;
-            }
-            if (expression instanceof Exists) {
-                return Operator.EXISTS;
-            }
-            return Operator.UNKNOWN;
+        final OperatorProperties properties = getProperties(operator);
+        operatorNames.add(name);
+        if (properties.name != null) {
+            operatorNames.remove(properties.name);
         }
-        throw new IllegalArgumentException("Unrecognized node type: " + expression.getClass());
+        properties.name = name;
+    }
+
+    public void setSymbol(Class<? extends IExpression> operator, String name, int priority) {
+        symbolToOperator.put(name, operator);
+        final OperatorProperties properties = getProperties(operator);
+        operatorNames.add(name);
+        if (properties.name != null) {
+            operatorNames.remove(properties.name);
+        }
+        properties.name = name;
+        properties.priority = priority;
+    }
+
+    public void setSymbol(Class<? extends IExpression> operator, String name, int priority, boolean infix) {
+        symbolToOperator.put(name, operator);
+        final OperatorProperties properties = getProperties(operator);
+        operatorNames.add(name);
+        if (properties.name != null) {
+            operatorNames.remove(properties.name);
+        }
+        properties.name = name;
+        properties.priority = priority;
+        properties.infix = infix;
+    }
+
+    public boolean hasPrefix(String prefix) {
+        return operatorNames.hasPrefix(prefix);
+    }
+
+    public Result<Class<? extends IExpression>> parseSymbol(String symbol) {
+        return Result.ofNullable(symbolToOperator.get(symbol));
     }
 
     public boolean isTextual() {
         return textual;
     }
 
+    public List<String> getSymbols() {
+        return operatorToProperties.entrySet().stream()
+                .map(e -> e.getValue().name)
+                .collect(Collectors.toList());
+    }
+
+    public String getSymbol(IExpression operator) {
+        return Result.ofNullable(operatorToProperties.get(operator.getClass()))
+                .map(p -> p.name)
+                .orElse(operator.getName());
+    }
+
+    public Result<String> getSymbol(Class<? extends IExpression> operator) {
+        return Result.ofNullable(operatorToProperties.get(operator)).map(p -> p.name);
+    }
+
     /**
-     * Assigns a number to every operator. For instance, that {@link And} has a
-     * higher order than {@link Or} means that <em>(A and B or C)</em> is equal to
-     * <em>((A and B) or C)</em>.
+     * Assigns a number to every operator. For instance, if {@link And} has a higher
+     * order than {@link Or} then <em>(A and B or C)</em> is equal to <em>((A and B)
+     * or C)</em>.
      *
      * @param operator operator type
      * @return the order assigned to the type of node
      */
-    protected int getOrder(Operator operator) {
-        return operator != null ? operator.getPriority() : Operator.UNKNOWN.getPriority();
+    public Result<Integer> getPriority(Class<? extends IExpression> operator) {
+        return Result.ofNullable(operatorToProperties.get(operator)).map(p -> p.priority);
+    }
+
+    public Result<Integer> getPriority(IExpression operator) {
+        return getPriority(operator.getClass());
+    }
+
+    public Result<Boolean> getInfix(Class<? extends IExpression> operator) {
+        return Result.ofNullable(operatorToProperties.get(operator)).map(p -> p.infix);
+    }
+
+    public Result<Boolean> getInfix(IExpression operator) {
+        return getInfix(operator.getClass());
     }
 }

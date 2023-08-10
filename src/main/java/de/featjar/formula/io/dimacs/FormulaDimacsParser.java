@@ -26,20 +26,21 @@ import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Or;
 import de.featjar.formula.structure.formula.predicate.Literal;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
 import java.text.ParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class DIMACSParser {
+public class FormulaDimacsParser {
 
-    private static final Pattern commentPattern = Pattern.compile("\\A" + DIMACSConstants.COMMENT + "\\s*(.*)\\Z");
+    private static final Pattern commentPattern = Pattern.compile("\\A" + DimacsConstants.COMMENT + "\\s*(.*)\\Z");
     private static final Pattern problemPattern = Pattern.compile(
-            "\\A\\s*" + DIMACSConstants.PROBLEM + "\\s+" + DIMACSConstants.CNF + "\\s+(\\d+)\\s+(\\d+)");
+            "\\A\\s*" + DimacsConstants.PROBLEM + "\\s+" + DimacsConstants.CNF + "\\s+(\\d+)\\s+(\\d+)");
 
     /** Maps indexes to variables. */
     private final LinkedHashMap<Integer, String> indexVariables = Maps.empty();
@@ -85,39 +86,36 @@ public class DIMACSParser {
      * @throws ParseException if the input does not conform to the DIMACS CNF file
      *                        format
      */
-    public IFormula parse(Reader in) throws ParseException, IOException {
+    public IFormula parse(NonEmptyLineIterator nonemptyLineIterator) throws ParseException, IOException {
         indexVariables.clear();
         variableCount = -1;
         clauseCount = -1;
         readingVariables = readVariableDirectory;
-        try (final BufferedReader reader = new BufferedReader(in)) {
-            final NonEmptyLineIterator nonemptyLineIterator = new NonEmptyLineIterator(reader);
-            nonemptyLineIterator.get();
+        nonemptyLineIterator.get();
 
-            readComments(nonemptyLineIterator);
-            readProblem(nonemptyLineIterator);
-            readComments(nonemptyLineIterator);
-            readingVariables = false;
+        readComments(nonemptyLineIterator);
+        readProblem(nonemptyLineIterator);
+        readComments(nonemptyLineIterator);
+        readingVariables = false;
 
-            if (readVariableDirectory) {
-                for (int i = 1; i <= variableCount; i++) {
-                    indexVariables.putIfAbsent(i, Integer.toString(i));
-                }
+        if (readVariableDirectory) {
+            for (int i = 1; i <= variableCount; i++) {
+                indexVariables.putIfAbsent(i, Integer.toString(i));
             }
-
-            final List<Or> clauses = readClauses(nonemptyLineIterator);
-            final int actualVariableCount = indexVariables.size();
-            final int actualClauseCount = clauses.size();
-            if (variableCount != actualVariableCount) {
-                throw new ParseException(
-                        String.format("Found %d instead of %d variables", actualVariableCount, variableCount), 1);
-            }
-            if (clauseCount != actualClauseCount) {
-                throw new ParseException(
-                        String.format("Found %d instead of %d clauses", actualClauseCount, clauseCount), 1);
-            }
-            return new And(clauses);
         }
+
+        final List<Or> clauses = readClauses(nonemptyLineIterator);
+        final int actualVariableCount = indexVariables.size();
+        final int actualClauseCount = clauses.size();
+        if (variableCount != actualVariableCount) {
+            throw new ParseException(
+                    String.format("Found %d instead of %d variables", actualVariableCount, variableCount), 1);
+        }
+        if (clauseCount != actualClauseCount) {
+            throw new ParseException(
+                    String.format("Found %d instead of %d clauses", actualClauseCount, clauseCount), 1);
+        }
+        return new And(clauses);
     }
 
     private void readComments(final NonEmptyLineIterator nonemptyLineIterator) {
@@ -129,19 +127,6 @@ public class DIMACSParser {
                 break; // ... until a non-comment token is found.
             }
         }
-    }
-
-    /**
-     * Reads the input. Calls {@link #parse(Reader)}.
-     *
-     * @param in The string to read from.
-     * @return a CNF; not null
-     * @throws IOException    if the reader encounters a problem.
-     * @throws ParseException if the input does not conform to the DIMACS CNF file
-     *                        format
-     */
-    public IFormula parse(String in) throws ParseException, IOException {
-        return parse(new StringReader(in));
     }
 
     /**
@@ -218,7 +203,7 @@ public class DIMACSParser {
                 }
                 readClausesCount++;
 
-                if (!DIMACSConstants.CLAUSE_END.equals(literalQueue.removeFirst())) {
+                if (!DimacsConstants.CLAUSE_END.equals(literalQueue.removeFirst())) {
                     throw new ParseException("Illegal clause end", nonemptyLineIterator.getLineCount());
                 }
                 literalList = literalQueue;

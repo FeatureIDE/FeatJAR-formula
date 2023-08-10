@@ -20,6 +20,7 @@
  */
 package de.featjar.formula.tester;
 
+import de.featjar.base.tree.visitor.ITreeVisitor;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.IConnective;
@@ -42,7 +43,7 @@ public class NNFTester extends ANormalFormTester {
 
     @Override
     public TraversalAction firstVisit(List<IFormula> path) {
-        final IFormula formula = getCurrentNode(path);
+        final IFormula formula = ITreeVisitor.getCurrentNode(path);
         if (formula instanceof IPredicate) {
             return TraversalAction.SKIP_CHILDREN;
         } else if (formula instanceof IConnective) {

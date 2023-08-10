@@ -33,7 +33,7 @@ import java.util.Objects;
  *
  * @author Elias Kuiter
  */
-public abstract class AValueAssignment implements IAssignment<String>, IValueRepresentation {
+public abstract class AValueAssignment implements IAssignment<String, Object>, IValueRepresentation {
     final LinkedHashMap<String, Object> variableValuePairs;
 
     public AValueAssignment() {

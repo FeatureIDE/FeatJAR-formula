@@ -50,12 +50,12 @@ public class TrueFalseRemover implements ITreeVisitor<IFormula, Void> {
 
     @Override
     public Result<Void> nodeValidator(List<IFormula> path) {
-        return rootValidator(path, root -> root instanceof Reference, "expected formula reference");
+        return ITreeVisitor.rootValidator(path, root -> root instanceof Reference, "expected formula reference");
     }
 
     @Override
     public TraversalAction firstVisit(List<IFormula> path) {
-        final IFormula formula = getCurrentNode(path);
+        final IFormula formula = ITreeVisitor.getCurrentNode(path);
         if (formula instanceof IPredicate) {
             return TraversalAction.SKIP_CHILDREN;
         } else if (formula instanceof IConnective) {
@@ -67,7 +67,7 @@ public class TrueFalseRemover implements ITreeVisitor<IFormula, Void> {
 
     @Override
     public TraversalAction lastVisit(List<IFormula> path) {
-        final IFormula formula = getCurrentNode(path);
+        final IFormula formula = ITreeVisitor.getCurrentNode(path);
         formula.replaceChildren(c -> c.equals(Expressions.False)
                 ? new And(new Literal(variable), new Literal(false, variable))
                 : c.equals(Expressions.True) ? new Or(new Literal(variable), new Literal(false, variable)) : null);

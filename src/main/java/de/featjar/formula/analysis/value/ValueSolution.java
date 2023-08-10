@@ -37,7 +37,7 @@ import java.util.LinkedHashMap;
  *
  * @author Elias Kuiter
  */
-public class ValueSolution extends AValueAssignment implements ISolution<String> {
+public class ValueSolution extends AValueAssignment implements ISolution<String, Object> {
     public ValueSolution() {}
 
     public ValueSolution(LinkedHashMap<String, Object> variableValuePairs) {

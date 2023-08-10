@@ -38,7 +38,7 @@ import java.util.*;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class BooleanClause extends ABooleanAssignment implements IClause<Integer> {
+public class BooleanClause extends ABooleanAssignment implements IClause<Integer, Boolean> {
     public BooleanClause(int... integers) {
         this(integers, true);
         assert Arrays.stream(integers).noneMatch(a -> a == 0) : "contains zero: " + Arrays.toString(integers);

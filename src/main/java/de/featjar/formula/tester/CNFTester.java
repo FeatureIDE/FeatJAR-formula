@@ -20,6 +20,7 @@
  */
 package de.featjar.formula.tester;
 
+import de.featjar.base.tree.visitor.ITreeVisitor;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Or;
@@ -40,7 +41,7 @@ public class CNFTester extends ANormalFormTester {
 
     @Override
     public TraversalAction firstVisit(List<IFormula> path) {
-        final IFormula formula = getCurrentNode(path);
+        final IFormula formula = ITreeVisitor.getCurrentNode(path);
         if (formula instanceof And) {
             return processLevelOne(path, formula, Or.class);
         } else if (formula instanceof Or) {

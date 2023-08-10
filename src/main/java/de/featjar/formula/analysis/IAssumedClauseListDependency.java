@@ -31,7 +31,7 @@ import de.featjar.base.computation.IDependent;
  *
  * @param <T> type of the clause list
  */
-public interface IAssumedClauseListDependency<T extends IAssignmentList<? extends IClause<?>>> extends IDependent {
+public interface IAssumedClauseListDependency<T extends IAssignmentList<? extends IClause<?, ?>>> extends IDependent {
     Dependency<T> getAssumedClauseListDependency();
 
     /**
