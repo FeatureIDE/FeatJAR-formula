@@ -72,11 +72,11 @@ public final class LexicographicIterator<T>
         }
     }
 
-    public static <V> Stream<Combination<V>> stream(int t, int size) {
+    public static Stream<Combination<Void>> stream(int t, int size) {
         return StreamSupport.stream(new LexicographicIterator<>(t, size, c -> null), false);
     }
 
-    public static <V> Stream<Combination<V>> parallelStream(int t, int size) {
+    public static Stream<Combination<Void>> parallelStream(int t, int size) {
         return StreamSupport.stream(new LexicographicIterator<>(t, size, c -> null), true);
     }
 

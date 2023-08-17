@@ -46,10 +46,17 @@ public class BooleanSolution extends ABooleanAssignment implements ISolution<Int
 
     public BooleanSolution(int[] integers, boolean sort) {
         super(integers);
-        assert Arrays.stream(integers).map(Math::abs).max().getAsInt() == integers.length;
+        assert Arrays.stream(integers)
+                                .map(Math::abs) //
+                                .max()
+                                .getAsInt()
+                        <= integers.length //
+                : "max index is larger than number of elements" + Arrays.toString(integers);
         assert sort
-                        || Arrays.stream(integers).map(Math::abs).reduce(0, (a, b) -> a + 1 == b ? b : -2)
-                                != integers.length
+                        || Arrays.stream(integers)
+                                        .map(Math::abs) //
+                                        .reduce(0, (a, b) -> b == 0 ? a + 1 : a + 1 == b ? b : -2)
+                                == integers.length
                 : "unsorted: " + Arrays.toString(integers);
         if (sort) sort();
     }
@@ -107,16 +114,6 @@ public class BooleanSolution extends ABooleanAssignment implements ISolution<Int
     @Override
     public int indexOfVariable(int integer) {
         return integer > 0 && integer < size() ? integer - 1 : -1;
-    }
-
-    @Override
-    public int size() {
-        return countPositives() + countNegatives();
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return size() == 0;
     }
 
     @Override
