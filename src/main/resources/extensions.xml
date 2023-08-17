@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <extensions>
 	<point id="de.featjar.formula.io.FormulaFormats">
-		<extension id="de.featjar.formula.io.dimacs.DIMACSFormulaFormat" />
+		<extension id="de.featjar.formula.io.dimacs.FormulaDimacsFormat" />
 	    <extension id="de.featjar.formula.io.xml.XMLFeatureModelCNFFormulaFormat" />
 	    <extension id="de.featjar.formula.io.KConfigReaderFormat" />
 	</point>

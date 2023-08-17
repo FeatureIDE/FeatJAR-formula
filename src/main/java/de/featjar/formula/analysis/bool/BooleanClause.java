@@ -143,4 +143,9 @@ public class BooleanClause extends ABooleanAssignment implements IClause<Integer
     public String toString() {
         return String.format("BooleanClause[%s]", print());
     }
+
+    @Override
+    public BooleanClause toClause() {
+        return this;
+    }
 }

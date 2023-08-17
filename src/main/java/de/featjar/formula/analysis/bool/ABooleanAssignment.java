@@ -164,17 +164,17 @@ public abstract class ABooleanAssignment extends IntegerList
 
     @Override
     public BooleanAssignment toAssignment() {
-        return new BooleanAssignment(array);
+        return new BooleanAssignment(Arrays.copyOf(array, array.length));
     }
 
     @Override
     public BooleanClause toClause() {
-        return new BooleanClause(array);
+        return new BooleanClause(Arrays.copyOf(array, array.length));
     }
 
     @Override
     public BooleanSolution toSolution() {
-        return new BooleanSolution(array);
+        return new BooleanSolution(Arrays.copyOf(array, array.length));
     }
 
     @Override

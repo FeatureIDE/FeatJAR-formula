@@ -64,4 +64,9 @@ public class BooleanAssignment extends ABooleanAssignment {
     public String toString() {
         return String.format("BooleanAssignment[%s]", print());
     }
+
+    @Override
+    public BooleanAssignment toAssignment() {
+        return this;
+    }
 }

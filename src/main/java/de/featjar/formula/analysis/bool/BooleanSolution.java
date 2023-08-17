@@ -135,4 +135,9 @@ public class BooleanSolution extends ABooleanAssignment implements ISolution<Int
     public String toString() {
         return String.format("BooleanSolution[%s]", print());
     }
+
+    @Override
+    public BooleanSolution toSolution() {
+        return this;
+    }
 }
