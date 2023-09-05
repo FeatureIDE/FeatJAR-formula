@@ -174,7 +174,7 @@ public abstract class ABooleanAssignment extends IntegerList
 
     @Override
     public BooleanSolution toSolution() {
-        return new BooleanSolution(Arrays.copyOf(array, array.length));
+        return new BooleanSolution(Arrays.stream(array).map(Math::abs).max().orElse(0), array);
     }
 
     @Override

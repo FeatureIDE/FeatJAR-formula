@@ -40,6 +40,7 @@ import java.util.*;
  * @author Elias Kuiter
  */
 public class BooleanSolution extends ABooleanAssignment implements ISolution<Integer, Boolean> {
+
     public BooleanSolution(int... integers) {
         this(integers, true);
     }
@@ -49,7 +50,7 @@ public class BooleanSolution extends ABooleanAssignment implements ISolution<Int
         assert Arrays.stream(integers)
                                 .map(Math::abs) //
                                 .max()
-                                .getAsInt()
+                                .orElse(0)
                         <= integers.length //
                 : "max index is larger than number of elements" + Arrays.toString(integers);
         assert sort
@@ -65,6 +66,13 @@ public class BooleanSolution extends ABooleanAssignment implements ISolution<Int
         super(integers);
         assert integers.stream().mapToInt(a -> a).map(Math::abs).max().getAsInt() == integers.size();
         sort();
+    }
+
+    public BooleanSolution(int variableCount, int... integers) {
+        super(new int[variableCount]);
+        Arrays.stream(integers)
+                .filter(integer -> integer != 0)
+                .forEach(integer -> array[Math.abs(integer) - 1] = integer);
     }
 
     public BooleanSolution(BooleanSolution booleanSolution) {
@@ -101,14 +109,14 @@ public class BooleanSolution extends ABooleanAssignment implements ISolution<Int
         return integers;
     }
 
-    public int[] removeConflicts(int... integers) {
-        return removeConflicts(array, integers);
+    public int[] removeConflicts(int... literals) {
+        return removeConflicts(array, literals);
     }
 
     @Override
-    public int indexOf(int integer) {
-        final int index = Math.abs(integer) - 1;
-        return integer != 0 && array[index] == integer ? index : -1;
+    public int indexOf(int literal) {
+        final int index = Math.abs(literal) - 1;
+        return literal != 0 && index < size() && array[index] == literal ? index : -1;
     }
 
     @Override
