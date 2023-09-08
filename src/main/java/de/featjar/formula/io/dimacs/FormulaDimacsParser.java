@@ -80,7 +80,7 @@ public class FormulaDimacsParser {
     /**
      * Reads the input.
      *
-     * @param in The source to read from.
+     * @param nonemptyLineIterator The source to read from.
      * @return a CNF; not null
      * @throws IOException    if the reader encounters a problem.
      * @throws ParseException if the input does not conform to the DIMACS CNF file
