@@ -20,6 +20,8 @@
  */
 package de.featjar.formula.structure.formula;
 
+import static de.featjar.base.computation.Computations.async;
+
 import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.VariableMap;
@@ -32,6 +34,9 @@ import de.featjar.formula.structure.formula.connective.IConnective;
 import de.featjar.formula.structure.formula.predicate.IPredicate;
 import de.featjar.formula.structure.term.value.Variable;
 import de.featjar.formula.tester.*;
+import de.featjar.formula.transformer.ComputeCNFFormula;
+import de.featjar.formula.transformer.ComputeDNFFormula;
+import de.featjar.formula.transformer.ComputeNNFFormula;
 import java.util.LinkedHashSet;
 
 /**
@@ -46,6 +51,29 @@ import java.util.LinkedHashSet;
  * @author Elias Kuiter
  */
 public interface IFormula extends IExpression, IValueRepresentation {
+
+    private static Result<IFormula> toNormalForm(
+            IFormula formula, FormulaNormalForm formulaNormalForm, boolean isStrict) {
+        IComputation<IFormula> computation = async(formula);
+        switch (formulaNormalForm) {
+            case NNF:
+                computation = computation.map(ComputeNNFFormula::new);
+                break;
+            case CNF:
+                computation = computation
+                        .map(ComputeNNFFormula::new)
+                        .map(ComputeCNFFormula::new)
+                        .set(ComputeCNFFormula.IS_STRICT, isStrict);
+                break;
+            case DNF:
+                computation = computation
+                        .map(ComputeNNFFormula::new)
+                        .map(ComputeDNFFormula::new)
+                        .set(ComputeDNFFormula.IS_STRICT, isStrict);
+                break;
+        }
+        return computation.computeResult();
+    }
 
     default Class<?> getType() {
         return Boolean.class;
@@ -102,14 +130,14 @@ public interface IFormula extends IExpression, IValueRepresentation {
      */
     // todo: use computations
     default Result<IFormula> toNormalForm(FormulaNormalForm formulaNormalForm) {
-        return NormalForms.toNormalForm(this, formulaNormalForm, false);
+        return toNormalForm(this, formulaNormalForm, false);
     }
 
     /**
      * {@return a formula in the given strict normal form that is equivalent to this formula}
      */
     default Result<IFormula> toStrictNormalForm(FormulaNormalForm formulaNormalForm) {
-        return NormalForms.toNormalForm(this, formulaNormalForm, true);
+        return toNormalForm(this, formulaNormalForm, true);
     }
 
     /**

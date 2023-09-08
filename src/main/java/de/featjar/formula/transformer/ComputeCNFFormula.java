@@ -20,14 +20,19 @@
  */
 package de.featjar.formula.transformer;
 
-import de.featjar.base.computation.*;
+import de.featjar.base.computation.AComputation;
+import de.featjar.base.computation.Computations;
+import de.featjar.base.computation.Dependency;
+import de.featjar.base.computation.IComputation;
+import de.featjar.base.computation.Progress;
 import de.featjar.base.data.Result;
 import de.featjar.base.tree.structure.ITree;
 import de.featjar.formula.structure.ExpressionKind;
 import de.featjar.formula.structure.formula.FormulaNormalForm;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.And;
-import de.featjar.formula.tester.NormalForms;
+import de.featjar.formula.structure.formula.connective.Or;
+import de.featjar.formula.structure.formula.predicate.Literal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -46,14 +51,20 @@ public class ComputeCNFFormula extends AComputation<IFormula> {
      */
     public static final Dependency<Boolean> IS_PLAISTED_GREENBAUM = Dependency.newDependency(Boolean.class);
     /**
-     * Determines the maximum number of literals available for distributive transformation.
+     * Determines the maximum number of literals available for distributive
+     * transformation.
      */
     public static final Dependency<Integer> MAXIMUM_NUMBER_OF_LITERALS = Dependency.newDependency(Integer.class);
     /**
-     * Determines whether this computation is parallel.
+     * Determines whether this computation is parallel. Use with care! Enabling
+     * parallel computation makes the result of this computation indeterministic.
      */
-    public static final Dependency<Boolean> IS_PARALLEL =
-            Dependency.newDependency(Boolean.class); // be careful, this does not guarantee determinism
+    public static final Dependency<Boolean> IS_PARALLEL = Dependency.newDependency(Boolean.class);
+
+    /**
+     * Determines whether the resulting formula is strict.
+     */
+    public static final Dependency<Boolean> IS_STRICT = Dependency.newDependency(Boolean.class);
 
     /**
      * Creates a new CNF formula computation.
@@ -62,10 +73,11 @@ public class ComputeCNFFormula extends AComputation<IFormula> {
      */
     public ComputeCNFFormula(IComputation<IFormula> nnfFormula) {
         super(
-                nnfFormula,
-                Computations.of(Boolean.FALSE),
-                Computations.of(Integer.MAX_VALUE),
-                Computations.of(Boolean.FALSE));
+                nnfFormula, //
+                Computations.of(Boolean.FALSE), //
+                Computations.of(Integer.MAX_VALUE), //
+                Computations.of(Boolean.FALSE), //
+                Computations.of(Boolean.TRUE));
     }
 
     protected ComputeCNFFormula(ComputeCNFFormula other) {
@@ -87,10 +99,13 @@ public class ComputeCNFFormula extends AComputation<IFormula> {
     @Override
     public Result<IFormula> compute(List<Object> dependencyList, Progress progress) {
         IFormula nnfFormula = NNF_FORMULA.get(dependencyList);
-        boolean isPlaistedGreenbaum = IS_PLAISTED_GREENBAUM.get(dependencyList);
+        if (!ExpressionKind.NNF.test(nnfFormula)) {
+            throw new IllegalArgumentException("Formula is not in NNF");
+        }
         int maximumNumberOfLiterals = MAXIMUM_NUMBER_OF_LITERALS.get(dependencyList);
+        boolean isPlaistedGreenbaum = IS_PLAISTED_GREENBAUM.get(dependencyList);
         boolean isParallel = IS_PARALLEL.get(dependencyList);
-        assert ExpressionKind.NNF.test(nnfFormula);
+        boolean isStrict = IS_STRICT.get(dependencyList);
 
         List<IFormula> clauseFormulas =
                 isParallel ? Collections.synchronizedList(new ArrayList<>()) : new ArrayList<>();
@@ -116,7 +131,9 @@ public class ComputeCNFFormula extends AComputation<IFormula> {
 
         TseitinTransformer.unify(substitutions);
         clauseFormulas.addAll(TseitinTransformer.getClauseFormulas(substitutions));
-        return Result.of(NormalForms.normalToStrictNormalForm(new And(clauseFormulas), FormulaNormalForm.CNF));
+
+        final And cnf = new And(clauseFormulas);
+        return Result.of(isStrict ? toStrictForm(cnf) : cnf);
     }
 
     @SuppressWarnings("unchecked")
@@ -130,8 +147,7 @@ public class ComputeCNFFormula extends AComputation<IFormula> {
             clauseFormulas.addAll((List<? extends IFormula>) formula.getChildren());
         } else if (formula.isNormalForm(FormulaNormalForm.CNF)) {
             clauseFormulas.addAll(
-                    (List<? extends IFormula>) NormalForms.normalToStrictNormalForm(formula, FormulaNormalForm.CNF)
-                            .getChildren());
+                    (List<? extends IFormula>) toStrictForm(formula).getChildren());
         } else {
             Result<IFormula> transformationResult = distributiveTransform(
                     formula,
@@ -157,5 +173,16 @@ public class ComputeCNFFormula extends AComputation<IFormula> {
     @Override
     public ITree<IComputation<?>> cloneNode() {
         return new ComputeCNFFormula(this);
+    }
+
+    private static IFormula toStrictForm(IFormula formula) {
+        if (formula instanceof Literal) {
+            formula = new And(new Or(formula));
+        } else if (formula instanceof Or) {
+            formula = new And(formula);
+        } else {
+            formula.replaceChildren(child -> (child instanceof Literal) ? new Or((IFormula) child) : child);
+        }
+        return formula;
     }
 }
