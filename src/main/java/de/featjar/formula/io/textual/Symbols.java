@@ -35,6 +35,7 @@ import de.featjar.formula.structure.formula.connective.ForAll;
 import de.featjar.formula.structure.formula.connective.Implies;
 import de.featjar.formula.structure.formula.connective.Not;
 import de.featjar.formula.structure.formula.connective.Or;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -166,5 +167,12 @@ public class Symbols {
 
     public Result<Boolean> getInfix(IExpression operator) {
         return getInfix(operator.getClass());
+    }
+
+    public List<String> getSortedSymbols() {
+        return operatorToProperties.entrySet().stream()
+                .sorted(Comparator.comparing(e -> e.getValue().priority))
+                .map(e -> e.getValue().name)
+                .collect(Collectors.toList());
     }
 }

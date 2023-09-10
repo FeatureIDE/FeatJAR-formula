@@ -111,6 +111,7 @@ public class ExpressionParser {
     private static final String symbolPatternString = "\\s*(%s)\\s*";
 
     private Symbols symbols = ShortSymbols.INSTANCE;
+    private List<String> symbolList = symbols.getSortedSymbols();
 
     private ErrorHandling ignoreMissingFeatures = ErrorHandling.THROW;
     private ErrorHandling ignoreUnparseableSubExpressions = ErrorHandling.THROW;
@@ -122,6 +123,7 @@ public class ExpressionParser {
 
     public void setSymbols(Symbols symbols) {
         this.symbols = symbols;
+        symbolList = symbols.getSortedSymbols();
     }
 
     public ErrorHandling ignoresMissingFeatures() {
@@ -168,7 +170,7 @@ public class ExpressionParser {
         }
         source = SPACE + source + SPACE;
         // traverse all symbols
-        for (final String symbol : symbols.getSymbols()) {
+        for (final String symbol : symbolList) {
             final String symbolPattern = String.format(symbolPatternString, Pattern.quote(symbol));
             final Matcher matcher = Pattern.compile(symbolPattern).matcher(source);
             if (matcher.find()) {
