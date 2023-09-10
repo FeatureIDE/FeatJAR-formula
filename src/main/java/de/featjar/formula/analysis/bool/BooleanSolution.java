@@ -109,6 +109,15 @@ public class BooleanSolution extends ABooleanAssignment implements ISolution<Int
         return integers;
     }
 
+    public static void removeConflictsInplace(int[] integers1, int[] integers2) {
+        if (integers1.length != integers2.length) throw new IllegalArgumentException();
+        for (int i = 0; i < integers1.length; i++) {
+            final int x = integers1[i];
+            final int y = integers2[i];
+            integers1[i] = x != y ? 0 : x;
+        }
+    }
+
     public int[] removeConflicts(int... literals) {
         return removeConflicts(array, literals);
     }
