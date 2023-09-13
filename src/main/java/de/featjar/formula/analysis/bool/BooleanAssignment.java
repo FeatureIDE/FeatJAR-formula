@@ -27,8 +27,8 @@ import de.featjar.formula.analysis.value.AValueAssignment;
 import java.util.Collection;
 
 /**
- * Primary implementation of {@link ABooleanAssignment}.
- * To be used when neither CNF nor DNF semantics are associated with an assignment.
+ * Primary implementation of {@link ABooleanAssignment}. To be used when neither
+ * CNF nor DNF semantics are associated with an assignment.
  *
  * @author Elias Kuiter
  */

@@ -49,7 +49,11 @@ public class Not extends ANonTerminalExpression implements IConnective, IUnaryEx
 
     @Override
     public Object evaluate(List<?> values) {
-        return !(boolean) values.get(0);
+        Object a = values.get(0);
+        if (a == null) {
+            return null;
+        }
+        return !(boolean) a;
     }
 
     @Override

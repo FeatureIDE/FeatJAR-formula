@@ -20,10 +20,15 @@
  */
 package de.featjar.formula.analysis.bool;
 
-import de.featjar.base.data.*;
+import de.featjar.base.data.IntegerList;
+import de.featjar.base.data.Maps;
+import de.featjar.base.data.Problem;
+import de.featjar.base.data.Result;
+import de.featjar.base.data.Sets;
 import de.featjar.formula.analysis.IAssignment;
 import de.featjar.formula.analysis.ISolver;
 import de.featjar.formula.analysis.VariableMap;
+import de.featjar.formula.analysis.value.ValueAssignment;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -175,6 +180,17 @@ public abstract class ABooleanAssignment extends IntegerList
     @Override
     public BooleanSolution toSolution() {
         return new BooleanSolution(Arrays.stream(array).map(Math::abs).max().orElse(0), array);
+    }
+
+    public ValueAssignment toValue() {
+        LinkedHashMap<String, Object> variableValuePairs = Maps.empty();
+        for (int literal : array) {
+            if (literal != 0) {
+                int index = Math.abs(literal);
+                variableValuePairs.put(String.valueOf(index), literal > 0);
+            }
+        }
+        return new ValueAssignment(variableValuePairs);
     }
 
     @Override

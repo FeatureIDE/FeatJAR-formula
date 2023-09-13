@@ -55,7 +55,7 @@ class ExpressionsTest {
         assertNull(and.evaluate(new ValueAssignment("x", true)));
         assertTrue((Boolean) and.evaluate(new ValueAssignment("x", true, "y", true)));
         assertFalse((Boolean) and.evaluate(new ValueAssignment("x", true, "y", false)));
-        assertThrows(NullPointerException.class, and::evaluate); // TODO: this throws, but it should return null!
+        assertNull(and.evaluate());
     }
 
     // TODO: tests for other operators

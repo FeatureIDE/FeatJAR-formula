@@ -50,7 +50,12 @@ public class BiImplies extends ANonTerminalExpression implements IConnective, IB
 
     @Override
     public Object evaluate(List<?> values) {
-        return (boolean) values.get(0) == (boolean) values.get(1);
+        Object a = values.get(0);
+        Object b = values.get(1);
+        if (a == null || b == null) {
+            return null;
+        }
+        return (boolean) a == (boolean) b;
     }
 
     @Override

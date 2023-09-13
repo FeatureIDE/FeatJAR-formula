@@ -21,8 +21,12 @@
 package de.featjar.formula.transformer;
 
 import static de.featjar.base.computation.Computations.async;
-import static de.featjar.formula.structure.Expressions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static de.featjar.formula.structure.Expressions.and;
+import static de.featjar.formula.structure.Expressions.biImplies;
+import static de.featjar.formula.structure.Expressions.literal;
+import static de.featjar.formula.structure.Expressions.not;
+import static de.featjar.formula.structure.Expressions.or;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.featjar.base.FeatJAR;
 import de.featjar.base.computation.Computations;
@@ -93,15 +97,18 @@ class ComputeCNFFormulaTest {
         IFormula distributiveCNF = async(formula)
                 .map(ComputeNNFFormula::new)
                 .map(ComputeCNFFormula::new)
-                .peek((ComputeCNFFormula c) -> c.setTseitin(async(false)))
                 .get()
                 .get();
         IFormula tseitinCNF = async(formula)
                 .map(ComputeNNFFormula::new)
                 .map(ComputeCNFFormula::new)
-                .peek((ComputeCNFFormula c) -> c.setTseitin(async(true)))
+                .set(ComputeCNFFormula.MAXIMUM_NUMBER_OF_LITERALS, 0)
                 .get()
                 .get();
-        // todo: check whether both formulas have same model count
+
+        FormulaCreator.streamAllAssignments(formula.getVariables().size()).forEach(assignment -> {
+            assertEquals(formula.evaluate(assignment), distributiveCNF.evaluate(assignment));
+            assertEquals(formula.evaluate(assignment), tseitinCNF.evaluate(assignment));
+        });
     }
 }
