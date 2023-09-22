@@ -61,14 +61,6 @@ public abstract class ABooleanAssignment extends IntegerList
         super(booleanAssignment);
     }
 
-    public int[] getNegatedValues() {
-        final int[] negated = new int[array.length];
-        for (int i = 0; i < negated.length; i++) {
-            negated[i] = -array[i];
-        }
-        return negated;
-    }
-
     public int[] simplify() {
         final LinkedHashSet<Integer> integerSet = Sets.empty();
         for (final int integer : array) {
@@ -181,6 +173,8 @@ public abstract class ABooleanAssignment extends IntegerList
     public BooleanSolution toSolution() {
         return new BooleanSolution(Arrays.stream(array).map(Math::abs).max().orElse(0), array);
     }
+
+    public abstract ABooleanAssignment inverse();
 
     public ValueAssignment toValue() {
         LinkedHashMap<String, Object> variableValuePairs = Maps.empty();

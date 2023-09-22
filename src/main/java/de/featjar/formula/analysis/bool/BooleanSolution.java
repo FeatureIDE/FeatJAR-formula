@@ -157,4 +157,9 @@ public class BooleanSolution extends ABooleanAssignment implements ISolution<Int
     public BooleanSolution toSolution() {
         return this;
     }
+
+    @Override
+    public BooleanSolution inverse() {
+        return new BooleanSolution(negate(), false);
+    }
 }

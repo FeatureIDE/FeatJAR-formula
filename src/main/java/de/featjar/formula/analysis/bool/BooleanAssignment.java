@@ -69,4 +69,9 @@ public class BooleanAssignment extends ABooleanAssignment {
     public BooleanAssignment toAssignment() {
         return this;
     }
+
+    @Override
+    public BooleanAssignment inverse() {
+        return new BooleanAssignment(negate());
+    }
 }

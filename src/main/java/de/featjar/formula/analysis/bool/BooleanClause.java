@@ -115,13 +115,13 @@ public class BooleanClause extends ABooleanAssignment implements IClause<Integer
     }
 
     @Override
-    public int[] getNegatedValues() {
-        final int[] negated = new int[array.length];
-        final int highestIndex = negated.length - 1;
-        for (int i = 0; i < negated.length; i++) {
-            negated[highestIndex - i] = -array[i];
+    public BooleanClause inverse() {
+        final int[] inverse = new int[array.length];
+        final int highestIndex = inverse.length - 1;
+        for (int i = 0; i < inverse.length; i++) {
+            inverse[highestIndex - i] = -array[i];
         }
-        return negated;
+        return new BooleanClause(inverse, false);
     }
 
     @Override
