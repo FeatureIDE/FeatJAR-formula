@@ -32,9 +32,9 @@ import java.util.Objects;
 public class AAssignmentSpace<T extends IAssignment<?, ?>> {
 
     protected final VariableMap variableMap;
-    protected final List<List<T>> assignmentGroups;
+    protected final List<? extends List<? extends T>> assignmentGroups;
 
-    public AAssignmentSpace(VariableMap variableMap, List<List<T>> assignmentGroups) {
+    public AAssignmentSpace(VariableMap variableMap, List<? extends List<? extends T>> assignmentGroups) {
         this.variableMap = variableMap;
         this.assignmentGroups = assignmentGroups;
     }
@@ -43,7 +43,7 @@ public class AAssignmentSpace<T extends IAssignment<?, ?>> {
         return variableMap;
     }
 
-    public List<List<T>> getGroups() {
+    public List<? extends List<? extends T>> getGroups() {
         return assignmentGroups;
     }
 

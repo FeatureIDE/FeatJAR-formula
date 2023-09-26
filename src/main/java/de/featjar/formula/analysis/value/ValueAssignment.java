@@ -22,11 +22,8 @@ package de.featjar.formula.analysis.value;
 
 import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
-import de.featjar.base.io.IO;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.bool.BooleanAssignment;
-import de.featjar.formula.io.value.ValueAssignmentFormat;
-import java.io.IOException;
 import java.util.LinkedHashMap;
 
 /**
@@ -59,14 +56,6 @@ public class ValueAssignment extends AValueAssignment {
     @Override
     public IComputation<BooleanAssignment> toBoolean(IComputation<VariableMap> variableMap) {
         return (IComputation<BooleanAssignment>) super.toBoolean(variableMap);
-    }
-
-    public String print() {
-        try {
-            return IO.print(this, new ValueAssignmentFormat<>(ValueAssignment::new));
-        } catch (IOException e) {
-            return e.toString();
-        }
     }
 
     @Override

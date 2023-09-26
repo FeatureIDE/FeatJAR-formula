@@ -1,0 +1,95 @@
+/*
+ * Copyright (C) 2023 FeatJAR-Development-Team
+ *
+ * This file is part of FeatJAR-formula.
+ *
+ * formula is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3.0 of the License,
+ * or (at your option) any later version.
+ *
+ * formula is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with formula. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * See <https://github.com/FeatJAR> for further information.
+ */
+package de.featjar.formula.analysis;
+
+import de.featjar.base.FeatJAR;
+import de.featjar.base.cli.Flag;
+import de.featjar.base.cli.ICommand;
+import de.featjar.base.cli.IOptionInput;
+import de.featjar.base.cli.Option;
+import de.featjar.base.computation.IComputation;
+import de.featjar.base.data.Result;
+import de.featjar.base.io.graphviz.GraphVizComputationTreeFormat;
+import java.util.List;
+
+/**
+ * Computes an analysis result for a formula.
+ *
+ * @param <T> the type of the analysis result
+ */
+public abstract class AAnalysisCommand<T> implements ICommand {
+
+    public static final Option<Boolean> BROWSE_CACHE_OPTION =
+            new Flag("browse-cache").setDescription("Show cache contents in default browser");
+
+    public static final Option<Boolean> NON_PARALLEL = new Flag("non-parallel") //
+            .setDescription("Disable parallel computation");
+
+    protected IOptionInput optionParser;
+
+    @Override
+    public List<Option<?>> getOptions() {
+        return List.of(INPUT_OPTION, BROWSE_CACHE_OPTION, NON_PARALLEL);
+    }
+
+    @Override
+    public void run(IOptionInput optionParser) {
+        this.optionParser = optionParser;
+        boolean browseCache = optionParser.get(BROWSE_CACHE_OPTION).get();
+        boolean parallel = !optionParser.get(NON_PARALLEL).get();
+
+        IComputation<T> computation = newComputation();
+        FeatJAR.log().info("running computation %s", computation.print());
+
+        final Result<T> result;
+        final long timeNeeded;
+        if (parallel) {
+            final long localTime = System.nanoTime();
+            result = computation.computeFutureResult(true, true).get();
+            timeNeeded = System.nanoTime() - localTime;
+        } else {
+            final long localTime = System.nanoTime();
+            result = computation.computeResult(true, true);
+            timeNeeded = System.nanoTime() - localTime;
+        }
+
+        if (result.isPresent()) {
+            FeatJAR.log().info("time needed for computation: " + ((timeNeeded / 1_000_000) / 1000.0) + "s");
+            FeatJAR.log().message(serializeResult(result.get()));
+        } else {
+            FeatJAR.log().error("Could not compute result.");
+        }
+        if (result.hasProblems()) {
+            FeatJAR.log().error("The following problem(s) occurred:");
+            FeatJAR.log().problem(result.getProblems());
+        }
+        if (browseCache) {
+            FeatJAR.cache().browse(new GraphVizComputationTreeFormat());
+        }
+        this.optionParser = null;
+    }
+
+    public abstract IComputation<T> newComputation();
+
+    public String serializeResult(T result) {
+        return result.toString();
+    }
+}

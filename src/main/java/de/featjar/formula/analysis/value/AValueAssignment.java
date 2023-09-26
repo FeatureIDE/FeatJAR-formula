@@ -21,8 +21,11 @@
 package de.featjar.formula.analysis.value;
 
 import de.featjar.base.data.Maps;
+import de.featjar.base.io.IO;
 import de.featjar.formula.analysis.IAssignment;
 import de.featjar.formula.analysis.ISolver;
+import de.featjar.formula.io.textual.ValueAssignmentFormat;
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Objects;
@@ -95,5 +98,11 @@ public abstract class AValueAssignment implements IAssignment<String, Object>, I
         return Objects.hash(variableValuePairs);
     }
 
-    public abstract String print();
+    public String print() {
+        try {
+            return IO.print(this, new ValueAssignmentFormat());
+        } catch (IOException e) {
+            return e.toString();
+        }
+    }
 }

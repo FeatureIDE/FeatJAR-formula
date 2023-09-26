@@ -21,7 +21,10 @@
 package de.featjar.formula.analysis.value;
 
 import de.featjar.base.data.Sets;
+import de.featjar.base.io.IO;
 import de.featjar.formula.analysis.IAssignmentList;
+import de.featjar.formula.io.textual.ValueAssignmentListFormat;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -95,5 +98,11 @@ public abstract class AValueAssignmentList<T extends AValueAssignment>
         return Objects.hash(literalLists);
     }
 
-    public abstract String print();
+    public String print() {
+        try {
+            return IO.print(this, new ValueAssignmentListFormat());
+        } catch (IOException e) {
+            return e.toString();
+        }
+    }
 }

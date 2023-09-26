@@ -18,7 +18,7 @@
  *
  * See <https://github.com/FeatJAR> for further information.
  */
-package de.featjar.formula.io.value;
+package de.featjar.formula.io.textual;
 
 import de.featjar.base.data.Problem;
 import de.featjar.base.data.Result;
@@ -27,55 +27,42 @@ import de.featjar.base.io.format.IFormat;
 import de.featjar.base.io.input.AInputMapper;
 import de.featjar.formula.analysis.value.AValueAssignment;
 import de.featjar.formula.analysis.value.AValueAssignmentList;
+import de.featjar.formula.analysis.value.ValueAssignment;
+import de.featjar.formula.analysis.value.ValueAssignmentList;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
- * TODO
+ * Textual format for serializing and parsing a list of {@link AValueAssignment value assignments}.
  *
  * @author Elias Kuiter
+ * @author Sebastian Krieter
  */
-public class ValueAssignmentListFormat<T extends AValueAssignmentList<U>, U extends AValueAssignment>
-        implements IFormat<T> {
-    protected final Supplier<T> listConstructor;
-    protected final ValueAssignmentFormat<U> valueAssignmentFormat;
-    // todo: serialize as CSV, parse as CSV
-
-    public ValueAssignmentListFormat() {
-        this(null, null);
-    }
-
-    public ValueAssignmentListFormat(
-            Supplier<T> listConstructor, Function<LinkedHashMap<String, Object>, U> constructor) {
-        this.listConstructor = listConstructor;
-        this.valueAssignmentFormat = new ValueAssignmentFormat<>(constructor);
-    }
+public class ValueAssignmentListFormat implements IFormat<AValueAssignmentList<?>> {
 
     @Override
-    public Result<String> serialize(T valueAssignmentList) {
+    public Result<String> serialize(AValueAssignmentList<?> valueAssignmentList) {
         return Result.of(valueAssignmentList.getAll().stream()
                 .map(AValueAssignment::print)
-                .collect(Collectors.joining("; ")));
+                .collect(Collectors.joining(";")));
     }
 
     @Override
-    public Result<T> parse(AInputMapper inputMapper) {
-        if (listConstructor == null || valueAssignmentFormat == null)
-            return Result.empty(new Problem("cannot parse unknown value assignment", Problem.Severity.ERROR));
-        T valueAssignmentList = listConstructor.get();
+    public Result<AValueAssignmentList<?>> parse(AInputMapper inputMapper) {
         List<Problem> problems = new ArrayList<>();
+        ValueAssignmentFormat format = new ValueAssignmentFormat();
+        ValueAssignmentList valueAssignmentList = new ValueAssignmentList();
         for (String valueClause : inputMapper
                 .get()
                 .getLineStream()
                 .collect(Collectors.joining(";"))
                 .split(";")) {
-            Result<U> valueAssignment = IO.load(valueClause.trim(), valueAssignmentFormat);
+            Result<AValueAssignment> valueAssignment = IO.load(valueClause.trim(), format);
             problems.addAll(valueAssignment.getProblems());
-            if (valueAssignment.isPresent()) valueAssignmentList.add(valueAssignment.get());
+            if (valueAssignment.isPresent()) {
+                valueAssignmentList.add((ValueAssignment) valueAssignment.get());
+            }
         }
         return Result.of(valueAssignmentList, problems);
     }

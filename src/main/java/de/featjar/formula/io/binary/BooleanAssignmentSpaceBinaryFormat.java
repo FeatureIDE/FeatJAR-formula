@@ -59,9 +59,9 @@ public class BooleanAssignmentSpaceBinaryFormat extends ABinaryFormat<BooleanAss
         for (int i = 1; i <= maxIndex; i++) {
             writeString(outputStream, variableMap.get(i).orElse(""));
         }
-        final List<List<ABooleanAssignment>> groups = assignmentSpace.getGroups();
+        final List<? extends List<? extends ABooleanAssignment>> groups = assignmentSpace.getGroups();
         writeInt(outputStream, groups.size());
-        for (List<ABooleanAssignment> group : groups) {
+        for (List<? extends ABooleanAssignment> group : groups) {
             writeInt(outputStream, group.size());
             for (ABooleanAssignment assignment : group) {
                 final int[] literals = assignment.get();

@@ -21,10 +21,17 @@
 package de.featjar.formula.io.csv;
 
 import de.featjar.base.data.Result;
+import de.featjar.base.io.NonEmptyLineIterator;
 import de.featjar.base.io.format.IFormat;
+import de.featjar.base.io.format.ParseProblem;
+import de.featjar.base.io.input.AInputMapper;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.value.AValueAssignment;
+import de.featjar.formula.analysis.value.ValueAssignment;
 import de.featjar.formula.analysis.value.ValueAssignmentSpace;
+import de.featjar.formula.io.textual.ValueAssignmentFormat;
+import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -53,8 +60,8 @@ public class ValueAssignmentSpaceCSVFormat implements IFormat<ValueAssignmentSpa
         csv.append(LINE_SEPARATOR);
         int groupIndex = 0;
         int configurationIndex = 0;
-        final List<List<AValueAssignment>> groups = assignmentSpace.getGroups();
-        for (List<AValueAssignment> group : groups) {
+        final List<? extends List<? extends AValueAssignment>> groups = assignmentSpace.getGroups();
+        for (List<? extends AValueAssignment> group : groups) {
             for (final AValueAssignment configuration : group) {
                 csv.append(configurationIndex++);
                 csv.append(VALUE_SEPARATOR);
@@ -71,12 +78,86 @@ public class ValueAssignmentSpaceCSVFormat implements IFormat<ValueAssignmentSpa
     }
 
     @Override
+    public Result<ValueAssignmentSpace> parse(AInputMapper inputMapper) {
+        try {
+            final NonEmptyLineIterator lines = inputMapper.get().getNonEmptyLineIterator();
+            final String[] headerColumns = lines.get().split(VALUE_SEPARATOR);
+            if (headerColumns.length < 2) {
+                throw new ParseException(
+                        "Missing first two columns " + ASSIGNMENT_COLUMN_NAME + " and " + GROUP_COLUMN_NAME,
+                        lines.getLineCount());
+            }
+            if (!ASSIGNMENT_COLUMN_NAME.equals(headerColumns[0])) {
+                throw new ParseException("First column name must be " + ASSIGNMENT_COLUMN_NAME, lines.getLineCount());
+            }
+            if (!GROUP_COLUMN_NAME.equals(headerColumns[1])) {
+                throw new ParseException("Second column name must be " + GROUP_COLUMN_NAME, lines.getLineCount());
+            }
+            final VariableMap variableMap = new VariableMap();
+            for (int i = 2; i < headerColumns.length; i++) {
+                variableMap.add(headerColumns[i]);
+            }
+            final ArrayList<List<ValueAssignment>> groups = new ArrayList<>();
+            for (String line = lines.get(); line != null; line = lines.get()) {
+                final String[] values = line.split(VALUE_SEPARATOR);
+                if (headerColumns.length != values.length) {
+                    throw new ParseException(
+                            String.format(
+                                    "Number of values (%d) does not match number of columns (%d)",
+                                    values.length, headerColumns.length),
+                            lines.getLineCount());
+                }
+                try {
+                    Integer.parseInt(values[0]);
+                } catch (NumberFormatException e) {
+                    throw new ParseException(
+                            String.format("First value must be an integer number, but was %s", values[0]),
+                            lines.getLineCount());
+                }
+                final List<ValueAssignment> group;
+                try {
+                    final int groupIndex = Integer.parseInt(values[1]);
+                    for (int i = groups.size() - 1; i < groupIndex; i++) {
+                        groups.add(new ArrayList<>());
+                    }
+                    group = groups.get(groupIndex);
+                } catch (NumberFormatException e) {
+                    throw new ParseException(
+                            String.format("Second value must be an integer number, but was %s", values[0]),
+                            lines.getLineCount());
+                }
+                final Object[] literals = new Object[values.length - 2];
+                for (int i = 2; i < values.length; i++) {
+                    final String value = values[i];
+                    try {
+                        literals[i - 2] = ValueAssignmentFormat.parseValue(value);
+                    } catch (Exception e) {
+                        throw new ParseException(
+                                String.format("Could not parse value %s", value), lines.getLineCount());
+                    }
+                }
+                group.add(new ValueAssignment(literals, false));
+            }
+            return Result.of(new ValueAssignmentSpace(variableMap, groups));
+        } catch (final ParseException e) {
+            return Result.empty(new ParseProblem(e, e.getErrorOffset()));
+        } catch (final Exception e) {
+            return Result.empty(e);
+        }
+    }
+
+    @Override
     public String getFileExtension() {
         return "csv";
     }
 
     @Override
     public boolean supportsSerialize() {
+        return true;
+    }
+
+    @Override
+    public boolean supportsParse() {
         return true;
     }
 

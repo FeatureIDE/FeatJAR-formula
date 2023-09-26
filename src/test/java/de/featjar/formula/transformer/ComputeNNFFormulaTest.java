@@ -20,14 +20,23 @@
  */
 package de.featjar.formula.transformer;
 
-import static de.featjar.formula.structure.Expressions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static de.featjar.formula.structure.Expressions.False;
+import static de.featjar.formula.structure.Expressions.True;
+import static de.featjar.formula.structure.Expressions.and;
+import static de.featjar.formula.structure.Expressions.forAll;
+import static de.featjar.formula.structure.Expressions.implies;
+import static de.featjar.formula.structure.Expressions.literal;
+import static de.featjar.formula.structure.Expressions.not;
+import static de.featjar.formula.structure.Expressions.or;
+import static de.featjar.formula.structure.Expressions.variable;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.featjar.formula.structure.ExpressionKind;
 import de.featjar.formula.structure.formula.IFormula;
 import org.junit.jupiter.api.Test;
 
 class ComputeNNFFormulaTest {
+
     void nnf(IFormula formula, IFormula newFormula) {
         TransformationTest.traverseAndAssertFormulaEquals(formula, ComputeNNFFormula::new, newFormula);
         assertTrue(newFormula.isKind(ExpressionKind.BOOLEAN));

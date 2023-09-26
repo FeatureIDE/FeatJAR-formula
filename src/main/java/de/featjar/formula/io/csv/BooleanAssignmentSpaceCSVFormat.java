@@ -67,8 +67,8 @@ public class BooleanAssignmentSpaceCSVFormat implements IFormat<BooleanAssignmen
         csv.append(LINE_SEPARATOR);
         int groupIndex = 0;
         int assignmentIndex = 0;
-        final List<List<ABooleanAssignment>> groups = assignmentSpace.getGroups();
-        for (List<ABooleanAssignment> group : groups) {
+        final List<? extends List<? extends ABooleanAssignment>> groups = assignmentSpace.getGroups();
+        for (List<? extends ABooleanAssignment> group : groups) {
             for (final ABooleanAssignment configuration : group) {
                 csv.append(assignmentIndex++);
                 csv.append(VALUE_SEPARATOR);

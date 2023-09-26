@@ -31,7 +31,7 @@ import java.util.List;
  */
 public class ValueAssignmentSpace extends AAssignmentSpace<AValueAssignment> {
 
-    public ValueAssignmentSpace(VariableMap variableMap, List<List<AValueAssignment>> assignment) {
+    public ValueAssignmentSpace(VariableMap variableMap, List<? extends List<? extends AValueAssignment>> assignment) {
         super(variableMap, assignment);
     }
 }
