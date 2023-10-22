@@ -27,6 +27,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * A list of Boolean assignments.
@@ -49,6 +50,10 @@ public abstract class ABooleanAssignmentList<T extends ABooleanAssignment>
 
     public ABooleanAssignmentList(Collection<? extends T> assignments) {
         this.assignments = new ArrayList<>(assignments);
+    }
+
+    public ABooleanAssignmentList(Stream<? extends T> assignments) {
+        this.assignments = assignments.collect(Collectors.toCollection(ArrayList::new));
     }
 
     public ABooleanAssignmentList(ABooleanAssignmentList<T> other) {

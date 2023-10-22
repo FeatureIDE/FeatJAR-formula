@@ -21,6 +21,7 @@
 package de.featjar.formula.analysis.combinations;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -37,6 +38,7 @@ public final class LexicographicIterator<T>
         implements Spliterator<de.featjar.formula.analysis.combinations.LexicographicIterator.Combination<T>> {
 
     public static final class Combination<U> {
+
         public final int spliteratorId;
         public final U environment;
 
@@ -63,6 +65,21 @@ public final class LexicographicIterator<T>
                 spliteratorId = nextSpliteratorId[0]++;
             }
             environment = environmentCreator.apply(this);
+        }
+
+        public <T> T[] select(List<T> items, T[] selection) {
+            for (int i = 0; i < elementIndices.length; i++) {
+                selection[i] = items.get(elementIndices[i]);
+            }
+            return selection;
+        }
+
+        public int[] select(int[] items) {
+            int[] selection = new int[elementIndices.length];
+            for (int i = 0; i < elementIndices.length; i++) {
+                selection[i] = items[elementIndices[i]];
+            }
+            return selection;
         }
 
         @Override

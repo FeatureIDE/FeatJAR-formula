@@ -23,8 +23,8 @@ package de.featjar.formula.analysis;
 import de.featjar.base.FeatJAR;
 import de.featjar.base.cli.Flag;
 import de.featjar.base.cli.ICommand;
-import de.featjar.base.cli.IOptionInput;
 import de.featjar.base.cli.Option;
+import de.featjar.base.cli.OptionList;
 import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.graphviz.GraphVizComputationTreeFormat;
@@ -43,7 +43,7 @@ public abstract class AAnalysisCommand<T> implements ICommand {
     public static final Option<Boolean> NON_PARALLEL = new Flag("non-parallel") //
             .setDescription("Disable parallel computation");
 
-    protected IOptionInput optionParser;
+    protected OptionList optionParser;
 
     @Override
     public List<Option<?>> getOptions() {
@@ -51,7 +51,7 @@ public abstract class AAnalysisCommand<T> implements ICommand {
     }
 
     @Override
-    public void run(IOptionInput optionParser) {
+    public void run(OptionList optionParser) {
         this.optionParser = optionParser;
         boolean browseCache = optionParser.get(BROWSE_CACHE_OPTION).get();
         boolean parallel = !optionParser.get(NON_PARALLEL).get();
@@ -79,7 +79,7 @@ public abstract class AAnalysisCommand<T> implements ICommand {
         }
         if (result.hasProblems()) {
             FeatJAR.log().error("The following problem(s) occurred:");
-            FeatJAR.log().problem(result.getProblems());
+            FeatJAR.log().problems(result.getProblems());
         }
         if (browseCache) {
             FeatJAR.cache().browse(new GraphVizComputationTreeFormat());

@@ -21,6 +21,7 @@
 package de.featjar.formula.analysis.bool;
 
 import de.featjar.base.computation.IComputation;
+import de.featjar.base.data.IIntegerList;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.IClause;
 import de.featjar.formula.analysis.ISolver;
@@ -39,6 +40,11 @@ import java.util.*;
  * @author Elias Kuiter
  */
 public class BooleanClause extends ABooleanAssignment implements IClause<Integer, Boolean> {
+
+    public static BooleanClause merge(Collection<? extends IIntegerList> integerLists) {
+        return IIntegerList.merge(integerLists, BooleanClause::new);
+    }
+
     public BooleanClause(int... integers) {
         this(integers, true);
         assert Arrays.stream(integers).noneMatch(a -> a == 0) : "contains zero: " + Arrays.toString(integers);
@@ -147,5 +153,30 @@ public class BooleanClause extends ABooleanAssignment implements IClause<Integer
     @Override
     public BooleanClause toClause() {
         return this;
+    }
+
+    @Override
+    public BooleanClause addAll(ABooleanAssignment integers) {
+        return new BooleanClause(addAll(integers.get()));
+    }
+
+    @Override
+    public BooleanClause retainAll(ABooleanAssignment integers) {
+        return new BooleanClause(retainAll(integers.get()));
+    }
+
+    @Override
+    public BooleanClause retainAllVariables(ABooleanAssignment integers) {
+        return new BooleanClause(retainAllVariables(integers.get()));
+    }
+
+    @Override
+    public BooleanClause removeAll(ABooleanAssignment integers) {
+        return new BooleanClause(removeAll(integers.get()));
+    }
+
+    @Override
+    public BooleanClause removeAllVariables(ABooleanAssignment integers) {
+        return new BooleanClause(removeAllVariables(integers.get()));
     }
 }

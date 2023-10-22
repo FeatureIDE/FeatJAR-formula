@@ -35,7 +35,7 @@ import java.text.ParseException;
  * Reads and writes feature models in the DIMACS CNF format.
  *
  * @author Sebastian Krieter
- * @author Timo G&uuml;nther
+ * @author Timo Günther
  */
 public class FormulaDimacsFormat implements IFormat<IFormula> {
 

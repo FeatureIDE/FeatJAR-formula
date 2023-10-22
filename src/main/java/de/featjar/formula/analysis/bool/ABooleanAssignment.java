@@ -49,21 +49,10 @@ import java.util.stream.IntStream;
  */
 public abstract class ABooleanAssignment extends IntegerList
         implements IAssignment<Integer, Boolean>, IBooleanRepresentation {
-    public ABooleanAssignment(int... integers) {
-        super(integers);
-    }
 
-    public ABooleanAssignment(Collection<Integer> integers) {
-        super(integers);
-    }
-
-    public ABooleanAssignment(ABooleanAssignment booleanAssignment) {
-        super(booleanAssignment);
-    }
-
-    public int[] simplify() {
+    public static int[] simplify(int[] literals) {
         final LinkedHashSet<Integer> integerSet = Sets.empty();
-        for (final int integer : array) {
+        for (final int integer : literals) {
             if (integer != 0 && integerSet.contains(-integer)) {
                 // If this assignment is a contradiction or tautology, it can be simplified.
                 return new int[] {integer, -integer};
@@ -71,8 +60,8 @@ public abstract class ABooleanAssignment extends IntegerList
                 integerSet.add(integer);
             }
         }
-        if (integerSet.size() == array.length) {
-            return copy();
+        if (integerSet.size() == literals.length) {
+            return Arrays.copyOf(literals, literals.length);
         }
         int[] newArray = new int[integerSet.size()];
         int i = 0;
@@ -82,9 +71,9 @@ public abstract class ABooleanAssignment extends IntegerList
         return newArray;
     }
 
-    public Result<int[]> adapt(VariableMap oldVariableMap, VariableMap newVariableMap) {
-        final int[] oldIntegers = array;
-        final int[] newIntegers = new int[oldIntegers.length];
+    public static Result<int[]> adapt(
+            int[] oldIntegers, VariableMap oldVariableMap, VariableMap newVariableMap, boolean inPlace) {
+        final int[] newIntegers = inPlace ? oldIntegers : new int[oldIntegers.length];
         for (int i = 0; i < oldIntegers.length; i++) {
             final int l = oldIntegers[i];
             final Result<String> name = oldVariableMap.get(Math.abs(l));
@@ -100,6 +89,26 @@ public abstract class ABooleanAssignment extends IntegerList
             }
         }
         return Result.of(newIntegers);
+    }
+
+    public ABooleanAssignment(int... integers) {
+        super(integers);
+    }
+
+    public ABooleanAssignment(Collection<Integer> integers) {
+        super(integers);
+    }
+
+    public ABooleanAssignment(ABooleanAssignment booleanAssignment) {
+        super(booleanAssignment);
+    }
+
+    public int[] simplify() {
+        return simplify(array);
+    }
+
+    public Result<int[]> adapt(VariableMap oldVariableMap, VariableMap newVariableMap) {
+        return adapt(array, oldVariableMap, newVariableMap, false);
     }
 
     public boolean containsAnyVariable(int... integers) {
@@ -159,19 +168,38 @@ public abstract class ABooleanAssignment extends IntegerList
         return newIntegers;
     }
 
-    @Override
+    public ABooleanAssignment addAll(ABooleanAssignment integers) {
+        return new BooleanAssignment(addAll(integers.get()));
+    }
+
+    public ABooleanAssignment retainAll(ABooleanAssignment integers) {
+        return new BooleanAssignment(retainAll(integers.get()));
+    }
+
+    public ABooleanAssignment retainAllVariables(ABooleanAssignment integers) {
+        return new BooleanAssignment(retainAllVariables(integers.get()));
+    }
+
+    public ABooleanAssignment removeAll(ABooleanAssignment integers) {
+        return new BooleanAssignment(removeAll(integers.get()));
+    }
+
+    public ABooleanAssignment removeAllVariables(ABooleanAssignment integers) {
+        return new BooleanAssignment(removeAllVariables(integers.get()));
+    }
+
     public BooleanAssignment toAssignment() {
-        return new BooleanAssignment(Arrays.copyOf(array, array.length));
+        return new BooleanAssignment(IntStream.of(array).filter(l -> l != 0).toArray());
     }
 
     @Override
     public BooleanClause toClause() {
-        return new BooleanClause(Arrays.copyOf(array, array.length));
+        return new BooleanClause(IntStream.of(array).filter(l -> l != 0).toArray());
     }
 
     @Override
     public BooleanSolution toSolution() {
-        return new BooleanSolution(Arrays.stream(array).map(Math::abs).max().orElse(0), array);
+        return new BooleanSolution(IntStream.of(array).map(Math::abs).max().orElse(0), array);
     }
 
     public abstract ABooleanAssignment inverse();

@@ -130,7 +130,8 @@ public class BooleanSolution extends ABooleanAssignment implements ISolution<Int
 
     @Override
     public int indexOfVariable(int integer) {
-        return integer > 0 && integer < size() ? integer - 1 : -1;
+        final int index = integer - 1;
+        return integer > 0 && index < size() && array[index] != 0 ? index : -1;
     }
 
     @Override

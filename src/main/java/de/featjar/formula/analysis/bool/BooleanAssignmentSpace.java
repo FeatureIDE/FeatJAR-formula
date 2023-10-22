@@ -25,13 +25,37 @@ import de.featjar.formula.analysis.VariableMap;
 import java.util.List;
 
 /**
- * Combines multiple groups of lists of {@link ABooleanAssignment assignments} with a corresponding {@link VariableMap variable map}.
+ * Combines multiple groups of lists of {@link ABooleanAssignment assignments}
+ * with a corresponding {@link VariableMap variable map}.
  *
  * @author Sebastian Krieter
  */
 public class BooleanAssignmentSpace extends AAssignmentSpace<ABooleanAssignment> {
 
-    public BooleanAssignmentSpace(VariableMap variableMap, List<List<ABooleanAssignment>> assignment) {
+    public BooleanAssignmentSpace(
+            VariableMap variableMap, List<? extends List<? extends ABooleanAssignment>> assignment) {
         super(variableMap, assignment);
+    }
+
+    public BooleanClauseList toClauseList() {
+        return toClauseList(0);
+    }
+
+    public BooleanSolutionList toSolutionList() {
+        return toSolutionList(0);
+    }
+
+    public BooleanClauseList toClauseList(int groupIndex) {
+        List<? extends ABooleanAssignment> group = assignmentGroups.get(groupIndex);
+        final BooleanClauseList list = new BooleanClauseList(group.size(), variableMap.getVariableCount());
+        group.stream().map(ABooleanAssignment::toClause).forEach(list::add);
+        return list;
+    }
+
+    public BooleanSolutionList toSolutionList(int groupIndex) {
+        List<? extends ABooleanAssignment> group = assignmentGroups.get(groupIndex);
+        final BooleanSolutionList list = new BooleanSolutionList(group.size());
+        group.stream().map(ABooleanAssignment::toSolution).forEach(list::add);
+        return list;
     }
 }

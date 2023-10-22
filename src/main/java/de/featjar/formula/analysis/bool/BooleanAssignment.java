@@ -21,6 +21,7 @@
 package de.featjar.formula.analysis.bool;
 
 import de.featjar.base.computation.IComputation;
+import de.featjar.base.data.IIntegerList;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.value.AValueAssignment;
@@ -33,6 +34,11 @@ import java.util.Collection;
  * @author Elias Kuiter
  */
 public class BooleanAssignment extends ABooleanAssignment {
+
+    public static BooleanAssignment merge(Collection<? extends IIntegerList> integerLists) {
+        return IIntegerList.merge(integerLists, BooleanAssignment::new);
+    }
+
     public BooleanAssignment(int... integers) {
         super(integers);
     }
@@ -73,5 +79,30 @@ public class BooleanAssignment extends ABooleanAssignment {
     @Override
     public BooleanAssignment inverse() {
         return new BooleanAssignment(negate());
+    }
+
+    @Override
+    public BooleanAssignment addAll(ABooleanAssignment integers) {
+        return new BooleanAssignment(addAll(integers.get()));
+    }
+
+    @Override
+    public BooleanAssignment retainAll(ABooleanAssignment integers) {
+        return new BooleanAssignment(retainAll(integers.get()));
+    }
+
+    @Override
+    public BooleanAssignment retainAllVariables(ABooleanAssignment integers) {
+        return new BooleanAssignment(retainAllVariables(integers.get()));
+    }
+
+    @Override
+    public BooleanAssignment removeAll(ABooleanAssignment integers) {
+        return new BooleanAssignment(removeAll(integers.get()));
+    }
+
+    @Override
+    public BooleanAssignment removeAllVariables(ABooleanAssignment integers) {
+        return new BooleanAssignment(removeAllVariables(integers.get()));
     }
 }

@@ -18,19 +18,22 @@
  *
  * See <https://github.com/FeatJAR> for further information.
  */
-package de.featjar.formula.io;
+package de.featjar.formula.analysis.combinations;
 
-import de.featjar.base.FeatJAR;
-import de.featjar.base.io.format.AFormats;
-import de.featjar.formula.structure.formula.IFormula;
+import de.featjar.base.data.Result;
+import de.featjar.formula.analysis.bool.ABooleanAssignment;
+import de.featjar.formula.analysis.bool.BooleanSolution;
+import java.util.Collection;
 
 /**
- * Extension point for {@link AFormats formats} for {@link IFormula}.
+ * Update and complete partial solutions.
  *
  * @author Sebastian Krieter
+ *
  */
-public class FormulaFormats extends AFormats<IFormula> {
-    public static FormulaFormats getInstance() {
-        return FeatJAR.extensionPoint(FormulaFormats.class);
-    }
+public interface ConfigurationUpdater {
+
+    Result<BooleanSolution> update(ABooleanAssignment partialSolution);
+
+    Result<BooleanSolution> complete(Collection<int[]> include, Collection<int[]> exclude, Collection<int[]> choose);
 }

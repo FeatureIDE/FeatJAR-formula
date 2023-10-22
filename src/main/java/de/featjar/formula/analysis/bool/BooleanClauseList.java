@@ -56,8 +56,8 @@ public class BooleanClauseList extends ABooleanAssignmentList<BooleanClause> {
         this.variableCount = variableCount;
     }
 
-    public BooleanClauseList(Collection<? extends BooleanClause> assignments, int variableCount) {
-        super(assignments);
+    public BooleanClauseList(Collection<? extends ABooleanAssignment> assignments, int variableCount) {
+        super(assignments.stream().map(ABooleanAssignment::toClause));
         this.variableCount = variableCount;
     }
 

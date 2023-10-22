@@ -22,15 +22,15 @@ package de.featjar.formula.io;
 
 import de.featjar.base.FeatJAR;
 import de.featjar.base.io.format.AFormats;
-import de.featjar.formula.structure.formula.IFormula;
+import de.featjar.formula.analysis.bool.BooleanAssignmentSpace;
 
 /**
- * Extension point for {@link AFormats formats} for {@link IFormula}.
+ * Extension point for {@link AFormats formats} for {@link BooleanAssignmentSpace}.
  *
  * @author Sebastian Krieter
  */
-public class FormulaFormats extends AFormats<IFormula> {
-    public static FormulaFormats getInstance() {
-        return FeatJAR.extensionPoint(FormulaFormats.class);
+public class BooleanAssignmentSpaceFormats extends AFormats<BooleanAssignmentSpace> {
+    public static BooleanAssignmentSpaceFormats getInstance() {
+        return FeatJAR.extensionPoint(BooleanAssignmentSpaceFormats.class);
     }
 }

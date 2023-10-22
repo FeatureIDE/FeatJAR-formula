@@ -25,8 +25,37 @@ import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.value.IValueRepresentation;
+import de.featjar.formula.structure.formula.IFormula;
+import de.featjar.formula.transformer.ComputeCNFFormula;
+import de.featjar.formula.transformer.ComputeDNFFormula;
+import de.featjar.formula.transformer.ComputeNNFFormula;
 
 public interface IBooleanRepresentation {
+
+    public static IComputation<BooleanClauseList> toBooleanClauseList(IFormula model) {
+        return toBooleanCNFRepresentation(model).map(Computations::getKey).cast(BooleanClauseList.class);
+    }
+
+    public static IComputation<VariableMap> toVariableMap(IFormula model) {
+        return toBooleanCNFRepresentation(model).map(Computations::getValue).cast(VariableMap.class);
+    }
+
+    public static BooleanRepresentationComputation<IFormula, IBooleanRepresentation> toBooleanCNFRepresentation(
+            IFormula model) {
+        return Computations.of(model)
+                .map(ComputeNNFFormula::new)
+                .map(ComputeCNFFormula::new)
+                .map(BooleanRepresentationComputation::new);
+    }
+
+    public static BooleanRepresentationComputation<IFormula, IBooleanRepresentation> toBooleanDNFRepresentation(
+            IFormula model) {
+        return Computations.of(model)
+                .map(ComputeNNFFormula::new)
+                .map(ComputeDNFFormula::new)
+                .map(BooleanRepresentationComputation::new);
+    }
+
     /**
      * {@return a value object with the same contents as this object}
      * If needed, translates variable indices using the given variable map.
