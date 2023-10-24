@@ -27,7 +27,9 @@ import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.value.ValueClauseList;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.transformer.ComputeCNFFormula;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * A list of Boolean clauses.
@@ -76,6 +78,15 @@ public class BooleanClauseList extends ABooleanAssignmentList<BooleanClause> {
 
     public Range getVariableRange() {
         return Range.of(1, getVariableCount());
+    }
+
+    public BooleanClauseList adapt(VariableMap oldVariables, VariableMap newVariables) {
+        List<BooleanClause> adaptedAssignments = new ArrayList<>();
+        for (BooleanClause oldClause : assignments) {
+            adaptedAssignments.add(new BooleanClause(
+                    oldClause.adapt(oldVariables, newVariables).orElseThrow()));
+        }
+        return new BooleanClauseList(adaptedAssignments, newVariables.getVariableCount());
     }
 
     @Override
