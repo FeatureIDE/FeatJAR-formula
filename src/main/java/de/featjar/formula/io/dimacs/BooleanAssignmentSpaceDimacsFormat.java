@@ -46,6 +46,15 @@ public class BooleanAssignmentSpaceDimacsFormat implements IFormat<BooleanAssign
         List<? extends ABooleanAssignment> cnf = assignmentSpace.getGroups().get(0);
         VariableMap variableMap = assignmentSpace.getVariableMap();
 
+        variableMap.stream().forEach(e -> {
+            if (e.getValue() != null) {
+                sb.append("c ");
+                sb.append(e.getKey());
+                sb.append(" ");
+                sb.append(e.getValue());
+                sb.append(System.lineSeparator());
+            }
+        });
         // Problem
         sb.append(DimacsConstants.PROBLEM);
         sb.append(' ');

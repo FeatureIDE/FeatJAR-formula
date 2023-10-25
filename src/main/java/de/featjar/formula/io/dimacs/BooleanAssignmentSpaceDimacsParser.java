@@ -97,7 +97,9 @@ public class BooleanAssignmentSpaceDimacsParser {
 
         if (readVariableDirectory) {
             for (int i = 1; i <= variableCount; i++) {
-                indexVariables.add(i, Integer.toString(i));
+                if (!indexVariables.has(i)) {
+                    indexVariables.add(i, Integer.toString(i));
+                }
             }
         }
 
@@ -239,7 +241,9 @@ public class BooleanAssignmentSpaceDimacsParser {
             }
             final Integer key = Math.abs(index);
             String variableName = String.valueOf(key);
-            indexVariables.add(key, variableName);
+            if (!indexVariables.has(key)) {
+                indexVariables.add(key, variableName);
+            }
             literals[j] = index;
         }
         return new BooleanClause(literals);
