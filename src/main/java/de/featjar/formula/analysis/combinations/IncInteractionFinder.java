@@ -46,11 +46,11 @@ public class IncInteractionFinder {
 
     protected int configurationVerificationLimit = Integer.MAX_VALUE;
 
-    private List<BooleanSolution> succeedingConfs;
-    private List<BooleanSolution> failingConfs;
+    protected List<BooleanSolution> succeedingConfs;
+    protected List<BooleanSolution> failingConfs;
 
     protected int verifyCounter;
-    private int[] lastMerge;
+    protected int[] lastMerge;
 
     public void reset() {
         succeedingConfs = new ArrayList<>();
@@ -78,6 +78,9 @@ public class IncInteractionFinder {
     }
 
     public List<BooleanAssignment> find(int tmax) {
+        if (failingConfs.isEmpty()) {
+            return null;
+        }
         verifyCounter = 0;
         lastMerge = null;
 
