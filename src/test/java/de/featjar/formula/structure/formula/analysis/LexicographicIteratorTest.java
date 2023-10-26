@@ -57,7 +57,7 @@ public class LexicographicIteratorTest {
             } catch (Exception e) {
             }
             synchronized (counts) {
-                counts[c]++;
+                counts[Math.toIntExact(c)]++;
             }
         });
         for (int i = 0; i < counts.length; i++) {
