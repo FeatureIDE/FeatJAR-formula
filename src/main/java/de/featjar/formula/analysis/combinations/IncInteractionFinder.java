@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.analysis.combinations;
 
-import de.featjar.base.data.IIntegerList;
+import de.featjar.base.data.IntegerList;
 import de.featjar.formula.analysis.bool.ABooleanAssignment;
 import de.featjar.formula.analysis.bool.BooleanAssignment;
 import de.featjar.formula.analysis.bool.BooleanSolution;
@@ -139,9 +139,8 @@ public class IncInteractionFinder {
 
         final List<int[]> result = lastI == -1 ? null : results[lastI];
         return isPotentialInteraction(result)
-                ? List.of((BooleanAssignment) IIntegerList.merge(
-                        result.stream().map(BooleanAssignment::new).collect(Collectors.toList()),
-                        BooleanAssignment::new))
+                ? List.of(new BooleanAssignment(
+                        IntegerList.mergeInt(result.stream().collect(Collectors.toList()))))
                 : null;
     }
 
@@ -265,7 +264,7 @@ public class IncInteractionFinder {
         if (curInteractionList.isEmpty()) {
             return null;
         } else {
-            lastMerge = IIntegerList.mergeInt(curInteractionList);
+            lastMerge = IntegerList.mergeInt(curInteractionList);
             return curInteractionList;
         }
     }
@@ -305,7 +304,7 @@ public class IncInteractionFinder {
         if (testConfig == null || verify(testConfig)) {
             return false;
         }
-        int[] exclude = IIntegerList.mergeInt(interactions);
+        int[] exclude = IntegerList.mergeInt(interactions);
         final BooleanSolution inverseConfig =
                 updater.complete(null, List.of(exclude), null).orElse(null);
         return inverseConfig == null || verify(inverseConfig);

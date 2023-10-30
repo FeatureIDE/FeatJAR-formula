@@ -237,12 +237,10 @@ public class VariableMap extends RangeMap<String> {
     protected static <T extends AValueAssignment> Result<T> toAnonymousValue(
             ABooleanAssignment booleanAssignment, Function<LinkedHashMap<String, Object>, T> constructor) {
         LinkedHashMap<String, Object> variableValuePairs = Maps.empty();
-        List<Problem> problems = new ArrayList<>();
         for (int integer : booleanAssignment.get()) {
-            int index = Math.abs(integer);
-            variableValuePairs.put(String.valueOf(index), integer > 0);
+            variableValuePairs.put(String.valueOf(Math.abs(integer)), integer > 0);
         }
-        return Result.of(constructor.apply(variableValuePairs), problems);
+        return Result.of(constructor.apply(variableValuePairs));
     }
 
     public static Result<ValueAssignment> toAnonymousValue(BooleanAssignment booleanAssignment) {

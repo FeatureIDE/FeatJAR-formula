@@ -72,7 +72,7 @@ public class BooleanSolution extends ABooleanAssignment implements ISolution<Int
         super(new int[variableCount]);
         Arrays.stream(integers)
                 .filter(integer -> integer != 0)
-                .forEach(integer -> array[Math.abs(integer) - 1] = integer);
+                .forEach(integer -> elements[Math.abs(integer) - 1] = integer);
     }
 
     public BooleanSolution(BooleanSolution booleanSolution) {
@@ -81,11 +81,11 @@ public class BooleanSolution extends ABooleanAssignment implements ISolution<Int
 
     protected void sort() {
         hashCodeValid = false;
-        final int[] sortedIntegers = new int[array.length];
-        Arrays.stream(array)
+        final int[] sortedIntegers = new int[elements.length];
+        Arrays.stream(elements)
                 .filter(integer -> integer != 0)
                 .forEach(integer -> sortedIntegers[Math.abs(integer) - 1] = integer);
-        System.arraycopy(sortedIntegers, 0, array, 0, array.length);
+        System.arraycopy(sortedIntegers, 0, elements, 0, elements.length);
     }
 
     public int countConflicts(int... integers) {
@@ -95,11 +95,14 @@ public class BooleanSolution extends ABooleanAssignment implements ISolution<Int
     }
 
     public boolean conflictsWith(int... integers) {
-        return countConflicts(integers) > 0;
+        return Arrays.stream(integers).anyMatch(integer -> indexOf(-integer) >= 0);
     }
 
     public static int[] removeConflicts(int[] integers1, int[] integers2) {
-        if (integers1.length != integers2.length) throw new IllegalArgumentException();
+        if (integers1.length != integers2.length) {
+            throw new IllegalArgumentException(
+                    String.format("Arguments have different lengths (%d != %d)", integers1.length, integers2.length));
+        }
         int[] integers = new int[integers1.length];
         for (int i = 0; i < integers1.length; i++) {
             final int x = integers1[i];
@@ -110,7 +113,10 @@ public class BooleanSolution extends ABooleanAssignment implements ISolution<Int
     }
 
     public static void removeConflictsInplace(int[] integers1, int[] integers2) {
-        if (integers1.length != integers2.length) throw new IllegalArgumentException();
+        if (integers1.length != integers2.length) {
+            throw new IllegalArgumentException(
+                    String.format("Arguments have different lengths (%d != %d)", integers1.length, integers2.length));
+        }
         for (int i = 0; i < integers1.length; i++) {
             final int x = integers1[i];
             final int y = integers2[i];
@@ -119,19 +125,29 @@ public class BooleanSolution extends ABooleanAssignment implements ISolution<Int
     }
 
     public int[] removeConflicts(int... literals) {
-        return removeConflicts(array, literals);
+        return removeConflicts(elements, literals);
     }
 
     @Override
     public int indexOf(int literal) {
         final int index = Math.abs(literal) - 1;
-        return literal != 0 && index < size() && array[index] == literal ? index : -1;
+        return literal != 0 && index < size() && elements[index] == literal ? index : -1;
     }
 
     @Override
-    public int indexOfVariable(int integer) {
-        final int index = integer - 1;
-        return integer > 0 && index < size() && array[index] != 0 ? index : -1;
+    public int indexOfVariable(int variable) {
+        final int index = variable - 1;
+        return variable > 0 && index < size() && elements[index] != 0 ? index : -1;
+    }
+
+    @Override
+    public int[] indicesOf(int integer) {
+        return new int[] {indexOf(integer)};
+    }
+
+    @Override
+    public int[] indicesOfVariable(int variable) {
+        return new int[] {indexOfVariable(variable)};
     }
 
     @Override

@@ -21,29 +21,26 @@
 package de.featjar.formula.analysis.bool;
 
 import de.featjar.base.computation.IComputation;
-import de.featjar.base.data.IIntegerList;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.IClause;
 import de.featjar.formula.analysis.ISolver;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.value.ValueClause;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Objects;
 
 /**
  * A Boolean clause; that is, a disjunction of literals. Implemented as a sorted
  * list of indices. Often used as input to a SAT {@link ISolver}. Indices are
  * ordered naturally; that is, in ascending order, so negative indices come
  * before positive indices. The same index may occur multiple times, but no
- * index may be 0.
+ * element may be 0.
  *
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
 public class BooleanClause extends ABooleanAssignment implements IClause<Integer, Boolean> {
-
-    public static BooleanClause merge(Collection<? extends IIntegerList> integerLists) {
-        return IIntegerList.merge(integerLists, BooleanClause::new);
-    }
 
     public BooleanClause(int... integers) {
         this(integers, true);
@@ -76,56 +73,57 @@ public class BooleanClause extends ABooleanAssignment implements IClause<Integer
 
     protected void sort() {
         hashCodeValid = false;
-        Arrays.sort(array);
+        Arrays.sort(elements);
+    }
+
+    @Override
+    public int[] getNonZeroValues() {
+        assert Arrays.stream(elements).noneMatch(a -> a == 0) : "contains zero: " + Arrays.toString(elements);
+        return copy();
+    }
+
+    @Override
+    public int countNonZero() {
+        assert Arrays.stream(elements).noneMatch(a -> a == 0) : "contains zero: " + Arrays.toString(elements);
+        return size();
     }
 
     @Override
     public int countNegatives() {
-        int count = 0;
-        for (int integer : array) {
-            if (integer < 0) {
-                count++;
-            } else {
-                break;
-            }
-        }
-        return count;
+        return -(Arrays.binarySearch(elements, 0) + 1);
     }
 
     @Override
     public int countPositives() {
-        int count = 0;
-        for (int i = array.length - 1; i >= 0; i--) {
-            if (array[i] > 0) {
-                count++;
-            } else {
-                break;
-            }
-        }
-        return count;
+        return elements.length + (Arrays.binarySearch(elements, 0) + 1);
     }
 
     @Override
     public int[] getPositiveValues() {
-        return Arrays.copyOfRange(array, array.length - countPositives(), array.length);
+        return Arrays.copyOfRange(elements, elements.length - countPositives(), elements.length);
     }
 
     @Override
     public int[] getNegativeValues() {
-        return Arrays.copyOfRange(array, 0, countNegatives());
+        return Arrays.copyOfRange(elements, 0, countNegatives());
     }
 
     @Override
     public int indexOf(int integer) {
-        return Arrays.binarySearch(array, integer);
+        return Arrays.binarySearch(elements, integer);
+    }
+
+    @Override
+    public int[] indicesOf(int integer) {
+        return new int[] {Arrays.binarySearch(elements, integer)};
     }
 
     @Override
     public BooleanClause inverse() {
-        final int[] inverse = new int[array.length];
+        final int[] inverse = new int[elements.length];
         final int highestIndex = inverse.length - 1;
         for (int i = 0; i < inverse.length; i++) {
-            inverse[highestIndex - i] = -array[i];
+            inverse[highestIndex - i] = -elements[i];
         }
         return new BooleanClause(inverse, false);
     }

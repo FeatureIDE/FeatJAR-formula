@@ -21,7 +21,6 @@
 package de.featjar.formula.analysis.bool;
 
 import de.featjar.base.computation.IComputation;
-import de.featjar.base.data.IIntegerList;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.value.AValueAssignment;
@@ -34,10 +33,6 @@ import java.util.Collection;
  * @author Elias Kuiter
  */
 public class BooleanAssignment extends ABooleanAssignment {
-
-    public static BooleanAssignment merge(Collection<? extends IIntegerList> integerLists) {
-        return IIntegerList.merge(integerLists, BooleanAssignment::new);
-    }
 
     public BooleanAssignment(int... integers) {
         super(integers);

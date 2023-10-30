@@ -50,7 +50,6 @@ public class BooleanRepresentationComputation<T extends IValueRepresentation, U 
                 .map(expression -> getClause((IFormula) expression, variableMap))
                 .filter(Objects::nonNull)
                 .forEach(clauseList::add);
-        // }
         return Result.of(clauseList); // todo: better error handling when index cannot be found
     }
 
