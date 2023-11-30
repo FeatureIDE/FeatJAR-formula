@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+// TODO unify dimacs parser, there is lots of redundant code
 public class FormulaDimacsParser {
 
     private static final Pattern commentPattern = Pattern.compile("\\A" + DimacsConstants.COMMENT + "\\s*(.*)\\Z");
