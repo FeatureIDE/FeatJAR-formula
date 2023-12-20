@@ -28,7 +28,6 @@ import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.value.ValueClause;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Objects;
 
 /**
  * A Boolean clause; that is, a disjunction of literals. Implemented as a sorted
@@ -67,8 +66,6 @@ public class BooleanClause extends ABooleanAssignment implements IClause<Integer
 
     public BooleanClause(BooleanClause booleanClause) {
         super(booleanClause);
-        // TODO implement as test
-        assert Objects.equals(this, booleanClause) : this + " != " + booleanClause;
     }
 
     protected void sort() {

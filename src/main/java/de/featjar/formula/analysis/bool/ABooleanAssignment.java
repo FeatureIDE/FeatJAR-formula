@@ -27,6 +27,7 @@ import de.featjar.base.data.Result;
 import de.featjar.base.data.Sets;
 import de.featjar.formula.analysis.IAssignment;
 import de.featjar.formula.analysis.ISolver;
+import de.featjar.formula.analysis.RuntimeContradictionException;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.value.ValueAssignment;
 import java.util.Arrays;
@@ -51,6 +52,32 @@ import java.util.stream.IntStream;
  */
 public abstract class ABooleanAssignment extends IntegerList
         implements IAssignment<Integer, Boolean>, IBooleanRepresentation {
+
+    public static int[] unitPropagation(BooleanClause clause, BooleanAssignment core) {
+        final int[] literals = clause.get();
+        final LinkedHashSet<Integer> literalSet = new LinkedHashSet<>(literals.length << 1);
+
+        for (int var : literals) {
+            if (core.indexOf(var) >= 0) {
+                return null;
+            } else if (core.indexOf(-var) < 0) {
+                if (literalSet.contains(-var)) {
+                    return null;
+                } else {
+                    literalSet.add(var);
+                }
+            }
+        }
+        if (literalSet.isEmpty()) {
+            throw new RuntimeContradictionException();
+        }
+        final int[] literalArray = new int[literalSet.size()];
+        int i = 0;
+        for (final int lit : literalSet) {
+            literalArray[i++] = lit;
+        }
+        return literalArray;
+    }
 
     public static int[] simplify(int[] literals) {
         final LinkedHashSet<Integer> integerSet = Sets.empty();
