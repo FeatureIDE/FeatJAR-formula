@@ -28,6 +28,7 @@ import de.featjar.base.cli.OptionList;
 import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.graphviz.GraphVizComputationTreeFormat;
+import java.time.Duration;
 import java.util.List;
 
 /**
@@ -41,27 +42,44 @@ public abstract class AAnalysisCommand<T> implements ICommand {
             new Flag("browse-cache").setDescription("Show cache contents in default browser");
 
     public static final Option<Boolean> NON_PARALLEL = new Flag("non-parallel") //
-            .setDescription("Disable parallel computation");
+            .setDescription("Disable parallel computation. Is overridden by timeout option");
+
+    public static final Option<Duration> TIMEOUT_OPTION = new Option<>(
+                    "timeout", s -> Duration.ofSeconds(Long.parseLong(s)))
+            .setDescription("Timeout in seconds")
+            .setValidator(timeout -> !timeout.isNegative())
+            .setDefaultValue(Duration.ZERO);
 
     protected OptionList optionParser;
 
     @Override
     public List<Option<?>> getOptions() {
-        return List.of(INPUT_OPTION, BROWSE_CACHE_OPTION, NON_PARALLEL);
+        return List.of(INPUT_OPTION, BROWSE_CACHE_OPTION, NON_PARALLEL, TIMEOUT_OPTION);
     }
 
     @Override
     public void run(OptionList optionParser) {
         this.optionParser = optionParser;
-        boolean browseCache = optionParser.get(BROWSE_CACHE_OPTION).get();
-        boolean parallel = !optionParser.get(NON_PARALLEL).get();
+        boolean browseCache = optionParser.getResult(BROWSE_CACHE_OPTION).get();
+        boolean parallel = !optionParser.getResult(NON_PARALLEL).get();
+        Duration timeout = optionParser.getResult(TIMEOUT_OPTION).get();
 
-        IComputation<T> computation = newComputation();
-        FeatJAR.log().info("running computation %s", computation.print());
+        IComputation<T> computation;
+        try {
+            computation = newComputation();
+        } catch (Exception e) {
+            FeatJAR.log().error("ERROR: %s", e.getMessage());
+            return;
+        }
+        FeatJAR.log().debug("running computation %s", computation.print());
 
         final Result<T> result;
         final long timeNeeded;
-        if (parallel) {
+        if (!timeout.isZero()) {
+            final long localTime = System.nanoTime();
+            result = computation.computeResult(true, true, timeout);
+            timeNeeded = System.nanoTime() - localTime;
+        } else if (parallel) {
             final long localTime = System.nanoTime();
             result = computation.computeFutureResult(true, true).get();
             timeNeeded = System.nanoTime() - localTime;
