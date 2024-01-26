@@ -28,6 +28,10 @@ import de.featjar.base.cli.OptionList;
 import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.graphviz.GraphVizComputationTreeFormat;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.time.Duration;
 import java.util.List;
 
@@ -54,7 +58,7 @@ public abstract class AAnalysisCommand<T> implements ICommand {
 
     @Override
     public List<Option<?>> getOptions() {
-        return List.of(INPUT_OPTION, BROWSE_CACHE_OPTION, NON_PARALLEL, TIMEOUT_OPTION);
+        return List.of(INPUT_OPTION, BROWSE_CACHE_OPTION, NON_PARALLEL, TIMEOUT_OPTION, OUTPUT_OPTION);
     }
 
     @Override
@@ -63,6 +67,7 @@ public abstract class AAnalysisCommand<T> implements ICommand {
         boolean browseCache = optionParser.getResult(BROWSE_CACHE_OPTION).get();
         boolean parallel = !optionParser.getResult(NON_PARALLEL).get();
         Duration timeout = optionParser.getResult(TIMEOUT_OPTION).get();
+        Path outputPath = optionParser.getResult(OUTPUT_OPTION).orElse(null);
 
         IComputation<T> computation;
         try {
@@ -91,7 +96,20 @@ public abstract class AAnalysisCommand<T> implements ICommand {
 
         if (result.isPresent()) {
             FeatJAR.log().info("time needed for computation: " + ((timeNeeded / 1_000_000) / 1000.0) + "s");
-            FeatJAR.log().message(serializeResult(result.get()));
+            if (outputPath == null) {
+                FeatJAR.log().message(serializeResult(result.get()));
+            } else {
+                try {
+                    if (!writeToOutputFile(result.get(), outputPath)) {
+                        Files.write(
+                                outputPath,
+                                serializeResult(result.get()).getBytes(),
+                                StandardOpenOption.TRUNCATE_EXISTING);
+                    }
+                } catch (IOException e) {
+                    FeatJAR.log().error(e);
+                }
+            }
         } else {
             FeatJAR.log().error("Could not compute result.");
         }
@@ -105,9 +123,13 @@ public abstract class AAnalysisCommand<T> implements ICommand {
         this.optionParser = null;
     }
 
-    public abstract IComputation<T> newComputation();
+    protected abstract IComputation<T> newComputation();
 
-    public String serializeResult(T result) {
+    protected boolean writeToOutputFile(T result, Path outputPath) {
+        return false;
+    }
+
+    protected String serializeResult(T result) {
         return result.toString();
     }
 }
