@@ -27,9 +27,12 @@ import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Or;
+import de.featjar.formula.structure.formula.connective.Reference;
 import de.featjar.formula.structure.formula.predicate.Literal;
+import de.featjar.formula.structure.term.value.Variable;
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -71,7 +74,9 @@ public class XMLFeatureModelFormulaFormat extends AXMLFeatureModelFormat<IExpres
                 constraints.set(0, new Or());
             }
         }
-        return new And(constraints);
+        Reference reference = new Reference(new And(constraints));
+        reference.setFreeVariables(featureLabels.stream().map(Variable::new).collect(Collectors.toList()));
+        return reference;
     }
 
     @Override

@@ -26,6 +26,7 @@ import static de.featjar.formula.structure.Expressions.biImplies;
 import static de.featjar.formula.structure.Expressions.literal;
 import static de.featjar.formula.structure.Expressions.not;
 import static de.featjar.formula.structure.Expressions.or;
+import static de.featjar.formula.structure.Expressions.reference;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.featjar.base.FeatJAR;
@@ -67,12 +68,12 @@ class ComputeCNFFormulaTest {
                 .get()
                 .get());
         assertEquals(
-                and(
+                reference(and(
                         literal("Root"),
                         or(literal(false, "A"), literal("Root")),
                         or(literal(false, "B"), literal("Root")),
                         literal("A"),
-                        literal("B")),
+                        literal("B"))),
                 formula);
         IFormula finalFormula = formula;
         formula = Computations.of(finalFormula)
@@ -81,12 +82,12 @@ class ComputeCNFFormulaTest {
                 .get()
                 .get();
         assertEquals(
-                and(
+                reference(and(
                         or(literal("Root")),
                         or(literal(false, "A"), literal("Root")),
                         or(literal(false, "B"), literal("Root")),
                         or(literal("A")),
-                        or(literal("B"))),
+                        or(literal("B")))),
                 formula);
     }
 

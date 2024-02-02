@@ -30,7 +30,9 @@ import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Not;
 import de.featjar.formula.structure.formula.connective.Or;
+import de.featjar.formula.structure.formula.connective.Reference;
 import de.featjar.formula.structure.formula.predicate.Literal;
+import de.featjar.formula.structure.term.value.Variable;
 import de.featjar.formula.transformer.ComputeCNFFormula;
 import de.featjar.formula.transformer.ComputeNNFFormula;
 import de.featjar.formula.visitor.AndOrSimplifier;
@@ -68,7 +70,9 @@ public class XMLFeatureModelCNFFormulaFormat extends XMLFeatureModelFormulaForma
         if (constraintsElement.isPresent()) {
             parseConstraints(constraintsElement.get());
         }
-        return Trees.clone(simplify(new And(constraints)));
+        Reference reference = new Reference((IFormula) Trees.clone(simplify(new And(constraints))));
+        reference.setFreeVariables(featureLabels.stream().map(Variable::new).collect(Collectors.toList()));
+        return reference;
     }
 
     @Override

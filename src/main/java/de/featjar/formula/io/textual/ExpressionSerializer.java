@@ -36,6 +36,7 @@ import de.featjar.formula.structure.formula.connective.ForAll;
 import de.featjar.formula.structure.formula.connective.Implies;
 import de.featjar.formula.structure.formula.connective.Not;
 import de.featjar.formula.structure.formula.connective.Or;
+import de.featjar.formula.structure.formula.connective.Reference;
 import de.featjar.formula.structure.formula.predicate.Literal;
 import java.util.List;
 
@@ -243,7 +244,7 @@ public class ExpressionSerializer implements IInOrderTreeVisitor<IExpression, St
             sb.append(variableToString(node));
         } else if (node instanceof Literal) {
             printLiteral(node);
-        } else {
+        } else if (!(node instanceof Reference)) {
             switch (notation) {
                 case TREE:
                     alignLine(path.size());
@@ -282,7 +283,7 @@ public class ExpressionSerializer implements IInOrderTreeVisitor<IExpression, St
     @Override
     public TraversalAction visit(List<IExpression> path) {
         final IExpression node = ITreeVisitor.getCurrentNode(path);
-        if (!(node instanceof Literal)) {
+        if (!(node instanceof Literal) && !(node instanceof Reference)) {
             switch (notation) {
                 case TREE:
                     break;
@@ -309,7 +310,7 @@ public class ExpressionSerializer implements IInOrderTreeVisitor<IExpression, St
     @Override
     public TraversalAction lastVisit(List<IExpression> path) {
         final IExpression node = ITreeVisitor.getCurrentNode(path);
-        if (!(node instanceof ATerminalExpression) && !(node instanceof Literal)) {
+        if (!(node instanceof ATerminalExpression) && !(node instanceof Literal) && !(node instanceof Reference)) {
             switch (notation) {
                 case TREE:
                     break;

@@ -24,6 +24,7 @@ import static de.featjar.formula.structure.Expressions.and;
 import static de.featjar.formula.structure.Expressions.literal;
 import static de.featjar.formula.structure.Expressions.not;
 import static de.featjar.formula.structure.Expressions.or;
+import static de.featjar.formula.structure.Expressions.reference;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import de.featjar.formula.structure.formula.IFormula;
@@ -36,26 +37,26 @@ public class CommonFormulas {
                 return null;
             }
             case "empty": {
-                return and();
+                return reference(and());
             }
             case "void": {
-                return and(or());
+                return reference(and(or()));
             }
             case "123-n1n2n3": {
-                return and(
+                return reference(and(
                         or(literal("1"), literal("2"), literal("3")),
-                        or(literal(false, "1"), literal(false, "2"), literal(false, "3")));
+                        or(literal(false, "1"), literal(false, "2"), literal(false, "3"))));
             }
             case "ABC-nAnBnC": {
-                return and(
+                return reference(and(
                         or(literal("A"), literal("B"), literal("C")),
-                        or(not(literal("A")), or(not(literal("B")), not(literal("C")))));
+                        or(not(literal("A")), or(not(literal("B")), not(literal("C"))))));
             }
             case "nA": {
-                return not(literal("A"));
+                return reference(not(literal("A")));
             }
             case "nAB": {
-                return or(not(literal("A")), literal("B"));
+                return reference(or(not(literal("A")), literal("B")));
             }
             default:
                 fail(name);

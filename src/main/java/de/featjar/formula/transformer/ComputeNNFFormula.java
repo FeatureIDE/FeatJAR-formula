@@ -49,13 +49,20 @@ public class ComputeNNFFormula extends AComputation<IFormula> {
     @Override
     public Result<IFormula> compute(List<Object> dependencyList, Progress progress) {
         IFormula formula = FORMULA.get(dependencyList);
-        ExpressionKind.BOOLEAN.assertFor(formula);
-        if (formula.getVariables().isEmpty()) throw new IllegalArgumentException("requires at least one variable");
-        Variable variable = formula.getVariables().get(0);
+        List<Variable> variables = (formula instanceof Reference)
+                ? getVariables(((Reference) formula).getExpression())
+                : getVariables(formula);
+        if (variables.isEmpty()) throw new IllegalArgumentException("requires at least one variable");
+        Variable variable = variables.get(0);
         return Reference.mutateClone(formula, reference -> Trees.traverse(reference, new ConnectiveSimplifier())
                 .flatMap(_void -> Trees.traverse(reference, new DeMorganApplier()))
                 .flatMap(_void -> Trees.traverse(reference, new TrueFalseSimplifier()))
                 .flatMap(_void -> Trees.traverse(reference, new TrueFalseRemover(variable)))
                 .flatMap(_void -> Trees.traverse(reference, new AndOrSimplifier())));
+    }
+
+    private List<Variable> getVariables(IFormula formula) {
+        ExpressionKind.BOOLEAN.assertFor(formula);
+        return formula.getVariables();
     }
 }

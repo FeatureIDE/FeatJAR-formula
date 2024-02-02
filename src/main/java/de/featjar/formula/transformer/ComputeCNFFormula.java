@@ -32,6 +32,7 @@ import de.featjar.formula.structure.formula.FormulaNormalForm;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Or;
+import de.featjar.formula.structure.formula.connective.Reference;
 import de.featjar.formula.structure.formula.predicate.Literal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -99,6 +100,11 @@ public class ComputeCNFFormula extends AComputation<IFormula> {
     @Override
     public Result<IFormula> compute(List<Object> dependencyList, Progress progress) {
         IFormula nnfFormula = NNF_FORMULA.get(dependencyList);
+        Reference referenceFormula = null;
+        if (nnfFormula instanceof Reference) {
+            referenceFormula = (Reference) nnfFormula;
+            nnfFormula = referenceFormula.getExpression();
+        }
         if (!ExpressionKind.NNF.test(nnfFormula)) {
             throw new IllegalArgumentException("Formula is not in NNF");
         }
@@ -132,8 +138,14 @@ public class ComputeCNFFormula extends AComputation<IFormula> {
         TseitinTransformer.unify(substitutions);
         clauseFormulas.addAll(TseitinTransformer.getClauseFormulas(substitutions));
 
-        final And cnf = new And(clauseFormulas);
-        return Result.of(isStrict ? toStrictForm(cnf) : cnf);
+        IFormula cnf = new And(clauseFormulas);
+        if (isStrict) {
+            cnf = toStrictForm(cnf);
+        }
+        if (referenceFormula != null) {
+            cnf = referenceFormula.setFormula(cnf);
+        }
+        return Result.of(cnf);
     }
 
     @SuppressWarnings("unchecked")

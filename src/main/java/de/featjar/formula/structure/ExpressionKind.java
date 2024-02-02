@@ -101,8 +101,8 @@ public interface ExpressionKind extends Predicate<IExpression> {
 
     @Override
     default boolean test(IExpression expression) {
-        return expression.getDescendantsAsPreOrder().stream()
-                .allMatch(e -> getAllowedClasses().stream().anyMatch(c -> c.isAssignableFrom(e.getClass())));
+        return expression.preOrderStream().allMatch(e -> getAllowedClasses().stream()
+                .anyMatch(c -> c.isAssignableFrom(e.getClass())));
     }
 
     default void assertFor(IExpression expression) {

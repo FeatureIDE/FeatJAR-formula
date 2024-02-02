@@ -30,6 +30,7 @@ import de.featjar.formula.structure.ExpressionKind;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Or;
+import de.featjar.formula.structure.formula.connective.Reference;
 import de.featjar.formula.structure.formula.predicate.Literal;
 import java.util.List;
 
@@ -57,12 +58,22 @@ public class ComputeDNFFormula extends AComputation<IFormula> {
     @Override
     public Result<IFormula> compute(List<Object> dependencyList, Progress progress) {
         IFormula nnfFormula = NNF_FORMULA.get(dependencyList);
+        final Reference referenceFormula;
+        if (nnfFormula instanceof Reference) {
+            referenceFormula = (Reference) nnfFormula;
+            nnfFormula = referenceFormula.getExpression();
+        } else {
+            referenceFormula = null;
+        }
         if (!ExpressionKind.NNF.test(nnfFormula)) {
             throw new IllegalArgumentException("Formula is not in NNF");
         }
         boolean isStrict = IS_STRICT.get(dependencyList);
         DistributiveTransformer formulaToDistributiveNFFormula = new DistributiveTransformer(false, null);
-        return formulaToDistributiveNFFormula.apply(nnfFormula).map(f -> isStrict ? toStrictForm(f) : f);
+        return formulaToDistributiveNFFormula
+                .apply(nnfFormula)
+                .map(f -> isStrict ? toStrictForm(f) : f)
+                .map(f -> referenceFormula == null ? f : referenceFormula.setFormula(f));
     }
 
     private static IFormula toStrictForm(IFormula formula) {

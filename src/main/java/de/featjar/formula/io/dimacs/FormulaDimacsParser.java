@@ -25,7 +25,9 @@ import de.featjar.base.io.NonEmptyLineIterator;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Or;
+import de.featjar.formula.structure.formula.connective.Reference;
 import de.featjar.formula.structure.formula.predicate.Literal;
+import de.featjar.formula.structure.term.value.Variable;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -35,6 +37,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 // TODO unify dimacs parser, there is lots of redundant code
 public class FormulaDimacsParser {
@@ -81,42 +84,43 @@ public class FormulaDimacsParser {
     /**
      * Reads the input.
      *
-     * @param nonemptyLineIterator The source to read from.
+     * @param nonEmptyLineIterator The source to read from.
      * @return a CNF; not null
      * @throws IOException    if the reader encounters a problem.
      * @throws ParseException if the input does not conform to the DIMACS CNF file
      *                        format
      */
-    public IFormula parse(NonEmptyLineIterator nonemptyLineIterator) throws ParseException, IOException {
+    public IFormula parse(NonEmptyLineIterator nonEmptyLineIterator) throws ParseException, IOException {
         indexVariables.clear();
         variableCount = -1;
         clauseCount = -1;
         readingVariables = readVariableDirectory;
-        nonemptyLineIterator.get();
 
-        readComments(nonemptyLineIterator);
-        readProblem(nonemptyLineIterator);
-        readComments(nonemptyLineIterator);
+        nonEmptyLineIterator.get();
+        readComments(nonEmptyLineIterator);
+        readProblem(nonEmptyLineIterator);
+        readComments(nonEmptyLineIterator);
         readingVariables = false;
+
+        final List<Or> clauses = readClauses(nonEmptyLineIterator);
 
         if (readVariableDirectory) {
             for (int i = 1; i <= variableCount; i++) {
                 indexVariables.putIfAbsent(i, Integer.toString(i));
             }
+            if (variableCount != indexVariables.size()) {
+                throw new ParseException(
+                        String.format("Found %d instead of %d variables", indexVariables.size(), variableCount), 1);
+            }
         }
 
-        final List<Or> clauses = readClauses(nonemptyLineIterator);
-        final int actualVariableCount = indexVariables.size();
-        final int actualClauseCount = clauses.size();
-        if (variableCount != actualVariableCount) {
-            throw new ParseException(
-                    String.format("Found %d instead of %d variables", actualVariableCount, variableCount), 1);
+        if (clauseCount != clauses.size()) {
+            throw new ParseException(String.format("Found %d instead of %d clauses", clauses.size(), clauseCount), 1);
         }
-        if (clauseCount != actualClauseCount) {
-            throw new ParseException(
-                    String.format("Found %d instead of %d clauses", actualClauseCount, clauseCount), 1);
-        }
-        return new And(clauses);
+        Reference reference = new Reference(new And(clauses));
+        reference.setFreeVariables(
+                indexVariables.values().stream().map(Variable::new).collect(Collectors.toList()));
+        return reference;
     }
 
     private void readComments(final NonEmptyLineIterator nonemptyLineIterator) {

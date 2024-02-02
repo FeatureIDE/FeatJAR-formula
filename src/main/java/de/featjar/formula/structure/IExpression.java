@@ -34,6 +34,8 @@ import de.featjar.formula.visitor.Evaluator;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.function.Predicate;
@@ -105,37 +107,39 @@ public interface IExpression extends ITree<IExpression> {
     }
 
     /**
+     * {@return a map of all unique variables in this expression}
+     * Uniqueness of variables is determined by their names, not their identity.
+     * Thus, only the first instance of a variable with a given name will occur in this stream.
+     */
+    default LinkedHashMap<String, Variable> getVariableMap() {
+        LinkedHashMap<String, Variable> variables = new LinkedHashMap<>();
+        Trees.preOrderStream(this)
+                .filter(e -> e instanceof Variable)
+                .forEach(v -> variables.put(v.getName(), (Variable) v));
+        return variables;
+    }
+
+    /**
      * {@return a stream of all unique variables in this expression}
      * Uniqueness of variables is determined by their names, not their identity.
      * Thus, only the first instance of a variable with a given name will occur in this stream.
-     * TODO: this implementation does not preserve the preorder!
      */
     default Stream<Variable> getVariableStream() {
-        return Trees.preOrderStream(this)
-                .filter(e -> e instanceof Variable)
-                .map(e -> (Variable) e)
-                .collect(Collectors.groupingBy(Variable::getName))
-                .values()
-                .stream()
-                .flatMap(variables -> variables.stream().limit(1));
+        return getVariableMap().values().stream();
     }
 
     /**
      * {@return a list of all variables in this expression}
      */
     default List<Variable> getVariables() {
-        return getVariableStream().collect(Collectors.toList());
+        return new ArrayList<>(getVariableMap().values());
     }
 
     /**
      * {@return a list of all variable names in this expression}
      */
     default LinkedHashSet<String> getVariableNames() {
-        return new LinkedHashSet<>(Trees.preOrderStream(this)
-                .filter(e -> e instanceof Variable)
-                .map(e -> (Variable) e)
-                .collect(Collectors.groupingBy(Variable::getName))
-                .keySet());
+        return new LinkedHashSet<>(getVariableMap().keySet());
     }
 
     /**

@@ -28,6 +28,7 @@ import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.Or;
+import de.featjar.formula.structure.formula.connective.Reference;
 import de.featjar.formula.structure.formula.predicate.Literal;
 import java.text.ParseException;
 
@@ -41,10 +42,15 @@ public class FormulaDimacsFormat implements IFormat<IFormula> {
 
     @Override
     public Result<String> serialize(IFormula formula) {
+        VariableMap variableMap = VariableMap.of(formula);
+        return writeDIMACS(
+                (formula instanceof Reference) ? ((Reference) formula).getExpression() : formula, variableMap);
+    }
+
+    private Result<String> writeDIMACS(IFormula formula, VariableMap variableMap) {
         if (!formula.isCNF()) {
             return Result.empty(new IllegalArgumentException("Formula is not in CNF"));
         }
-        VariableMap variableMap = VariableMap.of(formula);
         final StringBuilder sb = new StringBuilder();
         writeVariableDirectory(sb, variableMap);
         writeProblem(sb, formula);

@@ -29,12 +29,13 @@ import de.featjar.formula.analysis.value.*;
 import de.featjar.formula.structure.Expressions;
 import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.formula.IFormula;
+import de.featjar.formula.structure.formula.connective.Reference;
 import de.featjar.formula.structure.formula.predicate.Literal;
 import java.util.List;
 import java.util.Objects;
 
 /**
- * Transforms a formula, which is assumed to be in conjunctive normal form, into an indexed CNF representation.
+ * Transforms a formula, which is assumed to be in strict conjunctive normal form, into an indexed CNF representation.
  *
  * @author Sebastian Krieter
  * @author Elias Kuiter
@@ -44,13 +45,18 @@ public class BooleanRepresentationComputation<T extends IValueRepresentation, U 
 
     protected static final Dependency<Object> VALUE_REPRESENTATION = Dependency.newDependency();
 
+    /**
+     * {@return a formula, which is assumed to be in strict conjunctive normal form, into an indexed CNF representation}
+     * @param formula the formula in strict CNF
+     * @param variableMap the variable map corresponding to that formula
+     */
     public static Result<BooleanClauseList> toBooleanClauseList(IFormula formula, VariableMap variableMap) {
         final BooleanClauseList clauseList = new BooleanClauseList(variableMap.getVariableCount());
         formula.getChildren().stream()
                 .map(expression -> getClause((IFormula) expression, variableMap))
                 .filter(Objects::nonNull)
                 .forEach(clauseList::add);
-        return Result.of(clauseList); // todo: better error handling when index cannot be found
+        return Result.of(clauseList); // TODO: better error handling when index cannot be found
     }
 
     protected static BooleanClause getClause(IFormula formula, VariableMap variableMap) {
@@ -93,6 +99,9 @@ public class BooleanRepresentationComputation<T extends IValueRepresentation, U 
         FeatJAR.log().debug("initializing variable map for " + vp.getClass().getName());
         VariableMap variableMap = VariableMap.of(vp);
         FeatJAR.log().debug(variableMap);
+        if (vp instanceof Reference) {
+            vp = (T) ((Reference) vp).getExpression();
+        }
         return vp.toBoolean(variableMap).map(u -> new Pair<>((U) u, variableMap));
     }
 }

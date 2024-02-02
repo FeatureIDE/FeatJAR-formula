@@ -77,22 +77,22 @@ public class BooleanAssignmentSpaceDimacsParser {
     /**
      * Reads the input.
      *
-     * @param nonemptyLineIterIFormulaator The source to read from.
+     * @param nonEmptyLineIterator The source to read from.
      * @return a CNF; not null
      * @throws IOException    if the reader encounters a problem.
      * @throws ParseException if the input does not conform to the DIMACS CNF file
      *                        format
      */
-    public BooleanAssignmentSpace parse(NonEmptyLineIterator nonemptyLineIterator) throws ParseException, IOException {
+    public BooleanAssignmentSpace parse(NonEmptyLineIterator nonEmptyLineIterator) throws ParseException, IOException {
         indexVariables.clear();
         variableCount = -1;
         clauseCount = -1;
         readingVariables = readVariableDirectory;
-        nonemptyLineIterator.get();
+        nonEmptyLineIterator.get();
 
-        readComments(nonemptyLineIterator);
-        readProblem(nonemptyLineIterator);
-        readComments(nonemptyLineIterator);
+        readComments(nonEmptyLineIterator);
+        readProblem(nonEmptyLineIterator);
+        readComments(nonEmptyLineIterator);
         readingVariables = false;
 
         if (readVariableDirectory) {
@@ -103,7 +103,7 @@ public class BooleanAssignmentSpaceDimacsParser {
             }
         }
 
-        final List<BooleanClause> clauses = readClauses(nonemptyLineIterator);
+        final List<BooleanClause> clauses = readClauses(nonEmptyLineIterator);
         final int actualVariableCount = indexVariables.getVariableCount();
         final int actualClauseCount = clauses.size();
         if (variableCount != actualVariableCount) {
