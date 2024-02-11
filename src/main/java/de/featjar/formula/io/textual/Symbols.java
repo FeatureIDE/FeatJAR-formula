@@ -42,12 +42,6 @@ import java.util.stream.Collectors;
 
 public class Symbols {
 
-    public static final Symbols JAVA = JavaSymbols.INSTANCE;
-    public static final Symbols LOGICAL = LogicalSymbols.INSTANCE;
-    public static final Symbols PROPOSITIONAL = PropositionalModelSymbols.INSTANCE;
-    public static final Symbols SHORT = ShortSymbols.INSTANCE;
-    public static final Symbols TEXTUAL = TextualSymbols.INSTANCE;
-
     private static class OperatorProperties {
         Boolean infix = null;
         String name = null;

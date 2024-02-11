@@ -25,7 +25,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import de.featjar.base.tree.Trees;
 import de.featjar.formula.io.textual.ExpressionSerializer;
 import de.featjar.formula.io.textual.ExpressionSerializer.Notation;
-import de.featjar.formula.io.textual.Symbols;
+import de.featjar.formula.io.textual.JavaSymbols;
+import de.featjar.formula.io.textual.TextualSymbols;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.test.CommonFormulas;
 import org.junit.jupiter.api.Test;
@@ -41,7 +42,7 @@ public class ExpressionSerializerTest {
     public void Formula_ABC_nAnBnC() {
         final IFormula formula = CommonFormulas.getFormula("ABC-nAnBnC");
         final ExpressionSerializer s = new ExpressionSerializer();
-        s.setSymbols(Symbols.JAVA);
+        s.setSymbols(JavaSymbols.INSTANCE);
         s.setNotation(Notation.INFIX);
         assertEquals(
                 "(A || B || C) && (!A || (!B || !C))",
@@ -53,7 +54,7 @@ public class ExpressionSerializerTest {
         s.setNotation(Notation.POSTFIX);
         assertEquals("(A B C)|| (A! (B! C!)||)||&&", Trees.traverse(formula, s).get());
 
-        s.setSymbols(Symbols.TEXTUAL);
+        s.setSymbols(TextualSymbols.INSTANCE);
         s.setNotation(Notation.INFIX);
         assertEquals(
                 "(A or B or C) and (not A or (not B or not C))",
@@ -72,7 +73,7 @@ public class ExpressionSerializerTest {
     public void Formula_nAB() {
         final IFormula formula = CommonFormulas.getFormula("nAB");
         final ExpressionSerializer s = new ExpressionSerializer();
-        s.setSymbols(Symbols.JAVA);
+        s.setSymbols(JavaSymbols.INSTANCE);
         s.setNotation(Notation.INFIX);
         assertEquals("!A || B", Trees.traverse(formula, s).get());
         s.setNotation(Notation.PREFIX);
@@ -80,7 +81,7 @@ public class ExpressionSerializerTest {
         s.setNotation(Notation.POSTFIX);
         assertEquals("A! B||", Trees.traverse(formula, s).get());
 
-        s.setSymbols(Symbols.TEXTUAL);
+        s.setSymbols(TextualSymbols.INSTANCE);
         s.setNotation(Notation.INFIX);
         assertEquals("not A or B", Trees.traverse(formula, s).get());
         s.setNotation(Notation.PREFIX);
