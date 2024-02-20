@@ -54,7 +54,7 @@ public class AtMost extends ACardinal {
     }
 
     public int getMaximum() {
-        return super.getRange().getUpperBound().get();
+        return super.getRange().getUpperBound();
     }
 
     public void setMaximum(int maximum) {

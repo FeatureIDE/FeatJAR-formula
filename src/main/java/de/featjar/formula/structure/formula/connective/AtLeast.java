@@ -54,7 +54,7 @@ public class AtLeast extends ACardinal {
     }
 
     public int getMinimum() {
-        return super.getRange().getLowerBound().get();
+        return super.getRange().getLowerBound();
     }
 
     public void setMinimum(int minimum) {

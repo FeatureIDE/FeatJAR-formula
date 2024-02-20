@@ -54,7 +54,7 @@ public class Between extends ACardinal {
     }
 
     public int getMinimum() {
-        return super.getRange().getLowerBound().get();
+        return super.getRange().getLowerBound();
     }
 
     public void setMinimum(int minimum) {
@@ -62,7 +62,7 @@ public class Between extends ACardinal {
     }
 
     public int getMaximum() {
-        return super.getRange().getUpperBound().get();
+        return super.getRange().getUpperBound();
     }
 
     public void setMaximum(int maximum) {

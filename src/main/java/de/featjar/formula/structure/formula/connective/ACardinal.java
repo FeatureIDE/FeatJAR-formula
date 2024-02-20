@@ -59,12 +59,12 @@ public abstract class ACardinal extends ANonTerminalExpression implements IConne
     }
 
     protected void setRange(Range range) {
-        assertChildrenCountInRange(getChildrenCount(), atLeastTheLargerBound(range));
+        assertChildrenCountInRange(getChildrenCount());
         this.range = range;
     }
 
     private Range atLeastTheLargerBound(Range range) {
-        return Range.atLeast(range.getLargerBound().orElse(null));
+        return Range.atLeast(range.getLargerBound());
     }
 
     @Override

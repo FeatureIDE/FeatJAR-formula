@@ -54,7 +54,7 @@ public class Choose extends ACardinal {
     }
 
     public int getBound() {
-        return super.getRange().getLowerBound().get();
+        return super.getRange().getLowerBound();
     }
 
     public void setBound(int bound) {
