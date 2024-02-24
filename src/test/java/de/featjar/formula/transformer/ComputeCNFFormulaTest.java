@@ -29,18 +29,13 @@ import static de.featjar.formula.structure.Expressions.or;
 import static de.featjar.formula.structure.Expressions.reference;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.featjar.base.FeatJAR;
+import de.featjar.Common;
 import de.featjar.base.computation.Computations;
 import de.featjar.base.computation.IComputation;
-import de.featjar.base.io.IO;
-import de.featjar.formula.io.FormulaFormats;
 import de.featjar.formula.structure.formula.IFormula;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import org.junit.jupiter.api.Test;
 
-class ComputeCNFFormulaTest {
-    public static final Path fmDirectory = Paths.get("src/test/resources/testFeatureModels");
+class ComputeCNFFormulaTest extends Common {
 
     IComputation<IFormula> toCNF(IComputation<IFormula> formula) {
         return formula.map(ComputeNNFFormula::new).map(ComputeCNFFormula::new);
@@ -62,11 +57,7 @@ class ComputeCNFFormulaTest {
 
     @Test
     void basic() {
-        IFormula formula = FeatJAR.apply(featJAR -> Computations.of(
-                        IO.load(fmDirectory.resolve("basic.xml"), FeatJAR.extensionPoint(FormulaFormats.class))
-                                .get())
-                .get()
-                .get());
+        IFormula formula = loadFormula("testFeatureModels/basic.xml");
         assertEquals(
                 reference(and(
                         literal("Root"),

@@ -20,12 +20,14 @@
  */
 package de.featjar.formula.io;
 
+import de.featjar.Common;
+import de.featjar.FormatTest;
 import de.featjar.base.computation.Computations;
 import de.featjar.formula.analysis.bool.BooleanAssignmentSpace;
 import de.featjar.formula.analysis.bool.BooleanAssignmentSpaceComputation;
 import de.featjar.formula.analysis.bool.BooleanRepresentationComputation;
 import de.featjar.formula.io.binary.BooleanAssignmentSpaceBinaryFormat;
-import de.featjar.formula.test.CommonFormulas;
+import de.featjar.formula.io.textual.ExpressionFormat;
 import de.featjar.formula.transformer.ComputeCNFFormula;
 import de.featjar.formula.transformer.ComputeNNFFormula;
 import org.junit.jupiter.api.Test;
@@ -35,7 +37,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author Sebastian Krieter
  */
-public class BinaryFormatTest {
+public class BinaryFormatTest extends Common {
 
     @Test
     public void Formula_ABC_nAnBnC() {
@@ -53,7 +55,7 @@ public class BinaryFormatTest {
     }
 
     private static void test(String name) {
-        final BooleanAssignmentSpace assignmentSpace = Computations.of(CommonFormulas.getFormula(name))
+        final BooleanAssignmentSpace assignmentSpace = Computations.of(getFormula(name))
                 .map(ComputeNNFFormula::new)
                 .map(ComputeCNFFormula::new)
                 .map(BooleanRepresentationComputation::new)

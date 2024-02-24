@@ -24,9 +24,10 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import de.featjar.Common;
+import de.featjar.FormatTest;
 import de.featjar.base.io.IO;
 import de.featjar.formula.io.dimacs.FormulaDimacsFormat;
-import de.featjar.formula.test.CommonFormulas;
 import java.io.IOException;
 import java.io.OutputStream;
 import org.junit.jupiter.api.Test;
@@ -36,7 +37,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author Sebastian Krieter
  */
-public class DIMACSFormatTest {
+public class DIMACSFormatTest extends Common {
 
     // TODO: something is wrong with the Dimacs Serializer, go figure :-)
     @Test
@@ -95,7 +96,7 @@ public class DIMACSFormatTest {
     }
 
     private static void test(String name) {
-        FormatTest.testSaveAndLoad(CommonFormulas.getFormula(name), name, new FormulaDimacsFormat());
+        FormatTest.testSaveAndLoad(getFormula(name), name, new FormulaDimacsFormat());
     }
 
     private void testException(final String name) {
@@ -103,10 +104,7 @@ public class DIMACSFormatTest {
                 RuntimeException.class,
                 () -> {
                     try {
-                        IO.save(
-                                CommonFormulas.getFormula(name),
-                                OutputStream.nullOutputStream(),
-                                new FormulaDimacsFormat());
+                        IO.save(getFormula(name), OutputStream.nullOutputStream(), new FormulaDimacsFormat());
                     } catch (IOException e) {
                         e.printStackTrace();
                         fail(e);

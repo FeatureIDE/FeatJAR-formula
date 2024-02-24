@@ -22,13 +22,13 @@ package de.featjar.formula.io;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import de.featjar.Common;
 import de.featjar.base.tree.Trees;
 import de.featjar.formula.io.textual.ExpressionSerializer;
 import de.featjar.formula.io.textual.ExpressionSerializer.Notation;
 import de.featjar.formula.io.textual.JavaSymbols;
 import de.featjar.formula.io.textual.TextualSymbols;
 import de.featjar.formula.structure.formula.IFormula;
-import de.featjar.formula.test.CommonFormulas;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -36,11 +36,11 @@ import org.junit.jupiter.api.Test;
  *
  * @author Sebastian Krieter
  */
-public class ExpressionSerializerTest {
+public class ExpressionSerializerTest extends Common {
 
     @Test
     public void Formula_ABC_nAnBnC() {
-        final IFormula formula = CommonFormulas.getFormula("ABC-nAnBnC");
+        final IFormula formula = getFormula("ABC-nAnBnC");
         final ExpressionSerializer s = new ExpressionSerializer();
         s.setSymbols(JavaSymbols.INSTANCE);
         s.setNotation(Notation.INFIX);
@@ -71,7 +71,7 @@ public class ExpressionSerializerTest {
 
     @Test
     public void Formula_nAB() {
-        final IFormula formula = CommonFormulas.getFormula("nAB");
+        final IFormula formula = getFormula("nAB");
         final ExpressionSerializer s = new ExpressionSerializer();
         s.setSymbols(JavaSymbols.INSTANCE);
         s.setNotation(Notation.INFIX);

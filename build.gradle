@@ -1,14 +1,16 @@
 plugins {
     id 'de.featjar.java-library'
     id 'de.featjar.java-application'
+    id 'java-test-fixtures'
 }
 
 dependencies {
     api 'de.featjar:base'
+    testFixturesImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
 }
 
 license {
     ext {
-        license_url = 'https://github.com/FeatureIDE/FeatJAR-formula'
+        licence_url = 'https://github.com/FeatureIDE/FeatJAR-formula'
     }
 }
