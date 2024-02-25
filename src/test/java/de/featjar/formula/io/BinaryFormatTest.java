@@ -25,7 +25,7 @@ import de.featjar.FormatTest;
 import de.featjar.base.computation.Computations;
 import de.featjar.formula.analysis.bool.BooleanAssignmentSpace;
 import de.featjar.formula.analysis.bool.BooleanAssignmentSpaceComputation;
-import de.featjar.formula.analysis.bool.BooleanRepresentationComputation;
+import de.featjar.formula.analysis.bool.ComputeBooleanRepresentation;
 import de.featjar.formula.io.binary.BooleanAssignmentSpaceBinaryFormat;
 import de.featjar.formula.io.textual.ExpressionFormat;
 import de.featjar.formula.transformer.ComputeCNFFormula;
@@ -58,7 +58,7 @@ public class BinaryFormatTest extends Common {
         final BooleanAssignmentSpace assignmentSpace = Computations.of(getFormula(name))
                 .map(ComputeNNFFormula::new)
                 .map(ComputeCNFFormula::new)
-                .map(BooleanRepresentationComputation::new)
+                .map(ComputeBooleanRepresentation::new)
                 .map(BooleanAssignmentSpaceComputation::new)
                 .compute();
 
