@@ -20,10 +20,7 @@
  */
 package de.featjar.formula.analysis.bool;
 
-import de.featjar.base.computation.AComputation;
-import de.featjar.base.computation.Dependency;
 import de.featjar.base.computation.IComputation;
-import de.featjar.base.computation.Progress;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.structure.Expressions;
@@ -39,9 +36,7 @@ import java.util.Objects;
  *
  * @author Sebastian Krieter
  */
-public class ComputeBooleanClauseList extends AComputation<BooleanClauseList> {
-
-    protected static final Dependency<IFormula> CNF_FORMULA = Dependency.newDependency(IFormula.class);
+public class ComputeBooleanClauseList extends ComputeBooleanRepresentation<IFormula, BooleanClauseList> {
 
     /**
      * {@return a formula, which is assumed to be in strict conjunctive normal form, into an indexed CNF representation}
@@ -98,8 +93,4 @@ public class ComputeBooleanClauseList extends AComputation<BooleanClauseList> {
         super(other);
     }
 
-    @Override
-    public Result<BooleanClauseList> compute(List<Object> dependencyList, Progress progress) {
-        return toBooleanClauseList(CNF_FORMULA.get(dependencyList));
-    }
 }
