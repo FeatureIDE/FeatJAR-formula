@@ -56,7 +56,7 @@ public class ValueAssignmentFormat implements IFormat<AValueAssignment> {
                     String variable = e.getKey();
                     Object value = e.getValue();
                     if (value instanceof Boolean) {
-                        return String.format("%s%s", ((boolean) value) ? "" : "-", variable);
+                        return String.format("%s%s", ((boolean) value) ? "+" : "-", variable);
                     } else {
                         return String.format("%s=%s", variable, value);
                     }
