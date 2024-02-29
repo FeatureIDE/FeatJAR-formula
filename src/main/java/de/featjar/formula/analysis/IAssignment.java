@@ -24,7 +24,8 @@ import de.featjar.base.data.Pair;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.bool.ABooleanAssignment;
 import de.featjar.formula.analysis.value.AValueAssignment;
-import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 /**
@@ -41,11 +42,20 @@ import java.util.stream.Stream;
 public interface IAssignment<T, R> {
     /**
      * {@return an ordered map of all variable-value pairs in this assignment}
-     * The default implementations of the other methods assume that this map is mutable.
-     * If it is not, the other methods must be overridden accordingly.
+     * The default implementations of the other methods assume that this map is unmutable.
      * Undefined variables (e.g., for partial assignments) are omitted.
      */
-    LinkedHashMap<T, R> getAll();
+    Map<T, R> getAll();
+
+    /**
+     * {@return {@code true} iff all entries of the given assignment are also present in this assignment}
+     * @param other the other assignment
+     */
+    default boolean containsOtherAssignment(IAssignment<?, ?> other) {
+        Map<T, R> thisAssignment = getAll();
+        return other.getAll().entrySet().stream()
+                .allMatch(e -> Objects.equals(e.getValue(), thisAssignment.get(e.getKey())));
+    }
 
     /**
      * {@return the number of variable-value pairs in this assignment}

@@ -47,6 +47,16 @@ public interface IAssignmentList<T extends IAssignment<?, ?>> extends Iterable<T
      */
     List<T> getAll();
 
+    /**
+     * {@return {@code true} iff all assignments in the given list match an assignment in this list}
+     * @param other the other assignment
+     */
+    default boolean containsOtherAssignments(IAssignmentList<T> other) {
+        List<T> thisAssignments = getAll();
+        return other.stream().allMatch(otherAssignment -> thisAssignments.stream()
+                .anyMatch(thisAssignment -> thisAssignment.containsOtherAssignment(otherAssignment)));
+    }
+
     @Override
     default Iterator<T> iterator() {
         return getAll().iterator();
