@@ -25,10 +25,12 @@ import static de.featjar.formula.structure.Expressions.literal;
 import static de.featjar.formula.structure.Expressions.not;
 import static de.featjar.formula.structure.Expressions.or;
 import static de.featjar.formula.structure.Expressions.reference;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import de.featjar.base.FeatJAR;
 import de.featjar.base.computation.Cache;
+import de.featjar.base.data.Result;
 import de.featjar.base.io.IO;
 import de.featjar.base.io.format.IFormat;
 import de.featjar.base.io.format.IFormatSupplier;
@@ -56,7 +58,9 @@ public class Common {
         if (systemResource == null) {
             fail(modelPath);
         }
-        return IO.load(systemResource, formatSupplier).orElseThrow();
+        Result<T> load = IO.load(systemResource, formatSupplier);
+        assertTrue(load.isPresent(), load::printProblems);
+        return load.get();
     }
 
     public static <T> T load(String modelPath, IFormat<T> format) {
