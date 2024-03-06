@@ -18,20 +18,20 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.analysis.value;
+package de.featjar.formula.analysis.assignment;
 
-import de.featjar.formula.analysis.AAssignmentSpace;
+import de.featjar.formula.analysis.AAssignmentGroups;
 import de.featjar.formula.analysis.VariableMap;
 import java.util.List;
 
 /**
- * Combines multiple groups of lists of {@link AValueAssignment assignments} with a corresponding {@link VariableMap variable map}.
+ * {@link AAssignmentGroups} implementation for {@link Assignment}.
  *
  * @author Sebastian Krieter
  */
-public class ValueAssignmentSpace extends AAssignmentSpace<AValueAssignment> {
+public class AssignmentGroups extends AAssignmentGroups<Assignment> {
 
-    public ValueAssignmentSpace(VariableMap variableMap, List<? extends List<? extends AValueAssignment>> assignment) {
+    public AssignmentGroups(VariableMap variableMap, List<? extends List<? extends Assignment>> assignment) {
         super(variableMap, assignment);
     }
 }

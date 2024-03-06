@@ -18,72 +18,64 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.analysis.value;
+package de.featjar.formula.analysis.assignment;
 
-import de.featjar.base.io.IO;
 import de.featjar.formula.analysis.IAssignmentList;
-import de.featjar.formula.io.textual.ValueAssignmentListFormat;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
- * A list of value assignments.
+ * A list of {@link Assignment assignments}.
  *
- * @param <T> the type of the literal list
+ * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public abstract class AValueAssignmentList<T extends AValueAssignment>
-        implements IAssignmentList<T>, IValueRepresentation {
-    protected final List<T> literalLists;
+public class AssignmentList implements IAssignmentList<Assignment> {
+    protected final List<Assignment> literalLists;
 
-    public AValueAssignmentList() {
+    public AssignmentList() {
         literalLists = new ArrayList<>();
     }
 
-    public AValueAssignmentList(int size) {
+    public AssignmentList(int size) {
         literalLists = new ArrayList<>(size);
     }
 
-    public AValueAssignmentList(Collection<? extends T> literalLists) {
+    public AssignmentList(Collection<Assignment> literalLists) {
         this.literalLists = new ArrayList<>(literalLists);
     }
 
-    public AValueAssignmentList(AValueAssignmentList<T> other) {
+    public AssignmentList(AssignmentList other) {
         this(other.getAll());
     }
 
     @Override
-    public List<T> getAll() {
+    public String toString() {
+        return String.format("ValueAssignmentList[%s]", print());
+    }
+
+    @Override
+    public List<Assignment> getAll() {
         return literalLists;
     }
 
     @Override
-    public ValueAssignmentList toAssignmentList() {
-        return new ValueAssignmentList(
-                literalLists.stream().map(AValueAssignment::toAssignment).collect(Collectors.toList()));
+    public AssignmentList toClauseList(int variableCount) {
+        return this;
     }
 
     @Override
-    public ValueClauseList toClauseList(int variableCount) {
-        return new ValueClauseList(
-                literalLists.stream().map(AValueAssignment::toClause).collect(Collectors.toList()), variableCount);
-    }
-
-    @Override
-    public ValueSolutionList toSolutionList() {
-        return new ValueSolutionList(
-                literalLists.stream().map(AValueAssignment::toSolution).collect(Collectors.toList()));
+    public AssignmentList toSolutionList() {
+        return this;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AValueAssignmentList<?> that = (AValueAssignmentList<?>) o;
+        AssignmentList that = (AssignmentList) o;
         return Objects.equals(literalLists, that.literalLists);
     }
 
@@ -92,11 +84,8 @@ public abstract class AValueAssignmentList<T extends AValueAssignment>
         return Objects.hash(literalLists);
     }
 
-    public String print() {
-        try {
-            return IO.print(this, new ValueAssignmentListFormat());
-        } catch (IOException e) {
-            return e.toString();
-        }
+    @Override
+    public AssignmentList toAssignmentList() {
+        return this;
     }
 }

@@ -23,7 +23,7 @@ package de.featjar.formula.io.csv;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.format.IFormat;
 import de.featjar.formula.analysis.bool.ABooleanAssignment;
-import de.featjar.formula.analysis.bool.BooleanAssignmentSpace;
+import de.featjar.formula.analysis.bool.BooleanAssignmentGroups;
 import java.util.List;
 
 /**
@@ -31,12 +31,12 @@ import java.util.List;
  *
  * @author Sebastian Krieter
  */
-public class BooleanSolutionListCSVFormat implements IFormat<BooleanAssignmentSpace> {
+public class BooleanSolutionListCSVFormat implements IFormat<BooleanAssignmentGroups> {
 
     public static final String ID = BooleanSolutionListCSVFormat.class.getCanonicalName();
 
     @Override
-    public Result<String> serialize(BooleanAssignmentSpace configurationList) {
+    public Result<String> serialize(BooleanAssignmentGroups configurationList) {
         final StringBuilder csv = new StringBuilder();
         csv.append("Configuration");
         final List<String> names = configurationList.getVariableMap().getVariableNames();

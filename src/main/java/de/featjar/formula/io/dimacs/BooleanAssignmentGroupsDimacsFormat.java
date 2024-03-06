@@ -26,7 +26,7 @@ import de.featjar.base.io.format.ParseProblem;
 import de.featjar.base.io.input.AInputMapper;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.bool.ABooleanAssignment;
-import de.featjar.formula.analysis.bool.BooleanAssignmentSpace;
+import de.featjar.formula.analysis.bool.BooleanAssignmentGroups;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Objects;
@@ -36,10 +36,10 @@ import java.util.Objects;
  *
  * @author Sebastian Krieter
  */
-public class BooleanAssignmentSpaceDimacsFormat implements IFormat<BooleanAssignmentSpace> {
+public class BooleanAssignmentGroupsDimacsFormat implements IFormat<BooleanAssignmentGroups> {
 
     @Override
-    public Result<String> serialize(BooleanAssignmentSpace assignmentSpace) {
+    public Result<String> serialize(BooleanAssignmentGroups assignmentSpace) {
         Objects.requireNonNull(assignmentSpace);
 
         final StringBuilder sb = new StringBuilder();
@@ -79,8 +79,8 @@ public class BooleanAssignmentSpaceDimacsFormat implements IFormat<BooleanAssign
     }
 
     @Override
-    public Result<BooleanAssignmentSpace> parse(AInputMapper inputMapper) {
-        final BooleanAssignmentSpaceDimacsParser r = new BooleanAssignmentSpaceDimacsParser();
+    public Result<BooleanAssignmentGroups> parse(AInputMapper inputMapper) {
+        final BooleanAssignmentGroupsDimacsParser r = new BooleanAssignmentGroupsDimacsParser();
         r.setReadingVariableDirectory(true);
         try {
             return Result.of(r.parse(inputMapper.get().getNonEmptyLineIterator()));

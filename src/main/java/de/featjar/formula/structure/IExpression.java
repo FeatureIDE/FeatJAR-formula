@@ -23,9 +23,11 @@ package de.featjar.formula.structure;
 import de.featjar.base.io.IO;
 import de.featjar.base.tree.Trees;
 import de.featjar.base.tree.structure.ITree;
-import de.featjar.formula.analysis.bool.BooleanAssignment;
+import de.featjar.formula.analysis.IAssignment;
+import de.featjar.formula.analysis.VariableMap;
+import de.featjar.formula.analysis.assignment.Assignment;
+import de.featjar.formula.analysis.bool.ABooleanAssignment;
 import de.featjar.formula.analysis.value.AValueAssignment;
-import de.featjar.formula.analysis.value.ValueAssignment;
 import de.featjar.formula.io.textual.ExpressionFormat;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.term.ITerm;
@@ -73,10 +75,10 @@ public interface IExpression extends ITree<IExpression> {
     /**
      * {@return the evaluation of this formula on a given value assignment}
      *
-     * @param valueAssignment the value assignment
+     * @param assignment the value assignment
      */
-    default Object evaluate(AValueAssignment valueAssignment) {
-        return traverse(new Evaluator(valueAssignment)).orElse(null);
+    default Object evaluate(IAssignment<String, Object> assignment) {
+        return traverse(new Evaluator(assignment)).orElse(null);
     }
 
     /**
@@ -84,15 +86,24 @@ public interface IExpression extends ITree<IExpression> {
      *
      * @param booleanAssignment the boolean assignment
      */
-    default Object evaluate(BooleanAssignment booleanAssignment) {
-        return evaluate(booleanAssignment.toValue());
+    default Object evaluate(ABooleanAssignment booleanAssignment, VariableMap variableMap) {
+        return evaluate(variableMap.toAssignment(booleanAssignment).get());
+    }
+
+    /**
+     * {@return the evaluation of this formula on a given boolean assignment}
+     *
+     * @param valueAssignment the boolean assignment
+     */
+    default Object evaluate(AValueAssignment valueAssignment, VariableMap variableMap) {
+        return evaluate(variableMap.toAssignment(valueAssignment).get());
     }
 
     /**
      * {@return the evaluation of this formula on an empty value assignment}
      */
     default Object evaluate() {
-        return evaluate(new ValueAssignment());
+        return evaluate(new Assignment());
     }
 
     /**

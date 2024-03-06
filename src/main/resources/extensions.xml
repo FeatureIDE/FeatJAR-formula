@@ -5,9 +5,9 @@
 	    <extension id="de.featjar.formula.io.xml.XMLFeatureModelCNFFormulaFormat" />
 	    <extension id="de.featjar.formula.io.KConfigReaderFormat" />
 	</point>
-	<point id="de.featjar.formula.io.BooleanAssignmentSpaceFormats">
-		<extension id="de.featjar.formula.io.dimacs.BooleanAssignmentSpaceDimacsFormat" />
-		<extension id="de.featjar.formula.io.csv.BooleanAssignmentSpaceCSVFormat" />
-		<extension id="de.featjar.formula.io.binary.BooleanAssignmentSpaceBinaryFormat" />
+	<point id="de.featjar.formula.io.BooleanAssignmentGroupsFormats">
+		<extension id="de.featjar.formula.io.dimacs.BooleanAssignmentGroupsDimacsFormat" />
+		<extension id="de.featjar.formula.io.csv.BooleanAssignmentGroupsCSVFormat" />
+		<extension id="de.featjar.formula.io.binary.BooleanAssignmentGroupsBinaryFormat" />
 	</point>
 </extensions>

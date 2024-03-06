@@ -28,10 +28,12 @@ import static de.featjar.formula.structure.Expressions.not;
 import static de.featjar.formula.structure.Expressions.or;
 import static de.featjar.formula.structure.Expressions.reference;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.featjar.Common;
 import de.featjar.base.computation.Computations;
 import de.featjar.base.computation.IComputation;
+import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.structure.formula.IFormula;
 import org.junit.jupiter.api.Test;
 
@@ -98,9 +100,13 @@ class ComputeCNFFormulaTest extends Common {
                 .get()
                 .get();
 
+        VariableMap variableMap = VariableMap.of(formula);
         FormulaCreator.streamAllAssignments(formula.getVariables().size()).forEach(assignment -> {
-            assertEquals(formula.evaluate(assignment), distributiveCNF.evaluate(assignment));
-            assertEquals(formula.evaluate(assignment), tseitinCNF.evaluate(assignment));
+            Object formulaEvaluate = formula.evaluate(assignment, variableMap);
+            Object distributiveEvaluate = distributiveCNF.evaluate(assignment, variableMap);
+            assertEquals(formulaEvaluate, distributiveEvaluate, assignment::print);
+            Object tseitinEvaluate = tseitinCNF.evaluate(assignment, variableMap);
+            assertTrue(tseitinEvaluate == null || tseitinEvaluate == formulaEvaluate, assignment::print);
         });
     }
 }

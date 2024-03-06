@@ -18,11 +18,11 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.analysis.value;
+package de.featjar.formula.analysis.assignment;
 
 import de.featjar.base.data.Maps;
-import de.featjar.formula.analysis.IAssignment;
-import de.featjar.formula.analysis.ISolver;
+import de.featjar.formula.analysis.IClause;
+import de.featjar.formula.analysis.ISolution;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -30,52 +30,38 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * Assigns values of any type to string-identified {@link de.featjar.formula.structure.term.value.Variable variables}.
- * Can be used to represent a set of equalities for use in an SMT {@link ISolver}.
+ * An assignment of arbitrary values to variable names.
  *
+ * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public abstract class AValueAssignment implements IAssignment<Integer, Object>, IValueRepresentation {
-    final LinkedHashMap<Integer, Object> variableValuePairs;
+public class Assignment implements IClause<String, Object>, ISolution<String, Object> {
 
-    public AValueAssignment() {
+    final LinkedHashMap<String, Object> variableValuePairs;
+
+    public Assignment() {
         this(Maps.empty());
     }
 
-    public AValueAssignment(LinkedHashMap<Integer, Object> variableValuePairs) {
+    public Assignment(LinkedHashMap<String, Object> variableValuePairs) {
         this.variableValuePairs = variableValuePairs;
     }
 
-    public AValueAssignment(Object... variableValuePairs) {
+    public Assignment(Object... variableValuePairs) {
         this.variableValuePairs = Maps.empty();
         if (variableValuePairs.length % 2 == 1)
             throw new IllegalArgumentException("expected a list of variable-value pairs for this value assignment");
         for (int i = 0; i < variableValuePairs.length; i += 2) {
-            this.variableValuePairs.put((Integer) variableValuePairs[i], variableValuePairs[i + 1]);
+            this.variableValuePairs.put((String) variableValuePairs[i], variableValuePairs[i + 1]);
         }
     }
 
-    public AValueAssignment(AValueAssignment valueAssignment) {
+    public Assignment(Assignment valueAssignment) {
         this(new LinkedHashMap<>(valueAssignment.variableValuePairs));
     }
 
     @Override
-    public ValueAssignment toAssignment() {
-        return new ValueAssignment(variableValuePairs);
-    }
-
-    @Override
-    public ValueClause toClause() {
-        return new ValueClause(variableValuePairs);
-    }
-
-    @Override
-    public ValueSolution toSolution() {
-        return new ValueSolution(variableValuePairs);
-    }
-
-    @Override
-    public Map<Integer, Object> getAll() {
+    public Map<String, Object> getAll() {
         return Collections.unmodifiableMap(variableValuePairs);
     }
 
@@ -83,7 +69,7 @@ public abstract class AValueAssignment implements IAssignment<Integer, Object>, 
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AValueAssignment that = (AValueAssignment) o;
+        Assignment that = (Assignment) o;
         return Objects.equals(variableValuePairs, that.variableValuePairs);
     }
 
@@ -92,18 +78,29 @@ public abstract class AValueAssignment implements IAssignment<Integer, Object>, 
         return Objects.hash(variableValuePairs);
     }
 
-    @Override
     public String print() {
         return variableValuePairs.entrySet().stream()
-                .map(e -> {
-                    Integer variable = e.getKey();
-                    Object value = e.getValue();
-                    if (value instanceof Boolean) {
-                        return String.format("%s%s", ((boolean) value) ? "+" : "-", variable);
-                    } else {
-                        return String.format("%s=%s", variable, value);
-                    }
-                })
+                .map(e -> String.format("%s=%s", e.getKey(), e.getValue()))
                 .collect(Collectors.joining(","));
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Assignment[%s]", print());
+    }
+
+    @Override
+    public Assignment toAssignment() {
+        return this;
+    }
+
+    @Override
+    public Assignment toClause() {
+        return this;
+    }
+
+    @Override
+    public Assignment toSolution() {
+        return this;
     }
 }

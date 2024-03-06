@@ -20,11 +20,9 @@
  */
 package de.featjar.formula.analysis.value;
 
-import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.bool.BooleanAssignmentList;
-import de.featjar.formula.analysis.bool.BooleanClauseList;
 import java.util.Collection;
 
 /**
@@ -49,14 +47,8 @@ public class ValueAssignmentList extends AValueAssignmentList<ValueAssignment> {
     }
 
     @Override
-    public Result<BooleanAssignmentList> toBoolean(VariableMap variableMap) {
-        return variableMap.toBoolean(this);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public IComputation<BooleanClauseList> toBoolean(IComputation<VariableMap> variableMap) {
-        return (IComputation<BooleanClauseList>) super.toBoolean(variableMap);
+    public Result<BooleanAssignmentList> toBoolean() {
+        return VariableMap.toBoolean(this);
     }
 
     @Override

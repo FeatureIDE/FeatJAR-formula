@@ -20,8 +20,6 @@
  */
 package de.featjar.formula.analysis.bool;
 
-import de.featjar.base.computation.IComputation;
-import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.value.ValueSolutionList;
 import de.featjar.formula.structure.formula.IFormula;
@@ -54,18 +52,8 @@ public class BooleanSolutionList extends ABooleanAssignmentList<BooleanSolution>
     }
 
     @Override
-    public Result<ValueSolutionList> toValue(VariableMap variableMap) {
-        return variableMap.toValue(this);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public IComputation<ValueSolutionList> toValue(IComputation<VariableMap> variableMap) {
-        return (IComputation<ValueSolutionList>) super.toValue(variableMap);
-    }
-
-    public String print() {
-        return VariableMap.toAnonymousValue(this).get().print();
+    public ValueSolutionList toValue() {
+        return VariableMap.toValue(this);
     }
 
     @Override

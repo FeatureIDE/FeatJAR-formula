@@ -22,7 +22,6 @@ package de.featjar.formula.analysis.bool;
 
 import de.featjar.base.computation.Computations;
 import de.featjar.base.computation.IComputation;
-import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.value.IValueRepresentation;
 import de.featjar.formula.structure.formula.IFormula;
@@ -40,16 +39,14 @@ public interface IBooleanRepresentation {
         return toBooleanCNFRepresentation(model).map(Computations::getValue).cast(VariableMap.class);
     }
 
-    public static ComputeBooleanRepresentation<IFormula, IBooleanRepresentation> toBooleanCNFRepresentation(
-            IFormula model) {
+    public static ComputeBooleanRepresentation<IFormula> toBooleanCNFRepresentation(IFormula model) {
         return Computations.of(model)
                 .map(ComputeNNFFormula::new)
                 .map(ComputeCNFFormula::new)
                 .map(ComputeBooleanRepresentation::new);
     }
 
-    public static ComputeBooleanRepresentation<IFormula, IBooleanRepresentation> toBooleanDNFRepresentation(
-            IFormula model) {
+    public static ComputeBooleanRepresentation<IFormula> toBooleanDNFRepresentation(IFormula model) {
         return Computations.of(model)
                 .map(ComputeNNFFormula::new)
                 .map(ComputeDNFFormula::new)
@@ -58,16 +55,6 @@ public interface IBooleanRepresentation {
 
     /**
      * {@return a value object with the same contents as this object}
-     * If needed, translates variable indices using the given variable map.
-     * The returned result may contain warnings, as this can be a lossy conversion.
-     *
-     * @param variableMap the variable map
      */
-    Result<? extends IValueRepresentation> toValue(VariableMap variableMap);
-
-    default IComputation<? extends IValueRepresentation> toValue(IComputation<VariableMap> variableMap) {
-        return Computations.of(Computations.of(this), variableMap)
-                .flatMapResult(IBooleanRepresentation.class, "toValue", pair -> pair.getKey()
-                        .toValue(pair.getValue()));
-    }
+    IValueRepresentation toValue();
 }

@@ -23,20 +23,18 @@ package de.featjar.formula.analysis.value;
 import de.featjar.base.computation.*;
 import de.featjar.base.computation.Progress;
 import de.featjar.base.data.Result;
-import de.featjar.formula.analysis.IVariableMapDependency;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.bool.*;
 import java.util.List;
 
 /**
- * ...
+ * TODO ...
  *
  * @author Elias Kuiter
  */
 public class ValueRepresentationComputation<T extends IBooleanRepresentation, U extends IValueRepresentation>
-        extends AComputation<U> implements IVariableMapDependency {
+        extends AComputation<U> {
     protected static final Dependency<?> BOOLEAN_REPRESENTATION = Dependency.newDependency();
-    protected static final Dependency<VariableMap> VARIABLE_MAP = Dependency.newDependency(VariableMap.class);
 
     public ValueRepresentationComputation(
             IComputation<T> booleanRepresentation, IComputation<VariableMap> variableMap) {
@@ -47,16 +45,10 @@ public class ValueRepresentationComputation<T extends IBooleanRepresentation, U 
         super(other);
     }
 
-    @Override
-    public Dependency<VariableMap> getVariableMapDependency() {
-        return VARIABLE_MAP;
-    }
-
     @SuppressWarnings("unchecked")
     @Override
     public Result<U> compute(List<Object> dependencyList, Progress progress) {
         T t = (T) BOOLEAN_REPRESENTATION.get(dependencyList);
-        VariableMap variableMap = VARIABLE_MAP.get(dependencyList);
-        return (Result<U>) t.toValue(variableMap);
+        return (Result<U>) t.toValue();
     }
 }

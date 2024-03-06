@@ -20,7 +20,6 @@
  */
 package de.featjar.formula.analysis.value;
 
-import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.ISolution;
 import de.featjar.formula.analysis.ISolver;
@@ -34,10 +33,10 @@ import java.util.LinkedHashMap;
  *
  * @author Elias Kuiter
  */
-public class ValueSolution extends AValueAssignment implements ISolution<String, Object> {
+public class ValueSolution extends AValueAssignment implements ISolution<Integer, Object> {
     public ValueSolution() {}
 
-    public ValueSolution(LinkedHashMap<String, Object> variableValuePairs) {
+    public ValueSolution(LinkedHashMap<Integer, Object> variableValuePairs) {
         super(variableValuePairs);
     }
 
@@ -50,14 +49,8 @@ public class ValueSolution extends AValueAssignment implements ISolution<String,
     }
 
     @Override
-    public Result<BooleanSolution> toBoolean(VariableMap variableMap) {
-        return variableMap.toBoolean(this);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public IComputation<BooleanSolution> toBoolean(IComputation<VariableMap> variableMap) {
-        return (IComputation<BooleanSolution>) super.toBoolean(variableMap);
+    public Result<BooleanSolution> toBoolean() {
+        return VariableMap.toBoolean(this);
     }
 
     @Override

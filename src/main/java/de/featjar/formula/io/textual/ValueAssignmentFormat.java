@@ -43,17 +43,17 @@ public class ValueAssignmentFormat implements IFormat<AValueAssignment> {
         if (s == null || s.equalsIgnoreCase("null")) return null;
         else if (s.equalsIgnoreCase("true")) return Boolean.TRUE;
         else if (s.equalsIgnoreCase("false")) return Boolean.FALSE;
-        else if (s.toLowerCase().endsWith("f")
-                || s.toLowerCase().endsWith("d")
-                || s.toLowerCase().contains(".")) return Double.valueOf(s);
-        else return Long.valueOf(s);
+        else if (s.matches("\\d+(l)?")) return Long.valueOf(s);
+        else if (s.matches("\\d+([.]\\d)?\\d*(f|d)?")) return Double.valueOf(s);
+        else return s;
     }
 
     @Override
     public Result<String> serialize(AValueAssignment valueAssignment) {
+    	// TODO escape spaces and =
         return Result.of(valueAssignment.getAll().entrySet().stream()
                 .map(e -> {
-                    String variable = e.getKey();
+                    Integer variable = e.getKey();
                     Object value = e.getValue();
                     if (value instanceof Boolean) {
                         return String.format("%s%s", ((boolean) value) ? "+" : "-", variable);
@@ -82,8 +82,10 @@ public class ValueAssignmentFormat implements IFormat<AValueAssignment> {
                     variableValuePairs.put(variable, parseValue(pair[1].trim()));
                 } else if (variable.startsWith("-")) {
                     variableValuePairs.put(variable.substring(1), Boolean.FALSE);
+                } else if (variable.startsWith("+")) {
+                	variableValuePairs.put(variable.substring(1), Boolean.TRUE);
                 } else {
-                    variableValuePairs.put(variable, Boolean.TRUE);
+                    return Result.empty(new Problem("expected (+|-)variableName, got " + variable, Severity.ERROR));
                 }
             }
         }

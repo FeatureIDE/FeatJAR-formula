@@ -29,7 +29,7 @@ import de.featjar.base.io.output.AOutputMapper;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.bool.ABooleanAssignment;
 import de.featjar.formula.analysis.bool.BooleanAssignment;
-import de.featjar.formula.analysis.bool.BooleanAssignmentSpace;
+import de.featjar.formula.analysis.bool.BooleanAssignmentGroups;
 import de.featjar.formula.analysis.bool.BooleanClause;
 import de.featjar.formula.analysis.bool.BooleanSolution;
 import java.io.IOException;
@@ -44,14 +44,14 @@ import java.util.List;
  *
  * @author Sebastian Krieter
  */
-public class BooleanAssignmentSpaceBinaryFormat extends ABinaryFormat<BooleanAssignmentSpace> {
+public class BooleanAssignmentGroupsBinaryFormat extends ABinaryFormat<BooleanAssignmentGroups> {
 
     private static final byte BooleanSolutionType = 0b0000_0001;
     private static final byte BooleanClauseType = 0b0000_0010;
     private static final byte BooleanAssignmentType = 0b0000_0100;
 
     @Override
-    public void write(BooleanAssignmentSpace assignmentSpace, AOutputMapper outputMapper) throws IOException {
+    public void write(BooleanAssignmentGroups assignmentSpace, AOutputMapper outputMapper) throws IOException {
         final OutputStream outputStream = outputMapper.get().getOutputStream();
         final VariableMap variableMap = assignmentSpace.getVariableMap();
         final int maxIndex = variableMap.maxIndex();
@@ -94,7 +94,7 @@ public class BooleanAssignmentSpaceBinaryFormat extends ABinaryFormat<BooleanAss
     }
 
     @Override
-    public Result<BooleanAssignmentSpace> parse(AInputMapper inputMapper) {
+    public Result<BooleanAssignmentGroups> parse(AInputMapper inputMapper) {
         final InputStream inputStream = inputMapper.get().getInputStream();
         try {
             final VariableMap variableMap = new VariableMap();
@@ -156,7 +156,7 @@ public class BooleanAssignmentSpaceBinaryFormat extends ABinaryFormat<BooleanAss
                 }
                 groups.add(group);
             }
-            return Result.of(new BooleanAssignmentSpace(variableMap, groups));
+            return Result.of(new BooleanAssignmentGroups(variableMap, groups));
         } catch (final IOException e) {
             return Result.empty(e);
         }

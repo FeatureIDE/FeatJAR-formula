@@ -20,13 +20,12 @@
  */
 package de.featjar.formula.analysis.bool;
 
-import de.featjar.base.computation.IComputation;
-import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.ISolution;
 import de.featjar.formula.analysis.ISolver;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.value.ValueSolution;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
 
 /**
  * A (partial) Boolean solution; that is, a conjunction of literals. Implemented
@@ -155,18 +154,8 @@ public class BooleanSolution extends ABooleanAssignment implements ISolution<Int
     }
 
     @Override
-    public Result<ValueSolution> toValue(VariableMap variableMap) {
-        return variableMap.toValue(this);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public IComputation<ValueSolution> toValue(IComputation<VariableMap> variableMap) {
-        return (IComputation<ValueSolution>) super.toValue(variableMap);
-    }
-
-    public String print() {
-        return VariableMap.toAnonymousValue(this).get().print();
+    public ValueSolution toValue() {
+        return VariableMap.toValue(this);
     }
 
     @Override

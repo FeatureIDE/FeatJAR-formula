@@ -20,13 +20,19 @@
  */
 package de.featjar.formula.analysis.value;
 
-import de.featjar.base.data.Result;
-import de.featjar.formula.analysis.bool.IBooleanRepresentation;
+import java.util.List;
 
-public interface IValueRepresentation {
-    /**
-     * {@return a Boolean object with the same contents as this object}
-     * The returned result may contain warnings, as this can be a lossy conversion.
-     */
-    Result<? extends IBooleanRepresentation> toBoolean();
+import de.featjar.formula.analysis.AAssignmentGroups;
+import de.featjar.formula.analysis.VariableMap;
+
+/**
+ * {@link AAssignmentGroups} implementation for {@link AValueAssignment}.
+ * 
+ * @author Sebastian Krieter
+ */
+public class ValueAssignmentGroups extends AAssignmentGroups<AValueAssignment> {
+
+    public ValueAssignmentGroups(VariableMap variableMap, List<? extends List<? extends AValueAssignment>> assignment) {
+        super(variableMap, assignment);
+    }
 }

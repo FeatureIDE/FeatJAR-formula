@@ -20,10 +20,18 @@
  */
 package de.featjar.formula.structure;
 
-import static de.featjar.formula.structure.Expressions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static de.featjar.formula.structure.Expressions.False;
+import static de.featjar.formula.structure.Expressions.True;
+import static de.featjar.formula.structure.Expressions.and;
+import static de.featjar.formula.structure.Expressions.literal;
+import static de.featjar.formula.structure.Expressions.not;
+import static de.featjar.formula.structure.Expressions.or;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import de.featjar.formula.analysis.value.ValueAssignment;
+import de.featjar.formula.analysis.assignment.Assignment;
 import de.featjar.formula.structure.formula.connective.And;
 import org.junit.jupiter.api.Test;
 
@@ -51,10 +59,10 @@ class ExpressionsTest {
         And and = and(literal("x"), or(literal("y"), not(literal("x"))));
         assertEquals("and(+, or)", and.toString());
         assertEquals("x (y x-)|&", and.printParseable());
-        assertFalse((Boolean) and.evaluate(new ValueAssignment("x", false)));
-        assertNull(and.evaluate(new ValueAssignment("x", true)));
-        assertTrue((Boolean) and.evaluate(new ValueAssignment("x", true, "y", true)));
-        assertFalse((Boolean) and.evaluate(new ValueAssignment("x", true, "y", false)));
+        assertFalse((Boolean) and.evaluate(new Assignment("x", false)));
+        assertNull(and.evaluate(new Assignment("x", true)));
+        assertTrue((Boolean) and.evaluate(new Assignment("x", true, "y", true)));
+        assertFalse((Boolean) and.evaluate(new Assignment("x", true, "y", false)));
         assertNull(and.evaluate());
     }
 

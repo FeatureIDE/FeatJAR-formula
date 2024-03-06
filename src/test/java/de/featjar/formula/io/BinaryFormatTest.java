@@ -23,10 +23,10 @@ package de.featjar.formula.io;
 import de.featjar.Common;
 import de.featjar.FormatTest;
 import de.featjar.base.computation.Computations;
-import de.featjar.formula.analysis.bool.BooleanAssignmentSpace;
+import de.featjar.formula.analysis.bool.BooleanAssignmentGroups;
 import de.featjar.formula.analysis.bool.BooleanAssignmentSpaceComputation;
 import de.featjar.formula.analysis.bool.ComputeBooleanRepresentation;
-import de.featjar.formula.io.binary.BooleanAssignmentSpaceBinaryFormat;
+import de.featjar.formula.io.binary.BooleanAssignmentGroupsBinaryFormat;
 import de.featjar.formula.io.textual.ExpressionFormat;
 import de.featjar.formula.transformer.ComputeCNFFormula;
 import de.featjar.formula.transformer.ComputeNNFFormula;
@@ -55,13 +55,13 @@ public class BinaryFormatTest extends Common {
     }
 
     private static void test(String name) {
-        final BooleanAssignmentSpace assignmentSpace = Computations.of(getFormula(name))
+        final BooleanAssignmentGroups assignmentSpace = Computations.of(getFormula(name))
                 .map(ComputeNNFFormula::new)
                 .map(ComputeCNFFormula::new)
                 .map(ComputeBooleanRepresentation::new)
                 .map(BooleanAssignmentSpaceComputation::new)
                 .compute();
 
-        FormatTest.testSaveAndLoad(assignmentSpace, name, new BooleanAssignmentSpaceBinaryFormat());
+        FormatTest.testSaveAndLoad(assignmentSpace, name, new BooleanAssignmentGroupsBinaryFormat());
     }
 }

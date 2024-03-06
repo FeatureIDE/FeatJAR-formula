@@ -20,7 +20,6 @@
  */
 package de.featjar.formula.analysis.value;
 
-import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.IClause;
 import de.featjar.formula.analysis.ISolver;
@@ -34,10 +33,10 @@ import java.util.LinkedHashMap;
  *
  * @author Elias Kuiter
  */
-public class ValueClause extends AValueAssignment implements IClause<String, Object> {
+public class ValueClause extends AValueAssignment implements IClause<Integer, Object> {
     public ValueClause() {}
 
-    public ValueClause(LinkedHashMap<String, Object> variableValuePairs) {
+    public ValueClause(LinkedHashMap<Integer, Object> variableValuePairs) {
         super(variableValuePairs);
     }
 
@@ -50,14 +49,8 @@ public class ValueClause extends AValueAssignment implements IClause<String, Obj
     }
 
     @Override
-    public Result<BooleanClause> toBoolean(VariableMap variableMap) {
-        return variableMap.toBoolean(this);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public IComputation<BooleanClause> toBoolean(IComputation<VariableMap> variableMap) {
-        return (IComputation<BooleanClause>) super.toBoolean(variableMap);
+    public Result<BooleanClause> toBoolean() {
+        return VariableMap.toBoolean(this);
     }
 
     @Override

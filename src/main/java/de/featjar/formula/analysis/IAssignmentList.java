@@ -26,6 +26,7 @@ import de.featjar.formula.analysis.value.AValueAssignmentList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -81,6 +82,17 @@ public interface IAssignmentList<T extends IAssignment<?, ?>> extends Iterable<T
      */
     default Stream<T> stream() {
         return getAll().stream();
+    }
+
+    /**
+     * {@return a string representation of all assignments in this list}
+     *
+     * @param index the index
+     *
+     * @see IAssignment#print()
+     */
+    default String print() {
+        return getAll().stream().map(IAssignment::print).collect(Collectors.joining(";\n"));
     }
 
     /**

@@ -20,11 +20,20 @@
  */
 package de.featjar.formula.structure;
 
-import static de.featjar.formula.structure.Expressions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static de.featjar.formula.structure.Expressions.False;
+import static de.featjar.formula.structure.Expressions.constant;
+import static de.featjar.formula.structure.Expressions.implies;
+import static de.featjar.formula.structure.Expressions.integerAdd;
+import static de.featjar.formula.structure.Expressions.literal;
+import static de.featjar.formula.structure.Expressions.variable;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.featjar.base.data.Sets;
-import de.featjar.formula.analysis.value.ValueAssignment;
+import de.featjar.formula.analysis.assignment.Assignment;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.term.ITerm;
 import de.featjar.formula.structure.term.value.Constant;
@@ -51,11 +60,11 @@ class ExpressionTest {
 
     @Test
     void evaluate() {
-        assertEquals(true, formula.evaluate(new ValueAssignment("a", false)));
-        assertEquals(false, formula.evaluate(new ValueAssignment("a", true)));
+        assertEquals(true, formula.evaluate(new Assignment("a", false)));
+        assertEquals(false, formula.evaluate(new Assignment("a", true)));
         assertThrows(NullPointerException.class, () -> formula.evaluate()); // TODO: this should not happen, fix this!
-        assertEquals(43L, term.evaluate(new ValueAssignment("x", 1L)));
-        assertNull(term.evaluate(new ValueAssignment("x", null)));
+        assertEquals(43L, term.evaluate(new Assignment("x", 1L)));
+        assertNull(term.evaluate(new Assignment("x", null)));
         assertNull(term.evaluate());
     }
 

@@ -20,19 +20,19 @@
  */
 package de.featjar.formula.analysis.bool;
 
-import de.featjar.formula.analysis.AAssignmentSpace;
-import de.featjar.formula.analysis.VariableMap;
 import java.util.List;
 
+import de.featjar.formula.analysis.AAssignmentGroups;
+import de.featjar.formula.analysis.VariableMap;
+
 /**
- * Combines multiple groups of lists of {@link ABooleanAssignment assignments}
- * with a corresponding {@link VariableMap variable map}.
+ * {@link AAssignmentGroups} implementation for {@link ABooleanAssignment}.
  *
  * @author Sebastian Krieter
  */
-public class BooleanAssignmentSpace extends AAssignmentSpace<ABooleanAssignment> {
+public class BooleanAssignmentGroups extends AAssignmentGroups<ABooleanAssignment> {
 
-    public BooleanAssignmentSpace(
+    public BooleanAssignmentGroups(
             VariableMap variableMap, List<? extends List<? extends ABooleanAssignment>> assignment) {
         super(variableMap, assignment);
     }

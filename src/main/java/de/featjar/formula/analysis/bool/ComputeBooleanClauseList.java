@@ -36,7 +36,7 @@ import java.util.Objects;
  *
  * @author Sebastian Krieter
  */
-public class ComputeBooleanClauseList extends ComputeBooleanRepresentation<IFormula, BooleanClauseList> {
+public class ComputeBooleanClauseList extends ComputeBooleanRepresentation<IFormula> {
 
     /**
      * {@return a formula, which is assumed to be in strict conjunctive normal form, into an indexed CNF representation}

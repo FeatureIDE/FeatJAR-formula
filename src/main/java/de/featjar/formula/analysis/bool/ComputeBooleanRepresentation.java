@@ -28,7 +28,7 @@ import de.featjar.base.computation.Progress;
 import de.featjar.base.data.Pair;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.VariableMap;
-import de.featjar.formula.analysis.value.IValueRepresentation;
+import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.Reference;
 import java.util.List;
 
@@ -38,8 +38,8 @@ import java.util.List;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class ComputeBooleanRepresentation<T extends IValueRepresentation, U extends IBooleanRepresentation>
-        extends AComputation<Pair<U, VariableMap>> {
+public class ComputeBooleanRepresentation<T extends IFormula>
+        extends AComputation<Pair<BooleanClauseList, VariableMap>> {
 
     protected static final Dependency<Object> VALUE_REPRESENTATION = Dependency.newDependency();
 
@@ -47,13 +47,13 @@ public class ComputeBooleanRepresentation<T extends IValueRepresentation, U exte
         super(valueRepresentation);
     }
 
-    protected ComputeBooleanRepresentation(ComputeBooleanRepresentation<T, U> other) {
+    protected ComputeBooleanRepresentation(ComputeBooleanRepresentation<T> other) {
         super(other);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public Result<Pair<U, VariableMap>> compute(List<Object> dependencyList, Progress progress) {
+    public Result<Pair<BooleanClauseList, VariableMap>> compute(List<Object> dependencyList, Progress progress) {
         T vp = (T) VALUE_REPRESENTATION.get(dependencyList);
         FeatJAR.log().debug("initializing variable map for " + vp.getClass().getName());
         VariableMap variableMap = VariableMap.of(vp);
@@ -61,6 +61,6 @@ public class ComputeBooleanRepresentation<T extends IValueRepresentation, U exte
         if (vp instanceof Reference) {
             vp = (T) ((Reference) vp).getExpression();
         }
-        return vp.toBoolean(variableMap).map(u -> new Pair<>((U) u, variableMap));
+        return ComputeBooleanClauseList.toBooleanClauseList(vp, variableMap).map(cl -> new Pair<>(cl, variableMap));
     }
 }

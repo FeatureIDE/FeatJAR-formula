@@ -20,55 +20,72 @@
  */
 package de.featjar.formula.io.csv;
 
+import de.featjar.base.data.Pair;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.NonEmptyLineIterator;
 import de.featjar.base.io.format.IFormat;
 import de.featjar.base.io.format.ParseProblem;
 import de.featjar.base.io.input.AInputMapper;
 import de.featjar.formula.analysis.VariableMap;
-import de.featjar.formula.analysis.value.AValueAssignment;
-import de.featjar.formula.analysis.value.ValueAssignment;
-import de.featjar.formula.analysis.value.ValueAssignmentSpace;
-import de.featjar.formula.io.textual.ValueAssignmentFormat;
+import de.featjar.formula.analysis.bool.ABooleanAssignment;
+import de.featjar.formula.analysis.bool.BooleanAssignmentGroups;
+import de.featjar.formula.analysis.bool.BooleanSolution;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Reads / Writes a list of configuration.
  *
  * @author Sebastian Krieter
  */
-public class ValueAssignmentSpaceCSVFormat implements IFormat<ValueAssignmentSpace> {
+public class BooleanAssignmentGroupsCSVFormat implements IFormat<BooleanAssignmentGroups> {
     private static final String ASSIGNMENT_COLUMN_NAME = "ID";
     private static final String GROUP_COLUMN_NAME = "Group";
     private static final String VALUE_SEPARATOR = ";";
     private static final String LINE_SEPARATOR = "\n";
+    private static final String POSITIVE_VALUE = "+";
+    private static final String NEGATIVE_VALUE = "-";
+    private static final String NULL_VALUE = "0";
 
     @Override
-    public Result<String> serialize(ValueAssignmentSpace assignmentSpace) {
+    public Result<String> serialize(BooleanAssignmentGroups assignmentSpace) {
         final StringBuilder csv = new StringBuilder();
         csv.append(ASSIGNMENT_COLUMN_NAME);
         csv.append(VALUE_SEPARATOR);
         csv.append(GROUP_COLUMN_NAME);
         final VariableMap variableMap = assignmentSpace.getVariableMap();
-        final List<String> names = variableMap.getVariableNames();
-        for (final String name : names) {
-            csv.append(VALUE_SEPARATOR);
-            csv.append(name);
+        final List<Pair<Integer, String>> namePairs = variableMap.stream().collect(Collectors.toList());
+        for (final Pair<Integer, String> namePair : namePairs) {
+            final String name = namePair.getValue();
+            if (name != null) {
+                csv.append(VALUE_SEPARATOR);
+                csv.append(name);
+            }
         }
         csv.append(LINE_SEPARATOR);
         int groupIndex = 0;
-        int configurationIndex = 0;
-        final List<? extends List<? extends AValueAssignment>> groups = assignmentSpace.getGroups();
-        for (List<? extends AValueAssignment> group : groups) {
-            for (final AValueAssignment configuration : group) {
-                csv.append(configurationIndex++);
+        int assignmentIndex = 0;
+        final List<? extends List<? extends ABooleanAssignment>> groups = assignmentSpace.getGroups();
+        for (List<? extends ABooleanAssignment> group : groups) {
+            for (final ABooleanAssignment configuration : group) {
+                csv.append(assignmentIndex++);
                 csv.append(VALUE_SEPARATOR);
                 csv.append(groupIndex);
-                for (final String name : names) {
+                for (final Pair<Integer, String> namePair : namePairs) {
                     csv.append(VALUE_SEPARATOR);
-                    configuration.getValue(name).ifPresent(csv::append);
+                    final Result<Boolean> value = configuration.getValue(namePair.getKey());
+                    if (value.isPresent()) {
+                        final boolean set = (boolean) value.get();
+                        if (set) {
+                            csv.append(POSITIVE_VALUE);
+                        } else {
+                            csv.append(NEGATIVE_VALUE);
+                        }
+                    } else {
+                        csv.append(NULL_VALUE);
+                    }
                 }
                 csv.append(LINE_SEPARATOR);
             }
@@ -78,7 +95,7 @@ public class ValueAssignmentSpaceCSVFormat implements IFormat<ValueAssignmentSpa
     }
 
     @Override
-    public Result<ValueAssignmentSpace> parse(AInputMapper inputMapper) {
+    public Result<BooleanAssignmentGroups> parse(AInputMapper inputMapper) {
         try {
             final NonEmptyLineIterator lines = inputMapper.get().getNonEmptyLineIterator();
             final String[] headerColumns = lines.get().split(VALUE_SEPARATOR);
@@ -97,7 +114,7 @@ public class ValueAssignmentSpaceCSVFormat implements IFormat<ValueAssignmentSpa
             for (int i = 2; i < headerColumns.length; i++) {
                 variableMap.add(headerColumns[i]);
             }
-            final ArrayList<List<ValueAssignment>> groups = new ArrayList<>();
+            final ArrayList<List<ABooleanAssignment>> groups = new ArrayList<>();
             for (String line = lines.get(); line != null; line = lines.get()) {
                 final String[] values = line.split(VALUE_SEPARATOR);
                 if (headerColumns.length != values.length) {
@@ -111,10 +128,9 @@ public class ValueAssignmentSpaceCSVFormat implements IFormat<ValueAssignmentSpa
                     Integer.parseInt(values[0]);
                 } catch (NumberFormatException e) {
                     throw new ParseException(
-                            String.format("First value must be an integer number, but was %s", values[0]),
-                            lines.getLineCount());
+                            String.format("First value must be a number, but was %s", values[0]), lines.getLineCount());
                 }
-                final List<ValueAssignment> group;
+                final List<ABooleanAssignment> group;
                 try {
                     final int groupIndex = Integer.parseInt(values[1]);
                     for (int i = groups.size() - 1; i < groupIndex; i++) {
@@ -123,22 +139,29 @@ public class ValueAssignmentSpaceCSVFormat implements IFormat<ValueAssignmentSpa
                     group = groups.get(groupIndex);
                 } catch (NumberFormatException e) {
                     throw new ParseException(
-                            String.format("Second value must be an integer number, but was %s", values[0]),
+                            String.format("Second value must be a number, but was %s", values[0]),
                             lines.getLineCount());
                 }
-                final Object[] literals = new Object[values.length - 2];
+                final int[] literals = new int[values.length - 2];
                 for (int i = 2; i < values.length; i++) {
-                    final String value = values[i];
-                    try {
-                        literals[i - 2] = ValueAssignmentFormat.parseValue(value);
-                    } catch (Exception e) {
-                        throw new ParseException(
-                                String.format("Could not parse value %s", value), lines.getLineCount());
+                    String value = values[i];
+                    switch (value) {
+                        case POSITIVE_VALUE:
+                            literals[i - 2] = i - 1;
+                            break;
+                        case NEGATIVE_VALUE:
+                            literals[i - 2] = -(i - 1);
+                            break;
+                        case NULL_VALUE:
+                            literals[i - 2] = 0;
+                            break;
+                        default:
+                            throw new ParseException(String.format("Unknown value %s", value), lines.getLineCount());
                     }
                 }
-                group.add(new ValueAssignment(literals, false));
+                group.add(new BooleanSolution(literals, false));
             }
-            return Result.of(new ValueAssignmentSpace(variableMap, groups));
+            return Result.of(new BooleanAssignmentGroups(variableMap, groups));
         } catch (final ParseException e) {
             return Result.empty(new ParseProblem(e, e.getErrorOffset()));
         } catch (final Exception e) {
@@ -163,6 +186,6 @@ public class ValueAssignmentSpaceCSVFormat implements IFormat<ValueAssignmentSpa
 
     @Override
     public String getName() {
-        return "ValueAssignmentCSV";
+        return "BooleanAssignmentCSV";
     }
 }

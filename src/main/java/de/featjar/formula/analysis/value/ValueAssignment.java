@@ -20,7 +20,6 @@
  */
 package de.featjar.formula.analysis.value;
 
-import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.bool.BooleanAssignment;
@@ -35,7 +34,7 @@ import java.util.LinkedHashMap;
 public class ValueAssignment extends AValueAssignment {
     public ValueAssignment() {}
 
-    public ValueAssignment(LinkedHashMap<String, Object> variableValuePairs) {
+    public ValueAssignment(LinkedHashMap<Integer, Object> variableValuePairs) {
         super(variableValuePairs);
     }
 
@@ -48,14 +47,8 @@ public class ValueAssignment extends AValueAssignment {
     }
 
     @Override
-    public Result<BooleanAssignment> toBoolean(VariableMap variableMap) {
-        return variableMap.toBoolean(this);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public IComputation<BooleanAssignment> toBoolean(IComputation<VariableMap> variableMap) {
-        return (IComputation<BooleanAssignment>) super.toBoolean(variableMap);
+    public Result<BooleanAssignment> toBoolean() {
+        return VariableMap.toBoolean(this);
     }
 
     @Override

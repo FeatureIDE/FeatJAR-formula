@@ -24,10 +24,6 @@ import static de.featjar.base.computation.Computations.async;
 
 import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
-import de.featjar.formula.analysis.VariableMap;
-import de.featjar.formula.analysis.bool.BooleanClauseList;
-import de.featjar.formula.analysis.bool.ComputeBooleanClauseList;
-import de.featjar.formula.analysis.value.IValueRepresentation;
 import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.formula.connective.AQuantifier;
 import de.featjar.formula.structure.formula.connective.IConnective;
@@ -53,7 +49,7 @@ import java.util.LinkedHashSet;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public interface IFormula extends IExpression, IValueRepresentation {
+public interface IFormula extends IExpression {
 
     private static Result<IFormula> toNormalForm(
             IFormula formula, FormulaNormalForm formulaNormalForm, boolean isStrict) {
@@ -167,17 +163,6 @@ public interface IFormula extends IExpression, IValueRepresentation {
     @Override
     default LinkedHashSet<String> getVariableNames() {
         return IExpression.super.getVariableNames();
-    }
-
-    @Override
-    default Result<BooleanClauseList> toBoolean(VariableMap variableMap) {
-        return ComputeBooleanClauseList.toBooleanClauseList(this, variableMap);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    default IComputation<BooleanClauseList> toBoolean(IComputation<VariableMap> variableMap) {
-        return (IComputation<BooleanClauseList>) IValueRepresentation.super.toBoolean(variableMap);
     }
 
     // TODO: mutate/analyze analogous to FeatureModel?

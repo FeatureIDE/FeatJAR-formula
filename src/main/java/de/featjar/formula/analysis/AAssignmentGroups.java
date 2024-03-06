@@ -20,21 +20,23 @@
  */
 package de.featjar.formula.analysis;
 
-import de.featjar.formula.analysis.bool.ABooleanAssignment;
 import java.util.List;
 import java.util.Objects;
 
+import de.featjar.base.io.format.IFormat;
+
 /**
- * Combines multiple groups of lists of {@link ABooleanAssignment assignments} with a corresponding {@link VariableMap variable map}.
- *
+ * Combines multiple groups of lists of {@link IAssignment assignments} with a corresponding {@link VariableMap variable map}.
+ * The main purposes of this class is to provide an easy to write/read object for a corresponding {@link IFormat format}.
+ * 
  * @author Sebastian Krieter
  */
-public class AAssignmentSpace<T extends IAssignment<?, ?>> {
+public class AAssignmentGroups<T extends IAssignment<?, ?>> {
 
     protected final VariableMap variableMap;
     protected final List<? extends List<? extends T>> assignmentGroups;
 
-    public AAssignmentSpace(VariableMap variableMap, List<? extends List<? extends T>> assignmentGroups) {
+    public AAssignmentGroups(VariableMap variableMap, List<? extends List<? extends T>> assignmentGroups) {
         this.variableMap = variableMap;
         this.assignmentGroups = assignmentGroups;
     }
@@ -60,13 +62,13 @@ public class AAssignmentSpace<T extends IAssignment<?, ?>> {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        AAssignmentSpace<?> other = (AAssignmentSpace<?>) obj;
+        AAssignmentGroups<?> other = (AAssignmentGroups<?>) obj;
         return Objects.equals(assignmentGroups, other.assignmentGroups)
                 && Objects.equals(variableMap, other.variableMap);
     }
 
     @Override
     public String toString() {
-        return "AssignmentSpace [map=" + variableMap + ", groups=" + assignmentGroups + "]";
+        return "AssignmentGroup [map=" + variableMap + ", groups=" + assignmentGroups + "]";
     }
 }

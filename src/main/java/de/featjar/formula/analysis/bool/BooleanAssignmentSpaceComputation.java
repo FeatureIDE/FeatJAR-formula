@@ -30,12 +30,12 @@ import de.featjar.formula.analysis.VariableMap;
 import java.util.List;
 
 /**
- * Transforms an indexed CNF representation into an {@link BooleanAssignmentSpace}.
+ * Transforms an indexed CNF representation into an {@link BooleanAssignmentGroups}.
  *
  * @author Sebastian Krieter
  */
 public class BooleanAssignmentSpaceComputation<U extends IBooleanRepresentation>
-        extends AComputation<BooleanAssignmentSpace> {
+        extends AComputation<BooleanAssignmentGroups> {
 
     @SuppressWarnings("rawtypes")
     protected static final Dependency<Pair> CNF = Dependency.newDependency(Pair.class);
@@ -50,13 +50,13 @@ public class BooleanAssignmentSpaceComputation<U extends IBooleanRepresentation>
 
     @SuppressWarnings("unchecked")
     @Override
-    public Result<BooleanAssignmentSpace> compute(List<Object> dependencyList, Progress progress) {
+    public Result<BooleanAssignmentGroups> compute(List<Object> dependencyList, Progress progress) {
         final Pair<U, VariableMap> vp = (Pair<U, VariableMap>) CNF.get(dependencyList);
         final U key = vp.getKey();
         if (key instanceof ABooleanAssignment) {
-            return Result.of(new BooleanAssignmentSpace(vp.getValue(), List.of(List.of((ABooleanAssignment) key))));
+            return Result.of(new BooleanAssignmentGroups(vp.getValue(), List.of(List.of((ABooleanAssignment) key))));
         } else if (key instanceof ABooleanAssignmentList<?>) {
-            return Result.of(new BooleanAssignmentSpace(
+            return Result.of(new BooleanAssignmentGroups(
                     vp.getValue(), List.of(((ABooleanAssignmentList<ABooleanAssignment>) key).getAll())));
         } else {
             return Result.empty();

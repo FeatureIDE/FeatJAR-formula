@@ -29,6 +29,7 @@ import de.featjar.formula.analysis.IAssignment;
 import de.featjar.formula.analysis.ISolver;
 import de.featjar.formula.analysis.RuntimeContradictionException;
 import de.featjar.formula.analysis.VariableMap;
+import de.featjar.formula.analysis.value.AValueAssignment;
 import de.featjar.formula.analysis.value.ValueAssignment;
 import java.util.Arrays;
 import java.util.Collection;
@@ -275,7 +276,7 @@ public abstract class ABooleanAssignment extends IntegerList
 
     public abstract ABooleanAssignment inverse();
 
-    public ValueAssignment toValue() {
+    public AValueAssignment toValue() {
         LinkedHashMap<String, Object> variableValuePairs = Maps.empty();
         for (int literal : elements) {
             if (literal != 0) {
@@ -306,5 +307,9 @@ public abstract class ABooleanAssignment extends IntegerList
         return value == 0 ? Result.empty() : Result.of(value > 0);
     }
 
-    public abstract String print();
+    @Override
+    public String print() {
+        return toValue().print();
+    }
+
 }

@@ -101,4 +101,9 @@ public interface IAssignment<T, R> {
      * {@return a solution with the same contents of this assignment}
      */
     ISolution<T, R> toSolution();
+
+    /**
+     * {@return a string representation of all mappings in this assignment}
+     */
+    String print();
 }

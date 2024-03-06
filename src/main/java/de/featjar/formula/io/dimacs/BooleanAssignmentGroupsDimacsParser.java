@@ -22,7 +22,7 @@ package de.featjar.formula.io.dimacs;
 
 import de.featjar.base.io.NonEmptyLineIterator;
 import de.featjar.formula.analysis.VariableMap;
-import de.featjar.formula.analysis.bool.BooleanAssignmentSpace;
+import de.featjar.formula.analysis.bool.BooleanAssignmentGroups;
 import de.featjar.formula.analysis.bool.BooleanClause;
 import java.io.IOException;
 import java.text.ParseException;
@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class BooleanAssignmentSpaceDimacsParser {
+public class BooleanAssignmentGroupsDimacsParser {
 
     private static final Pattern commentPattern = Pattern.compile("\\A" + DimacsConstants.COMMENT + "\\s*(.*)\\Z");
     private static final Pattern problemPattern = Pattern.compile(
@@ -83,7 +83,7 @@ public class BooleanAssignmentSpaceDimacsParser {
      * @throws ParseException if the input does not conform to the DIMACS CNF file
      *                        format
      */
-    public BooleanAssignmentSpace parse(NonEmptyLineIterator nonEmptyLineIterator) throws ParseException, IOException {
+    public BooleanAssignmentGroups parse(NonEmptyLineIterator nonEmptyLineIterator) throws ParseException, IOException {
         indexVariables.clear();
         variableCount = -1;
         clauseCount = -1;
@@ -114,7 +114,7 @@ public class BooleanAssignmentSpaceDimacsParser {
             throw new ParseException(
                     String.format("Found %d instead of %d clauses", actualClauseCount, clauseCount), 1);
         }
-        return new BooleanAssignmentSpace(indexVariables, List.of(clauses));
+        return new BooleanAssignmentGroups(indexVariables, List.of(clauses));
     }
 
     private String getUniqueName(int i) {
