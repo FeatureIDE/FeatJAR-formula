@@ -311,5 +311,4 @@ public abstract class ABooleanAssignment extends IntegerList
     public String print() {
         return toValue().print();
     }
-
 }

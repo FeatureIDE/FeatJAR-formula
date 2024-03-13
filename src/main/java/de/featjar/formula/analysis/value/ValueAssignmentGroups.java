@@ -20,14 +20,13 @@
  */
 package de.featjar.formula.analysis.value;
 
-import java.util.List;
-
 import de.featjar.formula.analysis.AAssignmentGroups;
 import de.featjar.formula.analysis.VariableMap;
+import java.util.List;
 
 /**
  * {@link AAssignmentGroups} implementation for {@link AValueAssignment}.
- * 
+ *
  * @author Sebastian Krieter
  */
 public class ValueAssignmentGroups extends AAssignmentGroups<AValueAssignment> {

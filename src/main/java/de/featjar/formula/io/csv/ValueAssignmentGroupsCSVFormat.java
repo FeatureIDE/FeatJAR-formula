@@ -20,11 +20,6 @@
  */
 package de.featjar.formula.io.csv;
 
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-
 import de.featjar.base.data.Maps;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.NonEmptyLineIterator;
@@ -36,6 +31,10 @@ import de.featjar.formula.analysis.value.AValueAssignment;
 import de.featjar.formula.analysis.value.ValueAssignment;
 import de.featjar.formula.analysis.value.ValueAssignmentGroups;
 import de.featjar.formula.io.textual.ValueAssignmentFormat;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * Reads / Writes a list of configuration.
@@ -133,7 +132,7 @@ public class ValueAssignmentGroupsCSVFormat implements IFormat<ValueAssignmentGr
                 for (int i = 2; i < values.length; i++) {
                     final String value = values[i];
                     try {
-                    	variableValuePairs.put(i - 1, ValueAssignmentFormat.parseValue(value));
+                        variableValuePairs.put(i - 1, ValueAssignmentFormat.parseValue(value));
                     } catch (Exception e) {
                         throw new ParseException(
                                 String.format("Could not parse value %s", value), lines.getLineCount());

@@ -92,5 +92,4 @@ public class ComputeBooleanClauseList extends ComputeBooleanRepresentation<IForm
     protected ComputeBooleanClauseList(ComputeBooleanClauseList other) {
         super(other);
     }
-
 }

@@ -20,6 +20,9 @@
  */
 package de.featjar.formula.analysis.bool;
 
+import de.featjar.formula.analysis.IAssignmentList;
+import de.featjar.formula.analysis.value.AValueAssignment;
+import de.featjar.formula.analysis.value.AValueAssignmentList;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -27,10 +30,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import de.featjar.formula.analysis.IAssignmentList;
-import de.featjar.formula.analysis.value.AValueAssignment;
-import de.featjar.formula.analysis.value.AValueAssignmentList;
 
 /**
  * A list of Boolean assignments.
@@ -134,9 +133,9 @@ public abstract class ABooleanAssignmentList<T extends ABooleanAssignment>
             return count;
         }
     }
-    
+
     public abstract AValueAssignmentList<? extends AValueAssignment> toValue();
-    
+
     public String print() {
         return toValue().print();
     }

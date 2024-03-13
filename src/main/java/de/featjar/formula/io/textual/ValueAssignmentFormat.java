@@ -50,7 +50,7 @@ public class ValueAssignmentFormat implements IFormat<AValueAssignment> {
 
     @Override
     public Result<String> serialize(AValueAssignment valueAssignment) {
-    	// TODO escape spaces and =
+        // TODO escape spaces and =
         return Result.of(valueAssignment.getAll().entrySet().stream()
                 .map(e -> {
                     Integer variable = e.getKey();
@@ -83,7 +83,7 @@ public class ValueAssignmentFormat implements IFormat<AValueAssignment> {
                 } else if (variable.startsWith("-")) {
                     variableValuePairs.put(variable.substring(1), Boolean.FALSE);
                 } else if (variable.startsWith("+")) {
-                	variableValuePairs.put(variable.substring(1), Boolean.TRUE);
+                    variableValuePairs.put(variable.substring(1), Boolean.TRUE);
                 } else {
                     return Result.empty(new Problem("expected (+|-)variableName, got " + variable, Severity.ERROR));
                 }
