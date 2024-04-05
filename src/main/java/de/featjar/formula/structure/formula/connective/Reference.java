@@ -27,7 +27,7 @@ import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.IUnaryExpression;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.term.value.Variable;
-import de.featjar.formula.transformer.ComputeNNFFormula;
+import de.featjar.formula.transform.ComputeNNFFormula;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;

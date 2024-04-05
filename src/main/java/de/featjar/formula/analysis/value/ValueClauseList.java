@@ -25,7 +25,7 @@ import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.bool.BooleanClauseList;
 import de.featjar.formula.structure.formula.IFormula;
-import de.featjar.formula.transformer.ComputeCNFFormula;
+import de.featjar.formula.transform.ComputeCNFFormula;
 import java.util.Collection;
 
 /**

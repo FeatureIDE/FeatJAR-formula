@@ -47,6 +47,14 @@ import java.util.List;
  */
 public class ExpressionSerializer implements IInOrderTreeVisitor<IExpression, String> {
 
+    public static final Symbols STANDARD_SYMBOLS = ShortSymbols.INSTANCE;
+    public static final Notation STANDARD_NOTATION = Notation.INFIX;
+    public static final boolean STANDARD_ENFORCE_PARENTHESES = false;
+    public static final boolean STANDARD_ENQUOTE_WHITESPACE = false;
+    public static final String STANDARD_SEPARATOR = ",";
+    public static final String STANDARD_TAB_STRING = "\t";
+    public static final String STANDARD_NEW_LINE = System.lineSeparator();
+
     /**
      * The type of notation of the formula.
      *
@@ -104,20 +112,20 @@ public class ExpressionSerializer implements IInOrderTreeVisitor<IExpression, St
      *
      * @see #setSymbols(Symbols)
      */
-    private Symbols symbols = ShortSymbols.INSTANCE;
+    private Symbols symbols = STANDARD_SYMBOLS;
     /** The notation to use. */
-    private Notation notation = Notation.INFIX;
+    private Notation notation = STANDARD_NOTATION;
     /**
      * If true, this writer will always place brackets, even if they are
      * semantically irrelevant.
      */
-    private boolean enforceParentheses = false;
+    private boolean enforceParentheses = STANDARD_ENFORCE_PARENTHESES;
     /** If true, this writer will enquote variables if they contain whitespace. */
-    private boolean enquoteWhitespace = false;
+    private boolean enquoteWhitespace = STANDARD_ENQUOTE_WHITESPACE;
 
-    private String separator = ",";
-    private String tab = "\t";
-    private String newLine = System.lineSeparator();
+    private String separator = STANDARD_SEPARATOR;
+    private String tab = STANDARD_TAB_STRING;
+    private String newLine = STANDARD_NEW_LINE;
 
     /**
      * Sets the symbols to use for the operations. These are:

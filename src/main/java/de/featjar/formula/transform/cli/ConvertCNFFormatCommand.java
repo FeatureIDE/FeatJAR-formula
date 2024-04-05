@@ -18,48 +18,43 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.io;
+package de.featjar.formula.transform.cli;
 
-import de.featjar.Common;
-import de.featjar.FormatTest;
+import de.featjar.base.FeatJAR;
+import de.featjar.base.cli.ICommand;
+import de.featjar.base.cli.Option;
+import de.featjar.base.cli.OptionList;
 import de.featjar.base.computation.Computations;
-import de.featjar.formula.analysis.bool.BooleanAssignmentGroups;
-import de.featjar.formula.analysis.bool.ComputeBooleanRepresentation;
-import de.featjar.formula.io.binary.BooleanAssignmentGroupsBinaryFormat;
-import de.featjar.formula.io.textual.ExpressionFormat;
+import de.featjar.base.data.Result;
+import de.featjar.base.io.IO;
+import de.featjar.base.io.format.IFormat;
+import de.featjar.formula.io.FormulaFormats;
+import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.transform.ComputeCNFFormula;
 import de.featjar.formula.transform.ComputeNNFFormula;
-import org.junit.jupiter.api.Test;
 
 /**
- * Tests {@link ExpressionFormat Formula} format.
+ * Converts the format of a given formula into another CNF format.
  *
- * @author Sebastian Krieter
+ * @author Andreas Gerasimow
  */
-public class BinaryFormatTest extends Common {
+public class ConvertCNFFormatCommand extends AConvertFormatCommand {
 
-    @Test
-    public void Formula_ABC_nAnBnC() {
-        test("ABC-nAnBnC");
-    }
-
-    @Test
-    public void Formula_nA() {
-        test("nA");
-    }
-
-    @Test
-    public void Formula_nAB() {
-        test("nAB");
-    }
-
-    private static void test(String name) {
-        final BooleanAssignmentGroups assignmentSpace = Computations.of(getFormula(name))
+    @Override
+    protected IFormula modifyFormula(IFormula formula) {
+        return Computations.of(formula)
                 .map(ComputeNNFFormula::new)
                 .map(ComputeCNFFormula::new)
-                .map(ComputeBooleanRepresentation::new)
                 .compute();
+    }
 
-        FormatTest.testSaveAndLoad(assignmentSpace, name, new BooleanAssignmentGroupsBinaryFormat());
+    @Override
+    public String getDescription() {
+        return "Converts the format of a given formula into another CNF format.";
+    }
+
+    @Override
+    public String getShortName() {
+        return "convert-cnf-format";
     }
 }
