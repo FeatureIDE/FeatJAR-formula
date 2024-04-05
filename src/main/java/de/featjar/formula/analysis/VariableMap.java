@@ -276,4 +276,9 @@ public class VariableMap extends RangeMap<String> {
         }
         return Result.of(assignmentList, problems);
     }
+
+    @Override
+    public VariableMap clone() {
+        return new VariableMap(this);
+    }
 }
