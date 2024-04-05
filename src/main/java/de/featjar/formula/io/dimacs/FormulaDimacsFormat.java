@@ -53,7 +53,7 @@ public class FormulaDimacsFormat implements IFormat<IFormula> {
         }
         final StringBuilder sb = new StringBuilder();
         writeVariableDirectory(sb, variableMap);
-        writeProblem(sb, formula);
+        writeProblem(sb, formula, variableMap);
         writeClauses(sb, formula, variableMap);
         return Result.of(sb.toString());
     }
@@ -86,12 +86,12 @@ public class FormulaDimacsFormat implements IFormat<IFormula> {
      *
      * @param sb the string builder that builds the document
      */
-    private void writeProblem(StringBuilder sb, IFormula formula) {
+    private void writeProblem(StringBuilder sb, IFormula formula, VariableMap variableMap) {
         sb.append(DimacsConstants.PROBLEM);
         sb.append(' ');
         sb.append(DimacsConstants.CNF);
         sb.append(' ');
-        sb.append(formula.getVariables().size());
+        sb.append(variableMap.getVariableCount());
         sb.append(' ');
         sb.append(formula.getChildrenCount());
         sb.append(System.lineSeparator());
