@@ -23,7 +23,6 @@ package de.featjar.formula.io.xml;
 import de.featjar.base.data.Result;
 import de.featjar.base.data.Sets;
 import de.featjar.base.io.format.ParseException;
-import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Or;
@@ -42,7 +41,7 @@ import org.w3c.dom.Element;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class XMLFeatureModelFormulaFormat extends AXMLFeatureModelFormat<IExpression, Literal, Boolean> {
+public class XMLFeatureModelFormulaFormat extends AXMLFeatureModelFormat<IFormula, Literal, Boolean> {
     protected final LinkedHashSet<String> featureLabels = Sets.empty();
     protected final List<IFormula> constraints = new ArrayList<>();
 
@@ -62,8 +61,8 @@ public class XMLFeatureModelFormulaFormat extends AXMLFeatureModelFormat<IExpres
     }
 
     @Override
-    protected IExpression parseDocument(Document document) throws ParseException {
-        final Element featureModelElement = getDocumentElement(document, FEATURE_MODEL);
+    protected IFormula parseDocument(Document document) throws ParseException {
+        final Element featureModelElement = getDocumentElement(document, FEATURE_MODEL, EXT_FEATURE_MODEL);
         parseFeatureTree(getElement(featureModelElement, STRUCT));
         Result<Element> constraintsElement = getElementResult(featureModelElement, CONSTRAINTS);
         if (constraintsElement.isPresent()) parseConstraints(constraintsElement.get());
@@ -80,7 +79,7 @@ public class XMLFeatureModelFormulaFormat extends AXMLFeatureModelFormat<IExpres
     }
 
     @Override
-    protected void writeDocument(IExpression object, Document doc) {
+    protected void writeDocument(IFormula object, Document doc) {
         throw new UnsupportedOperationException();
     }
 
