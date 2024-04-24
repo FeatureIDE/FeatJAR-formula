@@ -62,11 +62,11 @@ class ComputeCNFFormulaTest extends Common {
         IFormula formula = loadFormula("testFeatureModels/basic.xml");
         assertEquals(
                 reference(and(
-                        literal("Root"),
+                        or(literal("Root")),
                         or(literal(false, "A"), literal("Root")),
                         or(literal(false, "B"), literal("Root")),
-                        literal("A"),
-                        literal("B"))),
+                        or(literal("A")),
+                        or(literal("B")))),
                 formula);
         IFormula finalFormula = formula;
         formula = Computations.of(finalFormula)
