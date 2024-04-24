@@ -120,7 +120,7 @@ public class BooleanAssignmentGroupsCSVFormat implements IFormat<BooleanAssignme
         for (final Pair<Integer, String> namePair : namePairs) {
             line.append(VALUE_SEPARATOR);
             final Result<Boolean> value = configuration.getValue(namePair.getKey());
-            line.append(value.isPresent() ? (boolean) value.get() ? POSITIVE_VALUE : NEGATIVE_VALUE : NULL_VALUE);
+            line.append(value.isPresent() ? ((boolean) value.get() ? POSITIVE_VALUE : NEGATIVE_VALUE) : NULL_VALUE);
         }
         line.append(LINE_SEPARATOR);
         return line.toString();

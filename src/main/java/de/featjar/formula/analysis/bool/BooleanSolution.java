@@ -71,7 +71,7 @@ public class BooleanSolution extends ABooleanAssignment implements ISolution<Int
         sort();
     }
 
-    public BooleanSolution(int variableCount, int... integers) {
+    public BooleanSolution(int variableCount, int[] integers) {
         super(new int[variableCount]);
         Arrays.stream(integers)
                 .filter(integer -> integer != 0)
