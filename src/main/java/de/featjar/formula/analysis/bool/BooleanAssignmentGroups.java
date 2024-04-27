@@ -20,10 +20,9 @@
  */
 package de.featjar.formula.analysis.bool;
 
-import java.util.List;
-
 import de.featjar.formula.analysis.AAssignmentGroups;
 import de.featjar.formula.analysis.VariableMap;
+import java.util.List;
 
 /**
  * {@link AAssignmentGroups} implementation for {@link ABooleanAssignment}.

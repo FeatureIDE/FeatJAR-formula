@@ -26,10 +26,12 @@ import de.featjar.base.io.NonEmptyLineIterator;
 import de.featjar.base.io.format.IFormat;
 import de.featjar.base.io.format.ParseProblem;
 import de.featjar.base.io.input.AInputMapper;
+import de.featjar.base.io.output.AOutputMapper;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.bool.ABooleanAssignment;
 import de.featjar.formula.analysis.bool.BooleanAssignmentGroups;
 import de.featjar.formula.analysis.bool.BooleanSolution;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,48 +52,78 @@ public class BooleanAssignmentGroupsCSVFormat implements IFormat<BooleanAssignme
     private static final String NULL_VALUE = "0";
 
     @Override
-    public Result<String> serialize(BooleanAssignmentGroups assignmentSpace) {
-        final StringBuilder csv = new StringBuilder();
-        csv.append(ASSIGNMENT_COLUMN_NAME);
-        csv.append(VALUE_SEPARATOR);
-        csv.append(GROUP_COLUMN_NAME);
-        final VariableMap variableMap = assignmentSpace.getVariableMap();
+    public void write(BooleanAssignmentGroups assignmentGroups, AOutputMapper outputMapper) throws IOException {
+        final VariableMap variableMap = assignmentGroups.getVariableMap();
         final List<Pair<Integer, String>> namePairs = variableMap.stream().collect(Collectors.toList());
-        for (final Pair<Integer, String> namePair : namePairs) {
-            final String name = namePair.getValue();
-            if (name != null) {
-                csv.append(VALUE_SEPARATOR);
-                csv.append(name);
-            }
-        }
-        csv.append(LINE_SEPARATOR);
+        final List<? extends List<? extends ABooleanAssignment>> groups = assignmentGroups.getGroups();
+
+        outputMapper.get().write(serializeHeader(namePairs));
+
         int groupIndex = 0;
         int assignmentIndex = 0;
-        final List<? extends List<? extends ABooleanAssignment>> groups = assignmentSpace.getGroups();
         for (List<? extends ABooleanAssignment> group : groups) {
-            for (final ABooleanAssignment configuration : group) {
-                csv.append(assignmentIndex++);
-                csv.append(VALUE_SEPARATOR);
-                csv.append(groupIndex);
-                for (final Pair<Integer, String> namePair : namePairs) {
-                    csv.append(VALUE_SEPARATOR);
-                    final Result<Boolean> value = configuration.getValue(namePair.getKey());
-                    if (value.isPresent()) {
-                        final boolean set = (boolean) value.get();
-                        if (set) {
-                            csv.append(POSITIVE_VALUE);
-                        } else {
-                            csv.append(NEGATIVE_VALUE);
-                        }
-                    } else {
-                        csv.append(NULL_VALUE);
-                    }
-                }
-                csv.append(LINE_SEPARATOR);
+            for (final ABooleanAssignment assignment : group) {
+                outputMapper.get().write(serializeAssignment(namePairs, groupIndex, assignmentIndex, assignment));
+                assignmentIndex++;
             }
             groupIndex++;
         }
+    }
+
+    @Override
+    public Result<String> serialize(BooleanAssignmentGroups assignmentGroups) {
+        final VariableMap variableMap = assignmentGroups.getVariableMap();
+        final List<Pair<Integer, String>> namePairs = variableMap.stream().collect(Collectors.toList());
+        final List<? extends List<? extends ABooleanAssignment>> groups = assignmentGroups.getGroups();
+
+        final StringBuilder csv = new StringBuilder();
+        csv.append(serializeHeader(namePairs));
+
+        int groupIndex = 0;
+        int assignmentIndex = 0;
+        for (List<? extends ABooleanAssignment> group : groups) {
+            for (final ABooleanAssignment assignment : group) {
+                csv.append(serializeAssignment(namePairs, groupIndex, assignmentIndex, assignment));
+                assignmentIndex++;
+            }
+            groupIndex++;
+        }
+
         return Result.of(csv.toString());
+    }
+
+    private String serializeHeader(final List<Pair<Integer, String>> namePairs) {
+        final StringBuilder header = new StringBuilder();
+        header.append(ASSIGNMENT_COLUMN_NAME);
+        header.append(VALUE_SEPARATOR);
+        header.append(GROUP_COLUMN_NAME);
+        for (final Pair<Integer, String> namePair : namePairs) {
+            final String name = namePair.getValue();
+            if (name != null) {
+                header.append(VALUE_SEPARATOR);
+                header.append(name);
+            }
+        }
+        header.append(LINE_SEPARATOR);
+        return header.toString();
+    }
+
+    private String serializeAssignment(
+            final List<Pair<Integer, String>> namePairs,
+            int groupIndex,
+            int assignmentIndex,
+            final ABooleanAssignment configuration) {
+        final StringBuilder line = new StringBuilder();
+        line.append(assignmentIndex);
+        line.append(VALUE_SEPARATOR);
+        line.append(groupIndex);
+        for (final Pair<Integer, String> namePair : namePairs) {
+            line.append(VALUE_SEPARATOR);
+            final Result<Boolean> value = configuration.getValue(namePair.getKey());
+            line.append(value.isPresent() ? ((boolean) value.get() ? POSITIVE_VALUE : NEGATIVE_VALUE) : NULL_VALUE);
+        }
+        line.append(LINE_SEPARATOR);
+        return line.toString();
     }
 
     @Override

@@ -45,8 +45,9 @@ import org.w3c.dom.NodeList;
  */
 public abstract class AXMLFeatureModelFormat<T, U, V> extends AXMLFormat<T> {
     protected static final Pattern inputHeaderPattern =
-            Pattern.compile("\\A\\s*(<[?]xml\\s.*[?]>\\s*)?<featureModel[\\s>]");
+            Pattern.compile("\\A\\s*(<[?]xml\\s.*[?]>\\s*)?<(extendedFeatureModel|featureModel)[\\s>]");
     protected static final String FEATURE_MODEL = "featureModel";
+    protected static final String EXT_FEATURE_MODEL = "extendedFeatureModel";
     protected static final String STRUCT = "struct";
     protected static final String CONSTRAINTS = "constraints";
     protected static final String TRUE = "true";

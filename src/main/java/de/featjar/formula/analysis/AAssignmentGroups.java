@@ -20,15 +20,14 @@
  */
 package de.featjar.formula.analysis;
 
+import de.featjar.base.io.format.IFormat;
 import java.util.List;
 import java.util.Objects;
-
-import de.featjar.base.io.format.IFormat;
 
 /**
  * Combines multiple groups of lists of {@link IAssignment assignments} with a corresponding {@link VariableMap variable map}.
  * The main purposes of this class is to provide an easy to write/read object for a corresponding {@link IFormat format}.
- * 
+ *
  * @author Sebastian Krieter
  */
 public class AAssignmentGroups<T extends IAssignment<?, ?>> {

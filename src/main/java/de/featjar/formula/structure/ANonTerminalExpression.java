@@ -33,10 +33,12 @@ import java.util.Objects;
  */
 public abstract class ANonTerminalExpression extends ATree<IExpression> implements IExpression {
     protected ANonTerminalExpression(IExpression... children) {
+        super(children.length);
         if (children.length > 0) super.setChildren(Arrays.asList(children));
     }
 
     protected ANonTerminalExpression(List<? extends IExpression> children) {
+        super(children.size());
         super.setChildren(children);
     }
 

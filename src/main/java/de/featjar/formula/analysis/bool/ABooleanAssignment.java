@@ -121,6 +121,26 @@ public abstract class ABooleanAssignment extends IntegerList
         return Result.of(newIntegers);
     }
 
+    public static Result<int[]> adaptAddVariables(
+            int[] oldIntegers, VariableMap oldVariableMap, VariableMap newVariableMap) {
+        final int[] newIntegers = new int[oldIntegers.length];
+        for (int i = 0; i < oldIntegers.length; i++) {
+            final int l = oldIntegers[i];
+            final Result<String> name = oldVariableMap.get(Math.abs(l));
+            if (name.isPresent()) {
+                Result<Integer> index = newVariableMap.get(name.get());
+                if (index.isEmpty()) {
+                    newVariableMap.add(name.get());
+                    index = newVariableMap.get(name.get());
+                }
+                newIntegers[i] = l < 0 ? -index.get() : index.get();
+            } else {
+                return Result.empty(new Problem("No variable with index " + l, Problem.Severity.ERROR));
+            }
+        }
+        return Result.of(newIntegers);
+    }
+
     public ABooleanAssignment(int... integers) {
         super(integers);
     }
@@ -311,5 +331,4 @@ public abstract class ABooleanAssignment extends IntegerList
     public String print() {
         return toValue().print();
     }
-
 }

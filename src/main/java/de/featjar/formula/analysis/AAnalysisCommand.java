@@ -74,6 +74,7 @@ public abstract class AAnalysisCommand<T> implements ICommand {
             computation = newComputation();
         } catch (Exception e) {
             FeatJAR.log().error("ERROR: %s", e.getMessage());
+            FeatJAR.log().error(OptionList.getHelp(this));
             return;
         }
         FeatJAR.log().debug("running computation %s", computation.print());

@@ -25,7 +25,6 @@ import static de.featjar.base.computation.Computations.*;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.format.ParseException;
 import de.featjar.base.tree.Trees;
-import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.formula.connective.And;
 import de.featjar.formula.structure.formula.connective.Not;
@@ -63,14 +62,19 @@ public class XMLFeatureModelCNFFormulaFormat extends XMLFeatureModelFormulaForma
     }
 
     @Override
-    protected IExpression parseDocument(Document document) throws ParseException {
-        final Element featureModelElement = getDocumentElement(document, FEATURE_MODEL);
+    protected IFormula parseDocument(Document document) throws ParseException {
+        final Element featureModelElement = getDocumentElement(document, FEATURE_MODEL, EXT_FEATURE_MODEL);
         parseFeatureTree(getElement(featureModelElement, STRUCT));
         Result<Element> constraintsElement = getElementResult(featureModelElement, CONSTRAINTS);
         if (constraintsElement.isPresent()) {
             parseConstraints(constraintsElement.get());
         }
-        Reference reference = new Reference((IFormula) Trees.clone(simplify(new And(constraints))));
+        IFormula t = (IFormula) new And(constraints);
+        IFormula transformedConstraints = async(t).map(ComputeNNFFormula::new)
+                .map(ComputeCNFFormula::new)
+                .computeUncachedResult()
+                .orElseThrow(p -> new ParseException("failed to transform " + t));
+        Reference reference = new Reference(transformedConstraints);
         reference.setFreeVariables(featureLabels.stream().map(Variable::new).collect(Collectors.toList()));
         return reference;
     }
