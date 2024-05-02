@@ -27,6 +27,7 @@ import de.featjar.base.cli.Option;
 import de.featjar.base.cli.OptionList;
 import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
+import de.featjar.base.io.IO;
 import de.featjar.base.io.graphviz.GraphVizComputationTreeFormat;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -54,11 +55,17 @@ public abstract class AAnalysisCommand<T> implements ICommand {
             .setValidator(timeout -> !timeout.isNegative())
             .setDefaultValue(Duration.ZERO);
 
+    /**
+     * Output option for execution time.
+     */
+    public static final Option<Path> TIME_OPTION = new Option<>("write-time-to-file", Option.PathParser)
+            .setDescription("Path to file containig the execution time");
+
     protected OptionList optionParser;
 
     @Override
     public List<Option<?>> getOptions() {
-        return List.of(INPUT_OPTION, BROWSE_CACHE_OPTION, NON_PARALLEL, TIMEOUT_OPTION, OUTPUT_OPTION);
+        return List.of(INPUT_OPTION, BROWSE_CACHE_OPTION, NON_PARALLEL, TIME_OPTION, TIMEOUT_OPTION, OUTPUT_OPTION);
     }
 
     @Override
@@ -68,6 +75,7 @@ public abstract class AAnalysisCommand<T> implements ICommand {
         boolean parallel = !optionParser.getResult(NON_PARALLEL).get();
         Duration timeout = optionParser.getResult(TIMEOUT_OPTION).get();
         Path outputPath = optionParser.getResult(OUTPUT_OPTION).orElse(null);
+        Path timePath = optionParser.getResult(TIME_OPTION).orElse(null);
 
         IComputation<T> computation;
         try {
@@ -94,9 +102,17 @@ public abstract class AAnalysisCommand<T> implements ICommand {
             result = computation.computeResult(true, true);
             timeNeeded = System.nanoTime() - localTime;
         }
+        if (timePath == null) {
+            FeatJAR.log().info("time needed for computation: " + ((timeNeeded / 1_000_000) / 1000.0) + "s");
+        } else {
+            try {
+                IO.write(String.valueOf(timeNeeded), timePath);
+            } catch (IOException e) {
+                FeatJAR.log().error(e);
+            }
+        }
 
         if (result.isPresent()) {
-            FeatJAR.log().info("time needed for computation: " + ((timeNeeded / 1_000_000) / 1000.0) + "s");
             if (outputPath == null) {
                 FeatJAR.log().message(serializeResult(result.get()));
             } else {
