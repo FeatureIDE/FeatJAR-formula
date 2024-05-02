@@ -87,8 +87,6 @@ public interface IAssignmentList<T extends IAssignment<?, ?>> extends Iterable<T
     /**
      * {@return a string representation of all assignments in this list}
      *
-     * @param index the index
-     *
      * @see IAssignment#print()
      */
     default String print() {

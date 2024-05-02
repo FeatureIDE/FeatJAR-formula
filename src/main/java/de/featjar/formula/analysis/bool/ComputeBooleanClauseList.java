@@ -41,7 +41,6 @@ public class ComputeBooleanClauseList extends ComputeBooleanRepresentation<IForm
     /**
      * {@return a formula, which is assumed to be in strict conjunctive normal form, into an indexed CNF representation}
      * @param formula the formula in strict CNF
-     * @param variableMap the variable map corresponding to that formula
      */
     public static Result<BooleanClauseList> toBooleanClauseList(IFormula formula) {
         VariableMap variableMap = VariableMap.of(formula);
