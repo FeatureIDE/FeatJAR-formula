@@ -28,8 +28,8 @@ import de.featjar.formula.analysis.bool.BooleanAssignmentSpaceComputation;
 import de.featjar.formula.analysis.bool.ComputeBooleanRepresentation;
 import de.featjar.formula.io.binary.BooleanAssignmentGroupsBinaryFormat;
 import de.featjar.formula.io.textual.ExpressionFormat;
-import de.featjar.formula.transformer.ComputeCNFFormula;
-import de.featjar.formula.transformer.ComputeNNFFormula;
+import de.featjar.formula.transform.ComputeCNFFormula;
+import de.featjar.formula.transform.ComputeNNFFormula;
 import org.junit.jupiter.api.Test;
 
 /**

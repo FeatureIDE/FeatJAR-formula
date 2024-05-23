@@ -25,9 +25,9 @@ import de.featjar.base.computation.IComputation;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.analysis.value.IValueRepresentation;
 import de.featjar.formula.structure.formula.IFormula;
-import de.featjar.formula.transformer.ComputeCNFFormula;
-import de.featjar.formula.transformer.ComputeDNFFormula;
-import de.featjar.formula.transformer.ComputeNNFFormula;
+import de.featjar.formula.transform.ComputeCNFFormula;
+import de.featjar.formula.transform.ComputeDNFFormula;
+import de.featjar.formula.transform.ComputeNNFFormula;
 
 public interface IBooleanRepresentation {
 

@@ -18,7 +18,7 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.transformer;
+package de.featjar.formula.transform;
 
 import de.featjar.base.computation.AComputation;
 import de.featjar.base.computation.Computations;

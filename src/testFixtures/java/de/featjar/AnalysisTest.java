@@ -35,8 +35,8 @@ import de.featjar.formula.analysis.bool.BooleanAssignmentList;
 import de.featjar.formula.analysis.bool.BooleanSolution;
 import de.featjar.formula.analysis.value.AValueAssignment;
 import de.featjar.formula.structure.formula.IFormula;
-import de.featjar.formula.transformer.ComputeCNFFormula;
-import de.featjar.formula.transformer.ComputeNNFFormula;
+import de.featjar.formula.transform.ComputeCNFFormula;
+import de.featjar.formula.transform.ComputeNNFFormula;
 import java.math.BigInteger;
 import java.util.function.Function;
 

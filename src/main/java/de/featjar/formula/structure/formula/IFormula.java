@@ -33,9 +33,9 @@ import de.featjar.formula.tester.ANormalFormTester;
 import de.featjar.formula.tester.CNFTester;
 import de.featjar.formula.tester.DNFTester;
 import de.featjar.formula.tester.NNFTester;
-import de.featjar.formula.transformer.ComputeCNFFormula;
-import de.featjar.formula.transformer.ComputeDNFFormula;
-import de.featjar.formula.transformer.ComputeNNFFormula;
+import de.featjar.formula.transform.ComputeCNFFormula;
+import de.featjar.formula.transform.ComputeDNFFormula;
+import de.featjar.formula.transform.ComputeNNFFormula;
 import java.util.LinkedHashSet;
 
 /**
