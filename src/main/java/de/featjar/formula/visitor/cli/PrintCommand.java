@@ -1,3 +1,23 @@
+/*
+ * Copyright (C) 2024 FeatJAR-Development-Team
+ *
+ * This file is part of FeatJAR-formula.
+ *
+ * formula is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3.0 of the License,
+ * or (at your option) any later version.
+ *
+ * formula is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with formula. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
+ */
 package de.featjar.formula.visitor.cli;
 
 import de.featjar.base.FeatJAR;
@@ -11,7 +31,6 @@ import de.featjar.formula.io.FormulaFormats;
 import de.featjar.formula.io.textual.ExpressionSerializer;
 import de.featjar.formula.io.textual.Symbols;
 import de.featjar.formula.structure.formula.IFormula;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,55 +44,50 @@ public class PrintCommand implements ICommand {
     /**
      * Defines the tab string.
      */
-    public static final Option<String> TAB_OPTION = new Option<>(
-            "tab", Option.StringParser)
-            .setDescription("Defines the tab string.");
+    public static final Option<String> TAB_OPTION =
+            new Option<>("tab", Option.StringParser).setDescription("Defines the tab string.");
 
     /**
      * Defines the notation.
      */
     public static final Option<ExpressionSerializer.Notation> NOTATION_OPTION = new Option<>(
-            "notation", (arg) -> ExpressionSerializer.Notation.valueOf(arg.toUpperCase()))
-            .setDescription("Defines the notation. Possible options: " + Arrays.toString(ExpressionSerializer.Notation.values()));
+                    "notation", (arg) -> ExpressionSerializer.Notation.valueOf(arg.toUpperCase()))
+            .setDescription("Defines the notation. Possible options: "
+                    + Arrays.toString(ExpressionSerializer.Notation.values()));
 
     /**
      * Defines the separator string.
      */
-    public static final Option<String> SEPARATOR_OPTION = new Option<>(
-            "separator", Option.StringParser)
-            .setDescription("Defines the separator string.");
+    public static final Option<String> SEPARATOR_OPTION =
+            new Option<>("separator", Option.StringParser).setDescription("Defines the separator string.");
 
     /**
      * Defines the symbols.
      */
-    public static final Option<String> SYMBOLS_OPTION = new Option<>(
-            "format", Option.StringParser)
-            .setDescription("Defines the symbols.");
+    public static final Option<String> SYMBOLS_OPTION =
+            new Option<>("format", Option.StringParser).setDescription("Defines the symbols.");
 
     /**
      * Defines the new line string.
      */
-    public static final Option<String> NEW_LINE_OPTION = new Option<>(
-            "newline", Option.StringParser)
-            .setDescription("Defines the new line string.");
+    public static final Option<String> NEW_LINE_OPTION =
+            new Option<>("newline", Option.StringParser).setDescription("Defines the new line string.");
 
     /**
      * Enforces parentheses.
      */
-    public static final Option<Boolean> ENFORCE_PARENTHESES_OPTION = new Flag(
-            "enforce-parentheses")
-            .setDescription("Enforces parentheses.");
+    public static final Option<Boolean> ENFORCE_PARENTHESES_OPTION =
+            new Flag("enforce-parentheses").setDescription("Enforces parentheses.");
 
     /**
      * Enquotes whitespace.
      */
-    public static final Option<Boolean> ENQUOTE_WHITESPACE_OPTION = new Flag(
-            "enquote-whitespace")
-            .setDescription("Enquotes whitespace.");
+    public static final Option<Boolean> ENQUOTE_WHITESPACE_OPTION =
+            new Flag("enquote-whitespace").setDescription("Enquotes whitespace.");
 
     @Override
     public List<Option<?>> getOptions() {
-        return  List.of(
+        return List.of(
                 INPUT_OPTION,
                 TAB_OPTION,
                 NOTATION_OPTION,
@@ -84,21 +98,26 @@ public class PrintCommand implements ICommand {
                 ENQUOTE_WHITESPACE_OPTION);
     }
 
-
     @Override
     public void run(OptionList optionParser) {
         String tab = optionParser.getResult(TAB_OPTION).orElse(ExpressionSerializer.STANDARD_TAB_STRING);
-        ExpressionSerializer.Notation notation = optionParser.getResult(NOTATION_OPTION).orElse(ExpressionSerializer.STANDARD_NOTATION);
+        ExpressionSerializer.Notation notation =
+                optionParser.getResult(NOTATION_OPTION).orElse(ExpressionSerializer.STANDARD_NOTATION);
         String separator = optionParser.getResult(SEPARATOR_OPTION).orElse(ExpressionSerializer.STANDARD_SEPARATOR);
         String symbolsString = optionParser.getResult(SYMBOLS_OPTION).orElse(null);
         String newLine = optionParser.getResult(NEW_LINE_OPTION).orElse(ExpressionSerializer.STANDARD_NEW_LINE);
-        boolean ep = optionParser.getResult(ENFORCE_PARENTHESES_OPTION).orElse(ExpressionSerializer.STANDARD_ENFORCE_PARENTHESES);
-        boolean ew = optionParser.getResult(ENQUOTE_WHITESPACE_OPTION).orElse(ExpressionSerializer.STANDARD_ENQUOTE_WHITESPACE);
+        boolean ep = optionParser
+                .getResult(ENFORCE_PARENTHESES_OPTION)
+                .orElse(ExpressionSerializer.STANDARD_ENFORCE_PARENTHESES);
+        boolean ew = optionParser
+                .getResult(ENQUOTE_WHITESPACE_OPTION)
+                .orElse(ExpressionSerializer.STANDARD_ENQUOTE_WHITESPACE);
 
         try {
-            Symbols symbols = symbolsString == null ?
-                    ExpressionSerializer.STANDARD_SYMBOLS :
-                    (Symbols) Class.forName(symbolsString).getField("INSTANCE").get(null);
+            Symbols symbols = symbolsString == null
+                    ? ExpressionSerializer.STANDARD_SYMBOLS
+                    : (Symbols)
+                            Class.forName(symbolsString).getField("INSTANCE").get(null);
 
             IFormula formula = optionParser
                     .getResult(INPUT_OPTION)
