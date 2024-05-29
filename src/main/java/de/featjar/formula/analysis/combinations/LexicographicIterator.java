@@ -74,12 +74,15 @@ public final class LexicographicIterator<T>
             return selection;
         }
 
-        public int[] select(int[] items) {
-            int[] selection = new int[elementIndices.length];
+        public int[] select(int[] items, int[] selection) {
             for (int i = 0; i < elementIndices.length; i++) {
                 selection[i] = items[elementIndices[i]];
             }
             return selection;
+        }
+
+        public int[] select(int[] items) {
+            return select(items, new int[elementIndices.length]);
         }
 
         @Override
