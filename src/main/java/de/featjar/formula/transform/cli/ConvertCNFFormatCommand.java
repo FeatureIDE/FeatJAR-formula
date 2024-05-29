@@ -25,6 +25,7 @@ import de.featjar.base.cli.ICommand;
 import de.featjar.base.cli.Option;
 import de.featjar.base.cli.OptionList;
 import de.featjar.base.computation.Computations;
+import de.featjar.base.data.Result;
 import de.featjar.base.io.IO;
 import de.featjar.base.io.format.IFormat;
 import de.featjar.formula.io.FormulaFormats;
@@ -74,8 +75,12 @@ public class ConvertCNFFormatCommand implements ICommand {
                     .compute();
 
             if (outputPath == null || outputPath.toString().equals("results")) {
-                String string = format.serialize(cnfFormula).orElseThrow();
-                FeatJAR.log().message(string);
+                Result<String> string = format.serialize(formula);
+                if (string.isPresent()) {
+                    FeatJAR.log().message(string.get());
+                } else {
+                    string.getProblems().forEach(FeatJAR.log()::message);
+                }
             } else {
                 IO.save(cnfFormula, outputPath, format);
             }
