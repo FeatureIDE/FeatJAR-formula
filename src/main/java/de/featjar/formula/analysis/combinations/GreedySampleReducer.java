@@ -177,8 +177,7 @@ public class GreedySampleReducer extends AComputation<List<BooleanSolution>> {
      * Method to reduce a given set of configuration to a sample covering the same
      * t-wise interactions
      *
-     * @param sample the set of configuration that will be reduced
-     * @param t
+     * @param dependencyList the set of configuration that will be reduced
      * @return the reduced sample
      */
     @Override

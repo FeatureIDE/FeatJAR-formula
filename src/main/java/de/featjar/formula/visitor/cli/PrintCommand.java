@@ -45,7 +45,9 @@ public class PrintCommand implements ICommand {
      * Defines the tab string.
      */
     public static final Option<String> TAB_OPTION =
-            new Option<>("tab", Option.StringParser).setDescription("Defines the tab string.");
+            new Option<>("tab", Option.StringParser)
+                    .setDescription("Defines the tab string.")
+                    .setDefaultValue(ExpressionSerializer.STANDARD_TAB_STRING);
 
     /**
      * Defines the notation.
@@ -53,37 +55,55 @@ public class PrintCommand implements ICommand {
     public static final Option<ExpressionSerializer.Notation> NOTATION_OPTION = new Option<>(
                     "notation", (arg) -> ExpressionSerializer.Notation.valueOf(arg.toUpperCase()))
             .setDescription("Defines the notation. Possible options: "
-                    + Arrays.toString(ExpressionSerializer.Notation.values()));
+                    + Arrays.toString(ExpressionSerializer.Notation.values()))
+            .setDefaultValue(ExpressionSerializer.STANDARD_NOTATION);
 
     /**
      * Defines the separator string.
      */
     public static final Option<String> SEPARATOR_OPTION =
-            new Option<>("separator", Option.StringParser).setDescription("Defines the separator string.");
+            new Option<>("separator", Option.StringParser)
+                    .setDescription("Defines the separator string.")
+                    .setDefaultValue(ExpressionSerializer.STANDARD_SEPARATOR);
 
     /**
      * Defines the symbols.
      */
-    public static final Option<String> SYMBOLS_OPTION =
-            new Option<>("format", Option.StringParser).setDescription("Defines the symbols.");
+    public static final Option<Symbols> SYMBOLS_OPTION =
+            new Option<>("format", (arg) -> {
+                try {
+                    return (Symbols) Class.forName(arg).getField("INSTANCE").get(null);
+                } catch (IllegalAccessException | NoSuchFieldException | ClassNotFoundException e) {
+                    FeatJAR.log().error(e);
+                    return ExpressionSerializer.STANDARD_SYMBOLS;
+                }
+            })
+                    .setDescription("Defines the symbols.")
+                    .setDefaultValue(ExpressionSerializer.STANDARD_SYMBOLS);
 
     /**
      * Defines the new line string.
      */
     public static final Option<String> NEW_LINE_OPTION =
-            new Option<>("newline", Option.StringParser).setDescription("Defines the new line string.");
+            new Option<>("newline", Option.StringParser)
+                    .setDescription("Defines the new line string.")
+                    .setDefaultValue(ExpressionSerializer.STANDARD_NEW_LINE);
 
     /**
      * Enforces parentheses.
      */
     public static final Option<Boolean> ENFORCE_PARENTHESES_OPTION =
-            new Flag("enforce-parentheses").setDescription("Enforces parentheses.");
+            new Flag("enforce-parentheses")
+                    .setDescription("Enforces parentheses.")
+                    .setDefaultValue(ExpressionSerializer.STANDARD_ENFORCE_PARENTHESES);
 
     /**
      * Enquotes whitespace.
      */
     public static final Option<Boolean> ENQUOTE_WHITESPACE_OPTION =
-            new Flag("enquote-whitespace").setDescription("Enquotes whitespace.");
+            new Flag("enquote-whitespace")
+                    .setDescription("Enquotes whitespace.")
+                    .setDefaultValue(ExpressionSerializer.STANDARD_ENQUOTE_WHITESPACE);
 
     @Override
     public List<Option<?>> getOptions() {
@@ -100,46 +120,33 @@ public class PrintCommand implements ICommand {
 
     @Override
     public void run(OptionList optionParser) {
-        String tab = optionParser.getResult(TAB_OPTION).orElse(ExpressionSerializer.STANDARD_TAB_STRING);
+        String tab = optionParser.getResult(TAB_OPTION).get();
         ExpressionSerializer.Notation notation =
-                optionParser.getResult(NOTATION_OPTION).orElse(ExpressionSerializer.STANDARD_NOTATION);
-        String separator = optionParser.getResult(SEPARATOR_OPTION).orElse(ExpressionSerializer.STANDARD_SEPARATOR);
-        String symbolsString = optionParser.getResult(SYMBOLS_OPTION).orElse(null);
-        String newLine = optionParser.getResult(NEW_LINE_OPTION).orElse(ExpressionSerializer.STANDARD_NEW_LINE);
-        boolean ep = optionParser
-                .getResult(ENFORCE_PARENTHESES_OPTION)
-                .orElse(ExpressionSerializer.STANDARD_ENFORCE_PARENTHESES);
-        boolean ew = optionParser
-                .getResult(ENQUOTE_WHITESPACE_OPTION)
-                .orElse(ExpressionSerializer.STANDARD_ENQUOTE_WHITESPACE);
+                optionParser.getResult(NOTATION_OPTION).get();
+        String separator = optionParser.getResult(SEPARATOR_OPTION).get();
+        Symbols symbols = optionParser.getResult(SYMBOLS_OPTION).get();
+        String newLine = optionParser.getResult(NEW_LINE_OPTION).get();
+        boolean ep = optionParser.getResult(ENFORCE_PARENTHESES_OPTION).get();
+        boolean ew = optionParser.getResult(ENQUOTE_WHITESPACE_OPTION).get();
 
-        try {
-            Symbols symbols = symbolsString == null
-                    ? ExpressionSerializer.STANDARD_SYMBOLS
-                    : (Symbols)
-                            Class.forName(symbolsString).getField("INSTANCE").get(null);
+        IFormula formula = optionParser
+                .getResult(INPUT_OPTION)
+                .flatMap(p -> IO.load(p, FormulaFormats.getInstance()))
+                .orElseThrow();
 
-            IFormula formula = optionParser
-                    .getResult(INPUT_OPTION)
-                    .flatMap(p -> IO.load(p, FormulaFormats.getInstance()))
-                    .orElseThrow();
+        ExpressionSerializer serializer = new ExpressionSerializer();
 
-            ExpressionSerializer serializer = new ExpressionSerializer();
+        serializer.setTab(tab);
+        serializer.setNotation(notation);
+        serializer.setSeparator(separator);
+        serializer.setSymbols(symbols);
+        serializer.setNewLine(newLine);
+        serializer.setEnforceParentheses(ep);
+        serializer.setEnquoteWhitespace(ew);
 
-            serializer.setTab(tab);
-            serializer.setNotation(notation);
-            serializer.setSeparator(separator);
-            serializer.setSymbols(symbols);
-            serializer.setNewLine(newLine);
-            serializer.setEnforceParentheses(ep);
-            serializer.setEnquoteWhitespace(ew);
-
-            if (formula != null) {
-                String formulaString = Trees.traverse(formula, serializer).orElse("");
-                FeatJAR.log().message(formulaString);
-            }
-        } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException e) {
-            FeatJAR.log().error(e.getMessage());
+        if (formula != null) {
+            String formulaString = Trees.traverse(formula, serializer).orElse("");
+            FeatJAR.log().message(formulaString);
         }
     }
 

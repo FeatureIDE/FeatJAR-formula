@@ -32,62 +32,20 @@ import de.featjar.formula.io.FormulaFormats;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.transform.ComputeCNFFormula;
 import de.featjar.formula.transform.ComputeNNFFormula;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.List;
 
 /**
  * Converts the format of a given formula into another CNF format.
  *
  * @author Andreas Gerasimow
  */
-public class ConvertCNFFormatCommand implements ICommand {
-
-    /**
-     * Specifies output format.
-     */
-    public static final Option<String> FORMAT_OPTION = new Option<>("format", Option.StringParser)
-            .setDescription("Specifies output format.")
-            .setRequired(true);
+public class ConvertCNFFormatCommand extends AConvertFormatCommand {
 
     @Override
-    public List<Option<?>> getOptions() {
-        return List.of(FORMAT_OPTION, INPUT_OPTION, OUTPUT_OPTION);
-    }
-
-    @Override
-    public void run(OptionList optionParser) {
-        Path outputPath = optionParser.getResult(OUTPUT_OPTION).orElse(null);
-        String formatString = optionParser.getResult(FORMAT_OPTION).orElse(null);
-
-        try {
-            Class<IFormat<IFormula>> classObj = (Class<IFormat<IFormula>>) Class.forName(formatString);
-            IFormat<IFormula> format = FeatJAR.extension(classObj);
-
-            IFormula formula = optionParser
-                    .getResult(INPUT_OPTION)
-                    .flatMap(p -> IO.load(p, FormulaFormats.getInstance()))
-                    .orElseThrow();
-
-            IFormula cnfFormula = Computations.of(formula)
-                    .map(ComputeNNFFormula::new)
-                    .map(ComputeCNFFormula::new)
-                    .compute();
-
-            if (outputPath == null || outputPath.toString().equals("results")) {
-                Result<String> string = format.serialize(formula);
-                if (string.isPresent()) {
-                    FeatJAR.log().message(string.get());
-                } else {
-                    string.getProblems().forEach(FeatJAR.log()::message);
-                }
-            } else {
-                IO.save(cnfFormula, outputPath, format);
-            }
-
-        } catch (ClassNotFoundException | IOException e) {
-            FeatJAR.log().error(e);
-        }
+    protected IFormula modifyFormula(IFormula formula) {
+        return Computations.of(formula)
+                .map(ComputeNNFFormula::new)
+                .map(ComputeCNFFormula::new)
+                .compute();
     }
 
     @Override
