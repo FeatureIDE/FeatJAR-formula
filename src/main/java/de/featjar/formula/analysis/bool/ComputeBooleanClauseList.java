@@ -20,7 +20,12 @@
  */
 package de.featjar.formula.analysis.bool;
 
+import de.featjar.base.FeatJAR;
+import de.featjar.base.computation.AComputation;
+import de.featjar.base.computation.Dependency;
 import de.featjar.base.computation.IComputation;
+import de.featjar.base.computation.Progress;
+import de.featjar.base.data.Pair;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.structure.Expressions;
@@ -36,7 +41,29 @@ import java.util.Objects;
  *
  * @author Sebastian Krieter
  */
-public class ComputeBooleanClauseList extends ComputeBooleanRepresentation<IFormula> {
+public class ComputeBooleanClauseList extends AComputation<Pair<BooleanClauseList, VariableMap>> {
+
+    protected static final Dependency<Object> CNF = Dependency.newDependency();
+
+    public ComputeBooleanClauseList(IComputation<IFormula> cnfFormula) {
+        super(cnfFormula);
+    }
+
+    protected ComputeBooleanClauseList(ComputeBooleanClauseList other) {
+        super(other);
+    }
+
+    @Override
+    public Result<Pair<BooleanClauseList, VariableMap>> compute(List<Object> dependencyList, Progress progress) {
+        IFormula vp = (IFormula) CNF.get(dependencyList);
+        FeatJAR.log().debug("initializing variable map for " + vp.getClass().getName());
+        VariableMap variableMap = VariableMap.of(vp);
+        FeatJAR.log().debug(variableMap);
+        if (vp instanceof Reference) {
+            vp = (IFormula) ((Reference) vp).getExpression();
+        }
+        return ComputeBooleanClauseList.toBooleanClauseList(vp, variableMap).map(cl -> new Pair<>(cl, variableMap));
+    }
 
     /**
      * {@return a formula, which is assumed to be in strict conjunctive normal form, into an indexed CNF representation}
@@ -83,13 +110,5 @@ public class ComputeBooleanClauseList extends ComputeBooleanRepresentation<IForm
                 return new BooleanClause(literals);
             }
         }
-    }
-
-    public ComputeBooleanClauseList(IComputation<IFormula> cnfFormula) {
-        super(cnfFormula);
-    }
-
-    protected ComputeBooleanClauseList(ComputeBooleanClauseList other) {
-        super(other);
     }
 }

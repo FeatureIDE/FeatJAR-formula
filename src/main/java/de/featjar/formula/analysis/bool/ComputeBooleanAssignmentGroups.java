@@ -34,17 +34,17 @@ import java.util.List;
  *
  * @author Sebastian Krieter
  */
-public class BooleanAssignmentSpaceComputation<U extends IBooleanRepresentation>
+public class ComputeBooleanAssignmentGroups<U extends IBooleanRepresentation>
         extends AComputation<BooleanAssignmentGroups> {
 
     @SuppressWarnings("rawtypes")
     protected static final Dependency<Pair> CNF = Dependency.newDependency(Pair.class);
 
-    public BooleanAssignmentSpaceComputation(IComputation<Pair<U, VariableMap>> valueRepresentation) {
+    public ComputeBooleanAssignmentGroups(IComputation<Pair<U, VariableMap>> valueRepresentation) {
         super(valueRepresentation);
     }
 
-    protected BooleanAssignmentSpaceComputation(BooleanAssignmentSpaceComputation<U> other) {
+    protected ComputeBooleanAssignmentGroups(ComputeBooleanAssignmentGroups<U> other) {
         super(other);
     }
 

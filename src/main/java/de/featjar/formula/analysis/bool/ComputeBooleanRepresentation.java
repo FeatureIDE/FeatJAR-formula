@@ -25,7 +25,6 @@ import de.featjar.base.computation.AComputation;
 import de.featjar.base.computation.Dependency;
 import de.featjar.base.computation.IComputation;
 import de.featjar.base.computation.Progress;
-import de.featjar.base.data.Pair;
 import de.featjar.base.data.Result;
 import de.featjar.formula.analysis.VariableMap;
 import de.featjar.formula.structure.formula.IFormula;
@@ -38,29 +37,28 @@ import java.util.List;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class ComputeBooleanRepresentation<T extends IFormula>
-        extends AComputation<Pair<BooleanClauseList, VariableMap>> {
+public class ComputeBooleanRepresentation extends AComputation<BooleanAssignmentGroups> {
 
-    protected static final Dependency<Object> VALUE_REPRESENTATION = Dependency.newDependency();
+    protected static final Dependency<Object> CNF = Dependency.newDependency();
 
-    public ComputeBooleanRepresentation(IComputation<T> valueRepresentation) {
-        super(valueRepresentation);
+    public ComputeBooleanRepresentation(IComputation<IFormula> cnfFormula) {
+        super(cnfFormula);
     }
 
-    protected ComputeBooleanRepresentation(ComputeBooleanRepresentation<T> other) {
+    protected ComputeBooleanRepresentation(ComputeBooleanRepresentation other) {
         super(other);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public Result<Pair<BooleanClauseList, VariableMap>> compute(List<Object> dependencyList, Progress progress) {
-        T vp = (T) VALUE_REPRESENTATION.get(dependencyList);
+    public Result<BooleanAssignmentGroups> compute(List<Object> dependencyList, Progress progress) {
+        IFormula vp = (IFormula) CNF.get(dependencyList);
         FeatJAR.log().debug("initializing variable map for " + vp.getClass().getName());
         VariableMap variableMap = VariableMap.of(vp);
         FeatJAR.log().debug(variableMap);
         if (vp instanceof Reference) {
-            vp = (T) ((Reference) vp).getExpression();
+            vp = (IFormula) ((Reference) vp).getExpression();
         }
-        return ComputeBooleanClauseList.toBooleanClauseList(vp, variableMap).map(cl -> new Pair<>(cl, variableMap));
+        return ComputeBooleanClauseList.toBooleanClauseList(vp, variableMap)
+                .map(cl -> new BooleanAssignmentGroups(variableMap, List.of(cl.getAll())));
     }
 }

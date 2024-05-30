@@ -39,18 +39,18 @@ public interface IBooleanRepresentation {
         return toBooleanCNFRepresentation(model).map(Computations::getValue).cast(VariableMap.class);
     }
 
-    public static ComputeBooleanRepresentation<IFormula> toBooleanCNFRepresentation(IFormula model) {
+    public static ComputeBooleanClauseList toBooleanCNFRepresentation(IFormula model) {
         return Computations.of(model)
                 .map(ComputeNNFFormula::new)
                 .map(ComputeCNFFormula::new)
-                .map(ComputeBooleanRepresentation::new);
+                .map(ComputeBooleanClauseList::new);
     }
 
-    public static ComputeBooleanRepresentation<IFormula> toBooleanDNFRepresentation(IFormula model) {
+    public static ComputeBooleanClauseList toBooleanDNFRepresentation(IFormula model) {
         return Computations.of(model)
                 .map(ComputeNNFFormula::new)
                 .map(ComputeDNFFormula::new)
-                .map(ComputeBooleanRepresentation::new);
+                .map(ComputeBooleanClauseList::new);
     }
 
     /**
