@@ -22,10 +22,17 @@ package de.featjar.formula.structure.formula;
 
 /**
  * Normal form of a formula.
+ * 
+ * One of:
+ * <ul>
+ * 	<li>NNF - negation normal form</li>
+ * 	<li>CNF - conjunctive normal form</li>
+ * 	<li>DNF - disjunctive normal form</li>
+ * </ul>
  *
  * @author Elias Kuiter
  */
-public enum FormulaNormalForm { // todo: use interface instead of enum, see expression kind
+public enum FormulaNormalForm { // TODO: use interface instead of enum, see expression kind
     NNF,
     CNF,
     DNF

@@ -85,6 +85,7 @@ public interface IExpression extends ITree<IExpression> {
      * {@return the evaluation of this formula on a given boolean assignment}
      *
      * @param booleanAssignment the boolean assignment
+     * @param variableMap the {@link VariableMap variable map} mapping the indices in the assignment to variable names
      */
     default Object evaluate(ABooleanAssignment booleanAssignment, VariableMap variableMap) {
         return evaluate(variableMap.toAssignment(booleanAssignment).get());
@@ -94,6 +95,7 @@ public interface IExpression extends ITree<IExpression> {
      * {@return the evaluation of this formula on a given boolean assignment}
      *
      * @param valueAssignment the boolean assignment
+     * @param variableMap the {@link VariableMap variable map} mapping the indices in the assignment to variable names
      */
     default Object evaluate(AValueAssignment valueAssignment, VariableMap variableMap) {
         return evaluate(variableMap.toAssignment(valueAssignment).get());
