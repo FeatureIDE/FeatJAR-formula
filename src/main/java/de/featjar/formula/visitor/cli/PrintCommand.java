@@ -33,6 +33,7 @@ import de.featjar.formula.io.textual.Symbols;
 import de.featjar.formula.structure.formula.IFormula;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Prints the formula in a readable format.
@@ -44,10 +45,9 @@ public class PrintCommand implements ICommand {
     /**
      * Defines the tab string.
      */
-    public static final Option<String> TAB_OPTION =
-            new Option<>("tab", Option.StringParser)
-                    .setDescription("Defines the tab string.")
-                    .setDefaultValue(ExpressionSerializer.STANDARD_TAB_STRING);
+    public static final Option<String> TAB_OPTION = new Option<>("tab", Option.StringParser)
+            .setDescription("Defines the tab string.")
+            .setDefaultValue(ExpressionSerializer.STANDARD_TAB_STRING);
 
     /**
      * Defines the notation.
@@ -61,16 +61,14 @@ public class PrintCommand implements ICommand {
     /**
      * Defines the separator string.
      */
-    public static final Option<String> SEPARATOR_OPTION =
-            new Option<>("separator", Option.StringParser)
-                    .setDescription("Defines the separator string.")
-                    .setDefaultValue(ExpressionSerializer.STANDARD_SEPARATOR);
+    public static final Option<String> SEPARATOR_OPTION = new Option<>("separator", Option.StringParser)
+            .setDescription("Defines the separator string.")
+            .setDefaultValue(ExpressionSerializer.STANDARD_SEPARATOR);
 
     /**
      * Defines the symbols.
      */
-    public static final Option<Symbols> SYMBOLS_OPTION =
-            new Option<>("format", (arg) -> {
+    public static final Option<Symbols> SYMBOLS_OPTION = new Option<>("format", (arg) -> {
                 try {
                     return (Symbols) Class.forName(arg).getField("INSTANCE").get(null);
                 } catch (IllegalAccessException | NoSuchFieldException | ClassNotFoundException e) {
@@ -78,32 +76,29 @@ public class PrintCommand implements ICommand {
                     return ExpressionSerializer.STANDARD_SYMBOLS;
                 }
             })
-                    .setDescription("Defines the symbols.")
-                    .setDefaultValue(ExpressionSerializer.STANDARD_SYMBOLS);
+            .setDescription("Defines the symbols.")
+            .setDefaultValue(ExpressionSerializer.STANDARD_SYMBOLS);
 
     /**
      * Defines the new line string.
      */
-    public static final Option<String> NEW_LINE_OPTION =
-            new Option<>("newline", Option.StringParser)
-                    .setDescription("Defines the new line string.")
-                    .setDefaultValue(ExpressionSerializer.STANDARD_NEW_LINE);
+    public static final Option<String> NEW_LINE_OPTION = new Option<>("newline", Option.StringParser)
+            .setDescription("Defines the new line string.")
+            .setDefaultValue(ExpressionSerializer.STANDARD_NEW_LINE);
 
     /**
      * Enforces parentheses.
      */
-    public static final Option<Boolean> ENFORCE_PARENTHESES_OPTION =
-            new Flag("enforce-parentheses")
-                    .setDescription("Enforces parentheses.")
-                    .setDefaultValue(ExpressionSerializer.STANDARD_ENFORCE_PARENTHESES);
+    public static final Option<Boolean> ENFORCE_PARENTHESES_OPTION = new Flag("enforce-parentheses")
+            .setDescription("Enforces parentheses.")
+            .setDefaultValue(ExpressionSerializer.STANDARD_ENFORCE_PARENTHESES);
 
     /**
      * Enquotes whitespace.
      */
-    public static final Option<Boolean> ENQUOTE_WHITESPACE_OPTION =
-            new Flag("enquote-whitespace")
-                    .setDescription("Enquotes whitespace.")
-                    .setDefaultValue(ExpressionSerializer.STANDARD_ENQUOTE_WHITESPACE);
+    public static final Option<Boolean> ENQUOTE_WHITESPACE_OPTION = new Flag("enquote-whitespace")
+            .setDescription("Enquotes whitespace.")
+            .setDefaultValue(ExpressionSerializer.STANDARD_ENQUOTE_WHITESPACE);
 
     @Override
     public List<Option<?>> getOptions() {
@@ -151,12 +146,12 @@ public class PrintCommand implements ICommand {
     }
 
     @Override
-    public String getDescription() {
-        return "Prints the formula in a readable format.";
+    public Optional<String> getDescription() {
+        return Optional.of("Prints the formula in a readable format.");
     }
 
     @Override
-    public String getShortName() {
-        return "print";
+    public Optional<String> getShortName() {
+        return Optional.of("print");
     }
 }

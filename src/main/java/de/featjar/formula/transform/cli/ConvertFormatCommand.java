@@ -20,22 +20,8 @@
  */
 package de.featjar.formula.transform.cli;
 
-import de.featjar.base.FeatJAR;
-import de.featjar.base.cli.ICommand;
-import de.featjar.base.cli.Option;
-import de.featjar.base.cli.OptionList;
-import de.featjar.base.computation.Computations;
-import de.featjar.base.data.Result;
-import de.featjar.base.io.IO;
-import de.featjar.base.io.format.IFormat;
-import de.featjar.formula.io.FormulaFormats;
 import de.featjar.formula.structure.formula.IFormula;
-import de.featjar.formula.transform.ComputeCNFFormula;
-import de.featjar.formula.transform.ComputeNNFFormula;
-
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.List;
+import java.util.Optional;
 
 /**
  * Converts the format of a given formula.
@@ -50,12 +36,12 @@ public class ConvertFormatCommand extends AConvertFormatCommand {
     }
 
     @Override
-    public String getDescription() {
-        return "Converts the format of a given formula.";
+    public Optional<String> getDescription() {
+        return Optional.of("Converts the format of a given formula.");
     }
 
     @Override
-    public String getShortName() {
-        return "convert-format";
+    public Optional<String> getShortName() {
+        return Optional.of("convert-format");
     }
 }

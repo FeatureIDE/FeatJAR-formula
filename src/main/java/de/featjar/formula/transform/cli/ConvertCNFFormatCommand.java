@@ -20,18 +20,11 @@
  */
 package de.featjar.formula.transform.cli;
 
-import de.featjar.base.FeatJAR;
-import de.featjar.base.cli.ICommand;
-import de.featjar.base.cli.Option;
-import de.featjar.base.cli.OptionList;
 import de.featjar.base.computation.Computations;
-import de.featjar.base.data.Result;
-import de.featjar.base.io.IO;
-import de.featjar.base.io.format.IFormat;
-import de.featjar.formula.io.FormulaFormats;
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.transform.ComputeCNFFormula;
 import de.featjar.formula.transform.ComputeNNFFormula;
+import java.util.Optional;
 
 /**
  * Converts the format of a given formula into another CNF format.
@@ -49,12 +42,12 @@ public class ConvertCNFFormatCommand extends AConvertFormatCommand {
     }
 
     @Override
-    public String getDescription() {
-        return "Converts the format of a given formula into another CNF format.";
+    public Optional<String> getDescription() {
+        return Optional.of("Converts the format of a given formula into another CNF format.");
     }
 
     @Override
-    public String getShortName() {
-        return "convert-cnf-format";
+    public Optional<String> getShortName() {
+        return Optional.of("convert-cnf-format");
     }
 }
