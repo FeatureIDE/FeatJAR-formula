@@ -20,7 +20,6 @@
  */
 package de.featjar.formula;
 
-import de.featjar.base.FeatJAR;
 import de.featjar.base.ProcessOutput;
 import java.io.IOException;
 import java.nio.file.Files;
