@@ -24,12 +24,12 @@ import de.featjar.base.data.Result;
 import de.featjar.base.io.format.IFormat;
 import de.featjar.base.io.format.ParseProblem;
 import de.featjar.base.io.input.AInputMapper;
-import de.featjar.formula.analysis.VariableMap;
+import de.featjar.formula.VariableMap;
 import de.featjar.formula.structure.IExpression;
-import de.featjar.formula.structure.formula.IFormula;
-import de.featjar.formula.structure.formula.connective.Or;
-import de.featjar.formula.structure.formula.connective.Reference;
-import de.featjar.formula.structure.formula.predicate.Literal;
+import de.featjar.formula.structure.IFormula;
+import de.featjar.formula.structure.connective.Or;
+import de.featjar.formula.structure.connective.Reference;
+import de.featjar.formula.structure.predicate.Literal;
 import java.text.ParseException;
 
 /**

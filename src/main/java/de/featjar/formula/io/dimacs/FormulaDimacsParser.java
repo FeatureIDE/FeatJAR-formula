@@ -22,11 +22,11 @@ package de.featjar.formula.io.dimacs;
 
 import de.featjar.base.data.Maps;
 import de.featjar.base.io.NonEmptyLineIterator;
-import de.featjar.formula.structure.formula.IFormula;
-import de.featjar.formula.structure.formula.connective.And;
-import de.featjar.formula.structure.formula.connective.Or;
-import de.featjar.formula.structure.formula.connective.Reference;
-import de.featjar.formula.structure.formula.predicate.Literal;
+import de.featjar.formula.structure.IFormula;
+import de.featjar.formula.structure.connective.And;
+import de.featjar.formula.structure.connective.Or;
+import de.featjar.formula.structure.connective.Reference;
+import de.featjar.formula.structure.predicate.Literal;
 import de.featjar.formula.structure.term.value.Variable;
 import java.io.IOException;
 import java.text.ParseException;

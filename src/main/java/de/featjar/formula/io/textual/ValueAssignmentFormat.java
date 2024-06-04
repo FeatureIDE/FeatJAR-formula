@@ -26,8 +26,8 @@ import de.featjar.base.data.Problem.Severity;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.format.IFormat;
 import de.featjar.base.io.input.AInputMapper;
-import de.featjar.formula.analysis.value.AValueAssignment;
-import de.featjar.formula.analysis.value.ValueAssignment;
+import de.featjar.formula.assignment.AValueAssignment;
+import de.featjar.formula.assignment.ValueAssignment;
 import java.util.LinkedHashMap;
 import java.util.stream.Collectors;
 

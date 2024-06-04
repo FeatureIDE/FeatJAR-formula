@@ -22,8 +22,8 @@ package de.featjar.formula.io.dimacs;
 
 import de.featjar.base.data.Result;
 import de.featjar.base.io.format.IFormat;
-import de.featjar.formula.analysis.bool.BooleanClause;
-import de.featjar.formula.analysis.bool.BooleanClauseList;
+import de.featjar.formula.assignment.BooleanClause;
+import de.featjar.formula.assignment.BooleanClauseList;
 import java.util.Objects;
 
 /**

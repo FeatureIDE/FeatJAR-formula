@@ -31,8 +31,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import de.featjar.formula.analysis.assignment.Assignment;
-import de.featjar.formula.structure.formula.connective.And;
+import de.featjar.formula.assignment.Assignment;
+import de.featjar.formula.structure.connective.And;
 import org.junit.jupiter.api.Test;
 
 class ExpressionsTest {

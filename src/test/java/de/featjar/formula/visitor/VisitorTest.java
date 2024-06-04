@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import de.featjar.base.tree.Trees;
 import de.featjar.base.tree.visitor.ITreeVisitor;
-import de.featjar.formula.structure.formula.IFormula;
+import de.featjar.formula.structure.IFormula;
 
 public class VisitorTest {
     public static void traverseAndAssertSameFormula(IFormula oldFormula, ITreeVisitor<IFormula, ?> treeVisitor) {

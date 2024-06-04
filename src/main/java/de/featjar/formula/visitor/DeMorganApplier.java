@@ -23,11 +23,11 @@ package de.featjar.formula.visitor;
 import de.featjar.base.data.Result;
 import de.featjar.base.data.Void;
 import de.featjar.base.tree.visitor.ITreeVisitor;
-import de.featjar.formula.structure.formula.IFormula;
-import de.featjar.formula.structure.formula.connective.*;
-import de.featjar.formula.structure.formula.predicate.IInvertiblePredicate;
-import de.featjar.formula.structure.formula.predicate.IPredicate;
-import de.featjar.formula.structure.formula.predicate.Literal;
+import de.featjar.formula.structure.IFormula;
+import de.featjar.formula.structure.connective.*;
+import de.featjar.formula.structure.predicate.IInvertiblePredicate;
+import de.featjar.formula.structure.predicate.IPredicate;
+import de.featjar.formula.structure.predicate.Literal;
 import java.util.List;
 import java.util.stream.Collectors;
 

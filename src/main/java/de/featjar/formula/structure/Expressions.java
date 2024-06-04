@@ -23,29 +23,28 @@ package de.featjar.formula.structure;
 import de.featjar.base.data.Problem;
 import de.featjar.base.tree.Trees;
 import de.featjar.base.tree.visitor.TreePrinter;
-import de.featjar.formula.structure.formula.IFormula;
-import de.featjar.formula.structure.formula.connective.And;
-import de.featjar.formula.structure.formula.connective.AtLeast;
-import de.featjar.formula.structure.formula.connective.AtMost;
-import de.featjar.formula.structure.formula.connective.Between;
-import de.featjar.formula.structure.formula.connective.BiImplies;
-import de.featjar.formula.structure.formula.connective.Choose;
-import de.featjar.formula.structure.formula.connective.Exists;
-import de.featjar.formula.structure.formula.connective.ForAll;
-import de.featjar.formula.structure.formula.connective.Implies;
-import de.featjar.formula.structure.formula.connective.Not;
-import de.featjar.formula.structure.formula.connective.Or;
-import de.featjar.formula.structure.formula.connective.Reference;
-import de.featjar.formula.structure.formula.predicate.Equals;
-import de.featjar.formula.structure.formula.predicate.False;
-import de.featjar.formula.structure.formula.predicate.GreaterEqual;
-import de.featjar.formula.structure.formula.predicate.GreaterThan;
-import de.featjar.formula.structure.formula.predicate.LessEqual;
-import de.featjar.formula.structure.formula.predicate.LessThan;
-import de.featjar.formula.structure.formula.predicate.Literal;
-import de.featjar.formula.structure.formula.predicate.NotEquals;
-import de.featjar.formula.structure.formula.predicate.ProblemFormula;
-import de.featjar.formula.structure.formula.predicate.True;
+import de.featjar.formula.structure.connective.And;
+import de.featjar.formula.structure.connective.AtLeast;
+import de.featjar.formula.structure.connective.AtMost;
+import de.featjar.formula.structure.connective.Between;
+import de.featjar.formula.structure.connective.BiImplies;
+import de.featjar.formula.structure.connective.Choose;
+import de.featjar.formula.structure.connective.Exists;
+import de.featjar.formula.structure.connective.ForAll;
+import de.featjar.formula.structure.connective.Implies;
+import de.featjar.formula.structure.connective.Not;
+import de.featjar.formula.structure.connective.Or;
+import de.featjar.formula.structure.connective.Reference;
+import de.featjar.formula.structure.predicate.Equals;
+import de.featjar.formula.structure.predicate.False;
+import de.featjar.formula.structure.predicate.GreaterEqual;
+import de.featjar.formula.structure.predicate.GreaterThan;
+import de.featjar.formula.structure.predicate.LessEqual;
+import de.featjar.formula.structure.predicate.LessThan;
+import de.featjar.formula.structure.predicate.Literal;
+import de.featjar.formula.structure.predicate.NotEquals;
+import de.featjar.formula.structure.predicate.ProblemFormula;
+import de.featjar.formula.structure.predicate.True;
 import de.featjar.formula.structure.term.ITerm;
 import de.featjar.formula.structure.term.function.IntegerAdd;
 import de.featjar.formula.structure.term.function.IntegerDivide;
@@ -69,11 +68,11 @@ public class Expressions {
     /**
      * A tautology.
      */
-    public static final True True = de.featjar.formula.structure.formula.predicate.True.INSTANCE;
+    public static final True True = de.featjar.formula.structure.predicate.True.INSTANCE;
     /**
      * A contradiction.
      */
-    public static final False False = de.featjar.formula.structure.formula.predicate.False.INSTANCE;
+    public static final False False = de.featjar.formula.structure.predicate.False.INSTANCE;
 
     public static String print(IExpression expression) {
         return Trees.traverse(expression, new TreePrinter().setFilter(t -> !(t instanceof Variable)))

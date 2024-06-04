@@ -23,7 +23,7 @@ package de.featjar.formula.visitor;
 import static de.featjar.formula.structure.Expressions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import de.featjar.formula.structure.formula.FormulaNormalForm;
+import de.featjar.formula.structure.FormulaNormalForm;
 import org.junit.jupiter.api.Test;
 
 class NNFTesterTest {

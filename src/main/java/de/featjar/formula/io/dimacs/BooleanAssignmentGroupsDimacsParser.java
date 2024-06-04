@@ -21,9 +21,9 @@
 package de.featjar.formula.io.dimacs;
 
 import de.featjar.base.io.NonEmptyLineIterator;
-import de.featjar.formula.analysis.VariableMap;
-import de.featjar.formula.analysis.bool.BooleanAssignmentGroups;
-import de.featjar.formula.analysis.bool.BooleanClause;
+import de.featjar.formula.VariableMap;
+import de.featjar.formula.assignment.BooleanAssignmentGroups;
+import de.featjar.formula.assignment.BooleanClause;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;

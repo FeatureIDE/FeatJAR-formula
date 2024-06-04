@@ -28,7 +28,7 @@ import de.featjar.formula.io.textual.ExpressionSerializer;
 import de.featjar.formula.io.textual.ExpressionSerializer.Notation;
 import de.featjar.formula.io.textual.JavaSymbols;
 import de.featjar.formula.io.textual.TextualSymbols;
-import de.featjar.formula.structure.formula.IFormula;
+import de.featjar.formula.structure.IFormula;
 import org.junit.jupiter.api.Test;
 
 /**

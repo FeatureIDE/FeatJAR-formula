@@ -38,7 +38,7 @@ import de.featjar.base.log.CallerFormatter;
 import de.featjar.base.log.Log;
 import de.featjar.base.log.TimeStampFormatter;
 import de.featjar.formula.io.FormulaFormats;
-import de.featjar.formula.structure.formula.IFormula;
+import de.featjar.formula.structure.IFormula;
 import java.net.URL;
 
 public class Common {

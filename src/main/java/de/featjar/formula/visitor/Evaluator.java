@@ -22,7 +22,7 @@ package de.featjar.formula.visitor;
 
 import de.featjar.base.data.Result;
 import de.featjar.base.tree.visitor.ITreeVisitor;
-import de.featjar.formula.analysis.IAssignment;
+import de.featjar.formula.assignment.IAssignment;
 import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.term.value.Variable;
 import java.util.Collections;

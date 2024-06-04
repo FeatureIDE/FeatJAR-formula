@@ -23,12 +23,12 @@ package de.featjar.formula.io;
 import de.featjar.Common;
 import de.featjar.FormatTest;
 import de.featjar.base.computation.Computations;
-import de.featjar.formula.analysis.bool.BooleanAssignmentGroups;
-import de.featjar.formula.analysis.bool.ComputeBooleanRepresentation;
+import de.featjar.formula.assignment.BooleanAssignmentGroups;
+import de.featjar.formula.assignment.ComputeBooleanRepresentation;
+import de.featjar.formula.computation.ComputeCNFFormula;
+import de.featjar.formula.computation.ComputeNNFFormula;
 import de.featjar.formula.io.binary.BooleanAssignmentGroupsBinaryFormat;
 import de.featjar.formula.io.textual.ExpressionFormat;
-import de.featjar.formula.transform.ComputeCNFFormula;
-import de.featjar.formula.transform.ComputeNNFFormula;
 import org.junit.jupiter.api.Test;
 
 /**

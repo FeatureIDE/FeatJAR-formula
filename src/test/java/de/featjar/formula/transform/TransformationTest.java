@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import de.featjar.base.computation.Computations;
 import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
-import de.featjar.formula.structure.formula.IFormula;
+import de.featjar.formula.structure.IFormula;
 import java.util.function.Function;
 
 class TransformationTest {

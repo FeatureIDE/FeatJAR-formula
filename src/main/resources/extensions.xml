@@ -11,8 +11,8 @@
 		<extension id="de.featjar.formula.io.binary.BooleanAssignmentGroupsBinaryFormat" />
 	</point>
 	<point id="de.featjar.base.cli.Commands">
-		<extension id="de.featjar.formula.transform.cli.ConvertCNFFormatCommand" />
-		<extension id="de.featjar.formula.transform.cli.ConvertFormatCommand" />
-		<extension id="de.featjar.formula.visitor.cli.PrintCommand" />
+		<extension id="de.featjar.formula.cli.ConvertCNFFormatCommand" />
+		<extension id="de.featjar.formula.cli.ConvertFormatCommand" />
+		<extension id="de.featjar.formula.cli.PrintCommand" />
 	</point>
 </extensions>

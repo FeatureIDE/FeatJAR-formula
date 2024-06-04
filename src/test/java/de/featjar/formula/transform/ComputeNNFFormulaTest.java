@@ -31,8 +31,9 @@ import static de.featjar.formula.structure.Expressions.or;
 import static de.featjar.formula.structure.Expressions.variable;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import de.featjar.formula.structure.ExpressionKind;
-import de.featjar.formula.structure.formula.IFormula;
+import de.featjar.formula.computation.ComputeNNFFormula;
+import de.featjar.formula.structure.IFormula;
+import de.featjar.formula.structure.predicate.ExpressionKind;
 import org.junit.jupiter.api.Test;
 
 class ComputeNNFFormulaTest {

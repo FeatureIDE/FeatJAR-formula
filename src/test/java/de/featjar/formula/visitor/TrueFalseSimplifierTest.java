@@ -21,7 +21,6 @@
 package de.featjar.formula.visitor;
 
 import static de.featjar.formula.structure.Expressions.*;
-import static de.featjar.formula.structure.Expressions.literal;
 
 import org.junit.jupiter.api.Test;
 

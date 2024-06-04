@@ -22,7 +22,7 @@ package de.featjar.formula.io;
 
 import de.featjar.base.FeatJAR;
 import de.featjar.base.io.format.AFormats;
-import de.featjar.formula.analysis.bool.BooleanAssignmentGroups;
+import de.featjar.formula.assignment.BooleanAssignmentGroups;
 
 /**
  * Extension point for {@link AFormats formats} for {@link BooleanAssignmentGroups}.

@@ -33,8 +33,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import de.featjar.Common;
 import de.featjar.base.computation.Computations;
 import de.featjar.base.computation.IComputation;
-import de.featjar.formula.analysis.VariableMap;
-import de.featjar.formula.structure.formula.IFormula;
+import de.featjar.formula.VariableMap;
+import de.featjar.formula.computation.ComputeCNFFormula;
+import de.featjar.formula.computation.ComputeNNFFormula;
+import de.featjar.formula.structure.IFormula;
 import org.junit.jupiter.api.Test;
 
 class ComputeCNFFormulaTest extends Common {

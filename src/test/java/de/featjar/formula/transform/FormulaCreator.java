@@ -20,10 +20,10 @@
  */
 package de.featjar.formula.transform;
 
-import de.featjar.formula.analysis.bool.BooleanAssignment;
+import de.featjar.formula.assignment.BooleanAssignment;
 import de.featjar.formula.structure.Expressions;
-import de.featjar.formula.structure.formula.IFormula;
-import de.featjar.formula.structure.formula.predicate.Literal;
+import de.featjar.formula.structure.IFormula;
+import de.featjar.formula.structure.predicate.Literal;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 

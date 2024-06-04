@@ -22,6 +22,8 @@ package de.featjar.formula.transform;
 
 import static de.featjar.formula.structure.Expressions.*;
 
+import de.featjar.formula.computation.ComputeDNFFormula;
+
 class ComputeDNFFormulaTest {
     // @Test
     public void toDNF() {

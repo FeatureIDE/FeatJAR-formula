@@ -27,8 +27,8 @@ import de.featjar.base.io.input.AInputMapper;
 import de.featjar.formula.io.textual.ExpressionParser;
 import de.featjar.formula.io.textual.PropositionalModelSymbols;
 import de.featjar.formula.structure.IExpression;
-import de.featjar.formula.structure.formula.IFormula;
-import de.featjar.formula.structure.formula.connective.And;
+import de.featjar.formula.structure.IFormula;
+import de.featjar.formula.structure.connective.And;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 

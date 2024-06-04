@@ -22,8 +22,8 @@ package de.featjar.formula.io.csv;
 
 import de.featjar.base.data.Result;
 import de.featjar.base.io.format.IFormat;
-import de.featjar.formula.analysis.bool.ABooleanAssignment;
-import de.featjar.formula.analysis.bool.BooleanAssignmentGroups;
+import de.featjar.formula.assignment.ABooleanAssignment;
+import de.featjar.formula.assignment.BooleanAssignmentGroups;
 import java.util.List;
 
 /**

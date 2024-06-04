@@ -22,7 +22,7 @@ package de.featjar.formula.io;
 
 import de.featjar.base.FeatJAR;
 import de.featjar.base.io.format.AFormats;
-import de.featjar.formula.structure.formula.IFormula;
+import de.featjar.formula.structure.IFormula;
 
 /**
  * Extension point for {@link AFormats formats} for {@link IFormula}.
