@@ -175,7 +175,7 @@ public interface IAssignmentList<T extends IAssignment<?, ?>> extends Iterable<T
 
     /**
      * {@return a clause list with the same contents of this assignment list}
-     * 
+     *
      * @param variableCount the number of variables of the associated formula
      */
     IAssignmentList<?> toClauseList(int variableCount);

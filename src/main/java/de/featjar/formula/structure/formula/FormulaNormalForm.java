@@ -22,7 +22,7 @@ package de.featjar.formula.structure.formula;
 
 /**
  * Normal form of a formula.
- * 
+ *
  * One of:
  * <ul>
  * 	<li>NNF - negation normal form</li>

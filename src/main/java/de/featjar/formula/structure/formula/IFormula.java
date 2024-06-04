@@ -126,7 +126,7 @@ public interface IFormula extends IExpression {
 
     /**
      * {@return a formula in the given normal form that is equivalent to this formula}
-     * 
+     *
      * @param formulaNormalForm the {@link FormulaNormalForm normal form}
      */
     // TODO: use computations
@@ -136,7 +136,7 @@ public interface IFormula extends IExpression {
 
     /**
      * {@return a formula in the given strict normal form that is equivalent to this formula}
-     * 
+     *
      * @param formulaNormalForm the {@link FormulaNormalForm normal form}
      */
     default Result<IFormula> toStrictNormalForm(FormulaNormalForm formulaNormalForm) {

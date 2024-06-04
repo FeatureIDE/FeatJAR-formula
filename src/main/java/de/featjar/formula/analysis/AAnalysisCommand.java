@@ -81,8 +81,8 @@ public abstract class AAnalysisCommand<T> implements ICommand {
         try {
             computation = newComputation();
         } catch (Exception e) {
-            FeatJAR.log().error("ERROR: %s", e.getMessage());
-            FeatJAR.log().error(OptionList.getHelp(this));
+            FeatJAR.log().error(e);
+            FeatJAR.log().message(OptionList.getHelp(this));
             return;
         }
         FeatJAR.log().debug("running computation %s", computation.print());
@@ -118,9 +118,13 @@ public abstract class AAnalysisCommand<T> implements ICommand {
             } else {
                 try {
                     if (!writeToOutputFile(result.get(), outputPath)) {
+                        if (Files.isDirectory(outputPath)) {
+                            FeatJAR.log().error(new IOException(outputPath.toString() + " is a directory"));
+                        }
                         Files.write(
                                 outputPath,
                                 serializeResult(result.get()).getBytes(),
+                                StandardOpenOption.CREATE,
                                 StandardOpenOption.TRUNCATE_EXISTING);
                     }
                 } catch (IOException e) {
@@ -129,9 +133,6 @@ public abstract class AAnalysisCommand<T> implements ICommand {
             }
         } else {
             FeatJAR.log().error("Could not compute result.");
-        }
-        if (result.hasProblems()) {
-            FeatJAR.log().error("The following problem(s) occurred:");
             FeatJAR.log().problems(result.getProblems());
         }
         if (browseCache) {
