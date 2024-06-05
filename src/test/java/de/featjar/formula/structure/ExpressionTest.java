@@ -34,7 +34,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.featjar.base.data.Sets;
 import de.featjar.formula.assignment.Assignment;
-import de.featjar.formula.structure.IFormula;
 import de.featjar.formula.structure.term.ITerm;
 import de.featjar.formula.structure.term.value.Constant;
 import de.featjar.formula.structure.term.value.Variable;

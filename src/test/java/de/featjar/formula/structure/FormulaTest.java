@@ -20,11 +20,10 @@
  */
 package de.featjar.formula.structure;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import de.featjar.formula.structure.Expressions;
-import de.featjar.formula.structure.FormulaNormalForm;
-import de.featjar.formula.structure.IFormula;
 import de.featjar.formula.structure.connective.And;
 import de.featjar.formula.structure.connective.Implies;
 import de.featjar.formula.structure.connective.Or;
