@@ -47,6 +47,7 @@ import de.featjar.formula.assignment.ValueSolutionList;
 import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.IFormula;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,6 +67,10 @@ import java.util.stream.Collectors;
 public class VariableMap extends RangeMap<String> {
     public VariableMap() {}
 
+    protected VariableMap(Collection<String> variableNames) {
+        super(variableNames);
+    }
+
     protected VariableMap(IExpression valueRepresentation) {
         super(valueRepresentation.getVariableNames());
     }
@@ -82,6 +87,15 @@ public class VariableMap extends RangeMap<String> {
      */
     public static VariableMap of(IExpression valueRepresentation) {
         return new VariableMap(valueRepresentation);
+    }
+
+    /**
+     * Creates a variable map from a list of variable name.
+     *
+     * @param variableNames the list of variable names
+     */
+    public static VariableMap of(Collection<String> variableNames) {
+        return new VariableMap(variableNames);
     }
 
     public static VariableMap empty() {
