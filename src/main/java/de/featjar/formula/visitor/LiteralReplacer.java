@@ -5,25 +5,22 @@ import de.featjar.base.data.Void;
 import de.featjar.base.tree.visitor.ITreeVisitor;
 import de.featjar.formula.structure.IFormula;
 import de.featjar.formula.structure.connective.IConnective;
-import de.featjar.formula.structure.predicate.False;
 import de.featjar.formula.structure.predicate.IPredicate;
 import de.featjar.formula.structure.predicate.Literal;
-import de.featjar.formula.structure.predicate.True;
 
 import java.util.List;
 import java.util.Map;
 
 /**
- * Replaces literals with true or false.
+ * Replaces literals with other literals.
  *
  * @author Andreas Gerasimow
  */
-public class TrueFalseReplacer implements ITreeVisitor<IFormula, Void> {
+public class LiteralReplacer implements ITreeVisitor<IFormula, Void> {
+    Map<Literal, Literal> literalMap;
 
-    Map<Literal, Boolean> literalValueList;
-
-    public TrueFalseReplacer(Map<Literal, Boolean> literalValueList) {
-        this.literalValueList = literalValueList;
+    public LiteralReplacer(Map<Literal, Literal> literalMap) {
+        this.literalMap = literalMap;
     }
 
     @Override
@@ -42,8 +39,8 @@ public class TrueFalseReplacer implements ITreeVisitor<IFormula, Void> {
     public TraversalAction lastVisit(List<IFormula> path) {
         final IFormula formula = ITreeVisitor.getCurrentNode(path);
         formula.replaceChildren(c -> {
-            if (c instanceof Literal && literalValueList.containsKey(c)) {
-                return literalValueList.get(c) ? True.INSTANCE : False.INSTANCE;
+            if (c instanceof Literal && literalMap.containsKey(c)) {
+                return literalMap.get(c);
             }
             return c;
         });
