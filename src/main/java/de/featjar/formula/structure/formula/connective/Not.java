@@ -23,6 +23,8 @@ package de.featjar.formula.structure.formula.connective;
 import de.featjar.formula.structure.ANonTerminalExpression;
 import de.featjar.formula.structure.IUnaryExpression;
 import de.featjar.formula.structure.formula.IFormula;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,7 +33,9 @@ import java.util.List;
  *
  * @author Sebastian Krieter
  */
-public class Not extends ANonTerminalExpression implements IConnective, IUnaryExpression {
+public class Not extends ANonTerminalExpression implements IConnective, IUnaryExpression, IFormula {
+    private List<String> comments = new ArrayList<>();
+
     protected Not() {}
 
     public Not(IFormula formula) {
@@ -59,5 +63,15 @@ public class Not extends ANonTerminalExpression implements IConnective, IUnaryEx
     @Override
     public Not cloneNode() {
         return new Not();
+    }
+
+    @Override
+    public void setComments(List<String> comments) {
+        this.comments = comments;
+    }
+
+    @Override
+    public List<String> getComments() {
+        return comments;
     }
 }

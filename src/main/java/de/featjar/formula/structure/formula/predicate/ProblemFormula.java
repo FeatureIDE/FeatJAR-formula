@@ -23,6 +23,9 @@ package de.featjar.formula.structure.formula.predicate;
 import de.featjar.base.data.Problem;
 import de.featjar.formula.structure.ATerminalExpression;
 import de.featjar.formula.structure.IExpression;
+import de.featjar.formula.structure.formula.IFormula;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,8 +35,10 @@ import java.util.Objects;
  *
  * @author Sebastian Krieter
  */
-public class ProblemFormula extends ATerminalExpression implements IPredicate {
-    private final Problem problem;
+public class ProblemFormula extends ATerminalExpression implements IPredicate, IFormula {
+    private List<String> comments = new ArrayList<>();
+
+	private final Problem problem;
 
     public ProblemFormula(Problem problem) {
         this.problem = problem;
@@ -66,5 +71,15 @@ public class ProblemFormula extends ATerminalExpression implements IPredicate {
     @Override
     public Object evaluate(List<?> values) {
         return null;
+    }
+//ananya
+    @Override
+    public void setComments(List<String> comments) {
+        this.comments = comments;
+    }
+
+    @Override
+    public List<String> getComments() {
+        return comments;
     }
 }

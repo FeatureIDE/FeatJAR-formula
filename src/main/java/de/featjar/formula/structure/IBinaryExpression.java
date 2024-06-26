@@ -21,6 +21,7 @@
 package de.featjar.formula.structure;
 
 import de.featjar.base.data.Range;
+import de.featjar.formula.structure.formula.IFormula;
 
 /**
  * An expression with exactly two operands.
@@ -47,4 +48,8 @@ public interface IBinaryExpression extends IExpression {
     default void setRightExpression(IExpression expression) {
         replaceChild(1, expression);
     }
+
+	IFormula getLeft();
+
+	IFormula getRight();
 }

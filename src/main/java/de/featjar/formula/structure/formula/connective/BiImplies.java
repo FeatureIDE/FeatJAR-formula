@@ -23,6 +23,8 @@ package de.featjar.formula.structure.formula.connective;
 import de.featjar.formula.structure.ANonTerminalExpression;
 import de.featjar.formula.structure.IBinaryExpression;
 import de.featjar.formula.structure.formula.IFormula;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,6 +34,8 @@ import java.util.List;
  * @author Sebastian Krieter
  */
 public class BiImplies extends ANonTerminalExpression implements IConnective, IBinaryExpression {
+    private List<String> comments = new ArrayList<>();
+
 
     protected BiImplies() {}
 
@@ -61,5 +65,25 @@ public class BiImplies extends ANonTerminalExpression implements IConnective, IB
     @Override
     public BiImplies cloneNode() {
         return new BiImplies();
+    }
+
+    @Override
+    public void setComments(List<String> comments) {
+        this.comments = comments;
+    }
+
+    @Override
+    public List<String> getComments() {
+        return comments;
+    }
+
+    @Override
+    public IFormula getLeft() {
+        return (IFormula) getChild(0).orElse(null);
+    }
+
+    @Override
+    public IFormula getRight() {
+        return (IFormula) getChild(1).orElse(null);
     }
 }

@@ -56,7 +56,9 @@ import java.util.function.Function;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class Reference extends ANonTerminalExpression implements IConnective, IUnaryExpression {
+public class Reference extends ANonTerminalExpression implements IConnective, IUnaryExpression, IFormula {
+
+    private List<String> comments = new ArrayList<>();
 
     private Collection<Variable> freeVariables = null;
 
@@ -153,5 +155,17 @@ public class Reference extends ANonTerminalExpression implements IConnective, IU
             Reference formulaReference = new Reference((IFormula) formula.cloneTree());
             return fn.apply(formulaReference).map(result -> formulaReference.getExpression());
         }
+    }
+    
+    //ananya
+
+    @Override
+    public void setComments(List<String> comments) {
+        this.comments = comments;
+    }
+
+    @Override
+    public List<String> getComments() {
+        return comments;
     }
 }

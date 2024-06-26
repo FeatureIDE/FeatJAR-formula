@@ -20,6 +20,9 @@
  */
 package de.featjar.formula.structure.formula.connective;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.term.value.Variable;
 
@@ -30,6 +33,8 @@ import de.featjar.formula.structure.term.value.Variable;
  * @author Sebastian Krieter
  */
 public class ForAll extends AQuantifier {
+    private List<String> comments = new ArrayList<>();
+
 
     protected ForAll(ForAll forAll) {
         super(forAll);
@@ -47,5 +52,15 @@ public class ForAll extends AQuantifier {
     @Override
     public ForAll cloneNode() {
         return new ForAll(this);
+    }
+
+    @Override
+    public void setComments(List<String> comments) {
+        this.comments = comments;
+    }
+
+    @Override
+    public List<String> getComments() {
+        return comments;
     }
 }

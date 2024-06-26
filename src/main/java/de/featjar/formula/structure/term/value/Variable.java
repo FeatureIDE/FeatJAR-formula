@@ -21,8 +21,11 @@
 package de.featjar.formula.structure.term.value;
 
 import de.featjar.formula.structure.ATerminalExpression;
-import java.util.List;
+import de.featjar.formula.structure.formula.IFormula;
 
+import java.util.List;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 /**
  * A variable.
  * Is identified by its name.
@@ -30,10 +33,13 @@ import java.util.List;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class Variable extends ATerminalExpression implements IValue {
+public class Variable extends ATerminalExpression implements IValue, IFormula {
     protected String name;
     protected Class<?> type;
 
+    private List<String> comments = new ArrayList<>();
+
+    
     private Variable(Variable variable) {
         setName(variable.name);
         setType(variable.type);
@@ -76,4 +82,24 @@ public class Variable extends ATerminalExpression implements IValue {
         if (!getType().isInstance(values)) throw new IllegalArgumentException("value not of type " + getType());
         return values.get(0);
     }
-}
+    
+ // Implement IFormula methods here
+    @Override
+    public LinkedHashSet<String> getVariableNames() {
+        LinkedHashSet<String> names = new LinkedHashSet<>();
+        names.add(name);
+        return names;
+    }
+//ananya
+    @Override
+    public void setComments(List<String> comments) {
+        this.comments = comments;
+    }
+
+    @Override
+    public List<String> getComments() {
+        return comments;
+    }
+    
+}   
+    

@@ -22,6 +22,8 @@ package de.featjar.formula.structure.formula.connective;
 
 import de.featjar.formula.structure.ANonTerminalExpression;
 import de.featjar.formula.structure.formula.IFormula;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,7 +33,10 @@ import java.util.List;
  * @author Sebastian Krieter
  */
 public class And extends ANonTerminalExpression implements IConnective {
-    protected And() {}
+    
+    private List<String> comments = new ArrayList<>();
+
+	protected And() {}
 
     public And(IFormula... formulas) {
         super(formulas);
@@ -57,5 +62,15 @@ public class And extends ANonTerminalExpression implements IConnective {
     @Override
     public And cloneNode() {
         return new And();
+    }
+//ananya
+    @Override
+    public void setComments(List<String> comments) {
+        this.comments = comments;
+    }
+
+    @Override
+    public List<String> getComments() {
+        return comments;
     }
 }

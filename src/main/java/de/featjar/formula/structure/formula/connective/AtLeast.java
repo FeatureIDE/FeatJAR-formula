@@ -22,6 +22,8 @@ package de.featjar.formula.structure.formula.connective;
 
 import de.featjar.base.data.Range;
 import de.featjar.formula.structure.formula.IFormula;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,6 +33,9 @@ import java.util.List;
  * @author Sebastian Krieter
  */
 public class AtLeast extends ACardinal {
+	
+    private List<String> comments = new ArrayList<>();
+
     private AtLeast(AtLeast atLeast) {
         super(atLeast);
     }
@@ -59,5 +64,15 @@ public class AtLeast extends ACardinal {
 
     public void setMinimum(int minimum) {
         super.setRange(Range.atLeast(minimum));
+    }
+
+    @Override
+    public void setComments(List<String> comments) {
+        this.comments = comments;
+    }
+
+    @Override
+    public List<String> getComments() {
+        return comments;
     }
 }

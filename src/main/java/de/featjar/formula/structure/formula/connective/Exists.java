@@ -20,6 +20,9 @@
  */
 package de.featjar.formula.structure.formula.connective;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.term.value.Variable;
 
@@ -32,6 +35,8 @@ import de.featjar.formula.structure.term.value.Variable;
  * @author Sebastian Krieter
  */
 public class Exists extends AQuantifier {
+    private List<String> comments = new ArrayList<>();
+
     // TODO: rewrite CNFSlicer to work on a QBF
     protected Exists(Exists exists) {
         super(exists);
@@ -49,5 +54,15 @@ public class Exists extends AQuantifier {
     @Override
     public Exists cloneNode() {
         return new Exists(this);
+    }
+
+    @Override
+    public void setComments(List<String> comments) {
+        this.comments = comments;
+    }
+
+    @Override
+    public List<String> getComments() {
+        return comments;
     }
 }

@@ -23,6 +23,8 @@ package de.featjar.formula.structure.formula.predicate;
 import de.featjar.formula.structure.*;
 import de.featjar.formula.structure.term.value.IValue;
 import de.featjar.formula.structure.term.value.Variable;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -33,11 +35,12 @@ import java.util.Objects;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class Literal extends ANonTerminalExpression implements IUnaryExpression, IPolarPredicate {
+public class Literal extends ANonTerminalExpression implements IUnaryExpression, IPolarPredicate, IExpression {
 
     private boolean isPositive;
 
     public Literal(Literal literal) {
+    	super(literal.getExpression()); //ananya
         this.isPositive = literal.isPositive;
     }
 
@@ -60,7 +63,19 @@ public class Literal extends ANonTerminalExpression implements IUnaryExpression,
         this(isPositive, new Variable(variableName));
     }
 
-    @Override
+    //ananya
+    // Constructor accepting Variable and boolean
+    public Literal(Variable variable, boolean isPositive) {
+        super(variable);
+        this.isPositive = isPositive;
+        if (!Objects.equals(variable.getType(), Boolean.class))
+            throw new IllegalArgumentException("Boolean literals only accept Boolean values");
+    }
+
+
+    
+    
+	@Override
     public boolean isPositive() {
         return isPositive;
     }
@@ -110,4 +125,17 @@ public class Literal extends ANonTerminalExpression implements IUnaryExpression,
     public int hashCodeNode() {
         return Objects.hash(super.hashCodeNode(), isPositive);
     }
+//ananya
+    @Override
+    public List<String> getComments() {
+        return new ArrayList<>(); // No comments for literals
+    }
+
+    @Override
+    public void setComments(List<String> comments) {
+        // No operation for literals
+    }
+    
+
+	
 }

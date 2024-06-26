@@ -21,6 +21,9 @@
 package de.featjar.formula.structure.formula.predicate;
 
 import de.featjar.formula.structure.ATerminalExpression;
+import de.featjar.formula.structure.formula.IFormula;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,7 +32,9 @@ import java.util.List;
  *
  * @author Sebastian Krieter
  */
-public class False extends ATerminalExpression implements IPolarPredicate {
+public class False extends ATerminalExpression implements IPolarPredicate, IFormula {
+
+    private List<String> comments = new ArrayList<>();
 
     public static final False INSTANCE = new False();
 
@@ -58,5 +63,15 @@ public class False extends ATerminalExpression implements IPolarPredicate {
     @Override
     public boolean isPositive() {
         return false;
+    }
+
+    @Override
+    public void setComments(List<String> comments) {
+        this.comments = comments;
+    }
+
+    @Override
+    public List<String> getComments() {
+        return comments;
     }
 }

@@ -21,7 +21,10 @@
 package de.featjar.formula.structure.formula.connective;
 
 import de.featjar.formula.structure.ANonTerminalExpression;
+import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.formula.IFormula;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,7 +33,9 @@ import java.util.List;
  *
  * @author Sebastian Krieter
  */
-public class Or extends ANonTerminalExpression implements IConnective {
+public class Or extends ANonTerminalExpression implements IConnective, IFormula {
+
+    private List<String> comments = new ArrayList<>();
 
     protected Or() {}
 
@@ -40,6 +45,12 @@ public class Or extends ANonTerminalExpression implements IConnective {
 
     public Or(List<? extends IFormula> formulas) {
         super(formulas);
+    }
+    
+    //ananya
+    
+    public Or(IExpression... expressions) {
+        super(expressions);
     }
 
     @Override
@@ -61,4 +72,15 @@ public class Or extends ANonTerminalExpression implements IConnective {
     public Or cloneNode() {
         return new Or();
     }
+
+    @Override
+    public void setComments(List<String> comments) {
+        this.comments = comments;
+    }
+
+    @Override
+    public List<String> getComments() {
+        return comments;
+    }
+	
 }

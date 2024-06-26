@@ -19,6 +19,8 @@
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
 package de.featjar.formula.structure.formula;
+import de.featjar.formula.structure.term.value.Variable;  // Correct Variable
+import de.featjar.formula.structure.formula.IFormula;     // Correct IFormula
 
 import static de.featjar.base.computation.Computations.async;
 
@@ -37,6 +39,7 @@ import de.featjar.formula.transformer.ComputeCNFFormula;
 import de.featjar.formula.transformer.ComputeDNFFormula;
 import de.featjar.formula.transformer.ComputeNNFFormula;
 import java.util.LinkedHashSet;
+import java.util.List;
 
 /**
  * A well-formed formula.
@@ -50,6 +53,13 @@ import java.util.LinkedHashSet;
  * @author Elias Kuiter
  */
 public interface IFormula extends IExpression {
+	
+	List<String> getComments(); //ananya
+    void setComments(List<String> comments);
+
+	
+	
+
 
     private static Result<IFormula> toNormalForm(
             IFormula formula, FormulaNormalForm formulaNormalForm, boolean isStrict) {
@@ -160,10 +170,15 @@ public interface IFormula extends IExpression {
         return toStrictNormalForm(FormulaNormalForm.DNF);
     }
 
-    @Override
-    default LinkedHashSet<String> getVariableNames() {
-        return IExpression.super.getVariableNames();
-    }
+    
 
     // TODO: mutate/analyze analogous to FeatureModel?
+    @Override
+    default LinkedHashSet<String> getVariableNames() {
+        LinkedHashSet<String> names = new LinkedHashSet<>();
+        names.add(getName()); // Ensure Variable class has getName method
+        return names;
+    }
+
+	
 }

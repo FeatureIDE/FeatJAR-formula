@@ -22,6 +22,8 @@ package de.featjar.formula.structure.formula.connective;
 
 import de.featjar.base.data.Range;
 import de.featjar.formula.structure.formula.IFormula;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,6 +33,8 @@ import java.util.List;
  * @author Sebastian Krieter
  */
 public class AtMost extends ACardinal {
+    private List<String> comments = new ArrayList<>();
+
     private AtMost(AtMost atMost) {
         super(atMost);
     }
@@ -60,4 +64,15 @@ public class AtMost extends ACardinal {
     public void setMaximum(int maximum) {
         super.setRange(Range.atMost(maximum));
     }
+
+    @Override
+    public void setComments(List<String> comments) {
+        this.comments = comments;
+    }
+
+    @Override
+    public List<String> getComments() {
+        return comments;
+    }
+	
 }

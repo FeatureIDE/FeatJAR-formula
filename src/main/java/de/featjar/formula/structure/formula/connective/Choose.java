@@ -22,6 +22,8 @@ package de.featjar.formula.structure.formula.connective;
 
 import de.featjar.base.data.Range;
 import de.featjar.formula.structure.formula.IFormula;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,6 +33,9 @@ import java.util.List;
  * @author Sebastian Krieter
  */
 public class Choose extends ACardinal {
+    private List<String> comments = new ArrayList<>();
+
+	
     private Choose(Choose choose) {
         super(choose);
     }
@@ -59,5 +64,15 @@ public class Choose extends ACardinal {
 
     public void setBound(int bound) {
         super.setRange(Range.exactly(bound));
+    }
+
+    @Override
+    public void setComments(List<String> comments) {
+        this.comments = comments;
+    }
+
+    @Override
+    public List<String> getComments() {
+        return comments;
     }
 }

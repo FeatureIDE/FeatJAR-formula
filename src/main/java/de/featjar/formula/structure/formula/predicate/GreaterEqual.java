@@ -21,7 +21,10 @@
 package de.featjar.formula.structure.formula.predicate;
 
 import de.featjar.formula.structure.ANonTerminalExpression;
+import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.term.ITerm;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,8 +33,10 @@ import java.util.List;
  *
  * @author Sebastian Krieter
  */
-public class GreaterEqual extends ANonTerminalExpression implements IBinaryPredicate, IInvertiblePredicate {
-    protected GreaterEqual() {}
+public class GreaterEqual extends ANonTerminalExpression implements IBinaryPredicate, IInvertiblePredicate, IFormula {
+    private List<String> comments = new ArrayList<>();
+
+	protected GreaterEqual() {}
 
     public GreaterEqual(ITerm leftTerm, ITerm rightTerm) {
         super(leftTerm, rightTerm);
@@ -59,5 +64,25 @@ public class GreaterEqual extends ANonTerminalExpression implements IBinaryPredi
     @Override
     public boolean compareDifference(int difference) {
         return difference >= 0;
+    }
+
+    @Override
+    public void setComments(List<String> comments) {
+        this.comments = comments;
+    }
+
+    @Override
+    public List<String> getComments() {
+        return comments;
+    }
+    
+    @Override
+    public IFormula getLeft() {
+        return (IFormula) getChild(0);
+    }
+
+    @Override
+    public IFormula getRight() {
+        return (IFormula) getChild(1);
     }
 }

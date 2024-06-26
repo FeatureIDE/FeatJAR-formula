@@ -20,6 +20,7 @@
  */
 package de.featjar.formula.structure.term.function;
 
+import de.featjar.formula.structure.formula.IFormula;
 import de.featjar.formula.structure.term.ITerm;
 import java.util.List;
 
@@ -58,5 +59,15 @@ public class IntegerMultiply extends AMultiply {
     @Override
     public IntegerMultiply cloneNode() {
         return new IntegerMultiply();
+    }
+    
+    @Override
+    public IFormula getLeft() {
+        return (IFormula) getChild(0);
+    }
+
+    @Override
+    public IFormula getRight() {
+        return (IFormula) getChild(1);
     }
 }
