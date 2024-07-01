@@ -20,8 +20,12 @@
  */
 package de.featjar.formula.assignment;
 
+import de.featjar.base.data.Result;
 import de.featjar.formula.VariableMap;
+
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Primary implementation of {@link ABooleanAssignment}. To be used when neither
@@ -30,6 +34,20 @@ import java.util.Collection;
  * @author Elias Kuiter
  */
 public class BooleanAssignment extends ABooleanAssignment {
+
+    public BooleanAssignment(Assignment assignment, VariableMap map) {
+        elements = new int[assignment.size()];
+        int i = 0;
+        for (var keyValue : assignment.getAll().entrySet()) {
+            String key = keyValue.getKey();
+
+            Result<Integer> index = map.get(key);
+            if (index.isEmpty()) {
+                throw new IllegalArgumentException("Variable " + key + " does not exist in the variable map.");
+            }
+            elements[i++] = index.get();
+        }
+    }
 
     public BooleanAssignment(int... integers) {
         super(integers);

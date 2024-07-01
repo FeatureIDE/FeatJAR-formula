@@ -28,7 +28,6 @@ import de.featjar.formula.structure.IFormula;
 import de.featjar.formula.structure.connective.*;
 import de.featjar.formula.structure.predicate.False;
 import de.featjar.formula.structure.predicate.IPredicate;
-import de.featjar.formula.structure.predicate.Literal;
 import de.featjar.formula.structure.predicate.True;
 
 import java.util.List;
@@ -37,8 +36,9 @@ import java.util.List;
  * Merges nested {@link And} and {@link Or} connectives.
  *
  * @author Sebastian Krieter
+ * @author Andreas Gerasimow
  */
-public class AndOrSimplifier implements ITreeVisitor<IFormula, Void> {
+public class TreeSimplifier implements ITreeVisitor<IFormula, Void> {
     @Override
     public TraversalAction firstVisit(List<IFormula> path) {
         final IFormula formula = ITreeVisitor.getCurrentNode(path);
@@ -64,10 +64,6 @@ public class AndOrSimplifier implements ITreeVisitor<IFormula, Void> {
                 return child.getFirstChild().get();
             } else if (child instanceof Not) {
                 return simplifyNot(child);
-            } else if (child instanceof Implies) {
-               return simplifyImplies(child);
-            } else if (child instanceof BiImplies) {
-                return simplifyBiImplies(child);
             }
             return null;
         });
@@ -78,34 +74,6 @@ public class AndOrSimplifier implements ITreeVisitor<IFormula, Void> {
          return child.getFirstChild().isPresent() && child.getFirstChild().get() instanceof Not ?
                  child.getFirstChild().get().getFirstChild().get() :
                  null;
-    }
-
-    private IExpression simplifyImplies(final IExpression child) {
-        if (child.getChildren().get(0) instanceof False) {
-            return True.INSTANCE;
-        } else if (child.getChildren().get(0) instanceof True) {
-            return child.getChildren().get(1);
-        }
-        return null;
-    }
-
-    private IExpression simplifyBiImplies(final IExpression child) {
-        if ((child.getChildren().get(0) instanceof False && child.getChildren().get(1) instanceof True) ||
-                (child.getChildren().get(0) instanceof True && child.getChildren().get(1) instanceof False)) {
-            return False.INSTANCE;
-        } else if ((child.getChildren().get(0) instanceof True && child.getChildren().get(1) instanceof True) ||
-                (child.getChildren().get(0) instanceof False && child.getChildren().get(1) instanceof False)) {
-            return True.INSTANCE;
-        } else if (child.getChildren().get(0) instanceof False && child.getChildren().get(1) instanceof IFormula) {
-            return new Not((IFormula) child.getChildren().get(1));
-        } else if (child.getChildren().get(1) instanceof False && child.getChildren().get(0) instanceof IFormula) {
-            return new Not((IFormula) child.getChildren().get(0));
-        } else if (child.getChildren().get(0) instanceof True) {
-            return child.getChildren().get(1);
-        } else if (child.getChildren().get(1) instanceof True) {
-            return child.getChildren().get(0);
-        }
-        return null;
     }
 
     private List<? extends IExpression> mergeAnd(final IExpression child) {

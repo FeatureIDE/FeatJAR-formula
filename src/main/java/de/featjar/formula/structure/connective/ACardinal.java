@@ -54,11 +54,11 @@ public abstract class ACardinal extends ANonTerminalExpression implements IConne
         this.range = cardinal.range;
     }
 
-    protected Range getRange() {
+    public Range getRange() {
         return range;
     }
 
-    protected void setRange(Range range) {
+    public void setRange(Range range) {
         assertChildrenCountInRange(getChildrenCount());
         this.range = range;
     }

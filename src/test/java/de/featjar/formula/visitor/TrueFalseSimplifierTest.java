@@ -27,12 +27,12 @@ import org.junit.jupiter.api.Test;
 class TrueFalseSimplifierTest {
     @Test
     void trueDominatesOr() {
-        VisitorTest.traverseAndAssertFormulaEquals(or(literal("x"), True), new TrueFalseSimplifier(), or(True));
+        VisitorTest.traverseAndAssertFormulaEquals(or(literal("x"), True), new TrueFalseSimplifier(), True);
     }
 
     @Test
     void falseDominatesAnd() {
-        VisitorTest.traverseAndAssertFormulaEquals(and(literal("x"), False), new TrueFalseSimplifier(), and(False));
+        VisitorTest.traverseAndAssertFormulaEquals(and(literal("x"), False), new TrueFalseSimplifier(), False);
     }
 
     @Test
@@ -48,15 +48,89 @@ class TrueFalseSimplifierTest {
     }
 
     @Test
+    void simplifiesImplies() {
+        VisitorTest.traverseAndAssertSameFormula(implies(literal("x"), literal("y")), new TrueFalseSimplifier());
+        VisitorTest.traverseAndAssertFormulaEquals(
+                implies(literal("x"), literal("x")), new TrueFalseSimplifier(), True);
+        VisitorTest.traverseAndAssertFormulaEquals(
+                implies(False, literal("x")), new TrueFalseSimplifier(), True);
+        VisitorTest.traverseAndAssertFormulaEquals(
+                implies(True, literal("x")), new TrueFalseSimplifier(), literal("x"));
+        VisitorTest.traverseAndAssertFormulaEquals(
+                implies(literal("x"), False), new TrueFalseSimplifier(), not(literal("x")));
+        VisitorTest.traverseAndAssertFormulaEquals(
+                implies(literal("x"), True), new TrueFalseSimplifier(), True);
+    }
+
+    @Test
+    void simplifiesBiImplies() {
+        VisitorTest.traverseAndAssertSameFormula(biImplies(literal("x"), literal("y")), new TrueFalseSimplifier());
+        VisitorTest.traverseAndAssertFormulaEquals(
+                biImplies(literal("x"), literal("x")), new TrueFalseSimplifier(), True);
+        VisitorTest.traverseAndAssertFormulaEquals(biImplies(True, False), new TrueFalseSimplifier(), False);
+        VisitorTest.traverseAndAssertFormulaEquals(biImplies(False, True), new TrueFalseSimplifier(), False);
+        VisitorTest.traverseAndAssertFormulaEquals(biImplies(False, False), new TrueFalseSimplifier(), True);
+        VisitorTest.traverseAndAssertFormulaEquals(biImplies(True, True), new TrueFalseSimplifier(), True);
+        VisitorTest.traverseAndAssertFormulaEquals(
+                biImplies(False, literal("x")), new TrueFalseSimplifier(), not(literal("x")));
+        VisitorTest.traverseAndAssertFormulaEquals(
+                biImplies(literal("x"), False), new TrueFalseSimplifier(), not(literal("x")));
+        VisitorTest.traverseAndAssertFormulaEquals(
+                biImplies(True, literal("x")), new TrueFalseSimplifier(), literal("x"));
+        VisitorTest.traverseAndAssertFormulaEquals(
+                biImplies(literal("x"), True), new TrueFalseSimplifier(), literal("x"));
+    }
+
+    @Test
+    void simplifiesCardinal() {
+        VisitorTest.traverseAndAssertSameFormula(choose(3,literal("x"), literal("y"), literal("z")), new TrueFalseSimplifier());
+        VisitorTest.traverseAndAssertSameFormula(between(1,2, literal("x"), literal("y"), literal("z")), new TrueFalseSimplifier());
+        VisitorTest.traverseAndAssertSameFormula(atMost(2, literal("x"), literal("y"), literal("z")), new TrueFalseSimplifier());
+        VisitorTest.traverseAndAssertSameFormula(atLeast(2, literal("x"), literal("y"), literal("z")), new TrueFalseSimplifier());
+
+        VisitorTest.traverseAndAssertFormulaEquals(choose(3, literal("x"), True, True, False, False), new TrueFalseSimplifier(), choose(1,literal("x")));
+        VisitorTest.traverseAndAssertFormulaEquals(between(3,4, literal("x"), literal("y"), True, True, False, False), new TrueFalseSimplifier(),
+                between(1,2, literal("x"), literal("y")));
+        VisitorTest.traverseAndAssertFormulaEquals(atMost(2, literal("z"), True, True, False, False), new TrueFalseSimplifier(), atMost(0, literal("z")));
+        VisitorTest.traverseAndAssertFormulaEquals(atLeast(3, literal("z"), True, True, False, False), new TrueFalseSimplifier(), atLeast(1, literal("z")));
+    }
+
+    @Test
+    void simplifiesChoose() {
+        VisitorTest.traverseAndAssertFormulaEquals(
+                choose(3,True,True,True,False), new TrueFalseSimplifier(), True);
+        VisitorTest.traverseAndAssertFormulaEquals(
+                choose(3,True,True,False,False), new TrueFalseSimplifier(), False);
+    }
+
+    @Test
+    void simplifiesBetween() {
+        VisitorTest.traverseAndAssertFormulaEquals(between(2,3, True, True, literal("z"), False), new TrueFalseSimplifier(), True);
+        VisitorTest.traverseAndAssertFormulaEquals(between(3,4, True, literal("z"), False, False), new TrueFalseSimplifier(), False);
+        VisitorTest.traverseAndAssertFormulaEquals(between(1,2, True, True, True, literal("z"), False), new TrueFalseSimplifier(), False);
+    }
+
+    @Test
+    void simplifiesAtMost() {
+        VisitorTest.traverseAndAssertFormulaEquals(atMost(2, True, literal("z"), False), new TrueFalseSimplifier(), True);
+        VisitorTest.traverseAndAssertFormulaEquals(atMost(2, True, True, True, literal("z"), False), new TrueFalseSimplifier(), False);
+    }
+
+    @Test
+    void simplifiesAtLeast() {
+        VisitorTest.traverseAndAssertFormulaEquals(atLeast(2, True, True, literal("z"), False), new TrueFalseSimplifier(), True);
+        VisitorTest.traverseAndAssertFormulaEquals(atLeast(3, True, literal("z"), False), new TrueFalseSimplifier(), False);
+    }
+
+    @Test
     void simplifyComplex() {
         VisitorTest.traverseAndAssertFormulaEquals(
                 and(
                         literal("a"),
                         and(literal("b"), literal("c"), True),
-                        and(literal("b"), False),
+                        and(literal("b"), True),
                         or(literal("x"), False)),
                 new TrueFalseSimplifier(),
-                // this could be simplified even further
-                and(literal("a"), and(literal("b"), literal("c")), and(False), or(literal("x"))));
+                and(literal("a"), and(literal("b"), literal("c")), and(literal("b")), or(literal("x"))));
     }
 }

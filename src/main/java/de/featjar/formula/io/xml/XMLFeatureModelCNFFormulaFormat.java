@@ -34,7 +34,7 @@ import de.featjar.formula.structure.connective.Or;
 import de.featjar.formula.structure.connective.Reference;
 import de.featjar.formula.structure.predicate.Literal;
 import de.featjar.formula.structure.term.value.Variable;
-import de.featjar.formula.visitor.AndOrSimplifier;
+import de.featjar.formula.visitor.TreeSimplifier;
 import de.featjar.formula.visitor.ConnectiveSimplifier;
 import de.featjar.formula.visitor.DeMorganApplier;
 import java.util.ArrayList;
@@ -121,7 +121,7 @@ public class XMLFeatureModelCNFFormulaFormat extends XMLFeatureModelFormulaForma
     private static IFormula simplify(IFormula formula) {
         // TODO: error handling
         Trees.traverse(formula, new DeMorganApplier());
-        Trees.traverse(formula, new AndOrSimplifier());
+        Trees.traverse(formula, new TreeSimplifier());
         return formula;
     }
 }
