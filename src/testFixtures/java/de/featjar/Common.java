@@ -37,6 +37,7 @@ import de.featjar.base.io.format.IFormatSupplier;
 import de.featjar.base.log.CallerFormatter;
 import de.featjar.base.log.Log;
 import de.featjar.base.log.TimeStampFormatter;
+import de.featjar.base.log.VerbosityFormatter;
 import de.featjar.formula.io.FormulaFormats;
 import de.featjar.formula.structure.IFormula;
 import java.net.URL;
@@ -45,10 +46,11 @@ public class Common {
 
     static {
         FeatJAR.configure()
-                .log(c -> c.logToSystemOut(Log.Verbosity.MESSAGE, Log.Verbosity.INFO, Log.Verbosity.DEBUG))
-                .log(c -> c.logToSystemErr(Log.Verbosity.ERROR, Log.Verbosity.WARNING))
-                .log(c -> c.addFormatter(new TimeStampFormatter()))
-                .log(c -> c.addFormatter(new CallerFormatter()))
+                .log(c -> c.logToSystemOut(Log.Verbosity.MESSAGE, Log.Verbosity.INFO, Log.Verbosity.DEBUG)
+                        .logToSystemErr(Log.Verbosity.ERROR, Log.Verbosity.WARNING)
+                        .addFormatter(new TimeStampFormatter())
+                        .addFormatter(new VerbosityFormatter())
+                        .addFormatter(new CallerFormatter()))
                 .cache(c -> c.setCachePolicy(Cache.CachePolicy.CACHE_NONE))
                 .initialize();
     }

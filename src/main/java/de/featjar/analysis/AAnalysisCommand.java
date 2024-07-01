@@ -28,6 +28,7 @@ import de.featjar.base.cli.OptionList;
 import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.IO;
+import de.featjar.base.io.format.IFormat;
 import de.featjar.base.io.graphviz.GraphVizComputationTreeFormat;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -143,8 +144,33 @@ public abstract class AAnalysisCommand<T> implements ICommand {
 
     protected abstract IComputation<T> newComputation();
 
+    @SuppressWarnings({"rawtypes", "unchecked"})
     protected boolean writeToOutputFile(T result, Path outputPath) {
+        try {
+            Object ouputObject = getOuputObject(result);
+            if (ouputObject == null) {
+                return false;
+            }
+
+            IFormat ouputFormat = getOuputFormat();
+            if (ouputFormat == null) {
+                return false;
+            }
+
+            IO.save(ouputObject, outputPath, ouputFormat);
+            return true;
+        } catch (IOException e) {
+            FeatJAR.log().error(e);
+        }
         return false;
+    }
+
+    protected Object getOuputObject(T result) {
+        return result;
+    }
+
+    protected IFormat<?> getOuputFormat() {
+        return null;
     }
 
     protected String serializeResult(T result) {

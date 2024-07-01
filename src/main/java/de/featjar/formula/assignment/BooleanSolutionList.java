@@ -59,4 +59,16 @@ public class BooleanSolutionList extends ABooleanAssignmentList<BooleanSolution>
     public String toString() {
         return String.format("BooleanSolutionList[%s]", print());
     }
+
+    public String serialize() {
+        StringBuilder sb = new StringBuilder();
+        for (BooleanSolution assignment : assignments) {
+            sb.append(assignment.print());
+            sb.append('\n');
+        }
+        if (!sb.isEmpty()) {
+            sb.setLength(sb.length() - 1);
+        }
+        return sb.toString();
+    }
 }
