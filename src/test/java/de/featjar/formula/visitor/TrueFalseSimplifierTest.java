@@ -52,14 +52,12 @@ class TrueFalseSimplifierTest {
         VisitorTest.traverseAndAssertSameFormula(implies(literal("x"), literal("y")), new TrueFalseSimplifier());
         VisitorTest.traverseAndAssertFormulaEquals(
                 implies(literal("x"), literal("x")), new TrueFalseSimplifier(), True);
-        VisitorTest.traverseAndAssertFormulaEquals(
-                implies(False, literal("x")), new TrueFalseSimplifier(), True);
+        VisitorTest.traverseAndAssertFormulaEquals(implies(False, literal("x")), new TrueFalseSimplifier(), True);
         VisitorTest.traverseAndAssertFormulaEquals(
                 implies(True, literal("x")), new TrueFalseSimplifier(), literal("x"));
         VisitorTest.traverseAndAssertFormulaEquals(
                 implies(literal("x"), False), new TrueFalseSimplifier(), not(literal("x")));
-        VisitorTest.traverseAndAssertFormulaEquals(
-                implies(literal("x"), True), new TrueFalseSimplifier(), True);
+        VisitorTest.traverseAndAssertFormulaEquals(implies(literal("x"), True), new TrueFalseSimplifier(), True);
     }
 
     @Test
@@ -83,43 +81,60 @@ class TrueFalseSimplifierTest {
 
     @Test
     void simplifiesCardinal() {
-        VisitorTest.traverseAndAssertSameFormula(choose(3,literal("x"), literal("y"), literal("z")), new TrueFalseSimplifier());
-        VisitorTest.traverseAndAssertSameFormula(between(1,2, literal("x"), literal("y"), literal("z")), new TrueFalseSimplifier());
-        VisitorTest.traverseAndAssertSameFormula(atMost(2, literal("x"), literal("y"), literal("z")), new TrueFalseSimplifier());
-        VisitorTest.traverseAndAssertSameFormula(atLeast(2, literal("x"), literal("y"), literal("z")), new TrueFalseSimplifier());
+        VisitorTest.traverseAndAssertSameFormula(
+                choose(3, literal("x"), literal("y"), literal("z")), new TrueFalseSimplifier());
+        VisitorTest.traverseAndAssertSameFormula(
+                between(1, 2, literal("x"), literal("y"), literal("z")), new TrueFalseSimplifier());
+        VisitorTest.traverseAndAssertSameFormula(
+                atMost(2, literal("x"), literal("y"), literal("z")), new TrueFalseSimplifier());
+        VisitorTest.traverseAndAssertSameFormula(
+                atLeast(2, literal("x"), literal("y"), literal("z")), new TrueFalseSimplifier());
 
-        VisitorTest.traverseAndAssertFormulaEquals(choose(3, literal("x"), True, True, False, False), new TrueFalseSimplifier(), choose(1,literal("x")));
-        VisitorTest.traverseAndAssertFormulaEquals(between(3,4, literal("x"), literal("y"), True, True, False, False), new TrueFalseSimplifier(),
-                between(1,2, literal("x"), literal("y")));
-        VisitorTest.traverseAndAssertFormulaEquals(atMost(2, literal("z"), True, True, False, False), new TrueFalseSimplifier(), atMost(0, literal("z")));
-        VisitorTest.traverseAndAssertFormulaEquals(atLeast(3, literal("z"), True, True, False, False), new TrueFalseSimplifier(), atLeast(1, literal("z")));
+        VisitorTest.traverseAndAssertFormulaEquals(
+                choose(3, literal("x"), True, True, False, False), new TrueFalseSimplifier(), choose(1, literal("x")));
+        VisitorTest.traverseAndAssertFormulaEquals(
+                between(3, 4, literal("x"), literal("y"), True, True, False, False),
+                new TrueFalseSimplifier(),
+                between(1, 2, literal("x"), literal("y")));
+        VisitorTest.traverseAndAssertFormulaEquals(
+                atMost(2, literal("z"), True, True, False, False), new TrueFalseSimplifier(), atMost(0, literal("z")));
+        VisitorTest.traverseAndAssertFormulaEquals(
+                atLeast(3, literal("z"), True, True, False, False),
+                new TrueFalseSimplifier(),
+                atLeast(1, literal("z")));
     }
 
     @Test
     void simplifiesChoose() {
+        VisitorTest.traverseAndAssertFormulaEquals(choose(3, True, True, True, False), new TrueFalseSimplifier(), True);
         VisitorTest.traverseAndAssertFormulaEquals(
-                choose(3,True,True,True,False), new TrueFalseSimplifier(), True);
-        VisitorTest.traverseAndAssertFormulaEquals(
-                choose(3,True,True,False,False), new TrueFalseSimplifier(), False);
+                choose(3, True, True, False, False), new TrueFalseSimplifier(), False);
     }
 
     @Test
     void simplifiesBetween() {
-        VisitorTest.traverseAndAssertFormulaEquals(between(2,3, True, True, literal("z"), False), new TrueFalseSimplifier(), True);
-        VisitorTest.traverseAndAssertFormulaEquals(between(3,4, True, literal("z"), False, False), new TrueFalseSimplifier(), False);
-        VisitorTest.traverseAndAssertFormulaEquals(between(1,2, True, True, True, literal("z"), False), new TrueFalseSimplifier(), False);
+        VisitorTest.traverseAndAssertFormulaEquals(
+                between(2, 3, True, True, literal("z"), False), new TrueFalseSimplifier(), True);
+        VisitorTest.traverseAndAssertFormulaEquals(
+                between(3, 4, True, literal("z"), False, False), new TrueFalseSimplifier(), False);
+        VisitorTest.traverseAndAssertFormulaEquals(
+                between(1, 2, True, True, True, literal("z"), False), new TrueFalseSimplifier(), False);
     }
 
     @Test
     void simplifiesAtMost() {
-        VisitorTest.traverseAndAssertFormulaEquals(atMost(2, True, literal("z"), False), new TrueFalseSimplifier(), True);
-        VisitorTest.traverseAndAssertFormulaEquals(atMost(2, True, True, True, literal("z"), False), new TrueFalseSimplifier(), False);
+        VisitorTest.traverseAndAssertFormulaEquals(
+                atMost(2, True, literal("z"), False), new TrueFalseSimplifier(), True);
+        VisitorTest.traverseAndAssertFormulaEquals(
+                atMost(2, True, True, True, literal("z"), False), new TrueFalseSimplifier(), False);
     }
 
     @Test
     void simplifiesAtLeast() {
-        VisitorTest.traverseAndAssertFormulaEquals(atLeast(2, True, True, literal("z"), False), new TrueFalseSimplifier(), True);
-        VisitorTest.traverseAndAssertFormulaEquals(atLeast(3, True, literal("z"), False), new TrueFalseSimplifier(), False);
+        VisitorTest.traverseAndAssertFormulaEquals(
+                atLeast(2, True, True, literal("z"), False), new TrueFalseSimplifier(), True);
+        VisitorTest.traverseAndAssertFormulaEquals(
+                atLeast(3, True, literal("z"), False), new TrueFalseSimplifier(), False);
     }
 
     @Test

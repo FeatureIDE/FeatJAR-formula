@@ -95,7 +95,8 @@ public class TrueFalseSimplifier implements ITreeVisitor<IFormula, Void> {
             return True.INSTANCE;
         } else if (child.getChildren().get(0) instanceof True) {
             return child.getChildren().get(1);
-        } else if (child.getChildren().get(1) instanceof False && child.getChildren().get(0) instanceof IFormula) {
+        } else if (child.getChildren().get(1) instanceof False
+                && child.getChildren().get(0) instanceof IFormula) {
             return new Not((IFormula) child.getChildren().get(0));
         } else if (child.getChildren().get(1) instanceof True) {
             return True.INSTANCE;
@@ -106,15 +107,20 @@ public class TrueFalseSimplifier implements ITreeVisitor<IFormula, Void> {
     }
 
     private IExpression simplifyBiImplies(final IExpression child) {
-        if ((child.getChildren().get(0) instanceof False && child.getChildren().get(1) instanceof True) ||
-                (child.getChildren().get(0) instanceof True && child.getChildren().get(1) instanceof False)) {
+        if ((child.getChildren().get(0) instanceof False && child.getChildren().get(1) instanceof True)
+                || (child.getChildren().get(0) instanceof True
+                        && child.getChildren().get(1) instanceof False)) {
             return False.INSTANCE;
-        } else if ((child.getChildren().get(0) instanceof True && child.getChildren().get(1) instanceof True) ||
-                (child.getChildren().get(0) instanceof False && child.getChildren().get(1) instanceof False)) {
+        } else if ((child.getChildren().get(0) instanceof True
+                        && child.getChildren().get(1) instanceof True)
+                || (child.getChildren().get(0) instanceof False
+                        && child.getChildren().get(1) instanceof False)) {
             return True.INSTANCE;
-        } else if (child.getChildren().get(0) instanceof False && child.getChildren().get(1) instanceof IFormula) {
+        } else if (child.getChildren().get(0) instanceof False
+                && child.getChildren().get(1) instanceof IFormula) {
             return new Not((IFormula) child.getChildren().get(1));
-        } else if (child.getChildren().get(1) instanceof False && child.getChildren().get(0) instanceof IFormula) {
+        } else if (child.getChildren().get(1) instanceof False
+                && child.getChildren().get(0) instanceof IFormula) {
             return new Not((IFormula) child.getChildren().get(0));
         } else if (child.getChildren().get(0) instanceof True) {
             return child.getChildren().get(1);
@@ -140,9 +146,11 @@ public class TrueFalseSimplifier implements ITreeVisitor<IFormula, Void> {
         ACardinal cardinal = (ACardinal) child;
         int lowerBound = cardinal.getRange().getLowerBound();
         int upperBound = cardinal.getRange().getUpperBound();
-        if (lowerBound <= trueCounter && (upperBound == Integer.MIN_VALUE || upperBound >= trueCounter + otherCounter)) {
+        if (lowerBound <= trueCounter
+                && (upperBound == Integer.MIN_VALUE || upperBound >= trueCounter + otherCounter)) {
             return True.INSTANCE;
-        } else if (lowerBound > trueCounter + otherCounter || (upperBound != Integer.MIN_VALUE && upperBound < trueCounter)) {
+        } else if (lowerBound > trueCounter + otherCounter
+                || (upperBound != Integer.MIN_VALUE && upperBound < trueCounter)) {
             return False.INSTANCE;
         }
 
@@ -151,7 +159,8 @@ public class TrueFalseSimplifier implements ITreeVisitor<IFormula, Void> {
                     lowerBound == Range.OPEN ? Range.OPEN : Math.max(lowerBound - trueCounter, 0),
                     upperBound == Range.OPEN ? Range.OPEN : Math.max(upperBound - trueCounter, 0)));
         }
-        child.flatReplaceChildren((childChild) -> childChild instanceof False || childChild instanceof True ? new ArrayList<>() : null);
+        child.flatReplaceChildren(
+                (childChild) -> childChild instanceof False || childChild instanceof True ? new ArrayList<>() : null);
 
         return null;
     }

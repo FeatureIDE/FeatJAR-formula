@@ -26,10 +26,7 @@ import de.featjar.base.tree.visitor.ITreeVisitor;
 import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.IFormula;
 import de.featjar.formula.structure.connective.*;
-import de.featjar.formula.structure.predicate.False;
 import de.featjar.formula.structure.predicate.IPredicate;
-import de.featjar.formula.structure.predicate.True;
-
 import java.util.List;
 
 /**
@@ -71,9 +68,9 @@ public class TreeSimplifier implements ITreeVisitor<IFormula, Void> {
     }
 
     private IExpression simplifyNot(final IExpression child) {
-         return child.getFirstChild().isPresent() && child.getFirstChild().get() instanceof Not ?
-                 child.getFirstChild().get().getFirstChild().get() :
-                 null;
+        return child.getFirstChild().isPresent() && child.getFirstChild().get() instanceof Not
+                ? child.getFirstChild().get().getFirstChild().get()
+                : null;
     }
 
     private List<? extends IExpression> mergeAnd(final IExpression child) {

@@ -22,10 +22,7 @@ package de.featjar.formula.assignment;
 
 import de.featjar.base.data.Result;
 import de.featjar.formula.VariableMap;
-
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Primary implementation of {@link ABooleanAssignment}. To be used when neither

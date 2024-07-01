@@ -22,8 +22,6 @@ package de.featjar.formula.assignment;
 
 import de.featjar.base.data.Result;
 import de.featjar.formula.VariableMap;
-import de.featjar.formula.structure.term.value.Variable;
-
 import java.util.LinkedHashMap;
 
 /**

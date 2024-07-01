@@ -61,8 +61,7 @@ class TreeSimplifierTest {
 
     @Test
     void simplifiesNot() {
-        VisitorTest.traverseAndAssertFormulaEquals(
-                not(not(literal("x"))), new TreeSimplifier(), literal("x"));
+        VisitorTest.traverseAndAssertFormulaEquals(not(not(literal("x"))), new TreeSimplifier(), literal("x"));
         VisitorTest.traverseAndAssertSameFormula(not(literal("x")), new TreeSimplifier());
     }
 
@@ -76,6 +75,14 @@ class TreeSimplifierTest {
                         and(literal("b"), False),
                         or(literal("x"), False)),
                 new TreeSimplifier(),
-                and(literal("a"), literal("y"), literal("b"), literal("c"), True, literal("b"), False, or(literal("x"), False)));
+                and(
+                        literal("a"),
+                        literal("y"),
+                        literal("b"),
+                        literal("c"),
+                        True,
+                        literal("b"),
+                        False,
+                        or(literal("x"), False)));
     }
 }
