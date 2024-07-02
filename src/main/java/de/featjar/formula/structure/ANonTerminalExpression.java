@@ -44,7 +44,6 @@ public abstract class ANonTerminalExpression extends ATree<IExpression> implemen
 
     @Override
     public boolean equalsNode(IExpression other) {
-        String name = getName();
         return (getClass() == other.getClass())
                 && Objects.equals(getName(), other.getName())
                 && Objects.equals(getType(), other.getType());
