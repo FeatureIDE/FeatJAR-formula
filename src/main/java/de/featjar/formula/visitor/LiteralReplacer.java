@@ -23,20 +23,40 @@ package de.featjar.formula.visitor;
 import de.featjar.base.data.Result;
 import de.featjar.base.data.Void;
 import de.featjar.base.tree.visitor.ITreeVisitor;
+import de.featjar.formula.assignment.Assignment;
 import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.IFormula;
-import de.featjar.formula.structure.connective.And;
 import de.featjar.formula.structure.connective.IConnective;
-import de.featjar.formula.structure.connective.Or;
+import de.featjar.formula.structure.predicate.IPolarPredicate;
 import de.featjar.formula.structure.predicate.IPredicate;
+import de.featjar.formula.structure.predicate.Literal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
- * Merges nested {@link And} and {@link Or} connectives.
+ * Replaces literals with other literals.
  *
- * @author Sebastian Krieter
+ * @author Andreas Gerasimow
  */
-public class AndOrSimplifier implements ITreeVisitor<IFormula, Void> {
+public class LiteralReplacer implements ITreeVisitor<IFormula, Void> {
+    Map<IPolarPredicate, IExpression> literalMap;
+
+    public LiteralReplacer(Map<IPolarPredicate, IExpression> literalMap) {
+        this.literalMap = literalMap;
+    }
+
+    public LiteralReplacer(Assignment assignment) {
+        this.literalMap = new HashMap<>();
+        assignment.getAll().forEach((key, value) -> {
+            if (value instanceof IExpression) {
+                this.literalMap.put(new Literal(key), (IExpression) value);
+            } else {
+                throw new IllegalArgumentException("Value " + value + " is not an IExpression.");
+            }
+        });
+    }
+
     @Override
     public TraversalAction firstVisit(List<IFormula> path) {
         final IFormula formula = ITreeVisitor.getCurrentNode(path);
@@ -52,28 +72,13 @@ public class AndOrSimplifier implements ITreeVisitor<IFormula, Void> {
     @Override
     public TraversalAction lastVisit(List<IFormula> path) {
         final IFormula formula = ITreeVisitor.getCurrentNode(path);
-        if (formula instanceof And) {
-            formula.flatReplaceChildren(this::mergeAnd);
-        } else if (formula instanceof Or) {
-            formula.flatReplaceChildren(this::mergeOr);
-        }
-        formula.replaceChildren(
-                child -> child.getChildrenCount() == 1 && ((child instanceof And) || (child instanceof Or))
-                        ? child.getFirstChild().get()
-                        : null);
+        formula.replaceChildren(c -> {
+            if (c instanceof Literal && literalMap.containsKey(c)) {
+                return literalMap.get(c);
+            }
+            return c;
+        });
         return TraversalAction.CONTINUE;
-    }
-
-    private List<? extends IExpression> mergeAnd(final IExpression child) {
-        return (child instanceof And) || (child instanceof Or && (child.getChildrenCount() == 1))
-                ? child.getChildren()
-                : null;
-    }
-
-    private List<? extends IExpression> mergeOr(final IExpression child) {
-        return (child instanceof Or) || (child instanceof And && (child.getChildrenCount() == 1))
-                ? child.getChildren()
-                : null;
     }
 
     @Override
