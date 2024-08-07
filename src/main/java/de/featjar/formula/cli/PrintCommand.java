@@ -30,6 +30,10 @@ import de.featjar.formula.io.FormulaFormats;
 import de.featjar.formula.io.textual.ExpressionSerializer;
 import de.featjar.formula.io.textual.Symbols;
 import de.featjar.formula.structure.IFormula;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -109,6 +113,7 @@ public class PrintCommand extends ACommand {
         boolean ep = optionParser.getResult(ENFORCE_PARENTHESES_OPTION).get();
         boolean ew = optionParser.getResult(ENQUOTE_WHITESPACE_OPTION).get();
 
+        Path outputPath = optionParser.getResult(OUTPUT_OPTION).orElse(null);
         IFormula formula = optionParser
                 .getResult(INPUT_OPTION)
                 .flatMap(p -> IO.load(p, FormulaFormats.getInstance()))
@@ -126,7 +131,23 @@ public class PrintCommand extends ACommand {
 
         if (formula != null) {
             String formulaString = Trees.traverse(formula, serializer).orElse("");
-            FeatJAR.log().message(formulaString);
+            if (outputPath == null) {
+                FeatJAR.log().message(formulaString);
+            } else {
+                try {
+                    if (Files.isDirectory(outputPath)) {
+                        FeatJAR.log().error(new IOException(outputPath.toString() + " is a directory"));
+                    } else {
+                        Files.write(
+                                outputPath,
+                                formulaString.getBytes(),
+                                StandardOpenOption.CREATE,
+                                StandardOpenOption.TRUNCATE_EXISTING);
+                    }
+                } catch (IOException e) {
+                    FeatJAR.log().error(e);
+                }
+            }
         }
     }
 
