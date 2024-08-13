@@ -31,6 +31,10 @@ import de.featjar.formula.io.binary.BooleanAssignmentGroupsBinaryFormat;
 import de.featjar.formula.io.textual.ExpressionFormat;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 /**
  * Tests {@link ExpressionFormat Formula} format.
  *
@@ -60,6 +64,7 @@ public class BinaryFormatTest extends Common {
                 .map(ComputeBooleanRepresentation::new)
                 .compute();
 
-        FormatTest.testSaveAndLoad(assignmentSpace, name, new BooleanAssignmentGroupsBinaryFormat());
+        FormatTest.testParseAndSerialize("binary/ABC-nAnBnC", new BooleanAssignmentGroupsBinaryFormat());
+        FormatTest.testSerializeAndParse(assignmentSpace, new BooleanAssignmentGroupsBinaryFormat());
     }
 }

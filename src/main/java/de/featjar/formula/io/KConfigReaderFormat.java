@@ -29,7 +29,12 @@ import de.featjar.formula.io.textual.PropositionalModelSymbols;
 import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.IFormula;
 import de.featjar.formula.structure.connective.And;
+import de.featjar.formula.structure.connective.Reference;
+
 import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -37,6 +42,7 @@ import java.util.stream.Collectors;
  * TODO: this is currently mostly a hack and should be parsed properly as first-order formulas
  *
  * @author Elias Kuiter
+ * @author Andreas Gerasimow
  */
 public class KConfigReaderFormat implements IFormat<IExpression> {
 
@@ -45,30 +51,45 @@ public class KConfigReaderFormat implements IFormat<IExpression> {
         final ArrayList<Problem> problems = new ArrayList<>();
         final ExpressionParser expressionParser = new ExpressionParser();
         expressionParser.setSymbols(PropositionalModelSymbols.INSTANCE);
+        
+        List<IFormula> subformulas = inputMapper
+                .get()
+                .getLineStream()
+                .map(String::trim)
+                .filter(l -> !l.isEmpty())
+                .filter(l -> !l.startsWith("#"))
+                .filter(l -> containsDef(l, problems))
+                // "convert" non-boolean constraints into boolean constraints
+                // TODO: parse as proper first-order formulas
+                .map(l -> l.replace("=", "_"))
+                .map(l -> l.replace(":", "_"))
+                .map(l -> l.replace(".", "_"))
+                .map(l -> l.replace(",", "_"))
+                .map(l -> l.replace("/", "_"))
+                .map(l -> l.replace("\\", "_"))
+                .map(l -> l.replace(" ", "_"))
+                .map(l -> l.replace("-", "_"))
+                .map(l -> l.replaceAll("def\\((\\w+)\\)", "$1"))
+                .map(expressionParser::parse)
+                .peek(r -> problems.addAll(r.getProblems()))
+                .filter(Result::isPresent)
+                .map(expressionResult -> (IFormula) expressionResult.get())
+                .collect(Collectors.toList());
+        
+        
         return Result.of(
-                new And(inputMapper
-                        .get()
-                        .getLineStream()
-                        .map(String::trim)
-                        .filter(l -> !l.isEmpty())
-                        .filter(l -> !l.startsWith("#"))
-                        // "convert" non-boolean constraints into boolean constraints
-                        // TODO: parse as proper first-order formulas
-                        .map(l -> l.replace("=", "_"))
-                        .map(l -> l.replace(":", "_"))
-                        .map(l -> l.replace(".", "_"))
-                        .map(l -> l.replace(",", "_"))
-                        .map(l -> l.replace("/", "_"))
-                        .map(l -> l.replace("\\", "_"))
-                        .map(l -> l.replace(" ", "_"))
-                        .map(l -> l.replace("-", "_"))
-                        .map(l -> l.replaceAll("def\\((\\w+)\\)", "$1"))
-                        .map(expressionParser::parse)
-                        .peek(r -> problems.addAll(r.getProblems()))
-                        .filter(Result::isPresent)
-                        .map(expressionResult -> (IFormula) expressionResult.get())
-                        .collect(Collectors.toList())),
+                new Reference(subformulas.size() == 1 ? subformulas.get(0) : new And(subformulas)),
                 problems);
+    }
+
+    public boolean containsDef(String line, ArrayList<Problem> problems) {
+        Pattern pattern = Pattern.compile("def\\(.+\\)");
+        Matcher matcher = pattern.matcher(line);
+        boolean found = matcher.find();
+        if (!found) {
+            problems.add(new Problem("Line contains no def(...)"));
+        }
+        return found;
     }
 
     @Override

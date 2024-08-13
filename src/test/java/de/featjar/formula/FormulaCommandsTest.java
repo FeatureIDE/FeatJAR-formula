@@ -38,7 +38,7 @@ public class FormulaCommandsTest {
                 jarString
                         + " convert-format --input ../formula/src/testFixtures/resources/GPL/model.xml --format de.featjar.formula.io.dimacs.FormulaDimacsFormat");
         Assertions.assertTrue(output.getErrorString().isBlank());
-        Assertions.assertEquals(testFile.trim(), output.getOutputString().trim().substring(20));
+        Assertions.assertEquals(testFile.trim(), output.getOutputString().trim().substring(30));
     }
 
     @Test
@@ -49,7 +49,7 @@ public class FormulaCommandsTest {
                 jarString
                         + " convert-cnf-format --input ../formula/src/testFixtures/resources/GPL/model.xml --format de.featjar.formula.io.dimacs.FormulaDimacsFormat");
         Assertions.assertTrue(output.getErrorString().isBlank());
-        Assertions.assertEquals(testFile.trim(), output.getOutputString().trim().substring(20));
+        Assertions.assertEquals(testFile.trim(), output.getOutputString().trim().substring(30));
     }
 
     @Test
@@ -57,8 +57,8 @@ public class FormulaCommandsTest {
         String testFile = new String(Files.readAllBytes(Path.of("./src/test/resources/testPrintCommand")));
         ProcessOutput output = ProcessOutput.runProcess(
                 jarString
-                        + " print --input ../formula/src/testFixtures/resources/GPL/model.xml --tab [tab] --notation PREFIX --separator [separator] --format de.featjar.formula.io.textual.JavaSymbols --newline [newline] --enforce-parentheses --enquote-whitespace");
+                        + " print --input ../formula/src/testFixtures/resources/GPL/model.xml --tab TAB --notation PREFIX --format de.featjar.formula.io.textual.JavaSymbols --newline NEWLINE --enforce-parentheses --enquote-whitespace");
         Assertions.assertTrue(output.getErrorString().isBlank());
-        Assertions.assertEquals(testFile.trim(), output.getOutputString().trim().substring(20));
+        Assertions.assertEquals(testFile.trim(), output.getOutputString().trim().substring(30));
     }
 }

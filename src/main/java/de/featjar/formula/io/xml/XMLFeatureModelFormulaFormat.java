@@ -73,7 +73,7 @@ public class XMLFeatureModelFormulaFormat extends AXMLFeatureModelFormat<IFormul
                 constraints.set(0, new Or());
             }
         }
-        Reference reference = new Reference(new And(constraints));
+        Reference reference = new Reference(constraints.size() == 1 ? constraints.get(0) : new And(constraints));
         reference.setFreeVariables(featureLabels.stream().map(Variable::new).collect(Collectors.toList()));
         return reference;
     }

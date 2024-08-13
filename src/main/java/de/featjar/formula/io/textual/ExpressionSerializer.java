@@ -51,7 +51,6 @@ public class ExpressionSerializer implements IInOrderTreeVisitor<IExpression, St
     public static final Notation STANDARD_NOTATION = Notation.INFIX;
     public static final boolean STANDARD_ENFORCE_PARENTHESES = false;
     public static final boolean STANDARD_ENQUOTE_WHITESPACE = false;
-    public static final String STANDARD_SEPARATOR = ",";
     public static final String STANDARD_TAB_STRING = "\t";
     public static final String STANDARD_NEW_LINE = System.lineSeparator();
 
@@ -123,7 +122,6 @@ public class ExpressionSerializer implements IInOrderTreeVisitor<IExpression, St
     /** If true, this writer will enquote variables if they contain whitespace. */
     private boolean enquoteWhitespace = STANDARD_ENQUOTE_WHITESPACE;
 
-    private String separator = STANDARD_SEPARATOR;
     private String tab = STANDARD_TAB_STRING;
     private String newLine = STANDARD_NEW_LINE;
 
@@ -176,14 +174,6 @@ public class ExpressionSerializer implements IInOrderTreeVisitor<IExpression, St
      */
     protected Notation getNotation() {
         return notation;
-    }
-
-    public void setSeparator(String separator) {
-        this.separator = separator;
-    }
-
-    public String getSeparator() {
-        return separator;
     }
 
     public String getTab() {
@@ -351,7 +341,8 @@ public class ExpressionSerializer implements IInOrderTreeVisitor<IExpression, St
 
     private void printLiteral(final IExpression node) {
         if (!((Literal) node).isPositive()) {
-            sb.append(symbols.getSymbol(Not.class));
+            Result<String> notString = symbols.getSymbolResult(Not.class);
+            sb.append(notString.get());
             if (symbols.isTextual()) {
                 sb.append(' ');
             }

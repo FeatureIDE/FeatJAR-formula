@@ -20,6 +20,7 @@
  */
 package de.featjar.formula.io;
 
+import static de.featjar.formula.structure.Expressions.*;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -30,6 +31,12 @@ import de.featjar.base.io.IO;
 import de.featjar.formula.io.dimacs.FormulaDimacsFormat;
 import java.io.IOException;
 import java.io.OutputStream;
+
+import de.featjar.formula.structure.connective.And;
+import de.featjar.formula.structure.connective.Not;
+import de.featjar.formula.structure.connective.Or;
+import de.featjar.formula.structure.connective.Reference;
+import de.featjar.formula.structure.predicate.Literal;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -38,6 +45,14 @@ import org.junit.jupiter.api.Test;
  * @author Sebastian Krieter
  */
 public class DIMACSFormatTest extends Common {
+
+    @Test
+    void testFixtures() {
+        FormatTest.testParseAndSerialize("DIMACS/ABC-nAnBnC", new FormulaDimacsFormat());
+        FormatTest.testParseAndSerialize("DIMACS/nA", new FormulaDimacsFormat());
+        FormatTest.testParseAndSerialize("DIMACS/nAB", new FormulaDimacsFormat());
+        FormatTest.testParse(reference(and(or(literal(false, "A")))), "DIMACS/nA", 1, new FormulaDimacsFormat());
+    }
 
     // TODO: something is wrong with the Dimacs Serializer, go figure :-)
     @Test
@@ -96,7 +111,7 @@ public class DIMACSFormatTest extends Common {
     }
 
     private static void test(String name) {
-        FormatTest.testSaveAndLoad(getFormula(name), name, new FormulaDimacsFormat());
+        FormatTest.testSerializeAndParse(getFormula(name), new FormulaDimacsFormat());
     }
 
     private void testException(final String name) {

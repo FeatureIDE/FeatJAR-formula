@@ -14,12 +14,14 @@
 				<not>
 					<var>A</var>
 				</not>
-				<not>
-					<var>B</var>
-				</not>
-				<not>
-					<var>C</var>
-				</not>
+				<disj>
+					<not>
+						<var>B</var>
+					</not>
+					<not>
+						<var>C</var>
+					</not>
+				</disj>
 			</disj>
 		</rule>
 	</constraints>
