@@ -45,7 +45,9 @@ import java.util.Optional;
 public class PrintCommand extends ACommand {
 
     public enum WhitespaceString {
-        TAB(ExpressionSerializer.STANDARD_TAB_STRING), NEWLINE(ExpressionSerializer.STANDARD_NEW_LINE), SPACE(" ");
+        TAB(ExpressionSerializer.STANDARD_TAB_STRING),
+        NEWLINE(ExpressionSerializer.STANDARD_NEW_LINE),
+        SPACE(" ");
 
         private final String whitespaceValue;
 

@@ -31,10 +31,6 @@ import de.featjar.formula.io.binary.BooleanAssignmentGroupsBinaryFormat;
 import de.featjar.formula.io.textual.ExpressionFormat;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
 /**
  * Tests {@link ExpressionFormat Formula} format.
  *

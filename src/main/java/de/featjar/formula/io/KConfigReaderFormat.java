@@ -30,7 +30,6 @@ import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.IFormula;
 import de.featjar.formula.structure.connective.And;
 import de.featjar.formula.structure.connective.Reference;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -51,7 +50,7 @@ public class KConfigReaderFormat implements IFormat<IExpression> {
         final ArrayList<Problem> problems = new ArrayList<>();
         final ExpressionParser expressionParser = new ExpressionParser();
         expressionParser.setSymbols(PropositionalModelSymbols.INSTANCE);
-        
+
         List<IFormula> subformulas = inputMapper
                 .get()
                 .getLineStream()
@@ -75,11 +74,8 @@ public class KConfigReaderFormat implements IFormat<IExpression> {
                 .filter(Result::isPresent)
                 .map(expressionResult -> (IFormula) expressionResult.get())
                 .collect(Collectors.toList());
-        
-        
-        return Result.of(
-                new Reference(subformulas.size() == 1 ? subformulas.get(0) : new And(subformulas)),
-                problems);
+
+        return Result.of(new Reference(subformulas.size() == 1 ? subformulas.get(0) : new And(subformulas)), problems);
     }
 
     public boolean containsDef(String line, ArrayList<Problem> problems) {

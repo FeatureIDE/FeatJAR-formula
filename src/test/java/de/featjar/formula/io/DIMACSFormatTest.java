@@ -31,12 +31,6 @@ import de.featjar.base.io.IO;
 import de.featjar.formula.io.dimacs.FormulaDimacsFormat;
 import java.io.IOException;
 import java.io.OutputStream;
-
-import de.featjar.formula.structure.connective.And;
-import de.featjar.formula.structure.connective.Not;
-import de.featjar.formula.structure.connective.Or;
-import de.featjar.formula.structure.connective.Reference;
-import de.featjar.formula.structure.predicate.Literal;
 import org.junit.jupiter.api.Test;
 
 /**

@@ -31,28 +31,28 @@ import org.junit.jupiter.api.Test;
  */
 public class KConfigReaderFormatTest {
 
-     @Test
-     public void KConfigReader_ABC_nAnBnC() {
-          // TODO: Fix expression parser
-          // test("ABC-nAnBnC", 5);
-     }
+    @Test
+    public void KConfigReader_ABC_nAnBnC() {
+        // TODO: Fix expression parser
+        // test("ABC-nAnBnC", 5);
+    }
 
-     @Test
-     public void KConfigReader_empty() {
-          test("empty", 2);
-     }
+    @Test
+    public void KConfigReader_empty() {
+        test("empty", 2);
+    }
 
-     @Test
-     public void KConfigReader_nA() {
-          test("nA", 1);
-     }
+    @Test
+    public void KConfigReader_nA() {
+        test("nA", 1);
+    }
 
-     @Test
-     public void KConfigReader_nAB() {
-          test("nAB", 1);
-     }
+    @Test
+    public void KConfigReader_nAB() {
+        test("nAB", 1);
+    }
 
-     private static void test(String name, int count) {
-          FormatTest.testParse(Common.getFormula(name), "KConfigReader/" + name, count, new KConfigReaderFormat());
-     }
+    private static void test(String name, int count) {
+        FormatTest.testParse(Common.getFormula(name), "KConfigReader/" + name, count, new KConfigReaderFormat());
+    }
 }

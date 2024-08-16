@@ -23,7 +23,6 @@ package de.featjar.formula.io;
 import de.featjar.Common;
 import de.featjar.FormatTest;
 import de.featjar.formula.io.xml.XMLFeatureModelFormulaFormat;
-import de.featjar.formula.structure.Expressions;
 import org.junit.jupiter.api.Test;
 
 public class XMLFeatureModelFormatTest {
@@ -31,10 +30,12 @@ public class XMLFeatureModelFormatTest {
     @Test
     void testFixtures() {
         FormatTest.testParse(Common.getFormula("A"), "FeatureIDE/A", 2, new XMLFeatureModelFormulaFormat());
-        FormatTest.testParse(Common.getFormula("Root-ABC-nAnBnC"), "FeatureIDE/Root-ABC-nAnBnC", 2, new XMLFeatureModelFormulaFormat());
-
+        FormatTest.testParse(
+                Common.getFormula("Root-ABC-nAnBnC"),
+                "FeatureIDE/Root-ABC-nAnBnC",
+                2,
+                new XMLFeatureModelFormulaFormat());
     }
-
 
     //    @Test
     //    public void FeatureIDE_ABC_nAnBnC() {

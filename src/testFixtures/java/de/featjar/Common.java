@@ -100,11 +100,8 @@ public class Common {
                         implies(literal("A"), literal("Root")),
                         implies(literal("B"), literal("Root")),
                         implies(literal("C"), literal("Root")),
-                        implies(literal("Root"),
-                                or(literal("A"), literal("B"), literal("C"))
-                        ),
-                        or(not(literal("A")), or(not(literal("B")), not(literal("C"))))
-                ));
+                        implies(literal("Root"), or(literal("A"), literal("B"), literal("C"))),
+                        or(not(literal("A")), or(not(literal("B")), not(literal("C"))))));
             }
             case "A": {
                 return reference(literal("A"));

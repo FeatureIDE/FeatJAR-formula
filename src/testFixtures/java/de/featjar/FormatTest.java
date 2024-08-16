@@ -20,20 +20,17 @@
  */
 package de.featjar;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.featjar.base.data.Result;
 import de.featjar.base.io.IO;
 import de.featjar.base.io.format.IFormat;
-import de.featjar.formula.structure.Expressions;
-import de.featjar.formula.structure.IExpression;
-import org.junit.jupiter.api.Assertions;
-
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Assertions;
 
 /**
  * Tests formats.
@@ -50,7 +47,7 @@ public class FormatTest {
             assertEquals(expression1, expression2);
         }
     }
- 
+
     public static <T> void testSerialize(T expression1, String name, IFormat<T> format) {
         assertEquals(format.getClass().getCanonicalName(), format.getIdentifier());
         assertTrue(format.supportsSerialize());
@@ -85,7 +82,6 @@ public class FormatTest {
         // serialize
         final byte[] serializeOutput = serialize(obj, format);
 
-
         System.out.println(new String(parseInput));
         System.out.println(new String(serializeOutput));
 
@@ -105,7 +101,8 @@ public class FormatTest {
     private static <T> byte[][] getByteArrays(String name, int count, IFormat<T> format) {
         byte[][] result = new byte[count][];
         for (int i = 1; i <= count; i++) {
-            URL systemResource = ClassLoader.getSystemResource(String.format("formats/%s_%02d.%s", name, i, format.getFileExtension()));
+            URL systemResource = ClassLoader.getSystemResource(
+                    String.format("formats/%s_%02d.%s", name, i, format.getFileExtension()));
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             try (InputStream stream = systemResource.openStream()) {
@@ -118,7 +115,7 @@ public class FormatTest {
                 e.printStackTrace();
                 Assertions.fail();
             }
-            result[i-1] = baos.toByteArray();
+            result[i - 1] = baos.toByteArray();
         }
         return result;
     }
@@ -126,7 +123,8 @@ public class FormatTest {
     private static <T> List<T> getFileList(String name, int count, IFormat<T> format) {
         ArrayList<T> list = new ArrayList<>(count);
         for (int i = 1; i <= count; i++) {
-            URL systemResource = ClassLoader.getSystemResource(String.format("formats/%s_%02d.%s", name, i, format.getFileExtension()));
+            URL systemResource = ClassLoader.getSystemResource(
+                    String.format("formats/%s_%02d.%s", name, i, format.getFileExtension()));
             Result<T> result = IO.load(systemResource, format);
             assertNotNull(result);
             list.add(result.get());
