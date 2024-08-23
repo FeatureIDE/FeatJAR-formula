@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Reduces occurrences of {@link True} and {@link False}.
+ * Replaces trivial tautologies with {@link True} and trivial contradictions with {@link False}.
  *
  * @author Elias Kuiter
  */

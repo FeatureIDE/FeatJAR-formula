@@ -33,7 +33,7 @@ import java.util.Collection;
 public class BooleanAssignment extends ABooleanAssignment {
 
     public BooleanAssignment(Assignment assignment, VariableMap map) {
-        elements = new int[assignment.size()];
+        super(new int[assignment.size()]);
         int i = 0;
         for (var keyValue : assignment.getAll().entrySet()) {
             String key = keyValue.getKey();

@@ -58,7 +58,7 @@ public class ComputeNNFFormula extends AComputation<IFormula> {
                 .flatMap(_void -> Trees.traverse(reference, new DeMorganApplier()))
                 .flatMap(_void -> Trees.traverse(reference, new TrueFalseSimplifier()))
                 .flatMap(_void -> Trees.traverse(reference, new TrueFalseRemover(variable)))
-                .flatMap(_void -> Trees.traverse(reference, new TreeSimplifier())));
+                .flatMap(_void -> Trees.traverse(reference, new AndOrMerger())));
     }
 
     private List<Variable> getVariables(IFormula formula) {
