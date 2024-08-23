@@ -21,8 +21,7 @@
 package de.featjar.formula.cli;
 
 import de.featjar.base.FeatJAR;
-import de.featjar.base.cli.Flag;
-import de.featjar.base.cli.ICommand;
+import de.featjar.base.cli.ACommand;
 import de.featjar.base.cli.Option;
 import de.featjar.base.cli.OptionList;
 import de.featjar.base.io.IO;
@@ -31,8 +30,11 @@ import de.featjar.formula.io.FormulaFormats;
 import de.featjar.formula.io.textual.ExpressionSerializer;
 import de.featjar.formula.io.textual.Symbols;
 import de.featjar.formula.structure.IFormula;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -40,19 +42,19 @@ import java.util.Optional;
  *
  * @author Andreas Gerasimow
  */
-public class PrintCommand implements ICommand {
+public class PrintCommand extends ACommand {
 
     /**
      * Defines the tab string.
      */
-    public static final Option<String> TAB_OPTION = new Option<>("tab", Option.StringParser)
+    public static final Option<String> TAB_OPTION = Option.newOption("tab", Option.StringParser)
             .setDescription("Defines the tab string.")
             .setDefaultValue(ExpressionSerializer.STANDARD_TAB_STRING);
 
     /**
      * Defines the notation.
      */
-    public static final Option<ExpressionSerializer.Notation> NOTATION_OPTION = new Option<>(
+    public static final Option<ExpressionSerializer.Notation> NOTATION_OPTION = Option.newOption(
                     "notation", (arg) -> ExpressionSerializer.Notation.valueOf(arg.toUpperCase()))
             .setDescription("Defines the notation. Possible options: "
                     + Arrays.toString(ExpressionSerializer.Notation.values()))
@@ -61,14 +63,14 @@ public class PrintCommand implements ICommand {
     /**
      * Defines the separator string.
      */
-    public static final Option<String> SEPARATOR_OPTION = new Option<>("separator", Option.StringParser)
+    public static final Option<String> SEPARATOR_OPTION = Option.newOption("separator", Option.StringParser)
             .setDescription("Defines the separator string.")
             .setDefaultValue(ExpressionSerializer.STANDARD_SEPARATOR);
 
     /**
      * Defines the symbols.
      */
-    public static final Option<Symbols> SYMBOLS_OPTION = new Option<>("format", (arg) -> {
+    public static final Option<Symbols> SYMBOLS_OPTION = Option.newOption("format", (arg) -> {
                 try {
                     return (Symbols) Class.forName(arg).getField("INSTANCE").get(null);
                 } catch (IllegalAccessException | NoSuchFieldException | ClassNotFoundException e) {
@@ -82,36 +84,23 @@ public class PrintCommand implements ICommand {
     /**
      * Defines the new line string.
      */
-    public static final Option<String> NEW_LINE_OPTION = new Option<>("newline", Option.StringParser)
+    public static final Option<String> NEW_LINE_OPTION = Option.newOption("newline", Option.StringParser)
             .setDescription("Defines the new line string.")
             .setDefaultValue(ExpressionSerializer.STANDARD_NEW_LINE);
 
     /**
      * Enforces parentheses.
      */
-    public static final Option<Boolean> ENFORCE_PARENTHESES_OPTION = new Flag("enforce-parentheses")
+    public static final Option<Boolean> ENFORCE_PARENTHESES_OPTION = Option.newFlag("enforce-parentheses")
             .setDescription("Enforces parentheses.")
             .setDefaultValue(ExpressionSerializer.STANDARD_ENFORCE_PARENTHESES);
 
     /**
      * Enquotes whitespace.
      */
-    public static final Option<Boolean> ENQUOTE_WHITESPACE_OPTION = new Flag("enquote-whitespace")
+    public static final Option<Boolean> ENQUOTE_WHITESPACE_OPTION = Option.newFlag("enquote-whitespace")
             .setDescription("Enquotes whitespace.")
             .setDefaultValue(ExpressionSerializer.STANDARD_ENQUOTE_WHITESPACE);
-
-    @Override
-    public List<Option<?>> getOptions() {
-        return List.of(
-                INPUT_OPTION,
-                TAB_OPTION,
-                NOTATION_OPTION,
-                SEPARATOR_OPTION,
-                SYMBOLS_OPTION,
-                NEW_LINE_OPTION,
-                ENFORCE_PARENTHESES_OPTION,
-                ENQUOTE_WHITESPACE_OPTION);
-    }
 
     @Override
     public void run(OptionList optionParser) {
@@ -124,6 +113,7 @@ public class PrintCommand implements ICommand {
         boolean ep = optionParser.getResult(ENFORCE_PARENTHESES_OPTION).get();
         boolean ew = optionParser.getResult(ENQUOTE_WHITESPACE_OPTION).get();
 
+        Path outputPath = optionParser.getResult(OUTPUT_OPTION).orElse(null);
         IFormula formula = optionParser
                 .getResult(INPUT_OPTION)
                 .flatMap(p -> IO.load(p, FormulaFormats.getInstance()))
@@ -141,7 +131,23 @@ public class PrintCommand implements ICommand {
 
         if (formula != null) {
             String formulaString = Trees.traverse(formula, serializer).orElse("");
-            FeatJAR.log().message(formulaString);
+            if (outputPath == null) {
+                FeatJAR.log().message(formulaString);
+            } else {
+                try {
+                    if (Files.isDirectory(outputPath)) {
+                        FeatJAR.log().error(new IOException(outputPath.toString() + " is a directory"));
+                    } else {
+                        Files.write(
+                                outputPath,
+                                formulaString.getBytes(),
+                                StandardOpenOption.CREATE,
+                                StandardOpenOption.TRUNCATE_EXISTING);
+                    }
+                } catch (IOException e) {
+                    FeatJAR.log().error(e);
+                }
+            }
         }
     }
 

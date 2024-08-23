@@ -49,6 +49,10 @@ public class AAssignmentGroups<T extends IAssignment<?, ?>> {
         return assignmentGroups;
     }
 
+    public List<? extends T> getFirstGroup() {
+        return assignmentGroups.get(0);
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(assignmentGroups, variableMap);

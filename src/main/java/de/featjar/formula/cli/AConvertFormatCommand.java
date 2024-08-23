@@ -21,7 +21,7 @@
 package de.featjar.formula.cli;
 
 import de.featjar.base.FeatJAR;
-import de.featjar.base.cli.ICommand;
+import de.featjar.base.cli.ACommand;
 import de.featjar.base.cli.Option;
 import de.featjar.base.cli.OptionList;
 import de.featjar.base.data.Result;
@@ -32,26 +32,20 @@ import de.featjar.formula.structure.IFormula;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 
 /**
  * Converts the format of a given formula.
  *
  * @author Andreas Gerasimow
  */
-public abstract class AConvertFormatCommand implements ICommand {
+public abstract class AConvertFormatCommand extends ACommand {
 
     /**
      * Specifies output format.
      */
-    public static final Option<String> FORMAT_OPTION = new Option<>("format", Option.StringParser)
+    public static final Option<String> FORMAT_OPTION = Option.newOption("format", Option.StringParser)
             .setDescription("Specifies output format.")
             .setRequired(true);
-
-    @Override
-    public List<Option<?>> getOptions() {
-        return List.of(FORMAT_OPTION, INPUT_OPTION, OUTPUT_OPTION);
-    }
 
     @Override
     public void run(OptionList optionParser) {

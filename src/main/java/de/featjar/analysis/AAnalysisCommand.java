@@ -21,35 +21,34 @@
 package de.featjar.analysis;
 
 import de.featjar.base.FeatJAR;
-import de.featjar.base.cli.Flag;
-import de.featjar.base.cli.ICommand;
+import de.featjar.base.cli.ACommand;
 import de.featjar.base.cli.Option;
 import de.featjar.base.cli.OptionList;
 import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.IO;
+import de.featjar.base.io.format.IFormat;
 import de.featjar.base.io.graphviz.GraphVizComputationTreeFormat;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.time.Duration;
-import java.util.List;
 
 /**
  * Computes an analysis result for a formula.
  *
  * @param <T> the type of the analysis result
  */
-public abstract class AAnalysisCommand<T> implements ICommand {
+public abstract class AAnalysisCommand<T> extends ACommand {
 
     public static final Option<Boolean> BROWSE_CACHE_OPTION =
-            new Flag("browse-cache").setDescription("Show cache contents in default browser");
+            Option.newFlag("browse-cache").setDescription("Show cache contents in default browser");
 
-    public static final Option<Boolean> NON_PARALLEL = new Flag("non-parallel") //
+    public static final Option<Boolean> NON_PARALLEL = Option.newFlag("non-parallel") //
             .setDescription("Disable parallel computation. Is overridden by timeout option");
 
-    public static final Option<Duration> TIMEOUT_OPTION = new Option<>(
+    public static final Option<Duration> TIMEOUT_OPTION = Option.newOption(
                     "timeout", s -> Duration.ofSeconds(Long.parseLong(s)))
             .setDescription("Timeout in seconds")
             .setValidator(timeout -> !timeout.isNegative())
@@ -58,15 +57,8 @@ public abstract class AAnalysisCommand<T> implements ICommand {
     /**
      * Output option for execution time.
      */
-    public static final Option<Path> TIME_OPTION = new Option<>("write-time-to-file", Option.PathParser)
+    public static final Option<Path> TIME_OPTION = Option.newOption("write-time-to-file", Option.PathParser)
             .setDescription("Path to file containig the execution time");
-
-    protected OptionList optionParser;
-
-    @Override
-    public List<Option<?>> getOptions() {
-        return List.of(INPUT_OPTION, BROWSE_CACHE_OPTION, NON_PARALLEL, TIME_OPTION, TIMEOUT_OPTION, OUTPUT_OPTION);
-    }
 
     @Override
     public void run(OptionList optionParser) {
@@ -143,8 +135,33 @@ public abstract class AAnalysisCommand<T> implements ICommand {
 
     protected abstract IComputation<T> newComputation();
 
+    @SuppressWarnings({"rawtypes", "unchecked"})
     protected boolean writeToOutputFile(T result, Path outputPath) {
+        try {
+            Object ouputObject = getOuputObject(result);
+            if (ouputObject == null) {
+                return false;
+            }
+
+            IFormat ouputFormat = getOuputFormat();
+            if (ouputFormat == null) {
+                return false;
+            }
+
+            IO.save(ouputObject, outputPath, ouputFormat);
+            return true;
+        } catch (IOException e) {
+            FeatJAR.log().error(e);
+        }
         return false;
+    }
+
+    protected Object getOuputObject(T result) {
+        return result;
+    }
+
+    protected IFormat<?> getOuputFormat() {
+        return null;
     }
 
     protected String serializeResult(T result) {

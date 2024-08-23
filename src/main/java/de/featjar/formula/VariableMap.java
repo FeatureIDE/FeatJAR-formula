@@ -117,6 +117,10 @@ public class VariableMap extends RangeMap<String> {
         return stream().map(Pair::getKey).collect(Collectors.toList());
     }
 
+    public List<Integer> getVariableIndices(List<String> names) {
+        return stream(names).collect(Collectors.toList());
+    }
+
     public int getVariableCount() {
         return getVariableNames().size();
     }
