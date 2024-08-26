@@ -25,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import de.featjar.base.computation.Computations;
 import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
+import de.featjar.formula.structure.Expressions;
 import de.featjar.formula.structure.IFormula;
 import java.util.function.Function;
 
@@ -44,10 +45,12 @@ class TransformationTest {
         Result<IFormula> result =
                 formulaComputationFunction.apply(Computations.of(oldFormula)).get();
         assertTrue(result.isPresent());
-        System.out.println(oldFormula.print());
-        System.out.println(result.get().print());
-        assertNotEquals(oldFormula, result.get());
-        assertEquals(assertFormula, result.get());
+        assertNotEquals(
+                oldFormula, result.get(), Expressions.print(oldFormula) + "!=\n" + Expressions.print(result.get()));
+        assertEquals(
+                assertFormula,
+                result.get(),
+                Expressions.print(assertFormula) + "!=\n" + Expressions.print(result.get()));
     }
 
     public static void traverseAndAssertFail(

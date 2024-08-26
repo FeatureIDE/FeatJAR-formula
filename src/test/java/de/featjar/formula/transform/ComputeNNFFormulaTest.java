@@ -61,7 +61,6 @@ class ComputeNNFFormulaTest {
                 and(literal(false, "a"), literal(false, "b"), literal("c")));
         nnf(
                 and(True, and(True, and(True), or(False), or(True, False)), literal("x")),
-                and(or(), or(literal("x"), literal(false, "x")), literal("x")) // todo: also remove empty or
-                );
+                and(literal("x"), literal(false, "x")));
     }
 }

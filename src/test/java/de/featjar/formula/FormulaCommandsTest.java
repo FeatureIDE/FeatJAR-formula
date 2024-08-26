@@ -20,7 +20,7 @@
  */
 package de.featjar.formula;
 
-import de.featjar.base.ProcessOutput;
+import de.featjar.base.FeatJAR;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -28,37 +28,62 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class FormulaCommandsTest {
-    private static final String jarString = "java -jar build/libs/formula-0.1.1-SNAPSHOT-all.jar";
 
     @Test
     void testConvertFormatCommand() throws IOException {
-        String testFile =
-                new String(Files.readAllBytes(Path.of("./src/test/resources/testConvertFormatCommand.dimacs")));
-        ProcessOutput output = ProcessOutput.runProcess(
-                jarString
-                        + " convert-format --input ../formula/src/testFixtures/resources/GPL/model.xml --format de.featjar.formula.io.dimacs.FormulaDimacsFormat");
-        Assertions.assertTrue(output.getErrorString().isBlank());
-        Assertions.assertEquals(testFile.trim(), output.getOutputString().trim().substring(30));
+        Path tempFile = Files.createTempFile("featJarTest", ".txt");
+        int exitCode = FeatJAR.run(
+                "convert-format",
+                "--input",
+                "src/testFixtures/resources/GPL/model.xml",
+                "--format",
+                "de.featjar.formula.io.dimacs.FormulaDimacsFormat",
+                "--output",
+                tempFile.toString());
+        Assertions.assertEquals(0, exitCode);
+        Assertions.assertEquals(
+                Files.readString(Path.of("./src/test/resources/testConvertFormatCommand.dimacs")),
+                Files.readString(tempFile));
     }
 
     @Test
     void testConvertCNFFormatCommand() throws IOException {
-        String testFile =
-                new String(Files.readAllBytes(Path.of("./src/test/resources/testConvertFormatCommand.dimacs")));
-        ProcessOutput output = ProcessOutput.runProcess(
-                jarString
-                        + " convert-cnf-format --input ../formula/src/testFixtures/resources/GPL/model.xml --format de.featjar.formula.io.dimacs.FormulaDimacsFormat");
-        Assertions.assertTrue(output.getErrorString().isBlank());
-        Assertions.assertEquals(testFile.trim(), output.getOutputString().trim().substring(30));
+        Path tempFile = Files.createTempFile("featJarTest", ".txt");
+        int exitCode = FeatJAR.run(
+                "convert-cnf-format",
+                "--input",
+                "src/testFixtures/resources/GPL/model.xml",
+                "--format",
+                "de.featjar.formula.io.dimacs.FormulaDimacsFormat",
+                "--output",
+                tempFile.toString());
+        Assertions.assertEquals(0, exitCode);
+        Assertions.assertEquals(
+                Files.readString(Path.of("./src/test/resources/testConvertFormatCommand.dimacs")),
+                Files.readString(tempFile));
     }
 
     @Test
     void testPrintCommand() throws IOException {
-        String testFile = new String(Files.readAllBytes(Path.of("./src/test/resources/testPrintCommand")));
-        ProcessOutput output = ProcessOutput.runProcess(
-                jarString
-                        + " print --input ../formula/src/testFixtures/resources/GPL/model.xml --tab TAB --notation PREFIX --format de.featjar.formula.io.textual.JavaSymbols --newline NEWLINE --enforce-parentheses --enquote-whitespace");
-        Assertions.assertTrue(output.getErrorString().isBlank());
-        Assertions.assertEquals(testFile.trim(), output.getOutputString().trim().substring(30));
+        Path tempFile = Files.createTempFile("featJarTest", ".txt");
+        int exitCode = FeatJAR.run(
+                "print",
+                "--input",
+                "../formula/src/testFixtures/resources/GPL/model.xml",
+                "--tab",
+                "TAB",
+                "--notation",
+                "PREFIX",
+                "--format",
+                "de.featjar.formula.io.textual.JavaSymbols",
+                "--newline",
+                "NEWLINE",
+                "--enforce-parentheses",
+                "--enquote-whitespace",
+                "--output",
+                tempFile.toString());
+        Assertions.assertEquals(0, exitCode);
+        Assertions.assertEquals(
+                Files.readString(Path.of("./src/test/resources/testPrintCommand")), Files.readString(tempFile));
     }
 }
