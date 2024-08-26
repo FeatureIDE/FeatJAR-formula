@@ -78,7 +78,7 @@ public class TrueFalseSimplifier implements ITreeVisitor<IFormula, Void> {
         } else {
             child.flatReplaceChildren((child2) -> child2 instanceof True ? new ArrayList<>() : null);
         }
-        return null;
+        return (child.getChildrenCount() == 0) ? Expressions.True : null;
     }
 
     public IExpression simplifyOr(IExpression child) {
@@ -87,10 +87,11 @@ public class TrueFalseSimplifier implements ITreeVisitor<IFormula, Void> {
         } else {
             child.flatReplaceChildren((child2) -> child2 instanceof False ? new ArrayList<>() : null);
         }
-        return null;
+        return (child.getChildrenCount() == 0) ? Expressions.False : null;
     }
 
     private IExpression simplifyImplies(final IExpression child) {
+        assert child.getChildrenCount() == 2;
         if (child.getChildren().get(0) instanceof False) {
             return True.INSTANCE;
         } else if (child.getChildren().get(0) instanceof True) {
@@ -107,6 +108,7 @@ public class TrueFalseSimplifier implements ITreeVisitor<IFormula, Void> {
     }
 
     private IExpression simplifyBiImplies(final IExpression child) {
+        assert child.getChildrenCount() == 2;
         if ((child.getChildren().get(0) instanceof False && child.getChildren().get(1) instanceof True)
                 || (child.getChildren().get(0) instanceof True
                         && child.getChildren().get(1) instanceof False)) {
