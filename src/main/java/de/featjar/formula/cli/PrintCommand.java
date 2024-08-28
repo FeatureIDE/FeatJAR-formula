@@ -44,12 +44,32 @@ import java.util.Optional;
  */
 public class PrintCommand extends ACommand {
 
+    public enum WhitespaceString {
+        TAB(ExpressionSerializer.STANDARD_TAB_STRING),
+        NEWLINE(ExpressionSerializer.STANDARD_NEW_LINE),
+        SPACE(" ");
+
+        private final String whitespaceValue;
+
+        WhitespaceString(String value) {
+            this.whitespaceValue = value;
+        }
+
+        public String getWhitespaceValue() {
+            return whitespaceValue;
+        }
+    }
+
+    public static final String CUSTOM_STRING_PREFIX = "CUSTOM:";
+
     /**
      * Defines the tab string.
      */
     public static final Option<String> TAB_OPTION = Option.newOption("tab", Option.StringParser)
-            .setDescription("Defines the tab string.")
-            .setDefaultValue(ExpressionSerializer.STANDARD_TAB_STRING);
+            .setDescription("Defines the tab value. Possible options: "
+                    + Arrays.toString(WhitespaceString.values())
+                    + ". For custom value, type " + CUSTOM_STRING_PREFIX + "<value>")
+            .setDefaultValue(WhitespaceString.TAB.toString());
 
     /**
      * Defines the notation.
@@ -59,13 +79,6 @@ public class PrintCommand extends ACommand {
             .setDescription("Defines the notation. Possible options: "
                     + Arrays.toString(ExpressionSerializer.Notation.values()))
             .setDefaultValue(ExpressionSerializer.STANDARD_NOTATION);
-
-    /**
-     * Defines the separator string.
-     */
-    public static final Option<String> SEPARATOR_OPTION = Option.newOption("separator", Option.StringParser)
-            .setDescription("Defines the separator string.")
-            .setDefaultValue(ExpressionSerializer.STANDARD_SEPARATOR);
 
     /**
      * Defines the symbols.
@@ -85,8 +98,10 @@ public class PrintCommand extends ACommand {
      * Defines the new line string.
      */
     public static final Option<String> NEW_LINE_OPTION = Option.newOption("newline", Option.StringParser)
-            .setDescription("Defines the new line string.")
-            .setDefaultValue(ExpressionSerializer.STANDARD_NEW_LINE);
+            .setDescription("Defines the new line value. Possible options: "
+                    + Arrays.toString(WhitespaceString.values())
+                    + ". For custom value, type " + CUSTOM_STRING_PREFIX + "<value>")
+            .setDefaultValue(WhitespaceString.NEWLINE.toString());
 
     /**
      * Enforces parentheses.
@@ -107,7 +122,6 @@ public class PrintCommand extends ACommand {
         String tab = optionParser.getResult(TAB_OPTION).get();
         ExpressionSerializer.Notation notation =
                 optionParser.getResult(NOTATION_OPTION).get();
-        String separator = optionParser.getResult(SEPARATOR_OPTION).get();
         Symbols symbols = optionParser.getResult(SYMBOLS_OPTION).get();
         String newLine = optionParser.getResult(NEW_LINE_OPTION).get();
         boolean ep = optionParser.getResult(ENFORCE_PARENTHESES_OPTION).get();
@@ -121,9 +135,15 @@ public class PrintCommand extends ACommand {
 
         ExpressionSerializer serializer = new ExpressionSerializer();
 
+        tab = getWhitespaceString(tab);
+        newLine = getWhitespaceString(newLine);
+
+        if (tab == null || newLine == null) {
+            return;
+        }
+
         serializer.setTab(tab);
         serializer.setNotation(notation);
-        serializer.setSeparator(separator);
         serializer.setSymbols(symbols);
         serializer.setNewLine(newLine);
         serializer.setEnforceParentheses(ep);
@@ -148,6 +168,19 @@ public class PrintCommand extends ACommand {
                     FeatJAR.log().error(e);
                 }
             }
+        }
+    }
+
+    public String getWhitespaceString(String input) {
+        try {
+            WhitespaceString ws = WhitespaceString.valueOf(input);
+            return ws.getWhitespaceValue();
+        } catch (IllegalArgumentException e) {
+            if (!input.startsWith(CUSTOM_STRING_PREFIX)) {
+                FeatJAR.log().error("Illegal string: " + input);
+                return null;
+            }
+            return input.substring(CUSTOM_STRING_PREFIX.length());
         }
     }
 

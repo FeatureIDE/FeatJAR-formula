@@ -111,6 +111,11 @@ public class Symbols {
         properties.infix = infix;
     }
 
+    @Override
+    public String toString() {
+        return getClass().getName() + ": " + symbolToOperator.keySet();
+    }
+
     public boolean hasPrefix(String prefix) {
         return operatorNames.hasPrefix(prefix);
     }
@@ -135,7 +140,7 @@ public class Symbols {
                 .orElse(operator.getName());
     }
 
-    public Result<String> getSymbol(Class<? extends IExpression> operator) {
+    public Result<String> getSymbolResult(Class<? extends IExpression> operator) {
         return Result.ofNullable(operatorToProperties.get(operator)).map(p -> p.name);
     }
 

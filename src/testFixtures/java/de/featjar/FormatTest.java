@@ -20,74 +20,117 @@
  */
 package de.featjar;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 import de.featjar.base.data.Result;
 import de.featjar.base.io.IO;
 import de.featjar.base.io.format.IFormat;
-import de.featjar.base.io.format.IFormatSupplier;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.jupiter.api.Assertions;
 
 /**
  * Tests formats.
  *
  * @author Sebastian Krieter
+ * @author Andreas Gerasimow
  */
 public class FormatTest {
 
-    public static <T> void testLoad(T expression1, String name, int count, IFormat<T> format) {
+    public static <T> void testParse(T expression1, String name, int count, IFormat<T> format) {
         assertEquals(format.getClass().getCanonicalName(), format.getIdentifier());
         assertTrue(format.supportsParse());
-        assertFalse(format.supportsSerialize());
-
-        for (final T expression2 : getFileList(name, format, count)) {
-            compare(expression1, expression2);
+        for (final T expression2 : getFileList(name, count, format)) {
+            assertEquals(expression1, expression2);
         }
     }
 
-    public static <T> void testSaveAndLoad(T expression1, String name, IFormat<T> format) {
+    public static <T> void testSerialize(T expression1, String name, IFormat<T> format) {
         assertEquals(format.getClass().getCanonicalName(), format.getIdentifier());
-        assertTrue(format.supportsParse());
         assertTrue(format.supportsSerialize());
-        final T expression3 = saveAndLoad(expression1, format);
-        compare(expression1, expression3);
+        final byte[] serializeOutput = serialize(expression1, format);
+        final byte[][] byteArrays = getByteArrays(name, 1, format);
+        assertEquals(1, byteArrays.length);
+        final byte[] parseInput = byteArrays[0];
+        assertArrayEquals(serializeOutput, parseInput);
     }
 
-    public static <T> void testLoadAndSave(T expression1, String name, int count, IFormat<T> format) {
+    public static <T> void testSerializeAndParse(T expression1, IFormat<T> format) {
         assertEquals(format.getClass().getCanonicalName(), format.getIdentifier());
         assertTrue(format.supportsParse());
         assertTrue(format.supportsSerialize());
-        final T expression3 = saveAndLoad(expression1, format);
-        for (final T expression2 : getFileList(name, format, count)) {
-            final T expression4 = saveAndLoad(expression2, format);
-            compare(expression1, expression2);
-            compare(expression1, expression3);
-            compare(expression1, expression4);
-            compare(expression2, expression3);
-            compare(expression2, expression4);
-            compare(expression3, expression4);
+        final T expression2 = saveAndLoad(expression1, format);
+        assertEquals(expression1, expression2);
+    }
+
+    public static <T> void testParseAndSerialize(String name, IFormat<T> format) {
+        assertEquals(format.getClass().getCanonicalName(), format.getIdentifier());
+        assertTrue(format.supportsParse());
+        assertTrue(format.supportsSerialize());
+
+        // parse
+        final byte[][] byteArrays = getByteArrays(name, 1, format);
+        assertEquals(1, byteArrays.length);
+        final byte[] parseInput = byteArrays[0];
+        final Result<T> result = IO.load(new ByteArrayInputStream(parseInput), format, StandardCharsets.UTF_8);
+        assertNotNull(result);
+        T obj = result.get();
+
+        // serialize
+        final byte[] serializeOutput = serialize(obj, format);
+
+        System.out.println(new String(parseInput));
+        System.out.println(new String(serializeOutput));
+
+        assertArrayEquals(parseInput, serializeOutput);
+    }
+
+    private static <T> byte[] serialize(T object, IFormat<T> format) {
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try {
+            IO.save(object, out, format);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
+        return out.toByteArray();
     }
 
-    private static <T> List<T> getFileList(String name, IFormat<T> format, int count) {
+    private static <T> byte[][] getByteArrays(String name, int count, IFormat<T> format) {
+        byte[][] result = new byte[count][];
+        for (int i = 1; i <= count; i++) {
+            URL systemResource = ClassLoader.getSystemResource(
+                    String.format("formats/%s_%02d.%s", name, i, format.getFileExtension()));
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            try (InputStream stream = systemResource.openStream()) {
+                byte[] buffer = new byte[1024];
+                int n;
+                while ((n = stream.read(buffer)) != -1) {
+                    baos.write(buffer, 0, n);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                Assertions.fail();
+            }
+            result[i - 1] = baos.toByteArray();
+        }
+        return result;
+    }
+
+    private static <T> List<T> getFileList(String name, int count, IFormat<T> format) {
         ArrayList<T> list = new ArrayList<>(count);
         for (int i = 1; i <= count; i++) {
-            list.add(Common.load(String.format("formats/%s_%02d", name, i), IFormatSupplier.of(format)));
+            URL systemResource = ClassLoader.getSystemResource(
+                    String.format("formats/%s_%02d.%s", name, i, format.getFileExtension()));
+            Result<T> result = IO.load(systemResource, format);
+            assertNotNull(result);
+            list.add(result.get());
         }
         assertFalse(list.isEmpty());
         return list;
-    }
-
-    private static void compare(final Object expression1, final Object expression2) {
-        assertEquals(expression1, expression2, "Objects are different");
     }
 
     private static <T> T saveAndLoad(T object, IFormat<T> format) {

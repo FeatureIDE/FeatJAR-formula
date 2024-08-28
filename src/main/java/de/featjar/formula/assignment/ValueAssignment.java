@@ -33,6 +33,18 @@ import java.util.LinkedHashMap;
 public class ValueAssignment extends AValueAssignment {
     public ValueAssignment() {}
 
+    public ValueAssignment(Assignment assignment, VariableMap map) {
+        super();
+        assignment.getAll().forEach((key, value) -> {
+            Result<Integer> index = map.get(key);
+
+            if (index.isEmpty()) {
+                throw new IllegalArgumentException("Variable " + key + " does not exist in the variable map.");
+            }
+            variableValuePairs.put(index.get(), value);
+        });
+    }
+
     public ValueAssignment(LinkedHashMap<Integer, Object> variableValuePairs) {
         super(variableValuePairs);
     }

@@ -24,39 +24,45 @@ import static de.featjar.formula.structure.Expressions.*;
 
 import org.junit.jupiter.api.Test;
 
-class AndOrSimplifierTest {
+class TreeSimplifierTest {
     @Test
     void doesNothingForTautology() {
-        VisitorTest.traverseAndAssertSameFormula(or(literal("x"), not(literal("x"))), new AndOrSimplifier());
+        VisitorTest.traverseAndAssertSameFormula(or(literal("x"), not(literal("x"))), new TreeSimplifier());
     }
 
     @Test
-    void nothingHappensForContradiction() {
-        VisitorTest.traverseAndAssertSameFormula(and(literal("x"), not(literal("x"))), new AndOrSimplifier());
+    void doesNothingForContradiction() {
+        VisitorTest.traverseAndAssertSameFormula(and(literal("x"), not(literal("x"))), new TreeSimplifier());
     }
 
     @Test
     void simplifiesUnaryOr() {
         VisitorTest.traverseAndAssertFormulaEquals(
-                and(literal("x"), or(literal("x"))), new AndOrSimplifier(), and(literal("x"), literal("x")));
+                and(literal("x"), or(literal("x"))), new TreeSimplifier(), and(literal("x"), literal("x")));
     }
 
     @Test
     void simplifiesUnaryAnd() {
         VisitorTest.traverseAndAssertFormulaEquals(
-                or(literal("x"), and(literal("x"))), new AndOrSimplifier(), or(literal("x"), literal("x")));
+                or(literal("x"), and(literal("x"))), new TreeSimplifier(), or(literal("x"), literal("x")));
     }
 
     @Test
     void mergesAnd() {
         VisitorTest.traverseAndAssertFormulaEquals(
-                and(literal("x"), and(literal("x"))), new AndOrSimplifier(), and(literal("x"), literal("x")));
+                and(literal("x"), and(literal("x"))), new TreeSimplifier(), and(literal("x"), literal("x")));
     }
 
     @Test
     void mergesOr() {
         VisitorTest.traverseAndAssertFormulaEquals(
-                or(literal("x"), or(literal("x"))), new AndOrSimplifier(), or(literal("x"), literal("x")));
+                or(literal("x"), or(literal("x"))), new TreeSimplifier(), or(literal("x"), literal("x")));
+    }
+
+    @Test
+    void simplifiesNot() {
+        VisitorTest.traverseAndAssertFormulaEquals(not(not(literal("x"))), new TreeSimplifier(), literal("x"));
+        VisitorTest.traverseAndAssertSameFormula(not(literal("x")), new TreeSimplifier());
     }
 
     @Test
@@ -64,10 +70,19 @@ class AndOrSimplifierTest {
         VisitorTest.traverseAndAssertFormulaEquals(
                 and(
                         literal("a"),
+                        not(not(literal("y"))),
                         and(literal("b"), literal("c"), True),
                         and(literal("b"), False),
                         or(literal("x"), False)),
-                new AndOrSimplifier(),
-                and(literal("a"), literal("b"), literal("c"), True, literal("b"), False, or(literal("x"), False)));
+                new TreeSimplifier(),
+                and(
+                        literal("a"),
+                        literal("y"),
+                        literal("b"),
+                        literal("c"),
+                        True,
+                        literal("b"),
+                        False,
+                        or(literal("x"), False)));
     }
 }

@@ -20,11 +20,10 @@
  */
 package de.featjar.formula.io.xml;
 
-import static de.featjar.base.computation.Computations.*;
+import static de.featjar.base.computation.Computations.async;
 
 import de.featjar.base.data.Result;
 import de.featjar.base.io.format.ParseException;
-import de.featjar.base.tree.Trees;
 import de.featjar.formula.computation.ComputeCNFFormula;
 import de.featjar.formula.computation.ComputeNNFFormula;
 import de.featjar.formula.structure.IFormula;
@@ -34,9 +33,7 @@ import de.featjar.formula.structure.connective.Or;
 import de.featjar.formula.structure.connective.Reference;
 import de.featjar.formula.structure.predicate.Literal;
 import de.featjar.formula.structure.term.value.Variable;
-import de.featjar.formula.visitor.AndOrSimplifier;
 import de.featjar.formula.visitor.ConnectiveSimplifier;
-import de.featjar.formula.visitor.DeMorganApplier;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -116,12 +113,5 @@ public class XMLFeatureModelCNFFormulaFormat extends XMLFeatureModelFormulaForma
         list.add(f.invert());
         list.addAll(parseFeatures);
         return new Or(list);
-    }
-
-    private static IFormula simplify(IFormula formula) {
-        // TODO: error handling
-        Trees.traverse(formula, new DeMorganApplier());
-        Trees.traverse(formula, new AndOrSimplifier());
-        return formula;
     }
 }

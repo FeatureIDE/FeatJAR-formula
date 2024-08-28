@@ -20,11 +20,7 @@
  */
 package de.featjar;
 
-import static de.featjar.formula.structure.Expressions.and;
-import static de.featjar.formula.structure.Expressions.literal;
-import static de.featjar.formula.structure.Expressions.not;
-import static de.featjar.formula.structure.Expressions.or;
-import static de.featjar.formula.structure.Expressions.reference;
+import static de.featjar.formula.structure.Expressions.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -97,6 +93,18 @@ public class Common {
                 return reference(and(
                         or(literal("A"), literal("B"), literal("C")),
                         or(not(literal("A")), or(not(literal("B")), not(literal("C"))))));
+            }
+            case "Root-ABC-nAnBnC": {
+                return reference(and(
+                        literal("Root"),
+                        implies(literal("A"), literal("Root")),
+                        implies(literal("B"), literal("Root")),
+                        implies(literal("C"), literal("Root")),
+                        implies(literal("Root"), or(literal("A"), literal("B"), literal("C"))),
+                        or(not(literal("A")), or(not(literal("B")), not(literal("C"))))));
+            }
+            case "A": {
+                return reference(literal("A"));
             }
             case "nA": {
                 return reference(not(literal("A")));
