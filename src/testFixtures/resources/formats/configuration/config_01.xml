@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<better-configuration>
+	<feature automatic="false" manual="true" name="f3" type="java.lang.String" value="a"/>
+	<feature automatic="true" manual="false" name="f8" type="java.lang.Boolean" value="true"/>
+	<feature automatic="false" manual="true" name="f5" type="java.lang.Float" value="3.0"/>
+	<feature automatic="false" manual="true" name="f1" type="java.lang.Integer" value="1"/>
+	<feature automatic="true" manual="false" name="f4" type="java.lang.String" value="b"/>
+	<feature automatic="false" manual="true" name="f7" type="java.lang.Boolean" value="false"/>
+	<feature automatic="true" manual="false" name="f10" type="java.lang.Boolean" value="false"/>
+	<feature automatic="true" manual="false" name="f2" type="java.lang.Integer" value="2"/>
+	<feature automatic="false" manual="true" name="f9" type="java.lang.Boolean" value="true"/>
+	<feature automatic="true" manual="false" name="f6" type="java.lang.Float" value="4.0"/>
+</better-configuration>
