@@ -22,6 +22,7 @@ package de.featjar.formula.structure.predicate;
 
 import de.featjar.formula.structure.ATerminalExpression;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Expresses a tautology.
@@ -41,8 +42,8 @@ public class True extends ATerminalExpression implements IPolarPredicate {
     }
 
     @Override
-    public Boolean evaluate(List<?> values) {
-        return Boolean.TRUE;
+    public Optional<Boolean> evaluate(List<?> values) {
+        return Optional.of(Boolean.TRUE);
     }
 
     @Override

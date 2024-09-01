@@ -38,6 +38,8 @@ import java.util.Collection;
  */
 public class BooleanSolution extends ABooleanAssignment implements ISolution<Integer, Boolean> {
 
+    private static final long serialVersionUID = -6609620937538213007L;
+
     public BooleanSolution(int... integers) {
         this(integers, true);
     }

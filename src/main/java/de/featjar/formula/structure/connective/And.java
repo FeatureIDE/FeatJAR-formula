@@ -23,6 +23,7 @@ package de.featjar.formula.structure.connective;
 import de.featjar.formula.structure.ANonTerminalExpression;
 import de.featjar.formula.structure.IFormula;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Expresses "A and B" constraints (i.e., conjunction).
@@ -47,11 +48,13 @@ public class And extends ANonTerminalExpression implements IConnective {
     }
 
     @Override
-    public Object evaluate(List<?> values) {
+    public Optional<Boolean> evaluate(List<?> values) {
         if (values.stream().anyMatch(v -> Boolean.FALSE.equals(v))) {
-            return Boolean.FALSE;
+            return Optional.of(Boolean.FALSE);
         }
-        return values.stream().filter(v -> Boolean.TRUE.equals(v)).count() == getChildrenCount() ? Boolean.TRUE : null;
+        return values.stream().filter(v -> Boolean.TRUE.equals(v)).count() == getChildrenCount()
+                ? Optional.of(Boolean.TRUE)
+                : Optional.empty();
     }
 
     @Override

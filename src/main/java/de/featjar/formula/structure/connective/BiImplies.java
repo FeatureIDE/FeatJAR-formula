@@ -24,6 +24,7 @@ import de.featjar.formula.structure.ANonTerminalExpression;
 import de.featjar.formula.structure.IBinaryExpression;
 import de.featjar.formula.structure.IFormula;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Expresses "A iff B" constraints (i.e., bi-implication).
@@ -49,13 +50,10 @@ public class BiImplies extends ANonTerminalExpression implements IConnective, IB
     }
 
     @Override
-    public Object evaluate(List<?> values) {
+    public Optional<Boolean> evaluate(List<?> values) {
         Object a = values.get(0);
         Object b = values.get(1);
-        if (a == null || b == null) {
-            return null;
-        }
-        return (boolean) a == (boolean) b;
+        return (a != null && b != null) ? Optional.of((boolean) a == (boolean) b) : Optional.empty();
     }
 
     @Override

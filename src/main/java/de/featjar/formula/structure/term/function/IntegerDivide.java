@@ -22,6 +22,7 @@ package de.featjar.formula.structure.term.function;
 
 import de.featjar.formula.structure.term.ITerm;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Divides the values of two integer terms.
@@ -51,8 +52,8 @@ public class IntegerDivide extends ADivide {
     }
 
     @Override
-    public Long evaluate(List<?> values) {
-        return IFunction.reduce(values, (a, b) -> a / b);
+    public Optional<Long> evaluate(List<?> values) {
+        return Optional.ofNullable(IFunction.reduce(values, (a, b) -> a / b));
     }
 
     @Override

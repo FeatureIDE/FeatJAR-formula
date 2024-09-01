@@ -31,6 +31,7 @@ import de.featjar.formula.io.textual.ExpressionSerializer;
 import de.featjar.formula.io.textual.Symbols;
 import de.featjar.formula.structure.IFormula;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -160,7 +161,7 @@ public class PrintCommand extends ACommand {
                     } else {
                         Files.write(
                                 outputPath,
-                                formulaString.getBytes(),
+                                formulaString.getBytes(StandardCharsets.UTF_8),
                                 StandardOpenOption.CREATE,
                                 StandardOpenOption.TRUNCATE_EXISTING);
                     }

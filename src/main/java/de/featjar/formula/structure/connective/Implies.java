@@ -24,6 +24,7 @@ import de.featjar.formula.structure.ANonTerminalExpression;
 import de.featjar.formula.structure.IBinaryExpression;
 import de.featjar.formula.structure.IFormula;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Expresses "if A, then B" constraints (i.e., implication).
@@ -50,8 +51,12 @@ public class Implies extends ANonTerminalExpression implements IConnective, IBin
     }
 
     @Override
-    public Object evaluate(List<?> values) {
-        return !(boolean) values.get(0) || (boolean) values.get(1);
+    public Optional<Boolean> evaluate(List<?> values) {
+        Object a = values.get(0);
+        Object b = values.get(1);
+        return (Boolean.FALSE.equals(a) || Boolean.TRUE.equals(b))
+                ? Optional.of(Boolean.TRUE)
+                : (Boolean.TRUE.equals(a) && Boolean.FALSE.equals(b)) ? Optional.of(Boolean.FALSE) : Optional.empty();
     }
 
     @Override

@@ -27,6 +27,7 @@ import de.featjar.formula.structure.IUnaryExpression;
 import de.featjar.formula.structure.term.value.Variable;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Expresses quantified Boolean formulas.
@@ -56,8 +57,8 @@ public abstract class AQuantifier extends ANonTerminalExpression implements ICon
     }
 
     @Override
-    public Object evaluate(List<?> values) {
-        return null; // TODO
+    public Optional<?> evaluate(List<?> values) {
+        return Optional.empty(); // TODO
     }
 
     @Override

@@ -132,7 +132,9 @@ public class AnalysisTest extends Common {
                 Computations.of(cnf).map(analysis).computeResult().map(VariableMap::toValue);
         assertTrue(resultOfcomputedSolution.isPresent(), resultOfcomputedSolution::printProblems);
 
-        assertEquals(Boolean.TRUE, formula.evaluate(resultOfcomputedSolution.get(), variableMap));
+        assertEquals(
+                Boolean.TRUE,
+                formula.evaluate(resultOfcomputedSolution.get(), variableMap).orElseThrow());
     }
 
     private static <T> void computeAndCompareCore(

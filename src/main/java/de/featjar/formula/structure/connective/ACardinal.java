@@ -27,6 +27,7 @@ import de.featjar.formula.structure.IFormula;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Expresses cardinality constraints.
@@ -73,17 +74,17 @@ public abstract class ACardinal extends ANonTerminalExpression implements IConne
     }
 
     @Override
-    public Object evaluate(List<?> values) {
+    public Optional<Boolean> evaluate(List<?> values) {
         final int trueCount =
                 (int) values.stream().filter(v -> Boolean.TRUE.equals(v)).count();
         final int nullCount = (int) values.stream().filter(Objects::isNull).count();
         if (!range.testLowerBound(trueCount + nullCount) || !range.testUpperBound(trueCount)) {
-            return Boolean.FALSE;
+            return Optional.of(Boolean.FALSE);
         }
         if (range.testLowerBound(trueCount) && range.testUpperBound(trueCount + nullCount)) {
-            return Boolean.TRUE;
+            return Optional.of(Boolean.TRUE);
         }
-        return null;
+        return Optional.empty();
     }
 
     @Override

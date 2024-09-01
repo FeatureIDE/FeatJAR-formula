@@ -28,6 +28,7 @@ import de.featjar.formula.structure.term.value.Variable;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Given a variable assignment, evaluates a formula.
@@ -35,7 +36,7 @@ import java.util.List;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class Evaluator implements ITreeVisitor<IExpression, Object> {
+public class Evaluator implements ITreeVisitor<IExpression, Optional<Object>> {
     private final LinkedList<Object> values = new LinkedList<>();
 
     private final IAssignment<String, Object> valueAssignment;
@@ -59,8 +60,8 @@ public class Evaluator implements ITreeVisitor<IExpression, Object> {
     }
 
     @Override
-    public Result<Object> getResult() {
-        return Result.ofNullable(values.peek());
+    public Result<Optional<Object>> getResult() {
+        return Result.ofNullable(Optional.ofNullable(values.peek()));
     }
 
     @Override
@@ -86,7 +87,7 @@ public class Evaluator implements ITreeVisitor<IExpression, Object> {
         } else {
             final List<Object> arguments = values.subList(0, expression.getChildrenCount());
             Collections.reverse(arguments);
-            final Object value = expression.evaluate(arguments);
+            final Object value = expression.evaluate(arguments).orElse(null);
             arguments.clear();
             values.push(value);
         }

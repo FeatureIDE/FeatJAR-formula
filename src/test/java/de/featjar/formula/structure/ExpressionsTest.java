@@ -28,7 +28,6 @@ import static de.featjar.formula.structure.Expressions.not;
 import static de.featjar.formula.structure.Expressions.or;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.featjar.formula.assignment.Assignment;
@@ -40,18 +39,18 @@ class ExpressionsTest {
     void _true() {
         assertEquals("true", True.toString());
         assertEquals("true", True.printParseable());
-        assertTrue((Boolean) True.evaluate());
-        assertTrue((Boolean) or(literal("x"), True).evaluate());
-        assertNull(and(literal("x"), True).evaluate());
+        assertEquals(Boolean.TRUE, True.evaluate().orElseThrow());
+        assertEquals(Boolean.TRUE, or(literal("x"), True).evaluate().orElseThrow());
+        assertTrue(and(literal("x"), True).evaluate().isEmpty());
     }
 
     @Test
     void _false() {
         assertEquals("false", False.toString());
         assertEquals("false", False.printParseable());
-        assertFalse((Boolean) False.evaluate());
-        assertFalse((Boolean) and(literal("x"), False).evaluate());
-        assertNull(or(literal("x"), False).evaluate());
+        assertEquals(Boolean.FALSE, False.evaluate().orElseThrow());
+        assertEquals(Boolean.FALSE, and(literal("x"), False).evaluate().orElseThrow());
+        assertTrue(or(literal("x"), False).evaluate().isEmpty());
     }
 
     @Test
@@ -59,11 +58,14 @@ class ExpressionsTest {
         And and = and(literal("x"), or(literal("y"), not(literal("x"))));
         assertEquals("and(+, or)", and.toString());
         assertEquals("x (y x-)|&", and.printParseable());
-        assertFalse((Boolean) and.evaluate(new Assignment("x", false)));
-        assertNull(and.evaluate(new Assignment("x", true)));
-        assertTrue((Boolean) and.evaluate(new Assignment("x", true, "y", true)));
-        assertFalse((Boolean) and.evaluate(new Assignment("x", true, "y", false)));
-        assertNull(and.evaluate());
+        assertEquals(Boolean.FALSE, and.evaluate(new Assignment("x", false)).orElseThrow());
+        assertTrue(and.evaluate(new Assignment("x", true)).isEmpty());
+        assertEquals(
+                Boolean.TRUE, and.evaluate(new Assignment("x", true, "y", true)).orElseThrow());
+        assertEquals(
+                Boolean.FALSE,
+                and.evaluate(new Assignment("x", true, "y", false)).orElseThrow());
+        assertFalse(and.evaluate().isPresent());
     }
 
     // TODO: tests for other operators

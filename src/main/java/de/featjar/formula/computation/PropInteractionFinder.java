@@ -177,30 +177,6 @@ public class PropInteractionFinder {
                                     }
                                 }
                             }
-                            updater.complete(null, List.of(literals), null).orElse(null);
-                            if (config != null) {
-                                if (verify(config)) {
-                                    loop:
-                                    for (int[] interaction : interactions) {
-                                        for (int i = 0; i < t2; i++) {
-                                            if (config.indexOf(interaction[i]) < 0) {
-                                                continue loop;
-                                            }
-                                        }
-                                        interaction[t2 + 1]++;
-                                    }
-                                } else {
-                                    loop:
-                                    for (int[] interaction : interactions) {
-                                        for (int i = 0; i < t2; i++) {
-                                            if (config.indexOf(interaction[i]) < 0) {
-                                                continue loop;
-                                            }
-                                        }
-                                        interaction[t2]++;
-                                    }
-                                }
-                            }
                         }
                         if (fail != 0 || succ != 0) {
                             int[] interaction = Arrays.copyOf(literals, literals.length + 2);

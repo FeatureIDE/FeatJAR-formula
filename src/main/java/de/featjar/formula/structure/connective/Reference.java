@@ -33,6 +33,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 /**
@@ -115,8 +116,8 @@ public class Reference extends ANonTerminalExpression implements IConnective, IU
     }
 
     @Override
-    public Object evaluate(List<?> values) {
-        return values.get(0);
+    public Optional<?> evaluate(List<?> values) {
+        return Optional.of(values.get(0));
     }
 
     @Override

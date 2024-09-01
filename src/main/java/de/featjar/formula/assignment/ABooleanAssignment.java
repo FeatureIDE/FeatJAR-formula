@@ -51,6 +51,8 @@ import java.util.stream.IntStream;
 public abstract class ABooleanAssignment extends IntegerList
         implements IAssignment<Integer, Boolean>, IBooleanRepresentation {
 
+    private static final long serialVersionUID = 2730899099088826189L;
+
     public static int[] unitPropagation(BooleanClause clause, BooleanAssignment core) {
         final int[] literals = clause.get();
         final LinkedHashSet<Integer> literalSet = new LinkedHashSet<>(literals.length << 1);

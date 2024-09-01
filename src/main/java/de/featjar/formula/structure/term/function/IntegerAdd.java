@@ -22,6 +22,7 @@ package de.featjar.formula.structure.term.function;
 
 import de.featjar.formula.structure.term.ITerm;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Adds the values of two integer terms.
@@ -51,8 +52,8 @@ public class IntegerAdd extends AAdd {
     }
 
     @Override
-    public Long evaluate(List<?> values) {
-        return IFunction.reduce(values, Long::sum);
+    public Optional<Long> evaluate(List<?> values) {
+        return Optional.ofNullable(IFunction.reduce(values, Long::sum));
     }
 
     @Override

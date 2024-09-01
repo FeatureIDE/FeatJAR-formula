@@ -28,8 +28,6 @@ import static de.featjar.formula.structure.Expressions.literal;
 import static de.featjar.formula.structure.Expressions.variable;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.featjar.base.data.Sets;
@@ -59,12 +57,12 @@ class ExpressionTest {
 
     @Test
     void evaluate() {
-        assertEquals(true, formula.evaluate(new Assignment("a", false)));
-        assertEquals(false, formula.evaluate(new Assignment("a", true)));
-        assertThrows(NullPointerException.class, () -> formula.evaluate()); // TODO: this should not happen, fix this!
-        assertEquals(43L, term.evaluate(new Assignment("x", 1L)));
-        assertNull(term.evaluate(new Assignment("x", null)));
-        assertNull(term.evaluate());
+        assertEquals(Boolean.TRUE, formula.evaluate(new Assignment("a", false)).orElseThrow());
+        assertEquals(Boolean.FALSE, formula.evaluate(new Assignment("a", true)).orElseThrow());
+        assertTrue(formula.evaluate().isEmpty());
+        assertEquals(43L, term.evaluate(new Assignment("x", 1L)).orElseThrow());
+        assertTrue(term.evaluate(new Assignment("x", null)).isEmpty());
+        assertFalse(term.evaluate().isPresent());
     }
 
     @Test

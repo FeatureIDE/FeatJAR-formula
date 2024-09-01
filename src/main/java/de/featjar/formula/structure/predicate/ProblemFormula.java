@@ -25,6 +25,7 @@ import de.featjar.formula.structure.ATerminalExpression;
 import de.featjar.formula.structure.IExpression;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * A placeholder for a formula that wraps a problem.
@@ -64,7 +65,7 @@ public class ProblemFormula extends ATerminalExpression implements IPredicate {
     }
 
     @Override
-    public Object evaluate(List<?> values) {
-        return null;
+    public Optional<?> evaluate(List<?> values) {
+        return Optional.empty();
     }
 }

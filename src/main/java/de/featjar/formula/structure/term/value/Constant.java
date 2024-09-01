@@ -24,6 +24,7 @@ import de.featjar.formula.structure.ATerminalExpression;
 import de.featjar.formula.structure.IExpression;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * A constant.
@@ -92,7 +93,7 @@ public class Constant extends ATerminalExpression implements IValue {
     }
 
     @Override
-    public Object evaluate(List<?> values) {
-        return value;
+    public Optional<?> evaluate(List<?> values) {
+        return Optional.ofNullable(value);
     }
 }

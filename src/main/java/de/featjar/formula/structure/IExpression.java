@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -70,15 +71,15 @@ public interface IExpression extends ITree<IExpression> {
      *
      * @param values the values
      */
-    Object evaluate(List<?> values);
+    Optional<?> evaluate(List<?> values);
 
     /**
      * {@return the evaluation of this formula on a given value assignment}
      *
      * @param assignment the value assignment
      */
-    default Object evaluate(IAssignment<String, Object> assignment) {
-        return traverse(new Evaluator(assignment)).orElse(null);
+    default Optional<Object> evaluate(IAssignment<String, Object> assignment) {
+        return traverse(new Evaluator(assignment)).orElseThrow();
     }
 
     /**
@@ -87,7 +88,7 @@ public interface IExpression extends ITree<IExpression> {
      * @param booleanAssignment the boolean assignment
      * @param variableMap the {@link VariableMap variable map} mapping the indices in the assignment to variable names
      */
-    default Object evaluate(ABooleanAssignment booleanAssignment, VariableMap variableMap) {
+    default Optional<Object> evaluate(ABooleanAssignment booleanAssignment, VariableMap variableMap) {
         return evaluate(variableMap.toAssignment(booleanAssignment).get());
     }
 
@@ -97,14 +98,14 @@ public interface IExpression extends ITree<IExpression> {
      * @param valueAssignment the boolean assignment
      * @param variableMap the {@link VariableMap variable map} mapping the indices in the assignment to variable names
      */
-    default Object evaluate(AValueAssignment valueAssignment, VariableMap variableMap) {
+    default Optional<Object> evaluate(AValueAssignment valueAssignment, VariableMap variableMap) {
         return evaluate(variableMap.toAssignment(valueAssignment).get());
     }
 
     /**
      * {@return the evaluation of this formula on an empty value assignment}
      */
-    default Object evaluate() {
+    default Optional<Object> evaluate() {
         return evaluate(new Assignment());
     }
 

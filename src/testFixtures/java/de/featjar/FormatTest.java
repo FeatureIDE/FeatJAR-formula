@@ -126,7 +126,7 @@ public class FormatTest {
             URL systemResource = ClassLoader.getSystemResource(
                     String.format("formats/%s_%02d.%s", name, i, format.getFileExtension()));
             Result<T> result = IO.load(systemResource, format);
-            assertNotNull(result);
+            assertTrue(result.isPresent(), result.printProblems());
             list.add(result.get());
         }
         assertFalse(list.isEmpty());

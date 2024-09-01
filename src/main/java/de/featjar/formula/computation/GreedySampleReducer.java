@@ -44,6 +44,8 @@ import java.util.stream.IntStream;
 public class GreedySampleReducer extends AComputation<List<BooleanSolution>> {
 
     private static class Interaction extends BooleanAssignment {
+        private static final long serialVersionUID = 4320112709021072255L;
+
         private int counter = 0;
 
         public Interaction(int... array) {
@@ -57,11 +59,18 @@ public class GreedySampleReducer extends AComputation<List<BooleanSolution>> {
         public int getCounter() {
             return counter;
         }
+
+        @Override
+        public boolean equals(Object obj) {
+            return super.equals(obj);
+        }
     }
 
     private static class Config extends BooleanSolution {
-        double score = 0;
-        int interactionCount = 0;
+        private static final long serialVersionUID = 6908616425377756720L;
+
+        private double score = 0;
+        private int interactionCount = 0;
 
         public Config(BooleanSolution solution) {
             super(solution);
@@ -75,6 +84,16 @@ public class GreedySampleReducer extends AComputation<List<BooleanSolution>> {
         public synchronized void decScore(double s) {
             score -= s;
             interactionCount--;
+        }
+
+        @Override
+        public int hashCode() {
+            return super.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return super.equals(obj);
         }
     }
 

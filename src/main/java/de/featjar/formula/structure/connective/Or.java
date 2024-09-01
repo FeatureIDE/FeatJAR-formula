@@ -23,6 +23,7 @@ package de.featjar.formula.structure.connective;
 import de.featjar.formula.structure.ANonTerminalExpression;
 import de.featjar.formula.structure.IFormula;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Expresses "A or B" constraints (i.e., disjunction).
@@ -48,13 +49,13 @@ public class Or extends ANonTerminalExpression implements IConnective {
     }
 
     @Override
-    public Object evaluate(List<?> values) {
+    public Optional<Boolean> evaluate(List<?> values) {
         if (values.stream().anyMatch(v -> Boolean.TRUE.equals(v))) {
-            return Boolean.TRUE;
+            return Optional.of(Boolean.TRUE);
         }
         return values.stream().filter(v -> Boolean.FALSE.equals(v)).count() == getChildrenCount()
-                ? Boolean.FALSE
-                : null;
+                ? Optional.of(Boolean.FALSE)
+                : Optional.empty();
     }
 
     @Override

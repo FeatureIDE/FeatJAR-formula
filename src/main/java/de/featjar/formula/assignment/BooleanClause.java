@@ -37,6 +37,8 @@ import java.util.Collection;
  */
 public class BooleanClause extends ABooleanAssignment implements IClause<Integer, Boolean> {
 
+    private static final long serialVersionUID = -684031217097515442L;
+
     public BooleanClause(int... integers) {
         this(integers, true);
         assert Arrays.stream(integers).noneMatch(a -> a == 0) : "contains zero: " + Arrays.toString(integers);

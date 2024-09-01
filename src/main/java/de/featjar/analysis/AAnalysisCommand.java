@@ -30,6 +30,7 @@ import de.featjar.base.io.IO;
 import de.featjar.base.io.format.IFormat;
 import de.featjar.base.io.graphviz.GraphVizComputationTreeFormat;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -62,7 +63,6 @@ public abstract class AAnalysisCommand<T> extends ACommand {
 
     @Override
     public void run(OptionList optionParser) {
-        this.optionParser = optionParser;
         boolean browseCache = optionParser.getResult(BROWSE_CACHE_OPTION).get();
         boolean parallel = !optionParser.getResult(NON_PARALLEL).get();
         Duration timeout = optionParser.getResult(TIMEOUT_OPTION).get();
@@ -71,7 +71,7 @@ public abstract class AAnalysisCommand<T> extends ACommand {
 
         IComputation<T> computation;
         try {
-            computation = newComputation();
+            computation = newComputation(optionParser);
         } catch (Exception e) {
             FeatJAR.log().error(e);
             FeatJAR.log().message(OptionList.getHelp(this));
@@ -115,7 +115,7 @@ public abstract class AAnalysisCommand<T> extends ACommand {
                         }
                         Files.write(
                                 outputPath,
-                                serializeResult(result.get()).getBytes(),
+                                serializeResult(result.get()).getBytes(StandardCharsets.UTF_8),
                                 StandardOpenOption.CREATE,
                                 StandardOpenOption.TRUNCATE_EXISTING);
                     }
@@ -130,10 +130,9 @@ public abstract class AAnalysisCommand<T> extends ACommand {
         if (browseCache) {
             FeatJAR.cache().browse(new GraphVizComputationTreeFormat());
         }
-        this.optionParser = null;
     }
 
-    protected abstract IComputation<T> newComputation();
+    protected abstract IComputation<T> newComputation(OptionList optionParser);
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     protected boolean writeToOutputFile(T result, Path outputPath) {

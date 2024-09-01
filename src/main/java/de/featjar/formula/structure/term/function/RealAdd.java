@@ -22,6 +22,7 @@ package de.featjar.formula.structure.term.function;
 
 import de.featjar.formula.structure.term.ITerm;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Adds the values of two real terms.
@@ -51,8 +52,8 @@ public class RealAdd extends AAdd {
     }
 
     @Override
-    public Double evaluate(List<?> values) {
-        return IFunction.reduce(values, Double::sum);
+    public Optional<Double> evaluate(List<?> values) {
+        return Optional.ofNullable(IFunction.reduce(values, Double::sum));
     }
 
     @Override

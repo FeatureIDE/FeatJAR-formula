@@ -24,6 +24,7 @@ import de.featjar.formula.structure.ANonTerminalExpression;
 import de.featjar.formula.structure.IFormula;
 import de.featjar.formula.structure.IUnaryExpression;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Expresses "not A" constraints (i.e., negation).
@@ -48,12 +49,9 @@ public class Not extends ANonTerminalExpression implements IConnective, IUnaryEx
     }
 
     @Override
-    public Object evaluate(List<?> values) {
+    public Optional<Boolean> evaluate(List<?> values) {
         Object a = values.get(0);
-        if (a == null) {
-            return null;
-        }
-        return !(boolean) a;
+        return (a != null) ? Optional.of(!(boolean) a) : Optional.empty();
     }
 
     @Override

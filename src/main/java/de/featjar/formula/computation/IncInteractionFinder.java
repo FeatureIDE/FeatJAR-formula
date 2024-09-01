@@ -171,7 +171,7 @@ public class IncInteractionFinder {
 
         final int[] commonLiterals = failingLiterals.toAssignment().get();
         if (commonLiterals.length < t) {
-            return Arrays.asList(commonLiterals);
+            return List.of(commonLiterals);
         }
 
         Stream<int[]> stream = LexicographicIterator.parallelStream(t, commonLiterals.length) //

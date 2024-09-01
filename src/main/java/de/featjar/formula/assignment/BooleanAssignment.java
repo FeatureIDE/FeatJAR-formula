@@ -32,6 +32,8 @@ import java.util.Collection;
  */
 public class BooleanAssignment extends ABooleanAssignment {
 
+    private static final long serialVersionUID = 1614980283996088122L;
+
     public BooleanAssignment(Assignment assignment, VariableMap map) {
         super(new int[assignment.size()]);
         int i = 0;

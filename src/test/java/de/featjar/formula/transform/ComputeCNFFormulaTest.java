@@ -37,6 +37,7 @@ import de.featjar.formula.VariableMap;
 import de.featjar.formula.computation.ComputeCNFFormula;
 import de.featjar.formula.computation.ComputeNNFFormula;
 import de.featjar.formula.structure.IFormula;
+import java.util.Objects;
 import org.junit.jupiter.api.Test;
 
 class ComputeCNFFormulaTest extends Common {
@@ -104,11 +105,13 @@ class ComputeCNFFormulaTest extends Common {
 
         VariableMap variableMap = VariableMap.of(formula);
         FormulaCreator.streamAllAssignments(formula.getVariables().size()).forEach(assignment -> {
-            Object formulaEvaluate = formula.evaluate(assignment, variableMap);
-            Object distributiveEvaluate = distributiveCNF.evaluate(assignment, variableMap);
+            Object formulaEvaluate = formula.evaluate(assignment, variableMap).orElse(null);
+            Object distributiveEvaluate =
+                    distributiveCNF.evaluate(assignment, variableMap).orElse(null);
             assertEquals(formulaEvaluate, distributiveEvaluate, assignment::print);
-            Object tseitinEvaluate = tseitinCNF.evaluate(assignment, variableMap);
-            assertTrue(tseitinEvaluate == null || tseitinEvaluate == formulaEvaluate, assignment::print);
+            Object tseitinEvaluate =
+                    tseitinCNF.evaluate(assignment, variableMap).orElse(null);
+            assertTrue(tseitinEvaluate == null || Objects.equals(tseitinEvaluate, formulaEvaluate), assignment::print);
         });
     }
 }

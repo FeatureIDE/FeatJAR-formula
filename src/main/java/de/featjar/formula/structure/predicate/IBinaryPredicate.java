@@ -22,6 +22,7 @@ package de.featjar.formula.structure.predicate;
 
 import de.featjar.formula.structure.IBinaryExpression;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * A binary predicate.
@@ -37,10 +38,10 @@ public interface IBinaryPredicate extends IPredicate, IBinaryExpression {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
-    default Boolean evaluate(List<?> values) {
+    default Optional<Boolean> evaluate(List<?> values) {
         final Comparable v1 = (Comparable) values.get(0);
         final Comparable v2 = (Comparable) values.get(1);
-        return (v1 != null && v2 != null) ? compareDifference(v1.compareTo(v2)) : null;
+        return (v1 != null && v2 != null) ? Optional.of(compareDifference(v1.compareTo(v2))) : Optional.empty();
     }
 
     boolean compareDifference(int difference);

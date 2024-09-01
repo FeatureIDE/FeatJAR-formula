@@ -20,11 +20,14 @@
  */
 package de.featjar.formula.structure.predicate;
 
-import de.featjar.formula.structure.*;
+import de.featjar.formula.structure.ANonTerminalExpression;
+import de.featjar.formula.structure.IExpression;
+import de.featjar.formula.structure.IUnaryExpression;
 import de.featjar.formula.structure.term.value.IValue;
 import de.featjar.formula.structure.term.value.Variable;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Expresses "A == true" (or A) and "A == false" (or !A) constraints.
@@ -91,9 +94,9 @@ public class Literal extends ANonTerminalExpression implements IUnaryExpression,
     }
 
     @Override
-    public Boolean evaluate(List<?> values) {
+    public Optional<Boolean> evaluate(List<?> values) {
         final Boolean b = (Boolean) values.get(0);
-        return b != null ? isPositive == b : null;
+        return b != null ? Optional.of(isPositive == b) : Optional.empty();
     }
 
     @Override
