@@ -286,6 +286,7 @@ public class ExpressionSerializer implements IInOrderTreeVisitor<IExpression, St
                 case TREE:
                     break;
                 case PREFIX:
+                case POSTFIX:
                     sb.append(' ');
                     break;
                 case INFIX:
@@ -294,9 +295,6 @@ public class ExpressionSerializer implements IInOrderTreeVisitor<IExpression, St
                         sb.append(symbols.getSymbol(node));
                         sb.append(' ');
                     }
-                    break;
-                case POSTFIX:
-                    sb.append(' ');
                     break;
                 default:
                     break;

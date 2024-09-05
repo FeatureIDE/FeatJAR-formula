@@ -36,6 +36,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Optional;
 
 /**
@@ -76,7 +77,7 @@ public class PrintCommand extends ACommand {
      * Defines the notation.
      */
     public static final Option<ExpressionSerializer.Notation> NOTATION_OPTION = Option.newOption(
-                    "notation", (arg) -> ExpressionSerializer.Notation.valueOf(arg.toUpperCase()))
+                    "notation", (arg) -> ExpressionSerializer.Notation.valueOf(arg.toUpperCase(Locale.ENGLISH)))
             .setDescription("Defines the notation. Possible options: "
                     + Arrays.toString(ExpressionSerializer.Notation.values()))
             .setDefaultValue(ExpressionSerializer.STANDARD_NOTATION);
@@ -150,24 +151,22 @@ public class PrintCommand extends ACommand {
         serializer.setEnforceParentheses(ep);
         serializer.setEnquoteWhitespace(ew);
 
-        if (formula != null) {
-            String formulaString = Trees.traverse(formula, serializer).orElse("");
-            if (outputPath == null) {
-                FeatJAR.log().message(formulaString);
-            } else {
-                try {
-                    if (Files.isDirectory(outputPath)) {
-                        FeatJAR.log().error(new IOException(outputPath.toString() + " is a directory"));
-                    } else {
-                        Files.write(
-                                outputPath,
-                                formulaString.getBytes(StandardCharsets.UTF_8),
-                                StandardOpenOption.CREATE,
-                                StandardOpenOption.TRUNCATE_EXISTING);
-                    }
-                } catch (IOException e) {
-                    FeatJAR.log().error(e);
+        String formulaString = Trees.traverse(formula, serializer).orElse("");
+        if (outputPath == null) {
+            FeatJAR.log().message(formulaString);
+        } else {
+            try {
+                if (Files.isDirectory(outputPath)) {
+                    FeatJAR.log().error(new IOException(outputPath.toString() + " is a directory"));
+                } else {
+                    Files.write(
+                            outputPath,
+                            formulaString.getBytes(StandardCharsets.UTF_8),
+                            StandardOpenOption.CREATE,
+                            StandardOpenOption.TRUNCATE_EXISTING);
                 }
+            } catch (IOException e) {
+                FeatJAR.log().error(e);
             }
         }
     }

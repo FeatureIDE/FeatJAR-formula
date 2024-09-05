@@ -53,6 +53,14 @@ public abstract class ABooleanAssignment extends IntegerList
 
     private static final long serialVersionUID = 2730899099088826189L;
 
+    /**
+     * Constructs a new literal array from the given clause with all literals revomed that evaluate to {@code false}.
+     * Returns {@code null} if any literal evaluate to {@code true} or the clause contains a literal and its complement.
+     * Throws a {@link RuntimeContradictionException} if all literals evaluate to {@code false} or the clause is empty.
+     * @param clause the given clause
+     * @param core the known literals
+     * @return a new array containing only unknown literals
+     */
     public static int[] unitPropagation(BooleanClause clause, BooleanAssignment core) {
         final int[] literals = clause.get();
         final LinkedHashSet<Integer> literalSet = new LinkedHashSet<>(literals.length << 1);
