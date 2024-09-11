@@ -21,7 +21,6 @@
 package de.featjar.formula.assignment;
 
 import de.featjar.analysis.ISolver;
-import de.featjar.analysis.RuntimeContradictionException;
 import de.featjar.base.data.IntegerList;
 import de.featjar.base.data.Maps;
 import de.featjar.base.data.Problem;
@@ -54,12 +53,12 @@ public abstract class ABooleanAssignment extends IntegerList
     private static final long serialVersionUID = 2730899099088826189L;
 
     /**
-     * Constructs a new literal array from the given clause with all literals revomed that evaluate to {@code false}.
+     * Constructs a new literal array from the given clause with all literals removed that evaluate to {@code false}.
      * Returns {@code null} if any literal evaluate to {@code true} or the clause contains a literal and its complement.
-     * Throws a {@link RuntimeContradictionException} if all literals evaluate to {@code false} or the clause is empty.
+     *
      * @param clause the given clause
      * @param core the known literals
-     * @return a new array containing only unknown literals
+     * @return a new array containing only unknown literals or {@code null} if the clause is a tautology
      */
     public static int[] unitPropagation(BooleanClause clause, BooleanAssignment core) {
         final int[] literals = clause.get();
@@ -75,9 +74,6 @@ public abstract class ABooleanAssignment extends IntegerList
                     literalSet.add(var);
                 }
             }
-        }
-        if (literalSet.isEmpty()) {
-            throw new RuntimeContradictionException();
         }
         final int[] literalArray = new int[literalSet.size()];
         int i = 0;
