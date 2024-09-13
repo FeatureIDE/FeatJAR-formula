@@ -175,7 +175,7 @@ public class IncInteractionFinder {
         }
 
         Stream<int[]> stream = LexicographicIterator.parallelStream(t, commonLiterals.length) //
-                .map(combo -> combo.select(commonLiterals));
+                .map(combo -> combo.getSelection(commonLiterals));
         List<int[]> interactions;
         if (lastMerge != null) {
             BooleanAssignment lastLiterals = new BooleanAssignment(lastMerge);
@@ -183,13 +183,15 @@ public class IncInteractionFinder {
                 return null;
             }
             interactions = stream //
-                    .filter(combo -> !lastLiterals.containsAll(combo)) //
-                    .filter(combo -> !isCovered(combo)) //
+                    .filter(literals -> !lastLiterals.containsAll(literals)) //
+                    .filter(literals -> !isCovered(literals)) //
+                    .map(literals -> Arrays.copyOf(literals, literals.length)) //
                     .collect(Collectors.toList());
             interactions.add(lastMerge);
         } else {
             interactions = stream //
-                    .filter(combo -> !isCovered(combo)) //
+                    .filter(literals -> !isCovered(literals)) //
+                    .map(literals -> Arrays.copyOf(literals, literals.length)) //
                     .collect(Collectors.toList());
         }
         return interactions;
