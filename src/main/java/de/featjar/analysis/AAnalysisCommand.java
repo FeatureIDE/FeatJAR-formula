@@ -62,7 +62,7 @@ public abstract class AAnalysisCommand<T> extends ACommand {
             .setDescription("Path to file containig the execution time");
 
     @Override
-    public void run(OptionList optionParser) {
+    public int run(OptionList optionParser) {
         boolean browseCache = optionParser.getResult(BROWSE_CACHE_OPTION).get();
         boolean parallel = !optionParser.getResult(NON_PARALLEL).get();
         Duration timeout = optionParser.getResult(TIMEOUT_OPTION).get();
@@ -75,7 +75,7 @@ public abstract class AAnalysisCommand<T> extends ACommand {
         } catch (Exception e) {
             FeatJAR.log().error(e);
             FeatJAR.log().message(OptionList.getHelp(this));
-            return;
+            return FeatJAR.ERROR_COMPUTING_RESULT;
         }
         FeatJAR.log().debug("running computation %s", computation.print());
 
@@ -121,15 +121,18 @@ public abstract class AAnalysisCommand<T> extends ACommand {
                     }
                 } catch (IOException e) {
                     FeatJAR.log().error(e);
+                    return FeatJAR.ERROR_WRITING_RESULT;
                 }
             }
         } else {
-            FeatJAR.log().error("Could not compute result.");
             FeatJAR.log().problems(result.getProblems());
+            FeatJAR.log().error("Could not compute result.");
+            return FeatJAR.ERROR_TIMEOUT;
         }
         if (browseCache) {
             FeatJAR.cache().browse(new GraphVizComputationTreeFormat());
         }
+        return 0;
     }
 
     protected abstract IComputation<T> newComputation(OptionList optionParser);

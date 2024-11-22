@@ -48,7 +48,7 @@ public abstract class AConvertFormatCommand extends ACommand {
             .setRequired(true);
 
     @Override
-    public void run(OptionList optionParser) {
+    public int run(OptionList optionParser) {
         Path outputPath = optionParser.getResult(OUTPUT_OPTION).orElse(null);
         String formatString = optionParser.getResult(FORMAT_OPTION).orElseThrow();
 
@@ -75,7 +75,9 @@ public abstract class AConvertFormatCommand extends ACommand {
             }
         } catch (ClassNotFoundException | IOException e) {
             FeatJAR.log().error(e);
+            return FeatJAR.ERROR_COMPUTING_RESULT;
         }
+        return 0;
     }
 
     /**

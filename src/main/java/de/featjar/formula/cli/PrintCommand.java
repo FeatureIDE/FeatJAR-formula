@@ -120,7 +120,7 @@ public class PrintCommand extends ACommand {
             .setDefaultValue(ExpressionSerializer.STANDARD_ENQUOTE_WHITESPACE);
 
     @Override
-    public void run(OptionList optionParser) {
+    public int run(OptionList optionParser) {
         String tab = optionParser.getResult(TAB_OPTION).get();
         ExpressionSerializer.Notation notation =
                 optionParser.getResult(NOTATION_OPTION).get();
@@ -141,7 +141,7 @@ public class PrintCommand extends ACommand {
         newLine = getWhitespaceString(newLine);
 
         if (tab == null || newLine == null) {
-            return;
+            return 0;
         }
 
         serializer.setTab(tab);
@@ -167,8 +167,10 @@ public class PrintCommand extends ACommand {
                 }
             } catch (IOException e) {
                 FeatJAR.log().error(e);
+                return FeatJAR.ERROR_COMPUTING_RESULT;
             }
         }
+        return 0;
     }
 
     public String getWhitespaceString(String input) {
