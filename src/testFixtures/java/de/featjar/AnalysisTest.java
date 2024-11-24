@@ -28,12 +28,12 @@ import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Pair;
 import de.featjar.base.data.Result;
 import de.featjar.formula.VariableMap;
-import de.featjar.formula.assignment.AValueAssignment;
 import de.featjar.formula.assignment.Assignment;
 import de.featjar.formula.assignment.AssignmentList;
 import de.featjar.formula.assignment.BooleanAssignment;
 import de.featjar.formula.assignment.BooleanAssignmentList;
 import de.featjar.formula.assignment.BooleanSolution;
+import de.featjar.formula.assignment.ValueAssignment;
 import de.featjar.formula.computation.ComputeCNFFormula;
 import de.featjar.formula.computation.ComputeNNFFormula;
 import de.featjar.formula.structure.IFormula;
@@ -43,25 +43,25 @@ import java.util.function.Function;
 public class AnalysisTest extends Common {
 
     public static <T> void testSatisfiability(
-            Function<IComputation<IFormula>, IComputation<Pair<T, VariableMap>>> mapper,
+            Function<IComputation<IFormula>, IComputation<T>> mapper,
             Function<IComputation<T>, IComputation<Boolean>> analysis) {
         assertEquals(Boolean.TRUE, compute("GPL/model.xml", mapper, analysis));
     }
 
     public static <T> void testSolutionCount(
-            Function<IComputation<IFormula>, IComputation<Pair<T, VariableMap>>> mapper,
+            Function<IComputation<IFormula>, IComputation<T>> mapper,
             Function<IComputation<T>, IComputation<BigInteger>> analysis) {
         assertEquals(BigInteger.valueOf(960), compute("GPL/model.xml", mapper, analysis));
     }
 
     public static <T> void testSolution(
-            Function<IComputation<IFormula>, IComputation<Pair<T, VariableMap>>> mapper,
+            Function<IComputation<IFormula>, IComputation<T>> mapper,
             Function<IComputation<T>, IComputation<BooleanSolution>> analysis) {
         computeAndTestSolution("GPL/model.xml", mapper, analysis);
     }
 
     public static <T> void testCore(
-            Function<IComputation<IFormula>, IComputation<Pair<T, VariableMap>>> mapper,
+            Function<IComputation<IFormula>, IComputation<T>> mapper,
             Function<IComputation<T>, IComputation<BooleanAssignment>> analysis) {
         computeAndCompareCore(
                 "GPL/model.xml",
@@ -89,27 +89,26 @@ public class AnalysisTest extends Common {
     }
 
     public static <T> void testIndeterminate(
-            Function<IComputation<IFormula>, IComputation<Pair<T, VariableMap>>> mapper,
+            Function<IComputation<IFormula>, IComputation<T>> mapper,
             Function<IComputation<T>, IComputation<Boolean>> analysis) {
         assertEquals(Boolean.TRUE, compute("GPL/model.xml", mapper, analysis));
     }
 
     private static <R, T> R compute(
             String modelPath,
-            Function<IComputation<IFormula>, IComputation<Pair<T, VariableMap>>> mapper,
+            Function<IComputation<IFormula>, IComputation<T>> mapper,
             Function<IComputation<T>, IComputation<R>> analysis) {
         return compute(loadFormula(modelPath), mapper, analysis);
     }
 
     private static <R, T> R compute(
             IFormula loadFormula,
-            Function<IComputation<IFormula>, IComputation<Pair<T, VariableMap>>> mapper,
+            Function<IComputation<IFormula>, IComputation<T>> mapper,
             Function<IComputation<T>, IComputation<R>> analysis) {
         Result<R> result = Computations.of(loadFormula)
                 .map(ComputeNNFFormula::new)
                 .map(ComputeCNFFormula::new)
                 .map(mapper)
-                .map(Computations::getKey)
                 .map(analysis)
                 .computeResult();
         assertTrue(result.isPresent(), result::printProblems);
@@ -118,17 +117,16 @@ public class AnalysisTest extends Common {
 
     private static <T> void computeAndTestSolution(
             String modelPath,
-            Function<IComputation<IFormula>, IComputation<Pair<T, VariableMap>>> mapper,
+            Function<IComputation<IFormula>, IComputation<T>> mapper,
             Function<IComputation<T>, IComputation<BooleanSolution>> analysis) {
         IFormula formula = loadFormula(modelPath);
-        Pair<T, VariableMap> rep = Computations.of(formula)
+        T cnf = Computations.of(formula)
                 .map(ComputeNNFFormula::new)
                 .map(ComputeCNFFormula::new)
                 .map(mapper)
                 .compute();
-        T cnf = rep.getKey();
-        VariableMap variableMap = rep.getValue();
-        Result<? extends AValueAssignment> resultOfcomputedSolution =
+        VariableMap variableMap = VariableMap.of(formula);
+        Result<? extends ValueAssignment> resultOfcomputedSolution =
                 Computations.of(cnf).map(analysis).computeResult().map(VariableMap::toValue);
         assertTrue(resultOfcomputedSolution.isPresent(), resultOfcomputedSolution::printProblems);
 
@@ -140,17 +138,16 @@ public class AnalysisTest extends Common {
     private static <T> void computeAndCompareCore(
             String modelPath,
             Assignment expectedCore,
-            Function<IComputation<IFormula>, IComputation<Pair<T, VariableMap>>> mapper,
+            Function<IComputation<IFormula>, IComputation<T>> mapper,
             Function<IComputation<T>, IComputation<BooleanAssignment>> analysis) {
-        Pair<T, VariableMap> rep = Computations.of(loadFormula(modelPath))
+        ComputeCNFFormula formulaComputation = Computations.of(loadFormula(modelPath))
                 .map(ComputeNNFFormula::new)
-                .map(ComputeCNFFormula::new)
-                .map(mapper)
-                .compute();
-        T cnf = rep.getKey();
-        VariableMap variableMap = rep.getValue();
+                .map(ComputeCNFFormula::new);
+        IFormula formula = formulaComputation.compute();
+        T rep = formulaComputation.map(mapper).compute();
+        VariableMap variableMap = VariableMap.of(formula);
         Result<Assignment> resultOfcomputedCore =
-                Computations.of(cnf).map(analysis).computeResult().flatMap(variableMap::toAssignment);
+                Computations.of(rep).map(analysis).computeResult().flatMap(variableMap::toAssignment);
         assertTrue(resultOfcomputedCore.isPresent(), resultOfcomputedCore::printProblems);
 
         Assignment computedCore = resultOfcomputedCore.get();

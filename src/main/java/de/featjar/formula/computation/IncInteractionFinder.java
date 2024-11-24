@@ -24,9 +24,9 @@ import de.featjar.analysis.IConfigurationUpdater;
 import de.featjar.analysis.IConfigurationVerifyer;
 import de.featjar.base.data.IntegerList;
 import de.featjar.base.data.LexicographicIterator;
-import de.featjar.formula.assignment.ABooleanAssignment;
 import de.featjar.formula.assignment.BooleanAssignment;
 import de.featjar.formula.assignment.BooleanSolution;
+import de.featjar.formula.assignment.BooleanSolutionList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -46,7 +46,7 @@ public class IncInteractionFinder {
 
     protected IConfigurationUpdater updater;
     private IConfigurationVerifyer verifier;
-    private ABooleanAssignment core;
+    private BooleanAssignment core;
 
     protected int configurationVerificationLimit = Integer.MAX_VALUE;
 
@@ -69,7 +69,7 @@ public class IncInteractionFinder {
         this.verifier = verifier;
     }
 
-    public void setCore(ABooleanAssignment core) {
+    public void setCore(BooleanAssignment core) {
         this.core = core;
     }
 
@@ -77,8 +77,8 @@ public class IncInteractionFinder {
         this.configurationVerificationLimit = configurationVerificationLimit;
     }
 
-    public void addConfigurations(List<? extends ABooleanAssignment> configurations) {
-        configurations.stream().map(ABooleanAssignment::toSolution).forEach(this::verify);
+    public void addConfigurations(BooleanSolutionList configurations) {
+        configurations.forEach(this::verify);
     }
 
     public List<BooleanAssignment> find(int tmax) {
@@ -161,7 +161,7 @@ public class IncInteractionFinder {
 
     protected List<int[]> computePotentialInteractions(int t) {
         final Iterator<BooleanSolution> iterator = failingConfs.iterator();
-        ABooleanAssignment failingLiterals = iterator.next();
+        BooleanAssignment failingLiterals = iterator.next();
         while (iterator.hasNext()) {
             failingLiterals = new BooleanAssignment(iterator.next().retainAll(failingLiterals.get()));
         }

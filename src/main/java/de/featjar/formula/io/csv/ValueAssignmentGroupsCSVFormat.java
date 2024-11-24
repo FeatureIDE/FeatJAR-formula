@@ -27,9 +27,10 @@ import de.featjar.base.io.format.IFormat;
 import de.featjar.base.io.format.ParseProblem;
 import de.featjar.base.io.input.AInputMapper;
 import de.featjar.formula.VariableMap;
-import de.featjar.formula.assignment.AValueAssignment;
+import de.featjar.formula.assignment.AValueAssignmentList;
 import de.featjar.formula.assignment.ValueAssignment;
 import de.featjar.formula.assignment.ValueAssignmentGroups;
+import de.featjar.formula.assignment.ValueAssignmentList;
 import de.featjar.formula.io.textual.ValueAssignmentFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -62,9 +63,9 @@ public class ValueAssignmentGroupsCSVFormat implements IFormat<ValueAssignmentGr
         csv.append(LINE_SEPARATOR);
         int groupIndex = 0;
         int configurationIndex = 0;
-        final List<? extends List<? extends AValueAssignment>> groups = assignmentSpace.getGroups();
-        for (List<? extends AValueAssignment> group : groups) {
-            for (final AValueAssignment configuration : group) {
+        final List<? extends AValueAssignmentList<? extends ValueAssignment>> groups = assignmentSpace.getGroups();
+        for (AValueAssignmentList<? extends ValueAssignment> group : groups) {
+            for (final ValueAssignment configuration : group) {
                 csv.append(configurationIndex++);
                 csv.append(VALUE_SEPARATOR);
                 csv.append(groupIndex);
@@ -99,7 +100,7 @@ public class ValueAssignmentGroupsCSVFormat implements IFormat<ValueAssignmentGr
             for (int i = 2; i < headerColumns.length; i++) {
                 variableMap.add(headerColumns[i]);
             }
-            final ArrayList<List<ValueAssignment>> groups = new ArrayList<>();
+            final ArrayList<ValueAssignmentList> groups = new ArrayList<>();
             for (String line = lines.get(); line != null; line = lines.get()) {
                 final String[] values = line.split(VALUE_SEPARATOR);
                 if (headerColumns.length != values.length) {
@@ -116,11 +117,11 @@ public class ValueAssignmentGroupsCSVFormat implements IFormat<ValueAssignmentGr
                             String.format("First value must be an integer number, but was %s", values[0]),
                             lines.getLineCount());
                 }
-                final List<ValueAssignment> group;
+                final ValueAssignmentList group;
                 try {
                     final int groupIndex = Integer.parseInt(values[1]);
                     for (int i = groups.size() - 1; i < groupIndex; i++) {
-                        groups.add(new ArrayList<>());
+                        groups.add(new ValueAssignmentList(variableMap));
                     }
                     group = groups.get(groupIndex);
                 } catch (NumberFormatException e) {

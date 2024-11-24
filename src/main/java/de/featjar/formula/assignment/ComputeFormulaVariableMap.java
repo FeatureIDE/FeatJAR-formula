@@ -20,12 +20,10 @@
  */
 package de.featjar.formula.assignment;
 
-import de.featjar.base.FeatJAR;
 import de.featjar.base.computation.AComputation;
 import de.featjar.base.computation.Dependency;
 import de.featjar.base.computation.IComputation;
 import de.featjar.base.computation.Progress;
-import de.featjar.base.data.Pair;
 import de.featjar.base.data.Result;
 import de.featjar.formula.VariableMap;
 import de.featjar.formula.structure.IFormula;
@@ -37,7 +35,7 @@ import java.util.List;
  *
  * @author Sebastian Krieter
  */
-public class ComputeFormulaVariableMap extends AComputation<Pair<IFormula, VariableMap>> {
+public class ComputeFormulaVariableMap extends AComputation<IFormula> {
 
     protected static final Dependency<IFormula> CNF = Dependency.newDependency(IFormula.class);
 
@@ -50,14 +48,11 @@ public class ComputeFormulaVariableMap extends AComputation<Pair<IFormula, Varia
     }
 
     @Override
-    public Result<Pair<IFormula, VariableMap>> compute(List<Object> dependencyList, Progress progress) {
+    public Result<IFormula> compute(List<Object> dependencyList, Progress progress) {
         IFormula vp = CNF.get(dependencyList);
-        FeatJAR.log().debug("initializing variable map for " + vp.getClass().getName());
-        VariableMap variableMap = VariableMap.of(vp);
-        FeatJAR.log().debug(variableMap);
         if (vp instanceof Reference) {
             vp = (IFormula) ((Reference) vp).getExpression();
         }
-        return Result.of(new Pair<>(vp, variableMap));
+        return Result.of(vp);
     }
 }

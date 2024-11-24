@@ -21,22 +21,12 @@
 package de.featjar.formula.assignment;
 
 import de.featjar.base.computation.Computations;
-import de.featjar.base.computation.IComputation;
-import de.featjar.formula.VariableMap;
 import de.featjar.formula.computation.ComputeCNFFormula;
 import de.featjar.formula.computation.ComputeDNFFormula;
 import de.featjar.formula.computation.ComputeNNFFormula;
 import de.featjar.formula.structure.IFormula;
 
 public interface IBooleanRepresentation {
-
-    public static IComputation<BooleanClauseList> toBooleanClauseList(IFormula model) {
-        return toBooleanCNFRepresentation(model).map(Computations::getKey).cast(BooleanClauseList.class);
-    }
-
-    public static IComputation<VariableMap> toVariableMap(IFormula model) {
-        return toBooleanCNFRepresentation(model).map(Computations::getValue).cast(VariableMap.class);
-    }
 
     public static ComputeBooleanClauseList toBooleanCNFRepresentation(IFormula model) {
         return Computations.of(model)

@@ -35,7 +35,7 @@ import java.util.Collection;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class BooleanClause extends ABooleanAssignment implements IClause<Integer, Boolean> {
+public class BooleanClause extends BooleanAssignment implements IClause<Integer, Boolean> {
 
     private static final long serialVersionUID = -684031217097515442L;
 
@@ -134,32 +134,37 @@ public class BooleanClause extends ABooleanAssignment implements IClause<Integer
     }
 
     @Override
+    public BooleanAssignment toAssignment() {
+        return this;
+    }
+
+    @Override
     public BooleanClause toClause() {
         return this;
     }
 
     @Override
-    public BooleanClause addAll(ABooleanAssignment integers) {
+    public BooleanClause addAll(BooleanAssignment integers) {
         return new BooleanClause(addAll(integers.get()));
     }
 
     @Override
-    public BooleanClause retainAll(ABooleanAssignment integers) {
+    public BooleanClause retainAll(BooleanAssignment integers) {
         return new BooleanClause(retainAll(integers.get()));
     }
 
     @Override
-    public BooleanClause retainAllVariables(ABooleanAssignment integers) {
+    public BooleanClause retainAllVariables(BooleanAssignment integers) {
         return new BooleanClause(retainAllVariables(integers.get()));
     }
 
     @Override
-    public BooleanClause removeAll(ABooleanAssignment integers) {
+    public BooleanClause removeAll(BooleanAssignment integers) {
         return new BooleanClause(removeAll(integers.get()));
     }
 
     @Override
-    public BooleanClause removeAllVariables(ABooleanAssignment integers) {
+    public BooleanClause removeAllVariables(BooleanAssignment integers) {
         return new BooleanClause(removeAllVariables(integers.get()));
     }
 }

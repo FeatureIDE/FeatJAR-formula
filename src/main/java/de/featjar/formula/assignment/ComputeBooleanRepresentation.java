@@ -51,14 +51,15 @@ public class ComputeBooleanRepresentation extends AComputation<BooleanAssignment
 
     @Override
     public Result<BooleanAssignmentGroups> compute(List<Object> dependencyList, Progress progress) {
-        IFormula vp = (IFormula) CNF.get(dependencyList);
-        FeatJAR.log().debug("initializing variable map for " + vp.getClass().getName());
-        VariableMap variableMap = VariableMap.of(vp);
+        IFormula formula = (IFormula) CNF.get(dependencyList);
+        FeatJAR.log()
+                .debug("initializing variable map for " + formula.getClass().getName());
+        VariableMap variableMap = VariableMap.of(formula);
         FeatJAR.log().debug(variableMap);
-        if (vp instanceof Reference) {
-            vp = (IFormula) ((Reference) vp).getExpression();
+        if (formula instanceof Reference) {
+            formula = (IFormula) ((Reference) formula).getExpression();
         }
-        return ComputeBooleanClauseList.toBooleanClauseList(vp, variableMap)
-                .map(cl -> new BooleanAssignmentGroups(variableMap, List.of(cl.getAll())));
+        return ComputeBooleanClauseList.toBooleanClauseList(formula, variableMap)
+                .map(BooleanAssignmentGroups::new);
     }
 }

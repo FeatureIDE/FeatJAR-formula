@@ -61,7 +61,7 @@ public class AssignmentList implements IAssignmentList<Assignment> {
     }
 
     @Override
-    public AssignmentList toClauseList(int variableCount) {
+    public AssignmentList toClauseList() {
         return this;
     }
 

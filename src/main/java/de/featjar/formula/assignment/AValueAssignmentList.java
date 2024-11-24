@@ -21,6 +21,7 @@
 package de.featjar.formula.assignment;
 
 import de.featjar.base.io.IO;
+import de.featjar.formula.VariableMap;
 import de.featjar.formula.io.textual.ValueAssignmentListFormat;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,24 +36,28 @@ import java.util.stream.Collectors;
  * @param <T> the type of the literal list
  * @author Elias Kuiter
  */
-public abstract class AValueAssignmentList<T extends AValueAssignment>
+public abstract class AValueAssignmentList<T extends ValueAssignment>
         implements IAssignmentList<T>, IValueRepresentation {
     protected final List<T> literalLists;
+    protected final VariableMap variableMap;
 
-    public AValueAssignmentList() {
+    public AValueAssignmentList(VariableMap variableMap) {
         literalLists = new ArrayList<>();
+        this.variableMap = variableMap;
     }
 
-    public AValueAssignmentList(int size) {
+    public AValueAssignmentList(VariableMap variableMap, int size) {
         literalLists = new ArrayList<>(size);
+        this.variableMap = variableMap;
     }
 
-    public AValueAssignmentList(Collection<? extends T> literalLists) {
+    public AValueAssignmentList(VariableMap variableMap, Collection<? extends T> literalLists) {
         this.literalLists = new ArrayList<>(literalLists);
+        this.variableMap = variableMap;
     }
 
     public AValueAssignmentList(AValueAssignmentList<T> other) {
-        this(other.getAll());
+        this(other.variableMap, other.getAll());
     }
 
     @Override
@@ -63,19 +68,22 @@ public abstract class AValueAssignmentList<T extends AValueAssignment>
     @Override
     public ValueAssignmentList toAssignmentList() {
         return new ValueAssignmentList(
-                literalLists.stream().map(AValueAssignment::toAssignment).collect(Collectors.toList()));
+                variableMap,
+                literalLists.stream().map(ValueAssignment::toAssignment).collect(Collectors.toList()));
     }
 
     @Override
-    public ValueClauseList toClauseList(int variableCount) {
+    public ValueClauseList toClauseList() {
         return new ValueClauseList(
-                literalLists.stream().map(AValueAssignment::toClause).collect(Collectors.toList()), variableCount);
+                variableMap,
+                literalLists.stream().map(ValueAssignment::toClause).collect(Collectors.toList()));
     }
 
     @Override
     public ValueSolutionList toSolutionList() {
         return new ValueSolutionList(
-                literalLists.stream().map(AValueAssignment::toSolution).collect(Collectors.toList()));
+                variableMap,
+                literalLists.stream().map(ValueAssignment::toSolution).collect(Collectors.toList()));
     }
 
     @Override
@@ -97,5 +105,9 @@ public abstract class AValueAssignmentList<T extends AValueAssignment>
         } catch (IOException e) {
             return e.toString();
         }
+    }
+
+    public VariableMap getVariableMap() {
+        return variableMap;
     }
 }

@@ -24,9 +24,9 @@ import de.featjar.base.io.NonEmptyLineIterator;
 import de.featjar.formula.VariableMap;
 import de.featjar.formula.assignment.BooleanAssignmentGroups;
 import de.featjar.formula.assignment.BooleanClause;
+import de.featjar.formula.assignment.BooleanClauseList;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -103,7 +103,7 @@ public class BooleanAssignmentGroupsDimacsParser {
             }
         }
 
-        final List<BooleanClause> clauses = readClauses(nonEmptyLineIterator);
+        final BooleanClauseList clauses = readClauses(nonEmptyLineIterator);
         final int actualVariableCount = indexVariables.getVariableCount();
         final int actualClauseCount = clauses.size();
         if (variableCount != actualVariableCount) {
@@ -114,7 +114,7 @@ public class BooleanAssignmentGroupsDimacsParser {
             throw new ParseException(
                     String.format("Found %d instead of %d clauses", actualClauseCount, clauseCount), 1);
         }
-        return new BooleanAssignmentGroups(indexVariables, List.of(clauses));
+        return new BooleanAssignmentGroups(indexVariables, clauses);
     }
 
     private String getUniqueName(int i) {
@@ -187,9 +187,9 @@ public class BooleanAssignmentGroupsDimacsParser {
      * @throws ParseException if the input does not conform to the DIMACS CNF file
      *                        format
      */
-    private List<BooleanClause> readClauses(NonEmptyLineIterator nonemptyLineIterator) throws ParseException {
+    private BooleanClauseList readClauses(NonEmptyLineIterator nonemptyLineIterator) throws ParseException {
         final LinkedList<String> literalQueue = new LinkedList<>();
-        final List<BooleanClause> clauses = new ArrayList<>(clauseCount);
+        final BooleanClauseList clauses = new BooleanClauseList(indexVariables, clauseCount);
         int readClausesCount = 0;
         for (String line = nonemptyLineIterator.currentLine(); line != null; line = nonemptyLineIterator.get()) {
             if (commentPattern.matcher(line).matches()) {

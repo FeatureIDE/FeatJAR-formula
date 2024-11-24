@@ -35,18 +35,21 @@ import java.util.Collection;
  * @author Elias Kuiter
  */
 public class ValueSolutionList extends AValueAssignmentList<ValueSolution> {
-    public ValueSolutionList() {}
 
-    public ValueSolutionList(int size) {
-        super(size);
+    public ValueSolutionList(VariableMap variableMap) {
+        super(variableMap);
+    }
+
+    public ValueSolutionList(VariableMap variableMap, int size) {
+        super(variableMap, size);
+    }
+
+    public ValueSolutionList(VariableMap variableMap, Collection<? extends ValueSolution> solutions) {
+        super(variableMap, solutions);
     }
 
     public ValueSolutionList(ValueSolutionList other) {
         super(other);
-    }
-
-    public ValueSolutionList(Collection<? extends ValueSolution> solutions) {
-        super(solutions);
     }
 
     @Override

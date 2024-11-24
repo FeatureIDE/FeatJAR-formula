@@ -26,11 +26,11 @@ import de.featjar.base.io.format.IFormat;
 import de.featjar.base.io.format.ParseProblem;
 import de.featjar.base.io.input.AInputMapper;
 import de.featjar.formula.VariableMap;
-import de.featjar.formula.assignment.ABooleanAssignment;
+import de.featjar.formula.assignment.BooleanAssignment;
 import de.featjar.formula.assignment.BooleanAssignmentGroups;
+import de.featjar.formula.assignment.BooleanAssignmentList;
 import de.featjar.formula.assignment.BooleanSolution;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -60,7 +60,7 @@ public class BooleanSolutionListCSVFormat implements IFormat<BooleanAssignmentGr
         }
         csv.append(LINE_SEPARATOR);
         int configurationIndex = 0;
-        for (final ABooleanAssignment configuration : configurationList.getFirstGroup()) {
+        for (final BooleanAssignment configuration : configurationList.getFirstGroup()) {
             csv.append(configurationIndex++);
             final int[] literals = configuration.get();
             for (int i = 0; i < literals.length; i++) {
@@ -88,7 +88,7 @@ public class BooleanSolutionListCSVFormat implements IFormat<BooleanAssignmentGr
             for (int i = 1; i < headerColumns.length; i++) {
                 variableMap.add(headerColumns[i]);
             }
-            final List<ABooleanAssignment> group = new ArrayList<>();
+            final BooleanAssignmentList group = new BooleanAssignmentList(variableMap);
             for (String line = lines.get(); line != null; line = lines.get()) {
                 final String[] values = line.split(VALUE_SEPARATOR);
                 if (headerColumns.length != values.length) {
@@ -123,7 +123,7 @@ public class BooleanSolutionListCSVFormat implements IFormat<BooleanAssignmentGr
                 }
                 group.add(new BooleanSolution(literals, false));
             }
-            return Result.of(new BooleanAssignmentGroups(variableMap, List.of(group)));
+            return Result.of(new BooleanAssignmentGroups(group));
         } catch (final ParseException e) {
             return Result.empty(new ParseProblem(e, e.getErrorOffset()));
         } catch (final Exception e) {

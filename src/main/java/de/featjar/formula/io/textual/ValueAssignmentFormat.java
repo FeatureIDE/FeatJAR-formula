@@ -26,18 +26,17 @@ import de.featjar.base.data.Problem.Severity;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.format.IFormat;
 import de.featjar.base.io.input.AInputMapper;
-import de.featjar.formula.assignment.AValueAssignment;
 import de.featjar.formula.assignment.ValueAssignment;
 import java.util.LinkedHashMap;
 import java.util.stream.Collectors;
 
 /**
- * Textual format for serializing and parsing an {@link AValueAssignment}.
+ * Textual format for serializing and parsing an {@link ValueAssignment}.
  *
  * @author Elias Kuiter
  * @author Sebastian Krieter
  */
-public class ValueAssignmentFormat implements IFormat<AValueAssignment> {
+public class ValueAssignmentFormat implements IFormat<ValueAssignment> {
 
     public static Object parseValue(String s) {
         if (s == null || s.equalsIgnoreCase("null")) return null;
@@ -49,7 +48,7 @@ public class ValueAssignmentFormat implements IFormat<AValueAssignment> {
     }
 
     @Override
-    public Result<String> serialize(AValueAssignment valueAssignment) {
+    public Result<String> serialize(ValueAssignment valueAssignment) {
         // TODO escape spaces and =
         return Result.of(valueAssignment.getAll().entrySet().stream()
                 .map(e -> {
@@ -65,7 +64,7 @@ public class ValueAssignmentFormat implements IFormat<AValueAssignment> {
     }
 
     @Override
-    public Result<AValueAssignment> parse(AInputMapper inputMapper) {
+    public Result<ValueAssignment> parse(AInputMapper inputMapper) {
         LinkedHashMap<String, Object> variableValuePairs = Maps.empty();
         String[] variableValues = inputMapper
                 .get()

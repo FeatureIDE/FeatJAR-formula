@@ -20,17 +20,34 @@
  */
 package de.featjar.formula.assignment;
 
+import de.featjar.base.computation.AComputation;
+import de.featjar.base.computation.Dependency;
+import de.featjar.base.computation.IComputation;
+import de.featjar.base.computation.Progress;
+import de.featjar.base.data.Result;
 import de.featjar.formula.VariableMap;
+import de.featjar.formula.structure.IFormula;
 import java.util.List;
 
 /**
- * {@link AAssignmentGroups} implementation for {@link Assignment}.
+ * Transforms a {@link IFormula} into a {@link VariableMap}.
  *
  * @author Sebastian Krieter
  */
-public class AssignmentGroups extends AAssignmentGroups<Assignment> {
+public class ComputeVariableMap extends AComputation<VariableMap> {
 
-    public AssignmentGroups(VariableMap variableMap, List<? extends List<? extends Assignment>> assignment) {
-        super(variableMap, assignment);
+    protected static final Dependency<IFormula> CNF = Dependency.newDependency(IFormula.class);
+
+    public ComputeVariableMap(IComputation<IFormula> cnfFormula) {
+        super(cnfFormula);
+    }
+
+    protected ComputeVariableMap(ComputeVariableMap other) {
+        super(other);
+    }
+
+    @Override
+    public Result<VariableMap> compute(List<Object> dependencyList, Progress progress) {
+        return Result.of(VariableMap.of(CNF.get(dependencyList)));
     }
 }

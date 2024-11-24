@@ -21,7 +21,7 @@
 package de.featjar.analysis;
 
 import de.featjar.base.data.Result;
-import de.featjar.formula.assignment.ABooleanAssignment;
+import de.featjar.formula.assignment.BooleanAssignment;
 import de.featjar.formula.assignment.BooleanSolution;
 import java.util.Collection;
 
@@ -33,7 +33,7 @@ import java.util.Collection;
  */
 public interface IConfigurationUpdater {
 
-    Result<BooleanSolution> update(ABooleanAssignment partialSolution);
+    Result<BooleanSolution> update(BooleanAssignment partialSolution);
 
     Result<BooleanSolution> complete(Collection<int[]> include, Collection<int[]> exclude, Collection<int[]> choose);
 }

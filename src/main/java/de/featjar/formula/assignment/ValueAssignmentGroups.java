@@ -20,17 +20,74 @@
  */
 package de.featjar.formula.assignment;
 
+import de.featjar.base.io.format.IFormat;
 import de.featjar.formula.VariableMap;
 import java.util.List;
+import java.util.Objects;
 
 /**
- * {@link AAssignmentGroups} implementation for {@link AValueAssignment}.
+ * Stores multiple groups of {@link AValueAssignmentList}.
+ * The main purposes of this class is to provide an easy to write/read object for a corresponding {@link IFormat format}.
  *
  * @author Sebastian Krieter
  */
-public class ValueAssignmentGroups extends AAssignmentGroups<AValueAssignment> {
+public class ValueAssignmentGroups {
 
-    public ValueAssignmentGroups(VariableMap variableMap, List<? extends List<? extends AValueAssignment>> assignment) {
-        super(variableMap, assignment);
+    protected final VariableMap variableMap;
+    protected final List<? extends AValueAssignmentList<? extends ValueAssignment>> assignmentGroups;
+
+    public ValueAssignmentGroups(
+            VariableMap variableMap, List<? extends AValueAssignmentList<? extends ValueAssignment>> assignmentGroups) {
+        this.variableMap = variableMap;
+        this.assignmentGroups = assignmentGroups;
+    }
+
+    public ValueAssignmentGroups(AValueAssignmentList<? extends ValueAssignment> assignmentGroup) {
+        this.variableMap = assignmentGroup.getVariableMap();
+        this.assignmentGroups = List.of(assignmentGroup);
+    }
+
+    public ValueAssignmentGroups(VariableMap variableMap, ValueAssignment... assignments) {
+        this.variableMap = variableMap;
+        ValueAssignmentList firstGroup = new ValueAssignmentList(variableMap);
+        for (ValueAssignment assignment : assignments) {
+            firstGroup.add(assignment);
+        }
+        this.assignmentGroups = List.of(firstGroup);
+    }
+
+    public VariableMap getVariableMap() {
+        return variableMap;
+    }
+
+    public List<? extends AValueAssignmentList<? extends ValueAssignment>> getGroups() {
+        return assignmentGroups;
+    }
+
+    public AValueAssignmentList<? extends ValueAssignment> getFirstGroup() {
+        return assignmentGroups.get(0);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(assignmentGroups, variableMap);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        ValueAssignmentGroups other = (ValueAssignmentGroups) obj;
+        return Objects.equals(assignmentGroups, other.assignmentGroups)
+                && Objects.equals(variableMap, other.variableMap);
+    }
+
+    @Override
+    public String toString() {
+        return "AssignmentGroup [map=" + variableMap + ", groups=" + assignmentGroups + "]";
     }
 }

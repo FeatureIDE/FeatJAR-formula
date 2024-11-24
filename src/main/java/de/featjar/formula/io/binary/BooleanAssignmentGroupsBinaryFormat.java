@@ -27,11 +27,14 @@ import de.featjar.base.io.format.ParseProblem;
 import de.featjar.base.io.input.AInputMapper;
 import de.featjar.base.io.output.AOutputMapper;
 import de.featjar.formula.VariableMap;
-import de.featjar.formula.assignment.ABooleanAssignment;
+import de.featjar.formula.assignment.ABooleanAssignmentList;
 import de.featjar.formula.assignment.BooleanAssignment;
 import de.featjar.formula.assignment.BooleanAssignmentGroups;
+import de.featjar.formula.assignment.BooleanAssignmentList;
 import de.featjar.formula.assignment.BooleanClause;
+import de.featjar.formula.assignment.BooleanClauseList;
 import de.featjar.formula.assignment.BooleanSolution;
+import de.featjar.formula.assignment.BooleanSolutionList;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -59,11 +62,18 @@ public class BooleanAssignmentGroupsBinaryFormat extends ABinaryFormat<BooleanAs
         for (int i = 1; i <= maxIndex; i++) {
             writeString(outputStream, variableMap.get(i).orElse(""));
         }
-        final List<? extends List<? extends ABooleanAssignment>> groups = assignmentSpace.getGroups();
+        final List<? extends ABooleanAssignmentList<?>> groups = assignmentSpace.getGroups();
         writeInt(outputStream, groups.size());
-        for (List<? extends ABooleanAssignment> group : groups) {
+        for (ABooleanAssignmentList<?> group : groups) {
             writeInt(outputStream, group.size());
-            for (ABooleanAssignment assignment : group) {
+            if (group instanceof BooleanSolutionList) {
+                writeByte(outputStream, BooleanSolutionType);
+            } else if (group instanceof BooleanClauseList) {
+                writeByte(outputStream, BooleanClauseType);
+            } else {
+                writeByte(outputStream, BooleanAssignmentType);
+            }
+            for (BooleanAssignment assignment : group) {
                 final int[] literals = assignment.get();
                 if (assignment instanceof BooleanSolution) {
                     writeByte(outputStream, BooleanSolutionType);
@@ -79,8 +89,14 @@ public class BooleanAssignmentGroupsBinaryFormat extends ABinaryFormat<BooleanAs
                         }
                     }
                     writeByteArray(outputStream, bs.toByteArray());
-                } else if (assignment instanceof BooleanClause || assignment instanceof BooleanAssignment) {
+                } else if (assignment instanceof BooleanClause) {
                     writeByte(outputStream, BooleanClauseType);
+                    writeInt(outputStream, literals.length);
+                    for (int l : literals) {
+                        writeInt(outputStream, l);
+                    }
+                } else if (assignment instanceof BooleanAssignment) {
+                    writeByte(outputStream, BooleanAssignmentType);
                     writeInt(outputStream, literals.length);
                     for (int l : literals) {
                         writeInt(outputStream, l);
@@ -106,10 +122,11 @@ public class BooleanAssignmentGroupsBinaryFormat extends ABinaryFormat<BooleanAs
                 }
             }
             final int numberOfGroups = readInt(inputStream);
-            final ArrayList<List<ABooleanAssignment>> groups = new ArrayList<>(numberOfGroups);
+            final ArrayList<ABooleanAssignmentList<?>> groups = new ArrayList<>(numberOfGroups);
             for (int i = 0; i < numberOfGroups; i++) {
                 final int numberOfAssignment = readInt(inputStream);
-                final ArrayList<ABooleanAssignment> group = new ArrayList<>(numberOfAssignment);
+                final byte groupType = readByte(inputStream);
+                final BooleanAssignmentList group = new BooleanAssignmentList(variableMap, numberOfAssignment);
                 for (int j = 0; j < numberOfAssignment; j++) {
                     final byte type = readByte(inputStream);
                     final int[] literals;
@@ -154,7 +171,19 @@ public class BooleanAssignmentGroupsBinaryFormat extends ABinaryFormat<BooleanAs
                             return Result.empty(new ParseProblem("Unkown type " + type, Severity.ERROR, 0));
                     }
                 }
-                groups.add(group);
+                switch (groupType) {
+                    case BooleanSolutionType:
+                        groups.add(group.toSolutionList());
+                        break;
+                    case BooleanClauseType:
+                        groups.add(group.toClauseList());
+                        break;
+                    case BooleanAssignmentType:
+                        groups.add(group);
+                        break;
+                    default:
+                        return Result.empty(new ParseProblem("Unkown type " + groupType, Severity.ERROR, 0));
+                }
             }
             return Result.of(new BooleanAssignmentGroups(variableMap, groups));
         } catch (final IOException e) {

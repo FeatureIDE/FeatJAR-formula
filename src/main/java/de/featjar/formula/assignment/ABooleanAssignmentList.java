@@ -20,6 +20,7 @@
  */
 package de.featjar.formula.assignment;
 
+import de.featjar.formula.VariableMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -35,28 +36,34 @@ import java.util.stream.Stream;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public abstract class ABooleanAssignmentList<T extends ABooleanAssignment>
+public abstract class ABooleanAssignmentList<T extends BooleanAssignment>
         implements IAssignmentList<T>, IBooleanRepresentation {
     protected final List<T> assignments;
 
-    public ABooleanAssignmentList() {
+    protected final VariableMap variableMap;
+
+    public ABooleanAssignmentList(VariableMap variableMap) {
+        this.variableMap = variableMap;
         assignments = new ArrayList<>();
     }
 
-    public ABooleanAssignmentList(int size) {
+    public ABooleanAssignmentList(VariableMap variableMap, int size) {
+        this.variableMap = variableMap;
         assignments = new ArrayList<>(size);
     }
 
-    public ABooleanAssignmentList(Collection<? extends T> assignments) {
+    public ABooleanAssignmentList(VariableMap variableMap, Collection<? extends T> assignments) {
+        this.variableMap = variableMap;
         this.assignments = new ArrayList<>(assignments);
     }
 
-    public ABooleanAssignmentList(Stream<? extends T> assignments) {
+    public ABooleanAssignmentList(VariableMap variableMap, Stream<? extends T> assignments) {
+        this.variableMap = variableMap;
         this.assignments = assignments.collect(Collectors.toCollection(ArrayList::new));
     }
 
     public ABooleanAssignmentList(ABooleanAssignmentList<T> other) {
-        this(other.getAll());
+        this(other.variableMap, other.getAll());
     }
 
     @Override
@@ -67,19 +74,22 @@ public abstract class ABooleanAssignmentList<T extends ABooleanAssignment>
     @Override
     public BooleanAssignmentList toAssignmentList() {
         return new BooleanAssignmentList(
-                assignments.stream().map(ABooleanAssignment::toAssignment).collect(Collectors.toList()));
+                variableMap,
+                assignments.stream().map(BooleanAssignment::toAssignment).collect(Collectors.toList()));
     }
 
     @Override
-    public BooleanClauseList toClauseList(int variableCount) {
+    public BooleanClauseList toClauseList() {
         return new BooleanClauseList(
-                assignments.stream().map(ABooleanAssignment::toClause).collect(Collectors.toList()), variableCount);
+                variableMap,
+                assignments.stream().map(BooleanAssignment::toClause).collect(Collectors.toList()));
     }
 
     @Override
     public BooleanSolutionList toSolutionList() {
         return new BooleanSolutionList(
-                assignments.stream().map(ABooleanAssignment::toSolution).collect(Collectors.toList()));
+                variableMap,
+                assignments.stream().map(BooleanAssignment::toSolution).collect(Collectors.toList()));
     }
 
     @Override
@@ -106,7 +116,7 @@ public abstract class ABooleanAssignmentList<T extends ABooleanAssignment>
 
         protected int addLengths(ABooleanAssignmentList<?> o) {
             int count = 0;
-            for (final ABooleanAssignment literalSet : o.assignments) {
+            for (final BooleanAssignment literalSet : o.assignments) {
                 count += literalSet.get().length;
             }
             return count;
@@ -124,16 +134,20 @@ public abstract class ABooleanAssignmentList<T extends ABooleanAssignment>
 
         protected int addLengths(ABooleanAssignmentList<?> o) {
             int count = 0;
-            for (final ABooleanAssignment literalSet : o.assignments) {
+            for (final BooleanAssignment literalSet : o.assignments) {
                 count += literalSet.get().length;
             }
             return count;
         }
     }
 
-    public abstract AValueAssignmentList<? extends AValueAssignment> toValue();
+    public abstract AValueAssignmentList<? extends ValueAssignment> toValue();
 
     public String print() {
         return toValue().print();
+    }
+
+    public VariableMap getVariableMap() {
+        return variableMap;
     }
 }

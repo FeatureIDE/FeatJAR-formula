@@ -44,7 +44,7 @@ public class CnfDimacsFormat implements IFormat<BooleanClauseList> {
         sb.append(' ');
         sb.append(DimacsConstants.CNF);
         sb.append(' ');
-        sb.append(cnf.getVariableCount());
+        sb.append(cnf.getVariableMap().getVariableCount());
         sb.append(' ');
         sb.append(cnf.size());
         sb.append(System.lineSeparator());

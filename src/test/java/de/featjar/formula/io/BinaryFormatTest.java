@@ -60,7 +60,7 @@ public class BinaryFormatTest extends Common {
                 .map(ComputeBooleanRepresentation::new)
                 .compute();
 
-        FormatTest.testParseAndSerialize("binary/ABC-nAnBnC", new BooleanAssignmentGroupsBinaryFormat());
+        FormatTest.testParseAndSerialize("binary/" + name, new BooleanAssignmentGroupsBinaryFormat());
         FormatTest.testSerializeAndParse(assignmentSpace, new BooleanAssignmentGroupsBinaryFormat());
     }
 }

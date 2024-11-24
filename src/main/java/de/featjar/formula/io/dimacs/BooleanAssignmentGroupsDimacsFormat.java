@@ -25,10 +25,10 @@ import de.featjar.base.io.format.IFormat;
 import de.featjar.base.io.format.ParseProblem;
 import de.featjar.base.io.input.AInputMapper;
 import de.featjar.formula.VariableMap;
-import de.featjar.formula.assignment.ABooleanAssignment;
+import de.featjar.formula.assignment.ABooleanAssignmentList;
+import de.featjar.formula.assignment.BooleanAssignment;
 import de.featjar.formula.assignment.BooleanAssignmentGroups;
 import java.text.ParseException;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -43,7 +43,7 @@ public class BooleanAssignmentGroupsDimacsFormat implements IFormat<BooleanAssig
         Objects.requireNonNull(assignmentSpace);
 
         final StringBuilder sb = new StringBuilder();
-        List<? extends ABooleanAssignment> cnf = assignmentSpace.getGroups().get(0);
+        ABooleanAssignmentList<? extends BooleanAssignment> cnf = assignmentSpace.getFirstGroup();
         VariableMap variableMap = assignmentSpace.getVariableMap();
 
         variableMap.stream().forEach(e -> {
@@ -66,7 +66,7 @@ public class BooleanAssignmentGroupsDimacsFormat implements IFormat<BooleanAssig
         sb.append(System.lineSeparator());
 
         // Clauses
-        for (final ABooleanAssignment clause : cnf) {
+        for (final BooleanAssignment clause : cnf) {
             for (final int l : clause.get()) {
                 sb.append(l);
                 sb.append(' ');

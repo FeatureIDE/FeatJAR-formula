@@ -20,21 +20,14 @@
  */
 package de.featjar.formula.io.textual;
 
-import de.featjar.base.data.Problem;
 import de.featjar.base.data.Result;
-import de.featjar.base.io.IO;
 import de.featjar.base.io.format.IFormat;
-import de.featjar.base.io.input.AInputMapper;
-import de.featjar.formula.assignment.AValueAssignment;
 import de.featjar.formula.assignment.AValueAssignmentList;
 import de.featjar.formula.assignment.ValueAssignment;
-import de.featjar.formula.assignment.ValueAssignmentList;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Textual format for serializing and parsing a list of {@link AValueAssignment value assignments}.
+ * Textual format for serializing and parsing a list of {@link ValueAssignment value assignments}.
  *
  * @author Elias Kuiter
  * @author Sebastian Krieter
@@ -44,36 +37,12 @@ public class ValueAssignmentListFormat implements IFormat<AValueAssignmentList<?
     @Override
     public Result<String> serialize(AValueAssignmentList<?> valueAssignmentList) {
         return Result.of(valueAssignmentList.getAll().stream()
-                .map(AValueAssignment::print)
+                .map(ValueAssignment::print)
                 .collect(Collectors.joining(";")));
     }
 
     @Override
-    public Result<AValueAssignmentList<?>> parse(AInputMapper inputMapper) {
-        List<Problem> problems = new ArrayList<>();
-        ValueAssignmentFormat format = new ValueAssignmentFormat();
-        ValueAssignmentList valueAssignmentList = new ValueAssignmentList();
-        for (String valueClause : inputMapper
-                .get()
-                .getLineStream()
-                .collect(Collectors.joining(";"))
-                .split(";")) {
-            Result<AValueAssignment> valueAssignment = IO.load(valueClause.trim(), format);
-            problems.addAll(valueAssignment.getProblems());
-            if (valueAssignment.isPresent()) {
-                valueAssignmentList.add((ValueAssignment) valueAssignment.get());
-            }
-        }
-        return Result.of(valueAssignmentList, problems);
-    }
-
-    @Override
     public boolean supportsSerialize() {
-        return true;
-    }
-
-    @Override
-    public boolean supportsParse() {
         return true;
     }
 

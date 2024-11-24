@@ -20,7 +20,6 @@
  */
 package de.featjar.formula.assignment;
 
-import de.featjar.base.data.Range;
 import de.featjar.formula.VariableMap;
 import de.featjar.formula.computation.ComputeCNFFormula;
 import de.featjar.formula.structure.IFormula;
@@ -43,47 +42,29 @@ import java.util.List;
  */
 public class BooleanClauseList extends ABooleanAssignmentList<BooleanClause> {
 
-    protected int variableCount;
-
-    public BooleanClauseList(int variableCount) {
-        super();
-        this.variableCount = variableCount;
+    public BooleanClauseList(VariableMap variableMap) {
+        super(variableMap);
     }
 
-    public BooleanClauseList(int size, int variableCount) {
-        super(size);
-        this.variableCount = variableCount;
+    public BooleanClauseList(VariableMap variableMap, int size) {
+        super(variableMap, size);
     }
 
-    public BooleanClauseList(Collection<? extends ABooleanAssignment> assignments, int variableCount) {
-        super(assignments.stream().map(ABooleanAssignment::toClause));
-        this.variableCount = variableCount;
+    public BooleanClauseList(VariableMap variableMap, Collection<? extends BooleanAssignment> assignments) {
+        super(variableMap, assignments.stream().map(BooleanAssignment::toClause));
     }
 
     public BooleanClauseList(BooleanClauseList other) {
         super(other);
-        this.variableCount = other.variableCount;
     }
 
-    public void setVariableCount(int variableCount) {
-        this.variableCount = variableCount;
-    }
-
-    public int getVariableCount() {
-        return variableCount;
-    }
-
-    public Range getVariableRange() {
-        return Range.of(1, getVariableCount());
-    }
-
-    public BooleanClauseList adapt(VariableMap oldVariables, VariableMap newVariables) {
+    public BooleanClauseList adapt(VariableMap newVariables) {
         List<BooleanClause> adaptedAssignments = new ArrayList<>();
         for (BooleanClause oldClause : assignments) {
-            adaptedAssignments.add(new BooleanClause(
-                    oldClause.adapt(oldVariables, newVariables).orElseThrow()));
+            adaptedAssignments.add(
+                    new BooleanClause(oldClause.adapt(variableMap, newVariables).orElseThrow()));
         }
-        return new BooleanClauseList(adaptedAssignments, newVariables.getVariableCount());
+        return new BooleanClauseList(newVariables, adaptedAssignments);
     }
 
     @Override

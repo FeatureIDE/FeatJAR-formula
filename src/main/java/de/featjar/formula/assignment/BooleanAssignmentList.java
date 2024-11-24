@@ -31,19 +31,19 @@ import java.util.Collection;
  */
 public class BooleanAssignmentList extends ABooleanAssignmentList<BooleanAssignment> {
 
-    public BooleanAssignmentList() {
-        super();
+    public BooleanAssignmentList(VariableMap variableMap) {
+        super(variableMap);
     }
 
-    public BooleanAssignmentList(int size) {
-        super(size);
+    public BooleanAssignmentList(VariableMap variableMap, int size) {
+        super(variableMap, size);
     }
 
-    public BooleanAssignmentList(Collection<? extends BooleanAssignment> assignments) {
-        super(assignments);
+    public BooleanAssignmentList(VariableMap variableMap, Collection<? extends BooleanAssignment> assignments) {
+        super(variableMap, assignments);
     }
 
-    public BooleanAssignmentList(BooleanAssignmentList other) {
+    public BooleanAssignmentList(VariableMap variableMap, BooleanAssignmentList other) {
         super(other);
     }
 

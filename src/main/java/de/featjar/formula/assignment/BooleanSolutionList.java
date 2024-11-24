@@ -36,14 +36,16 @@ import java.util.Collection;
  */
 public class BooleanSolutionList extends ABooleanAssignmentList<BooleanSolution> {
 
-    public BooleanSolutionList() {}
-
-    public BooleanSolutionList(int size) {
-        super(size);
+    public BooleanSolutionList(VariableMap variableMap) {
+        super(variableMap);
     }
 
-    public BooleanSolutionList(Collection<? extends BooleanSolution> assignments) {
-        super(assignments);
+    public BooleanSolutionList(VariableMap variableMap, int size) {
+        super(variableMap, size);
+    }
+
+    public BooleanSolutionList(VariableMap variableMap, Collection<? extends BooleanSolution> assignments) {
+        super(variableMap, assignments);
     }
 
     public BooleanSolutionList(BooleanSolutionList other) {

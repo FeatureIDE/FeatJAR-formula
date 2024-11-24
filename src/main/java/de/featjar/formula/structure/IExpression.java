@@ -24,10 +24,10 @@ import de.featjar.base.io.IO;
 import de.featjar.base.tree.Trees;
 import de.featjar.base.tree.structure.ITree;
 import de.featjar.formula.VariableMap;
-import de.featjar.formula.assignment.ABooleanAssignment;
-import de.featjar.formula.assignment.AValueAssignment;
 import de.featjar.formula.assignment.Assignment;
+import de.featjar.formula.assignment.BooleanAssignment;
 import de.featjar.formula.assignment.IAssignment;
+import de.featjar.formula.assignment.ValueAssignment;
 import de.featjar.formula.io.textual.ExpressionFormat;
 import de.featjar.formula.structure.predicate.ExpressionKind;
 import de.featjar.formula.structure.term.ITerm;
@@ -88,7 +88,7 @@ public interface IExpression extends ITree<IExpression> {
      * @param booleanAssignment the boolean assignment
      * @param variableMap the {@link VariableMap variable map} mapping the indices in the assignment to variable names
      */
-    default Optional<Object> evaluate(ABooleanAssignment booleanAssignment, VariableMap variableMap) {
+    default Optional<Object> evaluate(BooleanAssignment booleanAssignment, VariableMap variableMap) {
         return evaluate(variableMap.toAssignment(booleanAssignment).get());
     }
 
@@ -98,7 +98,7 @@ public interface IExpression extends ITree<IExpression> {
      * @param valueAssignment the boolean assignment
      * @param variableMap the {@link VariableMap variable map} mapping the indices in the assignment to variable names
      */
-    default Optional<Object> evaluate(AValueAssignment valueAssignment, VariableMap variableMap) {
+    default Optional<Object> evaluate(ValueAssignment valueAssignment, VariableMap variableMap) {
         return evaluate(variableMap.toAssignment(valueAssignment).get());
     }
 

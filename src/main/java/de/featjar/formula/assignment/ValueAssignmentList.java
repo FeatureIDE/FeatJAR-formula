@@ -31,18 +31,21 @@ import java.util.Collection;
  * @author Elias Kuiter
  */
 public class ValueAssignmentList extends AValueAssignmentList<ValueAssignment> {
-    public ValueAssignmentList() {}
 
-    public ValueAssignmentList(int size) {
-        super(size);
+    public ValueAssignmentList(VariableMap variableMap) {
+        super(variableMap);
+    }
+
+    public ValueAssignmentList(VariableMap variableMap, int size) {
+        super(variableMap, size);
+    }
+
+    public ValueAssignmentList(VariableMap variableMap, Collection<? extends ValueAssignment> assignments) {
+        super(variableMap, assignments);
     }
 
     public ValueAssignmentList(ValueAssignmentList other) {
         super(other);
-    }
-
-    public ValueAssignmentList(Collection<? extends ValueAssignment> assignments) {
-        super(assignments);
     }
 
     @Override

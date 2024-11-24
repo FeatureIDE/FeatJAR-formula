@@ -24,6 +24,7 @@ import de.featjar.analysis.ISolver;
 import de.featjar.formula.VariableMap;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.stream.IntStream;
 
 /**
  * A (partial) Boolean solution; that is, a conjunction of literals. Implemented
@@ -36,7 +37,7 @@ import java.util.Collection;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class BooleanSolution extends ABooleanAssignment implements ISolution<Integer, Boolean> {
+public class BooleanSolution extends BooleanAssignment implements ISolution<Integer, Boolean> {
 
     private static final long serialVersionUID = -6609620937538213007L;
 
@@ -166,6 +167,16 @@ public class BooleanSolution extends ABooleanAssignment implements ISolution<Int
     @Override
     public BooleanSolution toSolution() {
         return this;
+    }
+
+    @Override
+    public BooleanAssignment toAssignment() {
+        return new BooleanAssignment(IntStream.of(elements).filter(l -> l != 0).toArray());
+    }
+
+    @Override
+    public BooleanClause toClause() {
+        return new BooleanClause(IntStream.of(elements).filter(l -> l != 0).toArray());
     }
 
     @Override

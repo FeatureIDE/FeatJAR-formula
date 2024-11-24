@@ -27,9 +27,10 @@ import de.featjar.base.io.format.ParseProblem;
 import de.featjar.base.io.input.AInputMapper;
 import de.featjar.base.io.output.AOutputMapper;
 import de.featjar.formula.VariableMap;
-import de.featjar.formula.assignment.ABooleanAssignment;
+import de.featjar.formula.assignment.ABooleanAssignmentList;
 import de.featjar.formula.assignment.BooleanAssignment;
 import de.featjar.formula.assignment.BooleanAssignmentGroups;
+import de.featjar.formula.assignment.BooleanAssignmentList;
 import de.featjar.formula.assignment.BooleanClause;
 import de.featjar.formula.assignment.BooleanSolution;
 import java.io.IOException;
@@ -65,11 +66,11 @@ public class BooleanAssignmentGroupsCompressedFormat extends ABinaryFormat<Boole
         for (int i = 1; i <= maxIndex; i++) {
             writeString(outputStream, variableMap.get(i).orElse(""));
         }
-        final List<? extends List<? extends ABooleanAssignment>> groups = assignmentSpace.getGroups();
+        final List<? extends ABooleanAssignmentList<? extends BooleanAssignment>> groups = assignmentSpace.getGroups();
         writeInt(outputStream, groups.size());
-        for (List<? extends ABooleanAssignment> group : groups) {
+        for (ABooleanAssignmentList<? extends BooleanAssignment> group : groups) {
             writeInt(outputStream, group.size());
-            for (ABooleanAssignment assignment : group) {
+            for (BooleanAssignment assignment : group) {
                 final int[] literals = assignment.get();
                 if (assignment instanceof BooleanSolution) {
                     writeByte(outputStream, BooleanSolutionType);
@@ -115,10 +116,10 @@ public class BooleanAssignmentGroupsCompressedFormat extends ABinaryFormat<Boole
                 }
             }
             final int numberOfGroups = readInt(inputStream);
-            final ArrayList<List<ABooleanAssignment>> groups = new ArrayList<>(numberOfGroups);
+            final ArrayList<BooleanAssignmentList> groups = new ArrayList<>(numberOfGroups);
             for (int i = 0; i < numberOfGroups; i++) {
                 final int numberOfAssignment = readInt(inputStream);
-                final ArrayList<ABooleanAssignment> group = new ArrayList<>(numberOfAssignment);
+                final BooleanAssignmentList group = new BooleanAssignmentList(variableMap, numberOfAssignment);
                 for (int j = 0; j < numberOfAssignment; j++) {
                     final byte type = readByte(inputStream);
                     final int[] literals;

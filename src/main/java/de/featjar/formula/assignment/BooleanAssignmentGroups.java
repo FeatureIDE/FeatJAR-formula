@@ -20,19 +20,58 @@
  */
 package de.featjar.formula.assignment;
 
+import de.featjar.base.io.format.IFormat;
 import de.featjar.formula.VariableMap;
 import java.util.List;
+import java.util.Objects;
 
 /**
- * {@link AAssignmentGroups} implementation for {@link ABooleanAssignment}.
+ * Stores multiple groups of {@link ABooleanAssignmentList}.
+ * The main purposes of this class is to provide an easy to write/read object for a corresponding {@link IFormat format}.
  *
  * @author Sebastian Krieter
  */
-public class BooleanAssignmentGroups extends AAssignmentGroups<ABooleanAssignment> {
+public class BooleanAssignmentGroups {
+
+    protected final VariableMap variableMap;
+    protected final List<? extends ABooleanAssignmentList<? extends BooleanAssignment>> assignmentGroups;
 
     public BooleanAssignmentGroups(
-            VariableMap variableMap, List<? extends List<? extends ABooleanAssignment>> assignment) {
-        super(variableMap, assignment);
+            VariableMap variableMap, List<? extends ABooleanAssignmentList<?>> assignmentGroups) {
+        this.variableMap = variableMap;
+        this.assignmentGroups = assignmentGroups;
+    }
+
+    public BooleanAssignmentGroups(
+            VariableMap variableMap, ABooleanAssignmentList<? extends BooleanAssignment> assignmentGroup) {
+        this.variableMap = variableMap;
+        this.assignmentGroups = List.of(assignmentGroup);
+    }
+
+    public BooleanAssignmentGroups(ABooleanAssignmentList<? extends BooleanAssignment> assignmentGroup) {
+        this.variableMap = assignmentGroup.getVariableMap();
+        this.assignmentGroups = List.of(assignmentGroup);
+    }
+
+    public BooleanAssignmentGroups(VariableMap variableMap, BooleanAssignment... assignments) {
+        this.variableMap = variableMap;
+        BooleanAssignmentList firstGroup = new BooleanAssignmentList(variableMap);
+        for (BooleanAssignment assignment : assignments) {
+            firstGroup.add(assignment);
+        }
+        this.assignmentGroups = List.of(firstGroup);
+    }
+
+    public VariableMap getVariableMap() {
+        return variableMap;
+    }
+
+    public List<? extends ABooleanAssignmentList<? extends BooleanAssignment>> getGroups() {
+        return assignmentGroups;
+    }
+
+    public ABooleanAssignmentList<? extends BooleanAssignment> getFirstGroup() {
+        return assignmentGroups.get(0);
     }
 
     public BooleanClauseList toClauseList() {
@@ -44,16 +83,33 @@ public class BooleanAssignmentGroups extends AAssignmentGroups<ABooleanAssignmen
     }
 
     public BooleanClauseList toClauseList(int groupIndex) {
-        List<? extends ABooleanAssignment> group = assignmentGroups.get(groupIndex);
-        final BooleanClauseList list = new BooleanClauseList(group.size(), variableMap.getVariableCount());
-        group.stream().map(ABooleanAssignment::toClause).forEach(list::add);
-        return list;
+        return assignmentGroups.get(groupIndex).toClauseList();
     }
 
     public BooleanSolutionList toSolutionList(int groupIndex) {
-        List<? extends ABooleanAssignment> group = assignmentGroups.get(groupIndex);
-        final BooleanSolutionList list = new BooleanSolutionList(group.size());
-        group.stream().map(ABooleanAssignment::toSolution).forEach(list::add);
-        return list;
+        return assignmentGroups.get(groupIndex).toSolutionList();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(assignmentGroups, variableMap);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        BooleanAssignmentGroups other = (BooleanAssignmentGroups) obj;
+        return Objects.equals(assignmentGroups, other.assignmentGroups)
+                && Objects.equals(variableMap, other.variableMap);
+    }
+
+    @Override
+    public String toString() {
+        return "AssignmentGroup [map=" + variableMap + ", groups=" + assignmentGroups + "]";
     }
 }

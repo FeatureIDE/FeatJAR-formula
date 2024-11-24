@@ -20,7 +20,6 @@
  */
 package de.featjar.formula.assignment;
 
-import de.featjar.base.data.Range;
 import de.featjar.base.data.Result;
 import de.featjar.formula.VariableMap;
 import de.featjar.formula.computation.ComputeCNFFormula;
@@ -37,38 +36,20 @@ import java.util.Collection;
  */
 public class ValueClauseList extends AValueAssignmentList<ValueClause> {
 
-    protected int variableCount;
-
-    public ValueClauseList(int variableCount) {
-        super();
-        this.variableCount = variableCount;
+    public ValueClauseList(VariableMap variableMap) {
+        super(variableMap);
     }
 
-    public ValueClauseList(int size, int variableCount) {
-        super(size);
-        this.variableCount = variableCount;
+    public ValueClauseList(VariableMap variableMap, int size) {
+        super(variableMap, size);
     }
 
-    public ValueClauseList(Collection<? extends ValueClause> clauses, int variableCount) {
-        super(clauses);
-        this.variableCount = variableCount;
+    public ValueClauseList(VariableMap variableMap, Collection<? extends ValueClause> clauses) {
+        super(variableMap, clauses);
     }
 
     public ValueClauseList(ValueClauseList other) {
         super(other);
-        this.variableCount = other.variableCount;
-    }
-
-    public void setVariableCount(int variableCount) {
-        this.variableCount = variableCount;
-    }
-
-    public int getVariableCount() {
-        return variableCount;
-    }
-
-    public Range getVariableRange() {
-        return Range.of(1, getVariableCount());
     }
 
     @Override

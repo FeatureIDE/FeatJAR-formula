@@ -148,11 +148,9 @@ public class TrueFalseSimplifier implements ITreeVisitor<IFormula, Void> {
         ACardinal cardinal = (ACardinal) child;
         int lowerBound = cardinal.getRange().getLowerBound();
         int upperBound = cardinal.getRange().getUpperBound();
-        if (lowerBound <= trueCounter
-                && (upperBound == Integer.MIN_VALUE || upperBound >= trueCounter + otherCounter)) {
+        if (lowerBound <= trueCounter && (upperBound == Range.OPEN || upperBound >= trueCounter + otherCounter)) {
             return True.INSTANCE;
-        } else if (lowerBound > trueCounter + otherCounter
-                || (upperBound != Integer.MIN_VALUE && upperBound < trueCounter)) {
+        } else if (lowerBound > trueCounter + otherCounter || (upperBound != Range.OPEN && upperBound < trueCounter)) {
             return False.INSTANCE;
         }
 

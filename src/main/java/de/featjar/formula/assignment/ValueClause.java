@@ -31,7 +31,7 @@ import java.util.LinkedHashMap;
  *
  * @author Elias Kuiter
  */
-public class ValueClause extends AValueAssignment implements IClause<Integer, Object> {
+public class ValueClause extends ValueAssignment implements IClause<Integer, Object> {
     public ValueClause() {}
 
     public ValueClause(LinkedHashMap<Integer, Object> variableValuePairs) {

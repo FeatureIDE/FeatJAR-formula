@@ -21,7 +21,6 @@
 package de.featjar.formula.io;
 
 import static de.featjar.formula.structure.Expressions.*;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -110,7 +109,7 @@ public class DIMACSFormatTest extends Common {
 
     private void testException(final String name) {
         RuntimeException wrapperException = assertThrows(
-                RuntimeException.class,
+                IllegalArgumentException.class,
                 () -> {
                     try {
                         IO.save(getFormula(name), OutputStream.nullOutputStream(), new FormulaDimacsFormat());
@@ -120,6 +119,5 @@ public class DIMACSFormatTest extends Common {
                     }
                 },
                 "Formula is not in CNF");
-        assertInstanceOf(IllegalArgumentException.class, wrapperException.getCause());
     }
 }

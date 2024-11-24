@@ -20,21 +20,35 @@
  */
 package de.featjar.formula.assignment;
 
+import de.featjar.base.data.Maps;
 import de.featjar.base.data.Result;
 import de.featjar.formula.VariableMap;
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
- * Primary implementation of {@link AValueAssignment}.
+ * Primary implementation of {@link ValueAssignment}.
  * To be used when neither CNF nor DNF semantics are associated with an assignment.
  *
  * @author Elias Kuiter
  */
-public class ValueAssignment extends AValueAssignment {
-    public ValueAssignment() {}
+public class ValueAssignment implements IAssignment<Integer, Object>, IValueRepresentation {
+
+    protected final LinkedHashMap<Integer, Object> variableValuePairs;
+
+    public ValueAssignment() {
+        this.variableValuePairs = Maps.empty();
+    }
+
+    public ValueAssignment(LinkedHashMap<Integer, Object> variableValuePairs) {
+        this.variableValuePairs = variableValuePairs;
+    }
 
     public ValueAssignment(Assignment assignment, VariableMap map) {
-        super();
+        this.variableValuePairs = Maps.empty();
         assignment.getAll().forEach((key, value) -> {
             Result<Integer> index = map.get(key);
 
@@ -45,20 +59,69 @@ public class ValueAssignment extends AValueAssignment {
         });
     }
 
-    public ValueAssignment(LinkedHashMap<Integer, Object> variableValuePairs) {
-        super(variableValuePairs);
-    }
-
-    public ValueAssignment(ValueAssignment predicateClause) {
-        this(new LinkedHashMap<>(predicateClause.variableValuePairs));
-    }
-
     public ValueAssignment(Object... variableValuePairs) {
-        super(variableValuePairs);
+        this.variableValuePairs = Maps.empty();
+        if (variableValuePairs.length % 2 == 1)
+            throw new IllegalArgumentException("expected a list of variable-value pairs for this value assignment");
+        for (int i = 0; i < variableValuePairs.length; i += 2) {
+            this.variableValuePairs.put((Integer) variableValuePairs[i], variableValuePairs[i + 1]);
+        }
+    }
+
+    public ValueAssignment(ValueAssignment valueAssignment) {
+        this(new LinkedHashMap<>(valueAssignment.variableValuePairs));
     }
 
     @Override
-    public Result<BooleanAssignment> toBoolean() {
+    public ValueAssignment toAssignment() {
+        return this;
+    }
+
+    @Override
+    public ValueClause toClause() {
+        return new ValueClause(variableValuePairs);
+    }
+
+    @Override
+    public ValueSolution toSolution() {
+        return new ValueSolution(variableValuePairs);
+    }
+
+    @Override
+    public Map<Integer, Object> getAll() {
+        return Collections.unmodifiableMap(variableValuePairs);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ValueAssignment that = (ValueAssignment) o;
+        return Objects.equals(variableValuePairs, that.variableValuePairs);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(variableValuePairs);
+    }
+
+    @Override
+    public String print() {
+        return variableValuePairs.entrySet().stream()
+                .map(e -> {
+                    Integer variable = e.getKey();
+                    Object value = e.getValue();
+                    if (value instanceof Boolean) {
+                        return String.format("%s%s", ((boolean) value) ? "+" : "-", variable);
+                    } else {
+                        return String.format("%s=%s", variable, value);
+                    }
+                })
+                .collect(Collectors.joining(","));
+    }
+
+    @Override
+    public Result<? extends BooleanAssignment> toBoolean() {
         return VariableMap.toBoolean(this);
     }
 
