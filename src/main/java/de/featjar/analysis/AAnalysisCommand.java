@@ -47,11 +47,12 @@ public abstract class AAnalysisCommand<T> extends ACommand {
             Option.newFlag("browse-cache").setDescription("Show cache contents in default browser");
 
     public static final Option<Boolean> NON_PARALLEL = Option.newFlag("non-parallel") //
-            .setDescription("Disable parallel computation. Is overridden by timeout option");
+            .setDescription(
+                    "Disable parallel computation. (Is ignored if timeout option is specified, as computations with timeout are always non-parallel.)");
 
     public static final Option<Duration> TIMEOUT_OPTION = Option.newOption(
                     "timeout", s -> Duration.ofSeconds(Long.parseLong(s)))
-            .setDescription("Timeout in seconds")
+            .setDescription("Timeout in seconds. (Disables parallel computing.)")
             .setValidator(timeout -> !timeout.isNegative())
             .setDefaultValue(Duration.ZERO);
 
