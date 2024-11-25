@@ -108,7 +108,7 @@ public class DIMACSFormatTest extends Common {
     }
 
     private void testException(final String name) {
-        RuntimeException wrapperException = assertThrows(
+        assertThrows(
                 IllegalArgumentException.class,
                 () -> {
                     try {
