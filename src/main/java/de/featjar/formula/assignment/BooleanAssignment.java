@@ -23,7 +23,6 @@ package de.featjar.formula.assignment;
 import de.featjar.analysis.ISolver;
 import de.featjar.base.data.IntegerList;
 import de.featjar.base.data.Maps;
-import de.featjar.base.data.Problem;
 import de.featjar.base.data.Result;
 import de.featjar.base.data.Sets;
 import de.featjar.formula.VariableMap;
@@ -105,44 +104,37 @@ public class BooleanAssignment extends IntegerList implements IAssignment<Intege
         return newArray;
     }
 
-    public static Result<int[]> adapt(
-            int[] oldIntegers, VariableMap oldVariableMap, VariableMap newVariableMap, boolean inPlace) {
-        final int[] newIntegers = inPlace ? oldIntegers : new int[oldIntegers.length];
-        for (int i = 0; i < oldIntegers.length; i++) {
-            final int l = oldIntegers[i];
-            final Result<String> name = oldVariableMap.get(Math.abs(l));
-            if (name.isPresent()) {
-                final Result<Integer> index = newVariableMap.get(name.get());
-                if (index.isPresent()) {
-                    newIntegers[i] = l < 0 ? -index.get() : index.get();
+    public static void adapt(
+            int[] oldLiterals,
+            int[] newLiterals,
+            VariableMap oldVariableMap,
+            VariableMap newVariableMap,
+            boolean integrateOldVariables) {
+        for (int i = 0; i < oldLiterals.length; i++) {
+            final int oldLiteral = oldLiterals[i];
+            if (oldLiteral == 0) {
+                newLiterals[i] = 0;
+            } else {
+                final Result<String> name = oldVariableMap.get(Math.abs(oldLiteral));
+                if (name.isPresent()) {
+                    String variableName = name.get();
+                    final int newLiteral;
+                    Result<Integer> index = newVariableMap.get(variableName);
+                    if (index.isEmpty()) {
+                        if (integrateOldVariables) {
+                            newLiteral = newVariableMap.add(variableName);
+                        } else {
+                            throw new IllegalArgumentException("No variable named " + variableName);
+                        }
+                    } else {
+                        newLiteral = index.get();
+                    }
+                    newLiterals[i] = oldLiteral < 0 ? -newLiteral : newLiteral;
                 } else {
-                    return Result.empty(new Problem("No variable named " + name.get(), Problem.Severity.ERROR));
+                    throw new IllegalArgumentException("No variable with index " + oldLiteral);
                 }
-            } else {
-                return Result.empty(new Problem("No variable with index " + l, Problem.Severity.ERROR));
             }
         }
-        return Result.of(newIntegers);
-    }
-
-    public static Result<int[]> adaptAddVariables(
-            int[] oldIntegers, VariableMap oldVariableMap, VariableMap newVariableMap) {
-        final int[] newIntegers = new int[oldIntegers.length];
-        for (int i = 0; i < oldIntegers.length; i++) {
-            final int l = oldIntegers[i];
-            final Result<String> name = oldVariableMap.get(Math.abs(l));
-            if (name.isPresent()) {
-                Result<Integer> index = newVariableMap.get(name.get());
-                if (index.isEmpty()) {
-                    newVariableMap.add(name.get());
-                    index = newVariableMap.get(name.get());
-                }
-                newIntegers[i] = l < 0 ? -index.get() : index.get();
-            } else {
-                return Result.empty(new Problem("No variable with index " + l, Problem.Severity.ERROR));
-            }
-        }
-        return Result.of(newIntegers);
     }
 
     public BooleanAssignment(int... integers) {
@@ -161,8 +153,32 @@ public class BooleanAssignment extends IntegerList implements IAssignment<Intege
         return simplify(elements);
     }
 
-    public final Result<int[]> adapt(VariableMap oldVariableMap, VariableMap newVariableMap) {
-        return adapt(elements, oldVariableMap, newVariableMap, false);
+    /**
+     * Changes the literals in this assignment to a new mapping.
+     * This does not create a copy of this assignment, but directly changes it.
+     * A call of this method is equivalent to a call of {@link #adapt(VariableMap, VariableMap, boolean) adapt(newVariables, false);}.
+     *
+     * @param oldVariableMap the old variable map
+     * @param newVariables the new variable map
+     * @return this assignment
+     */
+    public BooleanAssignment adapt(VariableMap oldVariableMap, VariableMap newVariableMap) {
+        return adapt(oldVariableMap, newVariableMap, false);
+    }
+
+    /**
+     * Changes the literals in this assignment to a new mapping.
+     * This does not create a copy of this assignment, but directly changes it.
+     *
+     * @param oldVariableMap the old variable map
+     * @param newVariables the new variable map
+     * @param integrateOldVariables whether variable names from the old variable map are added to the new variable map, if missing
+     * @return this assignment
+     */
+    public BooleanAssignment adapt(
+            VariableMap oldVariableMap, VariableMap newVariableMap, boolean integrateOldVariables) {
+        adapt(elements, elements, oldVariableMap, newVariableMap, integrateOldVariables);
+        return this;
     }
 
     public int indexOfVariable(int variable) {
@@ -315,6 +331,11 @@ public class BooleanAssignment extends IntegerList implements IAssignment<Intege
     }
 
     @Override
+    public BooleanAssignment clone() {
+        return new BooleanAssignment(this);
+    }
+
+    @Override
     public BooleanAssignment toAssignment() {
         return this;
     }
@@ -327,6 +348,14 @@ public class BooleanAssignment extends IntegerList implements IAssignment<Intege
     @Override
     public BooleanSolution toSolution() {
         return new BooleanSolution(IntStream.of(elements).map(Math::abs).max().orElse(0), elements);
+    }
+
+    public BooleanSolution toSolution(int variableCount) {
+        if (variableCount < 0) {
+            throw new IllegalArgumentException(
+                    String.format("Variable count must be positive, but was %d.", variableCount));
+        }
+        return new BooleanSolution(variableCount, elements);
     }
 
     public BooleanAssignment inverse() {

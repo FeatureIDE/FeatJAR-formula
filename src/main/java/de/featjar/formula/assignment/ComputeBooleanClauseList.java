@@ -36,11 +36,11 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Transforms a formula, which is assumed to be in strict conjunctive normal form, into a {@link BooleanClauseList}.
+ * Transforms a formula, which is assumed to be in strict conjunctive normal form, into a {@link BooleanAssignmentList}.
  *
  * @author Sebastian Krieter
  */
-public class ComputeBooleanClauseList extends AComputation<BooleanClauseList> {
+public class ComputeBooleanClauseList extends AComputation<BooleanAssignmentList> {
 
     protected static final Dependency<Object> CNF = Dependency.newDependency();
 
@@ -53,7 +53,7 @@ public class ComputeBooleanClauseList extends AComputation<BooleanClauseList> {
     }
 
     @Override
-    public Result<BooleanClauseList> compute(List<Object> dependencyList, Progress progress) {
+    public Result<BooleanAssignmentList> compute(List<Object> dependencyList, Progress progress) {
         IFormula vp = (IFormula) CNF.get(dependencyList);
         FeatJAR.log().debug("initializing variable map for " + vp.getClass().getName());
         VariableMap variableMap = VariableMap.of(vp);
@@ -61,23 +61,23 @@ public class ComputeBooleanClauseList extends AComputation<BooleanClauseList> {
         if (vp instanceof Reference) {
             vp = (IFormula) ((Reference) vp).getExpression();
         }
-        return ComputeBooleanClauseList.toBooleanClauseList(vp, variableMap);
+        return toBooleanAssignmentList(vp, variableMap);
     }
 
     /**
      * {@return a formula, which is assumed to be in strict conjunctive normal form, into an indexed CNF representation}
      * @param formula the formula in strict CNF
      */
-    public static Result<BooleanClauseList> toBooleanClauseList(IFormula formula) {
+    public static Result<BooleanAssignmentList> toBooleanAssignmentList(IFormula formula) {
         VariableMap variableMap = VariableMap.of(formula);
         if (formula instanceof Reference) {
             formula = ((Reference) formula).getExpression();
         }
-        return toBooleanClauseList(formula, variableMap);
+        return toBooleanAssignmentList(formula, variableMap);
     }
 
-    public static Result<BooleanClauseList> toBooleanClauseList(IFormula formula, VariableMap variableMap) {
-        final BooleanClauseList clauseList = new BooleanClauseList(variableMap);
+    public static Result<BooleanAssignmentList> toBooleanAssignmentList(IFormula formula, VariableMap variableMap) {
+        final BooleanAssignmentList clauseList = new BooleanAssignmentList(variableMap);
         formula.getChildren().stream()
                 .map(expression -> getClause((IFormula) expression, variableMap))
                 .filter(Objects::nonNull)

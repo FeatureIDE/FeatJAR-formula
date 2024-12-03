@@ -23,8 +23,8 @@ package de.featjar.formula.io.dimacs;
 import de.featjar.base.io.NonEmptyLineIterator;
 import de.featjar.formula.VariableMap;
 import de.featjar.formula.assignment.BooleanAssignmentGroups;
+import de.featjar.formula.assignment.BooleanAssignmentList;
 import de.featjar.formula.assignment.BooleanClause;
-import de.featjar.formula.assignment.BooleanClauseList;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Arrays;
@@ -103,7 +103,7 @@ public class BooleanAssignmentGroupsDimacsParser {
             }
         }
 
-        final BooleanClauseList clauses = readClauses(nonEmptyLineIterator);
+        final BooleanAssignmentList clauses = readClauses(nonEmptyLineIterator);
         final int actualVariableCount = indexVariables.getVariableCount();
         final int actualClauseCount = clauses.size();
         if (variableCount != actualVariableCount) {
@@ -187,9 +187,9 @@ public class BooleanAssignmentGroupsDimacsParser {
      * @throws ParseException if the input does not conform to the DIMACS CNF file
      *                        format
      */
-    private BooleanClauseList readClauses(NonEmptyLineIterator nonemptyLineIterator) throws ParseException {
+    private BooleanAssignmentList readClauses(NonEmptyLineIterator nonemptyLineIterator) throws ParseException {
         final LinkedList<String> literalQueue = new LinkedList<>();
-        final BooleanClauseList clauses = new BooleanClauseList(indexVariables, clauseCount);
+        final BooleanAssignmentList clauses = new BooleanAssignmentList(indexVariables, clauseCount);
         int readClausesCount = 0;
         for (String line = nonemptyLineIterator.currentLine(); line != null; line = nonemptyLineIterator.get()) {
             if (commentPattern.matcher(line).matches()) {

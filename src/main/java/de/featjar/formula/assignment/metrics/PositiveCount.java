@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.assignment.metrics;
 
-import de.featjar.formula.assignment.BooleanSolution;
+import de.featjar.formula.assignment.BooleanAssignment;
 
 /**
  * Computes the number of positive literals in a solution.
@@ -30,7 +30,7 @@ import de.featjar.formula.assignment.BooleanSolution;
 public class PositiveCount implements ICountFunction {
 
     @Override
-    public double compute(BooleanSolution literals) {
+    public double compute(BooleanAssignment literals) {
         return (double) literals.countPositives() / literals.size();
     }
 

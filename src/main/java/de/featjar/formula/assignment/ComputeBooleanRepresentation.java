@@ -59,7 +59,7 @@ public class ComputeBooleanRepresentation extends AComputation<BooleanAssignment
         if (formula instanceof Reference) {
             formula = (IFormula) ((Reference) formula).getExpression();
         }
-        return ComputeBooleanClauseList.toBooleanClauseList(formula, variableMap)
+        return ComputeBooleanClauseList.toBooleanAssignmentList(formula, variableMap)
                 .map(BooleanAssignmentGroups::new);
     }
 }

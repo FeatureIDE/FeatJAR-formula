@@ -26,22 +26,16 @@ import de.featjar.base.data.Pair;
 import de.featjar.base.data.Problem;
 import de.featjar.base.data.RangeMap;
 import de.featjar.base.data.Result;
-import de.featjar.formula.assignment.ABooleanAssignmentList;
-import de.featjar.formula.assignment.AValueAssignmentList;
 import de.featjar.formula.assignment.Assignment;
 import de.featjar.formula.assignment.AssignmentList;
 import de.featjar.formula.assignment.BooleanAssignment;
 import de.featjar.formula.assignment.BooleanAssignmentList;
 import de.featjar.formula.assignment.BooleanClause;
-import de.featjar.formula.assignment.BooleanClauseList;
 import de.featjar.formula.assignment.BooleanSolution;
-import de.featjar.formula.assignment.BooleanSolutionList;
 import de.featjar.formula.assignment.ValueAssignment;
 import de.featjar.formula.assignment.ValueAssignmentList;
 import de.featjar.formula.assignment.ValueClause;
-import de.featjar.formula.assignment.ValueClauseList;
 import de.featjar.formula.assignment.ValueSolution;
-import de.featjar.formula.assignment.ValueSolutionList;
 import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.IFormula;
 import java.util.ArrayList;
@@ -165,12 +159,10 @@ public class VariableMap extends RangeMap<String> {
         return toBoolean(valueSolution, BooleanSolution::new);
     }
 
-    protected static <T extends ABooleanAssignmentList<U>, U extends BooleanAssignment> Result<T> toBoolean(
-            AValueAssignmentList<?> valueAssignmentList,
-            T booleanAssignmentList,
-            Function<List<Integer>, U> constructor) {
+    protected static <T extends BooleanAssignmentList, U extends BooleanAssignment> Result<T> toBoolean(
+            ValueAssignmentList valueAssignmentList, T booleanAssignmentList, Function<List<Integer>, U> constructor) {
         List<Problem> problems = new ArrayList<>();
-        for (ValueAssignment valueAssignment : valueAssignmentList.getAll()) {
+        for (ValueAssignment valueAssignment : valueAssignmentList) {
             Result<U> booleanAssignment = toBoolean(valueAssignment, constructor);
             problems.addAll(booleanAssignment.getProblems());
             if (booleanAssignment.isPresent()) booleanAssignmentList.add(booleanAssignment.get());
@@ -183,15 +175,6 @@ public class VariableMap extends RangeMap<String> {
                 valueAssignmentList,
                 new BooleanAssignmentList(valueAssignmentList.getVariableMap()),
                 BooleanAssignment::new);
-    }
-
-    public static Result<BooleanClauseList> toBoolean(ValueClauseList valueClauseList) {
-        return toBoolean(valueClauseList, new BooleanClauseList(valueClauseList.getVariableMap()), BooleanClause::new);
-    }
-
-    public static Result<BooleanSolutionList> toBoolean(ValueSolutionList valueSolutionList) {
-        return toBoolean(
-                valueSolutionList, new BooleanSolutionList(valueSolutionList.getVariableMap()), BooleanSolution::new);
     }
 
     protected static <T extends ValueAssignment> T toValue(
@@ -215,11 +198,11 @@ public class VariableMap extends RangeMap<String> {
         return toValue(booleanSolution, ValueSolution::new);
     }
 
-    protected static <T extends AValueAssignmentList<U>, U extends ValueAssignment> T toValue(
-            ABooleanAssignmentList<?> booleanAssignmentList,
+    protected static <T extends ValueAssignmentList, U extends ValueAssignment> T toValue(
+            BooleanAssignmentList booleanAssignmentList,
             T valueAssignmentList,
             Function<LinkedHashMap<Integer, Object>, U> constructor) {
-        for (BooleanAssignment booleanAssignment : booleanAssignmentList.getAll()) {
+        for (BooleanAssignment booleanAssignment : booleanAssignmentList) {
             U valueAssignment = toValue(booleanAssignment, constructor);
             valueAssignmentList.add(valueAssignment);
         }
@@ -231,15 +214,6 @@ public class VariableMap extends RangeMap<String> {
                 booleanAssignmentList,
                 new ValueAssignmentList(booleanAssignmentList.getVariableMap()),
                 ValueAssignment::new);
-    }
-
-    public static ValueClauseList toValue(BooleanClauseList booleanClauseList) {
-        return toValue(booleanClauseList, new ValueClauseList(booleanClauseList.getVariableMap()), ValueClause::new);
-    }
-
-    public static ValueSolutionList toValue(BooleanSolutionList booleanSolutionList) {
-        return toValue(
-                booleanSolutionList, new ValueSolutionList(booleanSolutionList.getVariableMap()), ValueSolution::new);
     }
 
     public Result<Assignment> toAssignment(BooleanAssignment booleanAssignment) {
@@ -276,11 +250,11 @@ public class VariableMap extends RangeMap<String> {
         return Result.of(new Assignment(variableValuePairs), problems);
     }
 
-    public Result<AssignmentList> toAssignment(ABooleanAssignmentList<?> booleanAssignmentList) {
+    public Result<AssignmentList> toAssignment(BooleanAssignmentList booleanAssignmentList) {
         AssignmentList assignmentList = new AssignmentList(booleanAssignmentList.size());
         List<Problem> problems = new ArrayList<>();
 
-        for (BooleanAssignment booleanAssignment : booleanAssignmentList.getAll()) {
+        for (BooleanAssignment booleanAssignment : booleanAssignmentList) {
             Result<Assignment> assignment = toAssignment(booleanAssignment);
             problems.addAll(assignment.getProblems());
             assignmentList.add(assignment.get());
@@ -288,11 +262,11 @@ public class VariableMap extends RangeMap<String> {
         return Result.of(assignmentList, problems);
     }
 
-    public Result<AssignmentList> toAssignment(AValueAssignmentList<?> valueAssignmentList) {
+    public Result<AssignmentList> toAssignment(ValueAssignmentList valueAssignmentList) {
         AssignmentList assignmentList = new AssignmentList(valueAssignmentList.size());
         List<Problem> problems = new ArrayList<>();
 
-        for (ValueAssignment valueAssignment : valueAssignmentList.getAll()) {
+        for (ValueAssignment valueAssignment : valueAssignmentList) {
             Result<Assignment> assignment = toAssignment(valueAssignment);
             problems.addAll(assignment.getProblems());
             assignmentList.add(assignment.get());

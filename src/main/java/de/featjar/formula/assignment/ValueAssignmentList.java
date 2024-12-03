@@ -21,8 +21,15 @@
 package de.featjar.formula.assignment;
 
 import de.featjar.base.data.Result;
+import de.featjar.base.io.IO;
 import de.featjar.formula.VariableMap;
+import de.featjar.formula.io.textual.ValueAssignmentListFormat;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Primary implementation of {@link AValueAssignmentList}.
@@ -30,22 +37,78 @@ import java.util.Collection;
  *
  * @author Elias Kuiter
  */
-public class ValueAssignmentList extends AValueAssignmentList<ValueAssignment> {
+public class ValueAssignmentList implements IAssignmentList<ValueAssignment>, IValueRepresentation {
+    protected final List<ValueAssignment> literalLists;
+    protected final VariableMap variableMap;
 
     public ValueAssignmentList(VariableMap variableMap) {
-        super(variableMap);
+        literalLists = new ArrayList<>();
+        this.variableMap = variableMap;
     }
 
     public ValueAssignmentList(VariableMap variableMap, int size) {
-        super(variableMap, size);
+        literalLists = new ArrayList<>(size);
+        this.variableMap = variableMap;
     }
 
-    public ValueAssignmentList(VariableMap variableMap, Collection<? extends ValueAssignment> assignments) {
-        super(variableMap, assignments);
+    public ValueAssignmentList(VariableMap variableMap, Collection<? extends ValueAssignment> literalLists) {
+        this.literalLists = new ArrayList<>(literalLists);
+        this.variableMap = variableMap;
     }
 
     public ValueAssignmentList(ValueAssignmentList other) {
-        super(other);
+        this(other.variableMap, other.getAll());
+    }
+
+    @Override
+    public List<ValueAssignment> getAll() {
+        return literalLists;
+    }
+
+    @Override
+    public ValueAssignmentList toAssignmentList() {
+        return new ValueAssignmentList(
+                variableMap,
+                literalLists.stream().map(ValueAssignment::toAssignment).collect(Collectors.toList()));
+    }
+
+    @Override
+    public ValueAssignmentList toClauseList() {
+        return new ValueAssignmentList(
+                variableMap,
+                literalLists.stream().map(ValueAssignment::toClause).collect(Collectors.toList()));
+    }
+
+    @Override
+    public ValueAssignmentList toSolutionList() {
+        return new ValueAssignmentList(
+                variableMap,
+                literalLists.stream().map(ValueAssignment::toSolution).collect(Collectors.toList()));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ValueAssignmentList that = (ValueAssignmentList) o;
+        return Objects.equals(literalLists, that.literalLists);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(literalLists);
+    }
+
+    public String print() {
+        try {
+            return IO.print(this, new ValueAssignmentListFormat());
+        } catch (IOException e) {
+            return e.toString();
+        }
+    }
+
+    public VariableMap getVariableMap() {
+        return variableMap;
     }
 
     @Override

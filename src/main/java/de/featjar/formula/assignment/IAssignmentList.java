@@ -31,7 +31,7 @@ import java.util.stream.Stream;
 /**
  * A list of assignments.
  * Represents a list of assignments (e.g., {@link IClause clauses} or {@link ISolution solutions}) in a {@link ISolver}.
- * For a propositional implementation, see {@link ABooleanAssignmentList},
+ * For a propositional implementation, see {@link BooleanAssignmentList},
  * for a first-order implementation, see {@link AValueAssignmentList}.
  * If {@code T} refers to a {@link IClause} type, the list usually represents a conjunctive normal form (CNF).
  * If {@code T} refers to a {@link ISolution} type, the list usually represents a disjunctive normal form (DNF).
@@ -89,7 +89,7 @@ public interface IAssignmentList<T extends IAssignment<?, ?>> extends Iterable<T
      * @see IAssignment#print()
      */
     default String print() {
-        return getAll().stream().map(IAssignment::print).collect(Collectors.joining(";\n"));
+        return stream().map(IAssignment::print).collect(Collectors.joining(";\n"));
     }
 
     /**
@@ -97,9 +97,10 @@ public interface IAssignmentList<T extends IAssignment<?, ?>> extends Iterable<T
      *
      * @param index the index
      */
-    default Result<T> get(int index) {
-        if (index < 0 || index >= size()) return Result.empty();
-        return Result.of(getAll().get(index));
+    default T get(int index) {
+        if (index < 0 || index >= size())
+        	throw new IndexOutOfBoundsException(index);
+        return getAll().get(index);
     }
 
     /**

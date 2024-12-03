@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.assignment.metrics;
 
-import de.featjar.formula.assignment.BooleanSolutionList;
+import de.featjar.formula.assignment.BooleanAssignmentList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -38,7 +38,7 @@ public abstract class AAggregatableMetrics {
         }
 
         @Override
-        public double get(BooleanSolutionList sample) {
+        public double get(BooleanAssignmentList sample) {
             setSample(sample);
             return aggregate.getAsDouble();
         }
@@ -52,7 +52,7 @@ public abstract class AAggregatableMetrics {
     protected static final double EMPTY = -2;
     protected static final double INVALID = -1;
 
-    protected BooleanSolutionList sample;
+    protected BooleanAssignmentList sample;
 
     private double[] values = null;
 
@@ -85,7 +85,7 @@ public abstract class AAggregatableMetrics {
 
     protected abstract double[] computeValues();
 
-    public void setSample(BooleanSolutionList sample) {
+    public void setSample(BooleanAssignmentList sample) {
         if ((this.sample == null) || (this.sample != sample)) {
             this.sample = sample;
             reset();

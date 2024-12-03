@@ -40,7 +40,7 @@ public class CountMetrics extends AAggregatableMetrics {
         final int size = sample.size();
         final double[] values = new double[size];
         for (int i = 0; i < (size - 1); i++) {
-            values[i] = function.compute(sample.get(i).get());
+            values[i] = function.compute(sample.get(i));
         }
         return values;
     }

@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.assignment.metrics;
 
-import de.featjar.formula.assignment.BooleanSolutionList;
+import de.featjar.formula.assignment.BooleanAssignmentList;
 import java.util.List;
 
 /**
@@ -30,12 +30,12 @@ import java.util.List;
  */
 public interface ISampleMetric {
 
-    double get(BooleanSolutionList sample);
+    double get(BooleanAssignmentList sample);
 
-    default double[] get(List<BooleanSolutionList> sampleList) {
+    default double[] get(List<BooleanAssignmentList> sampleList) {
         final double[] values = new double[sampleList.size()];
         int index = 0;
-        for (final BooleanSolutionList sample : sampleList) {
+        for (final BooleanAssignmentList sample : sampleList) {
             values[index++] = get(sample);
         }
         return values;

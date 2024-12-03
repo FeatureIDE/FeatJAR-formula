@@ -144,6 +144,21 @@ public class BooleanClause extends BooleanAssignment implements IClause<Integer,
     }
 
     @Override
+    public BooleanClause clone() {
+        return new BooleanClause(this);
+    }
+
+    @Override
+    public BooleanClause adapt(VariableMap oldVariableMap, VariableMap newVariableMap) {
+        return (BooleanClause) super.adapt(oldVariableMap, newVariableMap);
+    }
+
+    @Override
+    public BooleanClause adapt(VariableMap oldVariableMap, VariableMap newVariableMap, boolean integrateOldVariables) {
+        return (BooleanClause) super.adapt(oldVariableMap, newVariableMap, integrateOldVariables);
+    }
+
+    @Override
     public BooleanClause addAll(BooleanAssignment integers) {
         return new BooleanClause(addAll(integers.get()));
     }

@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.assignment.metrics;
 
-import de.featjar.formula.assignment.BooleanSolutionList;
+import de.featjar.formula.assignment.BooleanAssignmentList;
 
 /**
  * Computes the size of a sample.
@@ -30,7 +30,7 @@ import de.featjar.formula.assignment.BooleanSolutionList;
 public class SizeMetric implements ISampleMetric {
 
     @Override
-    public double get(BooleanSolutionList sample) {
+    public double get(BooleanAssignmentList sample) {
         return sample.size();
     }
 

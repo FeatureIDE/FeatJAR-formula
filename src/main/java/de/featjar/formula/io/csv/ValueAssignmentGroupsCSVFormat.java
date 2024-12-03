@@ -27,7 +27,6 @@ import de.featjar.base.io.format.IFormat;
 import de.featjar.base.io.format.ParseProblem;
 import de.featjar.base.io.input.AInputMapper;
 import de.featjar.formula.VariableMap;
-import de.featjar.formula.assignment.AValueAssignmentList;
 import de.featjar.formula.assignment.ValueAssignment;
 import de.featjar.formula.assignment.ValueAssignmentGroups;
 import de.featjar.formula.assignment.ValueAssignmentList;
@@ -63,8 +62,8 @@ public class ValueAssignmentGroupsCSVFormat implements IFormat<ValueAssignmentGr
         csv.append(LINE_SEPARATOR);
         int groupIndex = 0;
         int configurationIndex = 0;
-        final List<? extends AValueAssignmentList<? extends ValueAssignment>> groups = assignmentSpace.getGroups();
-        for (AValueAssignmentList<? extends ValueAssignment> group : groups) {
+        final List<? extends ValueAssignmentList> groups = assignmentSpace.getGroups();
+        for (ValueAssignmentList group : groups) {
             for (final ValueAssignment configuration : group) {
                 csv.append(configurationIndex++);
                 csv.append(VALUE_SEPARATOR);

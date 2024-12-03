@@ -20,7 +20,7 @@
  */
 package de.featjar.formula.assignment.metrics;
 
-import de.featjar.formula.assignment.BooleanSolution;
+import de.featjar.formula.assignment.BooleanAssignment;
 
 /**
  * Computes the count of some property within a literal array (e.g., number of
@@ -30,7 +30,7 @@ import de.featjar.formula.assignment.BooleanSolution;
  */
 public interface ICountFunction {
 
-    double compute(final BooleanSolution literals);
+    double compute(final BooleanAssignment literals);
 
     String getName();
 }

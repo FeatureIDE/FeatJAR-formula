@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Stores multiple groups of {@link AValueAssignmentList}.
+ * Stores multiple groups of {@link ValueAssignmentList}.
  * The main purposes of this class is to provide an easy to write/read object for a corresponding {@link IFormat format}.
  *
  * @author Sebastian Krieter
@@ -34,15 +34,14 @@ import java.util.Objects;
 public class ValueAssignmentGroups {
 
     protected final VariableMap variableMap;
-    protected final List<? extends AValueAssignmentList<? extends ValueAssignment>> assignmentGroups;
+    protected final List<? extends ValueAssignmentList> assignmentGroups;
 
-    public ValueAssignmentGroups(
-            VariableMap variableMap, List<? extends AValueAssignmentList<? extends ValueAssignment>> assignmentGroups) {
+    public ValueAssignmentGroups(VariableMap variableMap, List<? extends ValueAssignmentList> assignmentGroups) {
         this.variableMap = variableMap;
         this.assignmentGroups = assignmentGroups;
     }
 
-    public ValueAssignmentGroups(AValueAssignmentList<? extends ValueAssignment> assignmentGroup) {
+    public ValueAssignmentGroups(ValueAssignmentList assignmentGroup) {
         this.variableMap = assignmentGroup.getVariableMap();
         this.assignmentGroups = List.of(assignmentGroup);
     }
@@ -60,11 +59,11 @@ public class ValueAssignmentGroups {
         return variableMap;
     }
 
-    public List<? extends AValueAssignmentList<? extends ValueAssignment>> getGroups() {
+    public List<? extends ValueAssignmentList> getGroups() {
         return assignmentGroups;
     }
 
-    public AValueAssignmentList<? extends ValueAssignment> getFirstGroup() {
+    public ValueAssignmentList getFirstGroup() {
         return assignmentGroups.get(0);
     }
 

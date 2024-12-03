@@ -20,10 +20,10 @@
  */
 package de.featjar.analysis;
 
-import de.featjar.formula.assignment.BooleanSolution;
+import de.featjar.formula.assignment.BooleanAssignment;
 
 @FunctionalInterface
 public interface IConfigurationVerifyer {
 
-    int test(BooleanSolution configuration);
+    int test(BooleanAssignment configuration);
 }

@@ -22,8 +22,8 @@ package de.featjar.formula.io.textual;
 
 import de.featjar.base.data.Result;
 import de.featjar.base.io.format.IFormat;
-import de.featjar.formula.assignment.AValueAssignmentList;
 import de.featjar.formula.assignment.ValueAssignment;
+import de.featjar.formula.assignment.ValueAssignmentList;
 import java.util.stream.Collectors;
 
 /**
@@ -32,13 +32,12 @@ import java.util.stream.Collectors;
  * @author Elias Kuiter
  * @author Sebastian Krieter
  */
-public class ValueAssignmentListFormat implements IFormat<AValueAssignmentList<?>> {
+public class ValueAssignmentListFormat implements IFormat<ValueAssignmentList> {
 
     @Override
-    public Result<String> serialize(AValueAssignmentList<?> valueAssignmentList) {
-        return Result.of(valueAssignmentList.getAll().stream()
-                .map(ValueAssignment::print)
-                .collect(Collectors.joining(";")));
+    public Result<String> serialize(ValueAssignmentList valueAssignmentList) {
+        return Result.of(
+                valueAssignmentList.stream().map(ValueAssignment::print).collect(Collectors.joining(";")));
     }
 
     @Override

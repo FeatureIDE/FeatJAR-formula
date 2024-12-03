@@ -22,19 +22,19 @@ package de.featjar.formula.io.dimacs;
 
 import de.featjar.base.data.Result;
 import de.featjar.base.io.format.IFormat;
-import de.featjar.formula.assignment.BooleanClause;
-import de.featjar.formula.assignment.BooleanClauseList;
+import de.featjar.formula.assignment.BooleanAssignment;
+import de.featjar.formula.assignment.BooleanAssignmentList;
 import java.util.Objects;
 
 /**
- * Serializes a {@link BooleanClauseList} to a String in DIMACS format.
+ * Serializes a {@link BooleanAssignmentList} to a String in DIMACS format.
  *
  * @author Sebastian Krieter
  */
-public class CnfDimacsFormat implements IFormat<BooleanClauseList> {
+public class CnfDimacsFormat implements IFormat<BooleanAssignmentList> {
 
     @Override
-    public Result<String> serialize(BooleanClauseList cnf) {
+    public Result<String> serialize(BooleanAssignmentList cnf) {
         Objects.requireNonNull(cnf);
 
         final StringBuilder sb = new StringBuilder();
@@ -50,7 +50,7 @@ public class CnfDimacsFormat implements IFormat<BooleanClauseList> {
         sb.append(System.lineSeparator());
 
         // Clauses
-        for (final BooleanClause clause : cnf.getAll()) {
+        for (final BooleanAssignment clause : cnf) {
             for (final int l : clause.get()) {
                 sb.append(l);
                 sb.append(' ');
