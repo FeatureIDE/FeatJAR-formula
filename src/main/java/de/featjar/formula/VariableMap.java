@@ -22,7 +22,6 @@ package de.featjar.formula;
 
 import de.featjar.base.data.IntegerList;
 import de.featjar.base.data.Maps;
-import de.featjar.base.data.Pair;
 import de.featjar.base.data.Problem;
 import de.featjar.base.data.RangeMap;
 import de.featjar.base.data.Result;
@@ -106,11 +105,15 @@ public class VariableMap extends RangeMap<String> {
     }
 
     public List<Integer> getVariableIndices() {
-        return stream().map(Pair::getKey).collect(Collectors.toList());
+        return entryStream().map(e -> e.getValue()).collect(Collectors.toList());
     }
 
     public List<Integer> getVariableIndices(List<String> names) {
         return stream(names).collect(Collectors.toList());
+    }
+
+    public BooleanAssignment getVariables() {
+        return new BooleanAssignment(entryStream().mapToInt(e -> e.getValue()).toArray());
     }
 
     public int getVariableCount() {

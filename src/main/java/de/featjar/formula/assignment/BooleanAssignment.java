@@ -249,6 +249,38 @@ public class BooleanAssignment extends IntegerList implements IAssignment<Intege
     }
 
     /**
+     * {@return the intersection of this integer list with the given integers}
+     *
+     * @param integers the integers
+     */
+    public final int[] retainAllNegated(int... integers) {
+        boolean[] intersectionMarker = new boolean[elements.length];
+        int count = 0;
+        for (int integer : integers) {
+            final int[] indices = indicesOf(-integer);
+            for (int i = 0; i < indices.length; i++) {
+                int index = indices[i];
+                if (index >= 0 && !intersectionMarker[index]) {
+                    count++;
+                    intersectionMarker[index] = true;
+                }
+            }
+        }
+
+        int[] newArray = new int[count];
+        int j = 0;
+        for (int i = 0; i < elements.length; i++) {
+            if (intersectionMarker[i]) {
+                newArray[j++] = elements[i];
+            }
+        }
+        assert Arrays.stream(elements)
+                .allMatch(e -> Arrays.stream(newArray).anyMatch(i -> i == e)
+                        == Arrays.stream(integers).anyMatch(i -> i == Math.abs(e)));
+        return newArray;
+    }
+
+    /**
      * {@return the difference of this integer list and the given integers}
      *
      * @param integers the integers
@@ -368,6 +400,10 @@ public class BooleanAssignment extends IntegerList implements IAssignment<Intege
 
     public BooleanAssignment retainAll(BooleanAssignment integers) {
         return new BooleanAssignment(retainAll(integers.get()));
+    }
+
+    public BooleanAssignment retainAllNegated(BooleanAssignment integers) {
+        return new BooleanAssignment(retainAllNegated(integers.get()));
     }
 
     public BooleanAssignment retainAllVariables(BooleanAssignment integers) {
