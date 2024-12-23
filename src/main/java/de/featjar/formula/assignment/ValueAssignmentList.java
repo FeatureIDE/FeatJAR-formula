@@ -32,7 +32,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * Primary implementation of {@link AValueAssignmentList}.
  * To be used when neither CNF nor DNF semantics are associated with an assignment list.
  *
  * @author Elias Kuiter

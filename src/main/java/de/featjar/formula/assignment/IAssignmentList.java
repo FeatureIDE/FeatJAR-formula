@@ -32,7 +32,7 @@ import java.util.stream.Stream;
  * A list of assignments.
  * Represents a list of assignments (e.g., {@link IClause clauses} or {@link ISolution solutions}) in a {@link ISolver}.
  * For a propositional implementation, see {@link BooleanAssignmentList},
- * for a first-order implementation, see {@link AValueAssignmentList}.
+ * for a first-order implementation.
  * If {@code T} refers to a {@link IClause} type, the list usually represents a conjunctive normal form (CNF).
  * If {@code T} refers to a {@link ISolution} type, the list usually represents a disjunctive normal form (DNF).
  *
@@ -98,8 +98,7 @@ public interface IAssignmentList<T extends IAssignment<?, ?>> extends Iterable<T
      * @param index the index
      */
     default T get(int index) {
-        if (index < 0 || index >= size())
-        	throw new IndexOutOfBoundsException(index);
+        if (index < 0 || index >= size()) throw new IndexOutOfBoundsException(index);
         return getAll().get(index);
     }
 
