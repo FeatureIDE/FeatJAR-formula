@@ -159,7 +159,7 @@ public class BooleanAssignment extends IntegerList implements IAssignment<Intege
      * A call of this method is equivalent to a call of {@link #adapt(VariableMap, VariableMap, boolean) adapt(newVariables, false);}.
      *
      * @param oldVariableMap the old variable map
-     * @param newVariables the new variable map
+     * @param newVariableMap the new variable map
      * @return this assignment
      */
     public BooleanAssignment adapt(VariableMap oldVariableMap, VariableMap newVariableMap) {
@@ -171,7 +171,7 @@ public class BooleanAssignment extends IntegerList implements IAssignment<Intege
      * This does not create a copy of this assignment, but directly changes it.
      *
      * @param oldVariableMap the old variable map
-     * @param newVariables the new variable map
+     * @param newVariableMap the new variable map
      * @param integrateOldVariables whether variable names from the old variable map are added to the new variable map, if missing
      * @return this assignment
      */

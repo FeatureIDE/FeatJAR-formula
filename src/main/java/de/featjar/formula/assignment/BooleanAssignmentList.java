@@ -133,7 +133,7 @@ public class BooleanAssignmentList implements IAssignmentList<BooleanAssignment>
     }
 
     /**
-     * Changes the {@link VariableMap variable map} and calls {@link BooleanAssignment#adapt(VariableMap, boolean)} for every assignment in this list.
+     * Changes the {@link VariableMap variable map} and calls {@link BooleanAssignment#adapt(VariableMap, VariableMap, boolean)} for every assignment in this list.
      * This does not create a copy of this list, but directly changes each assignment.
      * A call of this method is equivalent to a call of {@link #adapt(VariableMap, boolean) adapt(newVariables, false);}.
      *
@@ -145,7 +145,7 @@ public class BooleanAssignmentList implements IAssignmentList<BooleanAssignment>
     }
 
     /**
-     * Changes the {@link VariableMap variable map} and calls {@link BooleanAssignment#adapt(VariableMap, boolean)} for every assignment in this list.
+     * Changes the {@link VariableMap variable map} and calls {@link BooleanAssignment#adapt(VariableMap, VariableMap, boolean)} for every assignment in this list.
      * This does not create a copy of this list, but directly changes each assignment.
      *
      * @param newVariables the new variable map
