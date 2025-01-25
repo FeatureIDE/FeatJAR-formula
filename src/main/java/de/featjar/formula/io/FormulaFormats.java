@@ -30,6 +30,7 @@ import de.featjar.formula.structure.IFormula;
  * @author Sebastian Krieter
  */
 public class FormulaFormats extends AFormats<IFormula> {
+
     public static FormulaFormats getInstance() {
         return FeatJAR.extensionPoint(FormulaFormats.class);
     }

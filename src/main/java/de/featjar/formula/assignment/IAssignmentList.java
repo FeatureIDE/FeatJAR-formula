@@ -103,6 +103,17 @@ public interface IAssignmentList<T extends IAssignment<?, ?>> extends Iterable<T
     }
 
     /**
+     * Replaces the assignment at the given index in this list with the given assignment.
+     *
+     * @param index the index
+     * @param assignment the assignment
+     */
+    default void set(int index, T assignment) {
+        if (index < 0 || index > size()) throw new IllegalArgumentException();
+        getAll().set(index, assignment);
+    }
+
+    /**
      * Adds the given assignment at the given index to this assignment list.
      *
      * @param index the index

@@ -30,6 +30,7 @@ import de.featjar.formula.assignment.BooleanAssignmentGroups;
  * @author Sebastian Krieter
  */
 public class BooleanAssignmentGroupsFormats extends AFormats<BooleanAssignmentGroups> {
+
     public static BooleanAssignmentGroupsFormats getInstance() {
         return FeatJAR.extensionPoint(BooleanAssignmentGroupsFormats.class);
     }
