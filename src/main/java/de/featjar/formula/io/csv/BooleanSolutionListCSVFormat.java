@@ -25,6 +25,7 @@ import de.featjar.base.io.NonEmptyLineIterator;
 import de.featjar.base.io.format.IFormat;
 import de.featjar.base.io.format.ParseProblem;
 import de.featjar.base.io.input.AInputMapper;
+import de.featjar.base.io.input.InputHeader;
 import de.featjar.formula.VariableMap;
 import de.featjar.formula.assignment.BooleanAssignment;
 import de.featjar.formula.assignment.BooleanAssignmentGroups;
@@ -144,6 +145,14 @@ public class BooleanSolutionListCSVFormat implements IFormat<BooleanAssignmentGr
     @Override
     public String getIdentifier() {
         return ID;
+    }
+
+    @Override
+    public boolean supportsContent(InputHeader inputHeader) {
+        StringBuilder header = new StringBuilder();
+        header.append(ID_COLUMN);
+        header.append(VALUE_SEPARATOR);
+        return inputHeader.get().startsWith(header.toString());
     }
 
     @Override

@@ -26,6 +26,7 @@ import de.featjar.base.io.NonEmptyLineIterator;
 import de.featjar.base.io.format.IFormat;
 import de.featjar.base.io.format.ParseProblem;
 import de.featjar.base.io.input.AInputMapper;
+import de.featjar.base.io.input.InputHeader;
 import de.featjar.base.io.output.AOutputMapper;
 import de.featjar.formula.VariableMap;
 import de.featjar.formula.assignment.BooleanAssignment;
@@ -203,6 +204,15 @@ public class BooleanAssignmentGroupsCSVFormat implements IFormat<BooleanAssignme
     @Override
     public String getFileExtension() {
         return "csv";
+    }
+
+    @Override
+    public boolean supportsContent(InputHeader inputHeader) {
+        StringBuilder header = new StringBuilder();
+        header.append(ASSIGNMENT_COLUMN_NAME);
+        header.append(VALUE_SEPARATOR);
+        header.append(GROUP_COLUMN_NAME);
+        return inputHeader.get().startsWith(header.toString());
     }
 
     @Override
