@@ -112,6 +112,10 @@ public class VariableMap extends RangeMap<String> {
         return stream(names).collect(Collectors.toList());
     }
 
+    public BooleanAssignment getVariables(Collection<String> names) {
+        return new BooleanAssignment(names.stream().mapToInt(objectToIndex::get).toArray());
+    }
+
     public BooleanAssignment getVariables() {
         return new BooleanAssignment(entryStream().mapToInt(e -> e.getValue()).toArray());
     }
