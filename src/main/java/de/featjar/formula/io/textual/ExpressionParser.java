@@ -148,7 +148,7 @@ public class ExpressionParser {
             return Result.empty(new ParseProblem(new ParseException(ErrorMessage.NULL_CONSTRAINT.getMessage(), 0), 0));
         }
         try {
-            return Result.of(parseNode(formulaString));
+            return Result.of(parseNode(formulaString), problemList);
         } catch (final ParseException e) {
             problemList.add(new ParseProblem(e, 0));
             switch (ignoreUnparseableSubExpressions) {
