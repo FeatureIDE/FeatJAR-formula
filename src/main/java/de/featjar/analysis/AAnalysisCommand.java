@@ -107,7 +107,7 @@ public abstract class AAnalysisCommand<T> extends ACommand {
 
         if (result.isPresent()) {
             if (outputPath == null) {
-                FeatJAR.log().message(serializeResult(result.get()));
+                FeatJAR.log().message(printResult(result.get()));
             } else {
                 try {
                     if (!writeToOutputFile(result.get(), outputPath)) {
@@ -116,7 +116,7 @@ public abstract class AAnalysisCommand<T> extends ACommand {
                         }
                         Files.write(
                                 outputPath,
-                                serializeResult(result.get()).getBytes(StandardCharsets.UTF_8),
+                                printResult(result.get()).getBytes(StandardCharsets.UTF_8),
                                 StandardOpenOption.CREATE,
                                 StandardOpenOption.TRUNCATE_EXISTING);
                     }
@@ -167,7 +167,7 @@ public abstract class AAnalysisCommand<T> extends ACommand {
         return null;
     }
 
-    protected String serializeResult(T result) {
+    protected String printResult(T result) {
         return result.toString();
     }
 }
