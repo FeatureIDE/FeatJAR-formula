@@ -23,12 +23,15 @@ package de.featjar.formula.io;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.featjar.Common;
+import de.featjar.base.FeatJAR;
 import de.featjar.base.tree.Trees;
 import de.featjar.formula.io.textual.ExpressionSerializer;
 import de.featjar.formula.io.textual.ExpressionSerializer.Notation;
 import de.featjar.formula.io.textual.JavaSymbols;
 import de.featjar.formula.io.textual.TextualSymbols;
 import de.featjar.formula.structure.IFormula;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -37,6 +40,16 @@ import org.junit.jupiter.api.Test;
  * @author Sebastian Krieter
  */
 public class ExpressionSerializerTest extends Common {
+
+    @BeforeAll
+    public static void begin() {
+        FeatJAR.testConfiguration().initialize();
+    }
+
+    @AfterAll
+    public static void end() {
+        FeatJAR.deinitialize();
+    }
 
     @Test
     public void Formula_ABC_nAnBnC() {

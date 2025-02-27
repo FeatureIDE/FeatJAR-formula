@@ -31,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.featjar.Common;
+import de.featjar.base.FeatJAR;
 import de.featjar.base.computation.Computations;
 import de.featjar.base.computation.IComputation;
 import de.featjar.formula.VariableMap;
@@ -38,9 +39,21 @@ import de.featjar.formula.computation.ComputeCNFFormula;
 import de.featjar.formula.computation.ComputeNNFFormula;
 import de.featjar.formula.structure.IFormula;
 import java.util.Objects;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 class ComputeCNFFormulaTest extends Common {
+
+    @BeforeAll
+    public static void begin() {
+        FeatJAR.testConfiguration().initialize();
+    }
+
+    @AfterAll
+    public static void end() {
+        FeatJAR.deinitialize();
+    }
 
     IComputation<IFormula> toCNF(IComputation<IFormula> formula) {
         return formula.map(ComputeNNFFormula::new).map(ComputeCNFFormula::new);

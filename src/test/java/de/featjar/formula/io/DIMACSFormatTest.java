@@ -26,10 +26,13 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import de.featjar.Common;
 import de.featjar.FormatTest;
+import de.featjar.base.FeatJAR;
 import de.featjar.base.io.IO;
 import de.featjar.formula.io.dimacs.FormulaDimacsFormat;
 import java.io.IOException;
 import java.io.OutputStream;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -38,6 +41,16 @@ import org.junit.jupiter.api.Test;
  * @author Sebastian Krieter
  */
 public class DIMACSFormatTest extends Common {
+
+    @BeforeAll
+    public static void begin() {
+        FeatJAR.testConfiguration().initialize();
+    }
+
+    @AfterAll
+    public static void end() {
+        FeatJAR.deinitialize();
+    }
 
     @Test
     void testFixtures() {

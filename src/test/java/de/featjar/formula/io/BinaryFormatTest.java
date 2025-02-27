@@ -22,6 +22,7 @@ package de.featjar.formula.io;
 
 import de.featjar.Common;
 import de.featjar.FormatTest;
+import de.featjar.base.FeatJAR;
 import de.featjar.base.computation.Computations;
 import de.featjar.formula.assignment.BooleanAssignmentGroups;
 import de.featjar.formula.assignment.ComputeBooleanRepresentation;
@@ -29,6 +30,8 @@ import de.featjar.formula.computation.ComputeCNFFormula;
 import de.featjar.formula.computation.ComputeNNFFormula;
 import de.featjar.formula.io.binary.BooleanAssignmentGroupsBinaryFormat;
 import de.featjar.formula.io.textual.ExpressionFormat;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -37,6 +40,16 @@ import org.junit.jupiter.api.Test;
  * @author Sebastian Krieter
  */
 public class BinaryFormatTest extends Common {
+
+    @BeforeAll
+    public static void begin() {
+        FeatJAR.testConfiguration().initialize();
+    }
+
+    @AfterAll
+    public static void end() {
+        FeatJAR.deinitialize();
+    }
 
     @Test
     public void Formula_ABC_nAnBnC() {

@@ -23,6 +23,7 @@ package de.featjar;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import de.featjar.base.FeatJAR;
 import de.featjar.base.computation.Computations;
 import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Pair;
@@ -39,8 +40,20 @@ import de.featjar.formula.computation.ComputeNNFFormula;
 import de.featjar.formula.structure.IFormula;
 import java.math.BigInteger;
 import java.util.function.Function;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 
 public class AnalysisTest extends Common {
+
+    @BeforeAll
+    public static void begin() {
+        FeatJAR.testConfiguration().initialize();
+    }
+
+    @AfterAll
+    public static void end() {
+        FeatJAR.deinitialize();
+    }
 
     public static <T> void testSatisfiability(
             Function<IComputation<IFormula>, IComputation<T>> mapper,
