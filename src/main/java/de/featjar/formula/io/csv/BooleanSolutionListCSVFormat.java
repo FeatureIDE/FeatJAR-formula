@@ -54,19 +54,18 @@ public class BooleanSolutionListCSVFormat implements IFormat<BooleanAssignmentGr
     public Result<String> serialize(BooleanAssignmentGroups configurationList) {
         final StringBuilder csv = new StringBuilder();
         csv.append(ID_COLUMN);
-        final List<String> names = configurationList.getVariableMap().getVariableNames();
+        final List<String> names = configurationList.getVariableMap().getObjects(true);
         for (final String name : names) {
             csv.append(VALUE_SEPARATOR);
-            csv.append(name);
+            csv.append(name != null ? name : "");
         }
         csv.append(LINE_SEPARATOR);
         int configurationIndex = 0;
         for (final BooleanAssignment configuration : configurationList.getFirstGroup()) {
             csv.append(configurationIndex++);
-            final int[] literals = configuration.get();
-            for (int i = 0; i < literals.length; i++) {
+            final int[] literals = configuration.toSolution().get();
+            for (int l : literals) {
                 csv.append(VALUE_SEPARATOR);
-                final int l = literals[i];
                 csv.append(l == 0 ? NULL_VALUE : l > 0 ? POSITIVE_VALUE : NEGATIVE_VALUE);
             }
             csv.append(LINE_SEPARATOR);
@@ -87,7 +86,8 @@ public class BooleanSolutionListCSVFormat implements IFormat<BooleanAssignmentGr
             }
             final VariableMap variableMap = new VariableMap();
             for (int i = 1; i < headerColumns.length; i++) {
-                variableMap.add(headerColumns[i]);
+                String name = headerColumns[i];
+                variableMap.add(name.isEmpty() ? null : name);
             }
             final BooleanAssignmentList group = new BooleanAssignmentList(variableMap);
             for (String line = lines.get(); line != null; line = lines.get()) {
