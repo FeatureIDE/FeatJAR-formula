@@ -20,24 +20,29 @@
  */
 package de.featjar.formula.io.dimacs;
 
+import de.featjar.base.data.Pair;
 import de.featjar.base.io.NonEmptyLineIterator;
+import de.featjar.base.io.input.AInputMapper;
 import de.featjar.formula.VariableMap;
-import de.featjar.formula.assignment.BooleanAssignmentGroups;
-import de.featjar.formula.assignment.BooleanAssignmentList;
-import de.featjar.formula.assignment.BooleanClause;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class BooleanAssignmentGroupsDimacsParser {
+/**
+ * Generic parser for DIMACS format.
+ * 
+ * @author Sebastian Krieter
+ */
+public class DimacsParser {
 
-    private static final Pattern commentPattern = Pattern.compile("\\A" + DimacsConstants.COMMENT + "\\s*(.*)\\Z");
+    private static final Pattern commentPattern = Pattern.compile("\\A" + DimacsSerializer.COMMENT + "\\s*(.*)\\Z");
     private static final Pattern problemPattern = Pattern.compile(
-            "\\A\\s*" + DimacsConstants.PROBLEM + "\\s+" + DimacsConstants.CNF + "\\s+(\\d+)\\s+(\\d+)");
+            "\\A\\s*" + DimacsSerializer.PROBLEM + "\\s+" + DimacsSerializer.CNF + "\\s+(\\d+)\\s+(\\d+)");
 
     /** Maps indexes to variables. */
     private final VariableMap indexVariables = new VariableMap();
@@ -83,7 +88,8 @@ public class BooleanAssignmentGroupsDimacsParser {
      * @throws ParseException if the input does not conform to the DIMACS CNF file
      *                        format
      */
-    public BooleanAssignmentGroups parse(NonEmptyLineIterator nonEmptyLineIterator) throws ParseException, IOException {
+    public Pair<VariableMap, List<int[]>> parse(AInputMapper inputMapper) throws ParseException, IOException {
+        NonEmptyLineIterator nonEmptyLineIterator = inputMapper.get().getNonEmptyLineIterator();
         indexVariables.clear();
         variableCount = -1;
         clauseCount = -1;
@@ -103,7 +109,7 @@ public class BooleanAssignmentGroupsDimacsParser {
             }
         }
 
-        final BooleanAssignmentList clauses = readClauses(nonEmptyLineIterator);
+        final List<int[]> clauses = readClauses(nonEmptyLineIterator);
         final int actualVariableCount = indexVariables.getVariableCount();
         final int actualClauseCount = clauses.size();
         if (variableCount != actualVariableCount) {
@@ -114,7 +120,7 @@ public class BooleanAssignmentGroupsDimacsParser {
             throw new ParseException(
                     String.format("Found %d instead of %d clauses", actualClauseCount, clauseCount), 1);
         }
-        return new BooleanAssignmentGroups(indexVariables, clauses);
+        return new Pair<>(indexVariables, clauses);
     }
 
     private String getUniqueName(int i) {
@@ -187,9 +193,9 @@ public class BooleanAssignmentGroupsDimacsParser {
      * @throws ParseException if the input does not conform to the DIMACS CNF file
      *                        format
      */
-    private BooleanAssignmentList readClauses(NonEmptyLineIterator nonemptyLineIterator) throws ParseException {
+    private List<int[]> readClauses(NonEmptyLineIterator nonemptyLineIterator) throws ParseException {
         final LinkedList<String> literalQueue = new LinkedList<>();
-        final BooleanAssignmentList clauses = new BooleanAssignmentList(indexVariables, clauseCount);
+        final List<int[]> clauses = new ArrayList<>(clauseCount);
         int readClausesCount = 0;
         for (String line = nonemptyLineIterator.currentLine(); line != null; line = nonemptyLineIterator.get()) {
             if (commentPattern.matcher(line).matches()) {
@@ -207,13 +213,13 @@ public class BooleanAssignmentGroupsDimacsParser {
                 if (clauseSize < 0) {
                     throw new ParseException("Invalid clause", nonemptyLineIterator.getLineCount());
                 } else if (clauseSize == 0) {
-                    clauses.add(new BooleanClause());
+                    clauses.add(new int[0]);
                 } else {
                     clauses.add(parseClause(readClausesCount, clauseSize, literalQueue, nonemptyLineIterator));
                 }
                 readClausesCount++;
 
-                if (!DimacsConstants.CLAUSE_END.equals(literalQueue.removeFirst())) {
+                if (!DimacsSerializer.CLAUSE_END.equals(literalQueue.removeFirst())) {
                     throw new ParseException("Illegal clause end", nonemptyLineIterator.getLineCount());
                 }
                 literalList = literalQueue;
@@ -229,7 +235,7 @@ public class BooleanAssignmentGroupsDimacsParser {
         return clauses;
     }
 
-    private BooleanClause parseClause(
+    private int[] parseClause(
             int readClausesCount,
             int clauseSize,
             LinkedList<String> literalQueue,
@@ -256,7 +262,7 @@ public class BooleanAssignmentGroupsDimacsParser {
             }
             literals[j] = index;
         }
-        return new BooleanClause(literals);
+        return literals;
     }
 
     /**

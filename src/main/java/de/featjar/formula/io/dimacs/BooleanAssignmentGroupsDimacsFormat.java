@@ -20,6 +20,7 @@
  */
 package de.featjar.formula.io.dimacs;
 
+import de.featjar.base.data.Pair;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.format.IFormat;
 import de.featjar.base.io.format.ParseProblem;
@@ -29,7 +30,9 @@ import de.featjar.formula.assignment.BooleanAssignment;
 import de.featjar.formula.assignment.BooleanAssignmentGroups;
 import de.featjar.formula.assignment.BooleanAssignmentList;
 import java.text.ParseException;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Reads / Writes a list of configuration.
@@ -41,49 +44,23 @@ public class BooleanAssignmentGroupsDimacsFormat implements IFormat<BooleanAssig
     @Override
     public Result<String> serialize(BooleanAssignmentGroups assignmentSpace) {
         Objects.requireNonNull(assignmentSpace);
-
-        final StringBuilder sb = new StringBuilder();
-        BooleanAssignmentList cnf = assignmentSpace.getFirstGroup();
-        VariableMap variableMap = assignmentSpace.getVariableMap();
-
-        variableMap.stream().forEach(e -> {
-            if (e.getValue() != null) {
-                sb.append("c ");
-                sb.append(e.getKey());
-                sb.append(" ");
-                sb.append(e.getValue());
-                sb.append(System.lineSeparator());
-            }
-        });
-        // Problem
-        sb.append(DimacsConstants.PROBLEM);
-        sb.append(' ');
-        sb.append(DimacsConstants.CNF);
-        sb.append(' ');
-        sb.append(variableMap.getVariableCount());
-        sb.append(' ');
-        sb.append(cnf.size());
-        sb.append(System.lineSeparator());
-
-        // Clauses
-        for (final BooleanAssignment clause : cnf) {
-            for (final int l : clause.get()) {
-                sb.append(l);
-                sb.append(' ');
-            }
-            sb.append(DimacsConstants.CLAUSE_END);
-            sb.append(System.lineSeparator());
-        }
-
-        return Result.of(sb.toString());
+        return DimacsSerializer.serialize(
+                assignmentSpace.getVariableMap(),
+                assignmentSpace.getFirstGroup().getAll(),
+                BooleanAssignment::get);
     }
 
     @Override
     public Result<BooleanAssignmentGroups> parse(AInputMapper inputMapper) {
-        final BooleanAssignmentGroupsDimacsParser r = new BooleanAssignmentGroupsDimacsParser();
-        r.setReadingVariableDirectory(true);
+        final DimacsParser parser = new DimacsParser();
+        parser.setReadingVariableDirectory(true);
         try {
-            return Result.of(r.parse(inputMapper.get().getNonEmptyLineIterator()));
+            Pair<VariableMap, List<int[]>> parsingResult = parser.parse(inputMapper);
+            return Result.of(new BooleanAssignmentGroups(new BooleanAssignmentList(
+                    parsingResult.getKey(),
+                    parsingResult.getValue().stream()
+                            .map(BooleanAssignment::new)
+                            .collect(Collectors.toList()))));
         } catch (final ParseException e) {
             return Result.empty(new ParseProblem(e, e.getErrorOffset()));
         } catch (final Exception e) {

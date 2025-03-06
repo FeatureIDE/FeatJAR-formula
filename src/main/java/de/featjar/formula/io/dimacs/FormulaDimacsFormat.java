@@ -20,6 +20,7 @@
  */
 package de.featjar.formula.io.dimacs;
 
+import de.featjar.base.data.Pair;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.format.IFormat;
 import de.featjar.base.io.format.ParseProblem;
@@ -27,110 +28,69 @@ import de.featjar.base.io.input.AInputMapper;
 import de.featjar.formula.VariableMap;
 import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.IFormula;
+import de.featjar.formula.structure.connective.And;
 import de.featjar.formula.structure.connective.Or;
 import de.featjar.formula.structure.connective.Reference;
 import de.featjar.formula.structure.predicate.Literal;
+import de.featjar.formula.structure.term.value.Variable;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Reads and writes feature models in the DIMACS CNF format.
  *
  * @author Sebastian Krieter
- * @author Timo Günther
  */
 public class FormulaDimacsFormat implements IFormat<IFormula> {
 
     @Override
     public Result<String> serialize(IFormula formula) {
-        VariableMap variableMap = VariableMap.of(formula);
-        return writeDIMACS(
-                (formula instanceof Reference) ? ((Reference) formula).getExpression() : formula, variableMap);
-    }
-
-    private Result<String> writeDIMACS(IFormula formula, VariableMap variableMap) {
-        if (!formula.isCNF()) {
+        IFormula cnfFormula = (formula instanceof Reference) ? ((Reference) formula).getExpression() : formula;
+        if (!cnfFormula.isCNF()) {
             return Result.empty(new IllegalArgumentException("Formula is not in CNF"));
         }
-        final StringBuilder sb = new StringBuilder();
-        writeVariableDirectory(sb, variableMap);
-        writeProblem(sb, formula, variableMap);
-        writeClauses(sb, formula, variableMap);
-        return Result.of(sb.toString());
+        VariableMap variableMap = VariableMap.of(formula.getVariableMap().keySet());
+        return DimacsSerializer.serialize(variableMap, cnfFormula.getChildren(), c -> writeClause(c, variableMap));
     }
 
-    /**
-     * Writes the variable directory.
-     *
-     * @param sb the string builder that builds the document
-     */
-    private void writeVariableDirectory(StringBuilder sb, VariableMap variableMap) {
-        variableMap.stream().forEach(p -> writeVariableDirectoryEntry(sb, p.getKey(), p.getValue()));
-    }
-
-    /**
-     * Writes an entry of the variable directory.
-     *
-     * @param sb       the string builder that builds the document
-     * @param index    index of the variable
-     */
-    private void writeVariableDirectoryEntry(StringBuilder sb, int index, String name) {
-        sb.append(DimacsConstants.COMMENT_START);
-        sb.append(index);
-        sb.append(' ');
-        sb.append(name);
-        sb.append(System.lineSeparator());
-    }
-
-    /**
-     * Writes the problem description.
-     *
-     * @param sb the string builder that builds the document
-     */
-    private void writeProblem(StringBuilder sb, IFormula formula, VariableMap variableMap) {
-        sb.append(DimacsConstants.PROBLEM);
-        sb.append(' ');
-        sb.append(DimacsConstants.CNF);
-        sb.append(' ');
-        sb.append(variableMap.getVariableCount());
-        sb.append(' ');
-        sb.append(formula.getChildrenCount());
-        sb.append(System.lineSeparator());
-    }
-
-    /**
-     * Writes the given clause.
-     *
-     * @param sb     the string builder that builds the document
-     * @param clause clause to transform; not null
-     */
-    private void writeClause(StringBuilder sb, Or clause, VariableMap variableMap) {
+    private static int[] writeClause(IExpression clause, VariableMap variableMap) {
+        int[] literals = new int[clause.getChildrenCount()];
+        int i = 0;
         for (final IExpression child : clause.getChildren()) {
             final Literal l = (Literal) child;
-            final Integer index = variableMap.get(l.getExpression().getName()).orElseThrow();
-            sb.append(l.isPositive() ? index : -index);
-            sb.append(' ');
+            final int index = variableMap.get(l.getExpression().getName()).orElseThrow();
+            literals[i++] = l.isPositive() ? index : -index;
         }
-        sb.append(DimacsConstants.CLAUSE_END);
-        sb.append(System.lineSeparator());
-    }
-
-    /**
-     * Writes all clauses.
-     *
-     * @param sb the string builder that builds the document
-     */
-    private void writeClauses(StringBuilder sb, IFormula formula, VariableMap variableMap) {
-        for (final IExpression clause : formula.getChildren()) {
-            writeClause(sb, (Or) clause, variableMap);
-        }
+        return literals;
     }
 
     @Override
     public Result<IFormula> parse(AInputMapper inputMapper) {
-        final FormulaDimacsParser r = new FormulaDimacsParser();
-        r.setReadingVariableDirectory(true);
+        final DimacsParser parser = new DimacsParser();
+        parser.setReadingVariableDirectory(true);
         try {
-            return Result.of(r.parse(inputMapper.get().getNonEmptyLineIterator()));
+            Pair<VariableMap, List<int[]>> parsingResult = parser.parse(inputMapper);
+            VariableMap variableMap = parsingResult.getKey();
+            LinkedHashSet<String> unusedVariableNames = new LinkedHashSet<>(variableMap.getVariableNames());
+            List<IFormula> clauses = new ArrayList<>();
+            for (int[] clauseLiterals : parsingResult.getValue()) {
+                List<Literal> literals = new ArrayList<>(clauseLiterals.length);
+                for (int l : clauseLiterals) {
+                    String variableName = variableMap
+                            .get(Math.abs(l))
+                            .orElseThrow(p -> new IllegalArgumentException("No mapping for literal " + l));
+                    unusedVariableNames.remove(variableName);
+                    literals.add(new Literal(l > 0, variableName));
+                }
+                clauses.add(new Or(literals));
+            }
+            Reference reference = new Reference(new And(clauses));
+            reference.setFreeVariables(
+                    unusedVariableNames.stream().map(Variable::new).collect(Collectors.toList()));
+            return Result.of(reference);
         } catch (final ParseException e) {
             return Result.empty(new ParseProblem(e, e.getErrorOffset()));
         } catch (final Exception e) {
