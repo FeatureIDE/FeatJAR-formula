@@ -69,6 +69,10 @@ public class VariableMap extends RangeMap<String> {
         super(variableMap.getObjects(true));
     }
 
+    protected VariableMap(List<VariableMap> variableMaps) {
+        super(variableMaps);
+    }
+
     /**
      * Creates a variable map from a value representation (e.g., an expression).
      * Indices are numbered by the occurrence of variables in a preorder traversal.
@@ -77,6 +81,15 @@ public class VariableMap extends RangeMap<String> {
      */
     public static VariableMap of(IExpression valueRepresentation) {
         return new VariableMap(valueRepresentation);
+    }
+
+    /**
+     * Creates a merged variable map from a list of variable maps.
+     *
+     * @param variableMaps the variableMaps to merge
+     */
+    public static VariableMap merge(VariableMap... variableMaps) {
+        return new VariableMap(List.of(variableMaps));
     }
 
     /**
