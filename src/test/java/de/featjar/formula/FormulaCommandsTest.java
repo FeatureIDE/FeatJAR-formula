@@ -32,8 +32,8 @@ public class FormulaCommandsTest {
     @Test
     void testConvertFormatCommand() throws IOException {
         Path tempFile = Files.createTempFile("featJarTest", ".txt");
-        int exitCode = FeatJAR.run(
-                "convert-format",
+        int exitCode = FeatJAR.runTest(
+                "convert-cnf-format",
                 "--input",
                 "src/testFixtures/resources/GPL/model.xml",
                 "--format",
@@ -49,7 +49,7 @@ public class FormulaCommandsTest {
     @Test
     void testConvertCNFFormatCommand() throws IOException {
         Path tempFile = Files.createTempFile("featJarTest", ".txt");
-        int exitCode = FeatJAR.run(
+        int exitCode = FeatJAR.runTest(
                 "convert-cnf-format",
                 "--input",
                 "src/testFixtures/resources/GPL/model.xml",
@@ -66,7 +66,7 @@ public class FormulaCommandsTest {
     @Test
     void testPrintCommand() throws IOException {
         Path tempFile = Files.createTempFile("featJarTest", ".txt");
-        int exitCode = FeatJAR.run(
+        int exitCode = FeatJAR.runTest(
                 "print",
                 "--input",
                 "../formula/src/testFixtures/resources/GPL/model.xml",

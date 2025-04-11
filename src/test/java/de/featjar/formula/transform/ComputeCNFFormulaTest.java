@@ -23,6 +23,7 @@ package de.featjar.formula.transform;
 import static de.featjar.base.computation.Computations.async;
 import static de.featjar.formula.structure.Expressions.and;
 import static de.featjar.formula.structure.Expressions.biImplies;
+import static de.featjar.formula.structure.Expressions.implies;
 import static de.featjar.formula.structure.Expressions.literal;
 import static de.featjar.formula.structure.Expressions.not;
 import static de.featjar.formula.structure.Expressions.or;
@@ -78,11 +79,10 @@ class ComputeCNFFormulaTest extends Common {
         IFormula formula = loadFormula("testFeatureModels/basic.xml");
         assertEquals(
                 reference(and(
-                        or(literal("Root")),
-                        or(literal(false, "A"), literal("Root")),
-                        or(literal(false, "B"), literal("Root")),
-                        or(literal("A")),
-                        or(literal("B")))),
+                        literal("Root"),
+                        implies(literal("A"), literal("Root")),
+                        implies(literal("B"), literal("Root")),
+                        and(literal("A"), literal("B")))),
                 formula);
         IFormula finalFormula = formula;
         formula = Computations.of(finalFormula)
