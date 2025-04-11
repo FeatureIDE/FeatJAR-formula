@@ -388,7 +388,7 @@ public class BooleanAssignment extends IntegerList implements IAssignment<Intege
 
     @Override
     public String toString() {
-        return String.format("BooleanAssignment[%s]", print());
+        return String.format("BooleanAssignment[%s]", Arrays.toString(elements));
     }
 
     @Override
