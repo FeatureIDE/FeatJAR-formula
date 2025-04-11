@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Random;
 import java.util.stream.IntStream;
 
 /**
@@ -100,6 +101,30 @@ public class BooleanAssignment extends IntegerList implements IAssignment<Intege
         int i = 0;
         for (final int lit : integerSet) {
             newArray[i++] = lit;
+        }
+        return newArray;
+    }
+
+    public static int[] shuffle(int[] literals, Random random) {
+        final long seed = random.nextLong();
+        Random curRandom = new Random(seed);
+
+        final LinkedHashSet<Integer> integerSet = Sets.empty();
+        for (final int integer : literals) {
+            if (integer != 0) {
+                integerSet.add(integer);
+            }
+        }
+        int[] newArray = new int[integerSet.size()];
+        int i = -1;
+        for (final int lit : integerSet) {
+            newArray[++i] = lit;
+        }
+        for (; i > 0; --i) {
+            int swapIndex = curRandom.nextInt(literals.length);
+            int temp = literals[i];
+            literals[i] = literals[swapIndex];
+            literals[swapIndex] = temp;
         }
         return newArray;
     }
@@ -179,6 +204,10 @@ public class BooleanAssignment extends IntegerList implements IAssignment<Intege
             VariableMap oldVariableMap, VariableMap newVariableMap, boolean integrateOldVariables) {
         adapt(elements, elements, oldVariableMap, newVariableMap, integrateOldVariables);
         return this;
+    }
+
+    public BooleanAssignment shuffle(Random random) {
+        return new BooleanAssignment(shuffle(elements, random));
     }
 
     public int indexOfVariable(int variable) {

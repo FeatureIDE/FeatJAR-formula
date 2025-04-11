@@ -93,13 +93,24 @@ public interface IAssignmentList<T extends IAssignment<?, ?>> extends Iterable<T
     }
 
     /**
-     * {@return the assignment at the given index in this assignment list, if any}
+     * {@return the assignment at the given index in this assignment list, if any. Throws exception if otherwise.}
      *
      * @param index the index
+     *
+     * @throws IndexOutOfBoundsException
      */
     default T get(int index) {
         if (index < 0 || index >= size()) throw new IndexOutOfBoundsException(index);
         return getAll().get(index);
+    }
+
+    /**
+     * {@return the assignment at the first index in this assignment list, if any. Return null otherwise.}
+     *
+     * @param index the index
+     */
+    default T getFirst() {
+        return isEmpty() ? null : getAll().get(0);
     }
 
     /**

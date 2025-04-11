@@ -73,6 +73,13 @@ public class BooleanAssignmentGroups implements Iterable<BooleanAssignmentList> 
         return assignmentGroups.get(0);
     }
 
+    public BooleanAssignmentList getMergedGroups() {
+        return assignmentGroups.stream().reduce(new BooleanAssignmentList(variableMap), (l1, l2) -> {
+            l1.addAll(l2);
+            return l1;
+        });
+    }
+
     public BooleanAssignmentList toClauseList() {
         return toClauseList(0);
     }

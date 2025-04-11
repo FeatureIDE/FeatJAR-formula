@@ -96,6 +96,11 @@ public class BooleanAssignmentList implements IAssignmentList<BooleanAssignment>
         this.assignments = assignments.collect(Collectors.toCollection(ArrayList::new));
     }
 
+    public BooleanAssignmentList(VariableMap variableMap, BooleanAssignment... assignments) {
+        this.variableMap = variableMap;
+        this.assignments = new ArrayList<>(List.of(assignments));
+    }
+
     public BooleanAssignmentList(BooleanAssignmentList other) {
         this(other.variableMap, other.getAll());
     }

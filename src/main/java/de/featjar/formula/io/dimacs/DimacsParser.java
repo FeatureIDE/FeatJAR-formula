@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
 
 /**
  * Generic parser for DIMACS format.
- * 
+ *
  * @author Sebastian Krieter
  */
 public class DimacsParser {
