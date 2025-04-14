@@ -20,8 +20,8 @@
  */
 package de.featjar.formula.computation;
 
+import de.featjar.analysis.IConfigurationTester;
 import de.featjar.analysis.IConfigurationUpdater;
-import de.featjar.analysis.IConfigurationVerifyer;
 import de.featjar.base.data.IntegerList;
 import de.featjar.base.data.LexicographicIterator;
 import de.featjar.formula.assignment.BooleanAssignment;
@@ -45,7 +45,7 @@ import java.util.stream.Stream;
 public class IncInteractionFinder {
 
     protected IConfigurationUpdater updater;
-    private IConfigurationVerifyer verifier;
+    private IConfigurationTester verifier;
     private BooleanAssignment core;
 
     protected int configurationVerificationLimit = Integer.MAX_VALUE;
@@ -65,7 +65,7 @@ public class IncInteractionFinder {
         this.updater = updater;
     }
 
-    public void setVerifier(IConfigurationVerifyer verifier) {
+    public void setVerifier(IConfigurationTester verifier) {
         this.verifier = verifier;
     }
 

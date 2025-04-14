@@ -20,8 +20,8 @@
  */
 package de.featjar.formula.computation;
 
+import de.featjar.analysis.IConfigurationTester;
 import de.featjar.analysis.IConfigurationUpdater;
-import de.featjar.analysis.IConfigurationVerifyer;
 import de.featjar.base.data.LexicographicIterator;
 import de.featjar.formula.assignment.BooleanAssignment;
 import de.featjar.formula.assignment.BooleanClause;
@@ -44,7 +44,7 @@ import java.util.stream.IntStream;
 public class PropInteractionFinder {
 
     private IConfigurationUpdater updater;
-    private IConfigurationVerifyer verifier;
+    private IConfigurationTester verifier;
     private BooleanAssignment core;
 
     private List<BooleanSolution> succeedingConfs;
@@ -61,7 +61,7 @@ public class PropInteractionFinder {
         this.updater = updater;
     }
 
-    public void setVerifier(IConfigurationVerifyer verifier) {
+    public void setVerifier(IConfigurationTester verifier) {
         this.verifier = verifier;
     }
 

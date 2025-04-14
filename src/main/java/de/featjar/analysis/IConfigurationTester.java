@@ -20,10 +20,15 @@
  */
 package de.featjar.analysis;
 
+import de.featjar.base.data.Result;
+import de.featjar.formula.VariableMap;
 import de.featjar.formula.assignment.BooleanAssignment;
 
-@FunctionalInterface
-public interface IConfigurationVerifyer {
+public interface IConfigurationTester {
 
-    int test(BooleanAssignment configuration);
+    VariableMap getVariableMap();
+
+    void setVariableMap(VariableMap variableMap);
+
+    Result<Integer> test(BooleanAssignment configuration);
 }
