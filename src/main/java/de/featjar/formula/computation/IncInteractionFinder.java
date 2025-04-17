@@ -292,7 +292,7 @@ public class IncInteractionFinder {
 
     protected boolean verify(BooleanAssignment solution) {
         verifyCounter++;
-        if (verifier.test(solution) == 0) {
+        if (verifier.test(solution).valueEquals(0)) {
             succeedingConfs.add(solution.toSolution());
             return true;
         } else {

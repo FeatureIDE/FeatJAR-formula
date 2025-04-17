@@ -296,7 +296,7 @@ public class PropInteractionFinder {
     private boolean verify(BooleanSolution solution) {
         verifyCounter++;
         BooleanSolution nonCore = new BooleanSolution(solution.removeAll(core.get()));
-        if (verifier.test(solution) == 0) {
+        if (verifier.test(solution).valueEquals(0)) {
             succeedingConfs.add(nonCore);
             return true;
         } else {
