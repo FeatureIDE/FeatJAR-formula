@@ -46,7 +46,7 @@ public class ComputeBooleanClauseList extends AComputation<BooleanAssignmentList
 
     protected static final Dependency<Object> CNF = Dependency.newDependency();
 
-    public ComputeBooleanClauseList(IComputation<IFormula> cnfFormula) {
+    public ComputeBooleanClauseList(IComputation<? extends IFormula> cnfFormula) {
         super(cnfFormula);
     }
 
