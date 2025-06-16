@@ -57,19 +57,19 @@ import java.util.stream.Collectors;
 public class VariableMap extends RangeMap<String> {
     public VariableMap() {}
 
-    protected VariableMap(Collection<String> variableNames) {
+    public VariableMap(Collection<String> variableNames) {
         super(variableNames);
     }
 
-    protected VariableMap(IExpression valueRepresentation) {
+    public VariableMap(IExpression valueRepresentation) {
         super(valueRepresentation.getVariableNames());
     }
 
-    protected VariableMap(VariableMap variableMap) {
+    public VariableMap(VariableMap variableMap) {
         super(variableMap.getObjects(true));
     }
 
-    protected VariableMap(List<VariableMap> variableMaps) {
+    public VariableMap(List<VariableMap> variableMaps) {
         super(variableMaps);
     }
 
@@ -296,5 +296,53 @@ public class VariableMap extends RangeMap<String> {
     @Override
     public VariableMap clone() {
         return new VariableMap(this);
+    }
+
+    /**
+     * Adapts each literal from {@code oldLiterals} from its index in this variable map to its index in {@code newVariableMap}.
+     * The adapted literals are stored in {@code newLiterals}.
+     * Caller must ensure that {@code newLiterals} is at least as large as {@code oldLiterals}.
+     *
+     * @param oldLiterals the literals to adapt
+     * @param newLiterals the space for the adapted literals
+     * @param newVariableMap the variable map to adapt to
+     * @param integrateOldVariables if {@code true} variables that do not occur in {@code newVariableMap} are added to it, otherwise an exception is thrown in this case.
+     */
+    public void adapt(int[] oldLiterals, int[] newLiterals, VariableMap newVariableMap, boolean integrateOldVariables) {
+        for (int i = 0; i < oldLiterals.length; i++) {
+            newLiterals[i] = adapt(oldLiterals[i], newVariableMap, integrateOldVariables);
+        }
+    }
+
+    /**
+     * Adapt {@code oldLiteral} from its index in this variable map to its index in {@code newVariableMap}.
+     *
+     * @param oldLiteral the literal to adapt
+     * @param newVariableMap the variable map to adapt to
+     * @param integrateOldVariables if {@code true} a variable that does not occur in {@code newVariableMap} is added to it, otherwise an exception is thrown in this case.
+     */
+    public int adapt(int oldLiteral, VariableMap newVariableMap, boolean integrateOldVariables) {
+        if (oldLiteral == 0) {
+            return 0;
+        } else {
+            final Result<String> name = get(Math.abs(oldLiteral));
+            if (name.isPresent()) {
+                String variableName = name.get();
+                final int newLiteral;
+                Result<Integer> index = newVariableMap.get(variableName);
+                if (index.isEmpty()) {
+                    if (integrateOldVariables) {
+                        newLiteral = newVariableMap.add(variableName);
+                    } else {
+                        throw new IllegalArgumentException("No variable named " + variableName);
+                    }
+                } else {
+                    newLiteral = index.get();
+                }
+                return oldLiteral < 0 ? -newLiteral : newLiteral;
+            } else {
+                throw new IllegalArgumentException("No variable with index " + oldLiteral);
+            }
+        }
     }
 }
