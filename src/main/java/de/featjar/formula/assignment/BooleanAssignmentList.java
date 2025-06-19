@@ -22,6 +22,7 @@ package de.featjar.formula.assignment;
 
 import de.featjar.formula.VariableMap;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -202,6 +203,9 @@ public class BooleanAssignmentList implements IAssignmentList<BooleanAssignment>
 
     @Override
     public String toString() {
-        return String.format("BooleanAssignmentList[%s]", print());
+        return String.format(
+                "BooleanAssignmentList[%s\n,%s]",
+                variableMap != null ? variableMap.toString() : "null",
+                stream().map(a -> Arrays.toString(a.get())).collect(Collectors.joining(";\n")));
     }
 }

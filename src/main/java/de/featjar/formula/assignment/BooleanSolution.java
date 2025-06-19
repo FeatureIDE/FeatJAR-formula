@@ -165,7 +165,7 @@ public class BooleanSolution extends BooleanAssignment implements ISolution<Inte
 
     @Override
     public String toString() {
-        return String.format("BooleanSolution[%s]", print());
+        return String.format("BooleanSolution[%s]", Arrays.toString(elements));
     }
 
     @Override
