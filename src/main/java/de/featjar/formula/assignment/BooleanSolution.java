@@ -47,11 +47,12 @@ public class BooleanSolution extends BooleanAssignment implements ISolution<Inte
 
     public BooleanSolution(int[] integers, boolean sort) {
         super(integers);
-        assert Arrays.stream(integers)
-                                .map(Math::abs) //
-                                .max()
-                                .orElse(0)
-                        <= integers.length //
+        assert sort
+                        || Arrays.stream(integers)
+                                        .map(Math::abs) //
+                                        .max()
+                                        .orElse(0)
+                                <= integers.length //
                 : String.format(
                         "Max index %d is larger than number of elements %d. Elements = %s",
                         Arrays.stream(integers).map(Math::abs).max().orElse(0),
