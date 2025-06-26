@@ -27,8 +27,7 @@ import de.featjar.base.computation.IComputation;
 import de.featjar.base.computation.Progress;
 import de.featjar.base.data.Result;
 import de.featjar.formula.assignment.BooleanAssignment;
-import de.featjar.formula.assignment.BooleanSolution;
-import java.util.ArrayList;
+import de.featjar.formula.assignment.BooleanAssignmentList;
 import java.util.BitSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -41,7 +40,7 @@ import java.util.stream.IntStream;
  * @author Sebastian Krieter
  * @author Rahel Sundermann
  */
-public class GreedySampleReducer extends AComputation<List<BooleanSolution>> {
+public class GreedySampleReducer extends AComputation<BooleanAssignmentList> {
 
     private static class Interaction extends BooleanAssignment {
         private static final long serialVersionUID = 4320112709021072255L;
@@ -71,13 +70,13 @@ public class GreedySampleReducer extends AComputation<List<BooleanSolution>> {
         }
     }
 
-    private static class Config extends BooleanSolution {
+    private static class Config extends BooleanAssignment {
         private static final long serialVersionUID = 6908616425377756720L;
 
         private double score = 0;
         private int interactionCount = 0;
 
-        public Config(BooleanSolution solution) {
+        public Config(BooleanAssignment solution) {
             super(solution);
         }
 
@@ -102,15 +101,15 @@ public class GreedySampleReducer extends AComputation<List<BooleanSolution>> {
         }
     }
 
-    @SuppressWarnings("rawtypes")
-    public static final Dependency<List> SAMPLE = Dependency.newDependency(List.class);
+    public static final Dependency<BooleanAssignmentList> SAMPLE =
+            Dependency.newDependency(BooleanAssignmentList.class);
 
     public static final Dependency<Integer> T = Dependency.newDependency(Integer.class);
 
     private Config[] fieldConfigurations;
     private int n, t, t2;
 
-    private LinkedHashSet<BooleanSolution> reducedSample;
+    private LinkedHashSet<BooleanAssignment> reducedSample;
     private LinkedHashSet<Interaction> interactions;
     private BitSet mainIndex;
     private BitSet[] indices;
@@ -119,7 +118,7 @@ public class GreedySampleReducer extends AComputation<List<BooleanSolution>> {
         super(other);
     }
 
-    public GreedySampleReducer(IComputation<List<BooleanSolution>> sampleComputation) {
+    public GreedySampleReducer(IComputation<BooleanAssignmentList> sampleComputation) {
         super(sampleComputation, new ComputeConstant<>(1));
     }
 
@@ -151,7 +150,7 @@ public class GreedySampleReducer extends AComputation<List<BooleanSolution>> {
                     interactions.add(interaction);
                 }
             } else if (counter == 1) {
-                BooleanSolution config = fieldConfigurations[curIndices.nextSetBit(0)];
+                BooleanAssignment config = fieldConfigurations[curIndices.nextSetBit(0)];
                 synchronized (reducedSample) {
                     reducedSample.add(config);
                 }
@@ -198,11 +197,10 @@ public class GreedySampleReducer extends AComputation<List<BooleanSolution>> {
     }
 
     @Override
-    public Result<List<BooleanSolution>> compute(List<Object> dependencyList, Progress progress) {
-        @SuppressWarnings("unchecked")
-        List<BooleanSolution> sample = SAMPLE.get(dependencyList);
+    public Result<BooleanAssignmentList> compute(List<Object> dependencyList, Progress progress) {
+        BooleanAssignmentList sample = SAMPLE.get(dependencyList);
         if (sample.size() == 0) {
-            return Result.of(List.of());
+            return Result.of(sample);
         }
         n = sample.get(0).size();
 
@@ -213,7 +211,7 @@ public class GreedySampleReducer extends AComputation<List<BooleanSolution>> {
         t2 = t - 1;
         fieldConfigurations = new Config[sample.size()];
         int fi = 0;
-        for (BooleanSolution solution : sample) {
+        for (BooleanAssignment solution : sample) {
             fieldConfigurations[fi++] = new Config(solution);
         }
         reducedSample = new LinkedHashSet<>();
@@ -226,7 +224,7 @@ public class GreedySampleReducer extends AComputation<List<BooleanSolution>> {
             BitSet negIndices = new BitSet(fieldConfigurations.length);
             BitSet posIndices = new BitSet(fieldConfigurations.length);
             for (int i = 0; i < fieldConfigurations.length; i++) {
-                BooleanSolution config = fieldConfigurations[i];
+                BooleanAssignment config = fieldConfigurations[i];
                 if (config.get(j - 1) < 0) {
                     negIndices.set(i);
                 } else {
@@ -240,7 +238,7 @@ public class GreedySampleReducer extends AComputation<List<BooleanSolution>> {
         IntStream.range(t - 1, n).parallel().forEach(this::generate);
 
         for (int j = 0; j < fieldConfigurations.length; j++) {
-            BooleanSolution config = fieldConfigurations[j];
+            BooleanAssignment config = fieldConfigurations[j];
             if (reducedSample.contains(config)) {
                 mainIndex.clear(j);
             }
@@ -283,7 +281,7 @@ public class GreedySampleReducer extends AComputation<List<BooleanSolution>> {
                 break;
             }
 
-            BooleanSolution bestConfig = fieldConfigurations[bestConfigIndex];
+            BooleanAssignment bestConfig = fieldConfigurations[bestConfigIndex];
             reducedSample.add(bestConfig);
             mainIndex.clear(bestConfigIndex);
 
@@ -304,6 +302,6 @@ public class GreedySampleReducer extends AComputation<List<BooleanSolution>> {
 
             interactions.removeAll(coveredInteractions);
         }
-        return Result.of(new ArrayList<>(reducedSample));
+        return Result.of(new BooleanAssignmentList(sample.getVariableMap(), reducedSample));
     }
 }
