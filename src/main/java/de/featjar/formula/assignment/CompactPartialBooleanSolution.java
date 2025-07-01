@@ -40,18 +40,18 @@ public class CompactPartialBooleanSolution implements ISolution<Integer, Boolean
         assignment = new BitSet(size);
         defined = new BitSet(size);
     }
-    
+
     public CompactPartialBooleanSolution(int size, BooleanAssignment assignment) {
         this.size = size;
         this.assignment = new BitSet(size);
         this.defined = new BitSet(size);
         for (int literal : assignment.get()) {
-        	if (literal != 0) {
-        		final int index = Math.abs(literal) - 1;
-				this.assignment.set(index, literal > 0);
-        		this.defined.set(index);
-        	}
-		}
+            if (literal != 0) {
+                final int index = Math.abs(literal) - 1;
+                this.assignment.set(index, literal > 0);
+                this.defined.set(index);
+            }
+        }
     }
 
     public CompactPartialBooleanSolution(CompactPartialBooleanSolution solution) {

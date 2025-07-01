@@ -43,11 +43,11 @@ public class CompactCompleteBooleanSolution implements ISolution<Integer, Boolea
         this.size = solution.size();
         this.assignment = new BitSet(size);
         for (int literal : solution.get()) {
-        	if (literal == 0) {
-        		throw new IllegalArgumentException("Solution must be complete.");
-        	}
-        	this.assignment.set(Math.abs(literal) - 1, literal > 0);
-		}
+            if (literal == 0) {
+                throw new IllegalArgumentException("Solution must be complete.");
+            }
+            this.assignment.set(Math.abs(literal) - 1, literal > 0);
+        }
     }
 
     public CompactCompleteBooleanSolution(CompactCompleteBooleanSolution solution) {
