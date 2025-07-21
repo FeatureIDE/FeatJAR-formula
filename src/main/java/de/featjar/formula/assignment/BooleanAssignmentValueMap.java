@@ -20,14 +20,37 @@
  */
 package de.featjar.formula.assignment;
 
+import de.featjar.base.computation.AComputation;
+import de.featjar.base.computation.Dependency;
+import de.featjar.base.computation.IComputation;
+import de.featjar.base.computation.Progress;
+import de.featjar.base.data.Maps;
+import de.featjar.base.data.Result;
 import de.featjar.formula.VariableMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
 public class BooleanAssignmentValueMap implements Iterable<Map.Entry<BooleanAssignment, Integer>> {
+
+    public static final class EmptyComputation extends AComputation<BooleanAssignmentValueMap> {
+
+        public static final Dependency<BooleanAssignmentList> ASSIGNMENT_LIST =
+                Dependency.newDependency(BooleanAssignmentList.class);
+
+        public EmptyComputation(IComputation<BooleanAssignmentList> booleanAssignmentList) {
+            super(booleanAssignmentList);
+        }
+
+        @Override
+        public Result<BooleanAssignmentValueMap> compute(List<Object> dependencyList, Progress progress) {
+            return Result.of(new BooleanAssignmentValueMap(
+                    ASSIGNMENT_LIST.get(dependencyList).getVariableMap(), Maps.empty()));
+        }
+    }
 
     protected final VariableMap variableMap;
     protected final Map<BooleanAssignment, Integer> booleanAssignmentValues;

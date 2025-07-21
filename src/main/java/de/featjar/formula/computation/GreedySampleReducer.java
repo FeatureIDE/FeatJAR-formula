@@ -28,6 +28,7 @@ import de.featjar.base.computation.Progress;
 import de.featjar.base.data.Result;
 import de.featjar.formula.assignment.BooleanAssignment;
 import de.featjar.formula.assignment.BooleanAssignmentList;
+import de.featjar.formula.assignment.ValuedBooleanAssignment;
 import java.util.BitSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -41,34 +42,6 @@ import java.util.stream.IntStream;
  * @author Rahel Sundermann
  */
 public class GreedySampleReducer extends AComputation<BooleanAssignmentList> {
-
-    private static class Interaction extends BooleanAssignment {
-        private static final long serialVersionUID = 4320112709021072255L;
-
-        private int counter = 0;
-
-        public Interaction(int... array) {
-            super(array);
-        }
-
-        public void setCounter(int counter) {
-            this.counter = counter;
-        }
-
-        public int getCounter() {
-            return counter;
-        }
-
-        @Override
-        public int hashCode() {
-            return super.hashCode();
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            return super.equals(obj);
-        }
-    }
 
     private static class Config extends BooleanAssignment {
         private static final long serialVersionUID = 6908616425377756720L;
@@ -110,7 +83,7 @@ public class GreedySampleReducer extends AComputation<BooleanAssignmentList> {
     private int n, t, t2;
 
     private LinkedHashSet<BooleanAssignment> reducedSample;
-    private LinkedHashSet<Interaction> interactions;
+    private LinkedHashSet<ValuedBooleanAssignment> interactions;
     private BitSet mainIndex;
     private BitSet[] indices;
 
@@ -144,8 +117,8 @@ public class GreedySampleReducer extends AComputation<BooleanAssignmentList> {
             }
             int counter = curIndices.cardinality();
             if (counter > 1) {
-                Interaction interaction = new Interaction(literals);
-                interaction.setCounter(counter);
+                ValuedBooleanAssignment interaction = new ValuedBooleanAssignment(literals);
+                interaction.setValue(counter);
                 synchronized (interactions) {
                     interactions.add(interaction);
                 }
@@ -244,7 +217,7 @@ public class GreedySampleReducer extends AComputation<BooleanAssignmentList> {
             }
         }
 
-        List<Interaction> alreadyCoveredInteractions = interactions.parallelStream()
+        List<ValuedBooleanAssignment> alreadyCoveredValuedBooleanAssignments = interactions.parallelStream()
                 .filter(interaction -> {
                     if (reducedSample.stream().anyMatch(c -> c.containsAll(interaction))) {
                         return true;
@@ -254,7 +227,7 @@ public class GreedySampleReducer extends AComputation<BooleanAssignmentList> {
                         for (int k2 = 0; k2 < is.length; k2++) {
                             curIndices.and(indices[is[k2] + n]);
                         }
-                        double s = 1.0 / interaction.getCounter();
+                        double s = 1.0 / interaction.getValue();
                         curIndices.stream()
                                 .mapToObj(i -> fieldConfigurations[i])
                                 .forEach(c -> c.incScore(s));
@@ -262,7 +235,7 @@ public class GreedySampleReducer extends AComputation<BooleanAssignmentList> {
                     }
                 })
                 .collect(Collectors.toList());
-        interactions.removeAll(alreadyCoveredInteractions);
+        interactions.removeAll(alreadyCoveredValuedBooleanAssignments);
 
         while (!interactions.isEmpty()) {
             double bestScore = -1;
@@ -285,7 +258,7 @@ public class GreedySampleReducer extends AComputation<BooleanAssignmentList> {
             reducedSample.add(bestConfig);
             mainIndex.clear(bestConfigIndex);
 
-            List<Interaction> coveredInteractions = interactions.parallelStream()
+            List<ValuedBooleanAssignment> coveredValuedBooleanAssignments = interactions.parallelStream()
                     .filter(interaction -> bestConfig.containsAll(interaction))
                     .peek(interaction -> {
                         int[] is = interaction.get();
@@ -293,14 +266,14 @@ public class GreedySampleReducer extends AComputation<BooleanAssignmentList> {
                         for (int k2 = 0; k2 < is.length; k2++) {
                             curIndices.and(indices[is[k2] + n]);
                         }
-                        double s = 1.0 / interaction.getCounter();
+                        double s = 1.0 / interaction.getValue();
                         curIndices.stream()
                                 .mapToObj(i -> fieldConfigurations[i])
                                 .forEach(c -> c.decScore(s));
                     })
                     .collect(Collectors.toList());
 
-            interactions.removeAll(coveredInteractions);
+            interactions.removeAll(coveredValuedBooleanAssignments);
         }
         return Result.of(new BooleanAssignmentList(sample.getVariableMap(), reducedSample));
     }
