@@ -22,7 +22,10 @@ package de.featjar.formula.io;
 
 import de.featjar.base.FeatJAR;
 import de.featjar.base.io.format.AFormats;
+import de.featjar.base.io.format.IFormat;
 import de.featjar.formula.assignment.BooleanAssignmentGroups;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Extension point for {@link AFormats formats} for {@link BooleanAssignmentGroups}.
@@ -33,5 +36,21 @@ public class BooleanAssignmentGroupsFormats extends AFormats<BooleanAssignmentGr
 
     public static BooleanAssignmentGroupsFormats getInstance() {
         return FeatJAR.extensionPoint(BooleanAssignmentGroupsFormats.class);
+    }
+
+    /**
+     * {@return an array of the names of all installed formats for BooleanAssignmentGroup}.
+     */
+    public static String[] getNames() {
+        return getInstance().getExtensions().stream().map(IFormat::getName).toArray(String[]::new);
+    }
+
+    /**
+     * {@return an array of the names of all installed formats for BooleanAssignmentGroup}.
+     */
+    public static Optional<IFormat<BooleanAssignmentGroups>> getGefFormatByName(String name) {
+        return getInstance().getExtensions().stream()
+                .filter(f -> Objects.equals(name, f.getName()))
+                .findFirst();
     }
 }
