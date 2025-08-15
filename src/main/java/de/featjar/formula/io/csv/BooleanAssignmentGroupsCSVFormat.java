@@ -216,7 +216,7 @@ public class BooleanAssignmentGroupsCSVFormat implements IFormat<BooleanAssignme
     }
 
     @Override
-    public boolean supportsSerialize() {
+    public boolean supportsWrite() {
         return true;
     }
 

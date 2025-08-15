@@ -53,7 +53,8 @@ public class FormulaDimacsFormat implements IFormat<IFormula> {
             return Result.empty(new IllegalArgumentException("Formula is not in CNF"));
         }
         VariableMap variableMap = VariableMap.of(formula.getVariableMap().keySet());
-        return DimacsSerializer.serialize(variableMap, cnfFormula.getChildren(), c -> writeClause(c, variableMap));
+        return Result.of(
+                DimacsSerializer.serialize(variableMap, cnfFormula.getChildren(), c -> writeClause(c, variableMap)));
     }
 
     private static int[] writeClause(IExpression clause, VariableMap variableMap) {
@@ -99,7 +100,7 @@ public class FormulaDimacsFormat implements IFormat<IFormula> {
     }
 
     @Override
-    public boolean supportsSerialize() {
+    public boolean supportsWrite() {
         return true;
     }
 

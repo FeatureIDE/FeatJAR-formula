@@ -172,7 +172,7 @@ public class BooleanAssignmentGroupsCompressedFormat extends ABinaryFormat<Boole
     }
 
     @Override
-    public boolean supportsSerialize() {
+    public boolean supportsWrite() {
         return true;
     }
 

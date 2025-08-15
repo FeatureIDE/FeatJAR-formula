@@ -169,7 +169,7 @@ public class BooleanAssignmentGroupsBinaryFormat extends ABinaryFormat<BooleanAs
     }
 
     @Override
-    public boolean supportsSerialize() {
+    public boolean supportsWrite() {
         return true;
     }
 

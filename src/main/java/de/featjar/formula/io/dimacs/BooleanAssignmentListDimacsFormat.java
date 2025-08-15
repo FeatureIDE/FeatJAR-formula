@@ -27,7 +27,6 @@ import de.featjar.base.io.format.ParseProblem;
 import de.featjar.base.io.input.AInputMapper;
 import de.featjar.formula.VariableMap;
 import de.featjar.formula.assignment.BooleanAssignment;
-import de.featjar.formula.assignment.BooleanAssignmentGroups;
 import de.featjar.formula.assignment.BooleanAssignmentList;
 import java.text.ParseException;
 import java.util.List;
@@ -39,28 +38,26 @@ import java.util.stream.Collectors;
  *
  * @author Sebastian Krieter
  */
-public class BooleanAssignmentGroupsDimacsFormat implements IFormat<BooleanAssignmentGroups> {
+public class BooleanAssignmentListDimacsFormat implements IFormat<BooleanAssignmentList> {
 
     @Override
-    public Result<String> serialize(BooleanAssignmentGroups assignmentSpace) {
-        Objects.requireNonNull(assignmentSpace);
+    public Result<String> serialize(BooleanAssignmentList booleanAssignmentList) {
+        Objects.requireNonNull(booleanAssignmentList);
         return Result.of(DimacsSerializer.serialize(
-                assignmentSpace.getVariableMap(),
-                assignmentSpace.getMergedGroups().getAll(),
-                BooleanAssignment::get));
+                booleanAssignmentList.getVariableMap(), booleanAssignmentList.getAll(), BooleanAssignment::get));
     }
 
     @Override
-    public Result<BooleanAssignmentGroups> parse(AInputMapper inputMapper) {
+    public Result<BooleanAssignmentList> parse(AInputMapper inputMapper) {
         final DimacsParser parser = new DimacsParser();
         parser.setReadingVariableDirectory(true);
         try {
             Pair<VariableMap, List<int[]>> parsingResult = parser.parse(inputMapper);
-            return Result.of(new BooleanAssignmentGroups(new BooleanAssignmentList(
+            return Result.of(new BooleanAssignmentList(
                     parsingResult.getKey(),
                     parsingResult.getValue().stream()
                             .map(BooleanAssignment::new)
-                            .collect(Collectors.toList()))));
+                            .collect(Collectors.toList())));
         } catch (final ParseException e) {
             return Result.empty(new ParseProblem(e, e.getErrorOffset()));
         } catch (final Exception e) {

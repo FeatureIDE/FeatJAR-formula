@@ -39,28 +39,38 @@ import java.util.stream.Collectors;
  *
  * @author Sebastian Krieter
  */
-public class BooleanAssignmentGroupsDimacsFormat implements IFormat<BooleanAssignmentGroups> {
+public class BooleanAssignmentGroupsDimacsListFormat implements IFormat<BooleanAssignmentGroups> {
 
     @Override
     public Result<String> serialize(BooleanAssignmentGroups assignmentSpace) {
         Objects.requireNonNull(assignmentSpace);
-        return Result.of(DimacsSerializer.serialize(
-                assignmentSpace.getVariableMap(),
-                assignmentSpace.getMergedGroups().getAll(),
-                BooleanAssignment::get));
+
+        final StringBuilder sb = new StringBuilder();
+        DimacsSerializer.writeVariables(sb, assignmentSpace.getVariableMap());
+        int variableCount = assignmentSpace.getVariableMap().getVariableCount();
+        for (BooleanAssignmentList booleanAssignmentList : assignmentSpace) {
+            DimacsSerializer.writeProblem(sb, variableCount, booleanAssignmentList.size());
+            DimacsSerializer.writeClauses(sb, booleanAssignmentList.getAll(), BooleanAssignment::get);
+        }
+        return Result.of(sb.toString());
     }
 
     @Override
     public Result<BooleanAssignmentGroups> parse(AInputMapper inputMapper) {
-        final DimacsParser parser = new DimacsParser();
+        final DimacsListParser parser = new DimacsListParser();
         parser.setReadingVariableDirectory(true);
         try {
-            Pair<VariableMap, List<int[]>> parsingResult = parser.parse(inputMapper);
-            return Result.of(new BooleanAssignmentGroups(new BooleanAssignmentList(
-                    parsingResult.getKey(),
-                    parsingResult.getValue().stream()
-                            .map(BooleanAssignment::new)
-                            .collect(Collectors.toList()))));
+            Pair<VariableMap, List<List<int[]>>> parsingResult = parser.parseList(inputMapper);
+            VariableMap variableMap = parsingResult.getKey();
+            BooleanAssignmentGroups booleanAssignmentGroups = new BooleanAssignmentGroups(variableMap);
+            for (List<int[]> list : parsingResult.getValue()) {
+                booleanAssignmentGroups
+                        .getGroups()
+                        .add(new BooleanAssignmentList(
+                                variableMap,
+                                list.stream().map(BooleanAssignment::new).collect(Collectors.toList())));
+            }
+            return Result.of(booleanAssignmentGroups);
         } catch (final ParseException e) {
             return Result.empty(new ParseProblem(e, e.getErrorOffset()));
         } catch (final Exception e) {
@@ -70,7 +80,7 @@ public class BooleanAssignmentGroupsDimacsFormat implements IFormat<BooleanAssig
 
     @Override
     public String getFileExtension() {
-        return "dimacs";
+        return "dimacslist";
     }
 
     @Override
@@ -85,6 +95,6 @@ public class BooleanAssignmentGroupsDimacsFormat implements IFormat<BooleanAssig
 
     @Override
     public String getName() {
-        return "BooleanAssignmentDimacs";
+        return "BooleanAssignmentDimacsList";
     }
 }

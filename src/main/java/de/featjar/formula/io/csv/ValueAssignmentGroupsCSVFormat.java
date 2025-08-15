@@ -154,7 +154,7 @@ public class ValueAssignmentGroupsCSVFormat implements IFormat<ValueAssignmentGr
     }
 
     @Override
-    public boolean supportsSerialize() {
+    public boolean supportsWrite() {
         return true;
     }
 

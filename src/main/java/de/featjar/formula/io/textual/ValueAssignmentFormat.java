@@ -92,7 +92,7 @@ public class ValueAssignmentFormat implements IFormat<ValueAssignment> {
     }
 
     @Override
-    public boolean supportsSerialize() {
+    public boolean supportsWrite() {
         return true;
     }
 
