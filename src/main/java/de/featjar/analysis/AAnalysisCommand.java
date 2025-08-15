@@ -29,6 +29,7 @@ import de.featjar.base.data.Result;
 import de.featjar.base.io.IO;
 import de.featjar.base.io.format.IFormat;
 import de.featjar.base.io.graphviz.GraphVizComputationTreeFormat;
+import de.featjar.base.io.text.GenericTextFormat;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -106,23 +107,39 @@ public abstract class AAnalysisCommand<T> extends ACommand {
         }
 
         if (result.isPresent()) {
+            IFormat<T> ouputFormat = getOuputFormat(optionParser);
             if (outputPath == null) {
-                FeatJAR.log().message(printResult(result.get()));
+                if (ouputFormat == null || !ouputFormat.isTextual()) {
+                    FeatJAR.log().plainMessage(String.valueOf(result.get()));
+                } else {
+                    ouputFormat
+                            .serialize(result.get())
+                            .ifEmpty(FeatJAR.log()::problems)
+                            .ifPresent(FeatJAR.log()::plainMessage);
+                }
             } else {
-                try {
-                    if (!writeToOutputFile(result.get(), outputPath)) {
-                        if (Files.isDirectory(outputPath)) {
-                            FeatJAR.log().error(new IOException(outputPath.toString() + " is a directory"));
-                        }
+                if (Files.isDirectory(outputPath)) {
+                    FeatJAR.log().error(new IOException(outputPath.toString() + " is a directory"));
+                    return FeatJAR.ERROR_WRITING_RESULT;
+                } else if (ouputFormat == null) {
+                    FeatJAR.log().warning(new IOException(outputPath.toString() + " not output format specified"));
+                    try {
                         Files.write(
                                 outputPath,
-                                printResult(result.get()).getBytes(StandardCharsets.UTF_8),
+                                String.valueOf(result.get()).getBytes(StandardCharsets.UTF_8),
                                 StandardOpenOption.CREATE,
                                 StandardOpenOption.TRUNCATE_EXISTING);
+                    } catch (IOException e) {
+                        FeatJAR.log().error(e);
+                        return FeatJAR.ERROR_WRITING_RESULT;
                     }
-                } catch (IOException e) {
-                    FeatJAR.log().error(e);
-                    return FeatJAR.ERROR_WRITING_RESULT;
+                } else {
+                    try {
+                        IO.save(result.get(), outputPath, ouputFormat);
+                    } catch (IOException e) {
+                        FeatJAR.log().error(e);
+                        return FeatJAR.ERROR_WRITING_RESULT;
+                    }
                 }
             }
         } else {
@@ -138,36 +155,7 @@ public abstract class AAnalysisCommand<T> extends ACommand {
 
     protected abstract IComputation<T> newComputation(OptionList optionParser);
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    protected boolean writeToOutputFile(T result, Path outputPath) {
-        try {
-            Object ouputObject = getOuputObject(result);
-            if (ouputObject == null) {
-                return false;
-            }
-
-            IFormat ouputFormat = getOuputFormat();
-            if (ouputFormat == null) {
-                return false;
-            }
-
-            IO.save(ouputObject, outputPath, ouputFormat);
-            return true;
-        } catch (IOException e) {
-            FeatJAR.log().error(e);
-        }
-        return false;
-    }
-
-    protected Object getOuputObject(T result) {
-        return result;
-    }
-
-    protected IFormat<?> getOuputFormat() {
-        return null;
-    }
-
-    protected String printResult(T result) {
-        return result.toString();
+    protected IFormat<T> getOuputFormat(OptionList optionParser) {
+        return new GenericTextFormat<>();
     }
 }
