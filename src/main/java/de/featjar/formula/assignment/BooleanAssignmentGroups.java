@@ -22,6 +22,7 @@ package de.featjar.formula.assignment;
 
 import de.featjar.base.io.format.IFormat;
 import de.featjar.formula.VariableMap;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -54,11 +55,7 @@ public class BooleanAssignmentGroups implements Iterable<BooleanAssignmentList> 
 
     public BooleanAssignmentGroups(VariableMap variableMap, BooleanAssignment... assignments) {
         this.variableMap = variableMap;
-        BooleanAssignmentList firstGroup = new BooleanAssignmentList(variableMap);
-        for (BooleanAssignment assignment : assignments) {
-            firstGroup.add(assignment);
-        }
-        this.assignmentGroups = List.of(firstGroup);
+        this.assignmentGroups = List.of(new BooleanAssignmentList(variableMap, Arrays.asList(assignments)));
     }
 
     public VariableMap getVariableMap() {
