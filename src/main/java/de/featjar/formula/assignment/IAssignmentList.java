@@ -106,8 +106,6 @@ public interface IAssignmentList<T extends IAssignment<?, ?>> extends Iterable<T
 
     /**
      * {@return the assignment at the first index in this assignment list, if any. Return null otherwise.}
-     *
-     * @param index the index
      */
     default T getFirst() {
         return isEmpty() ? null : getAll().get(0);
