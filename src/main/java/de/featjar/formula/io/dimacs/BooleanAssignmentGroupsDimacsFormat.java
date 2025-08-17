@@ -22,13 +22,13 @@ package de.featjar.formula.io.dimacs;
 
 import de.featjar.base.data.Pair;
 import de.featjar.base.data.Result;
-import de.featjar.base.io.format.IFormat;
 import de.featjar.base.io.format.ParseProblem;
 import de.featjar.base.io.input.AInputMapper;
 import de.featjar.formula.VariableMap;
 import de.featjar.formula.assignment.BooleanAssignment;
 import de.featjar.formula.assignment.BooleanAssignmentGroups;
 import de.featjar.formula.assignment.BooleanAssignmentList;
+import de.featjar.formula.io.IBooleanAssignmentGroupsFormat;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Objects;
@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
  *
  * @author Sebastian Krieter
  */
-public class BooleanAssignmentGroupsDimacsFormat implements IFormat<BooleanAssignmentGroups> {
+public class BooleanAssignmentGroupsDimacsFormat implements IBooleanAssignmentGroupsFormat {
 
     @Override
     public Result<String> serialize(BooleanAssignmentGroups assignmentSpace) {
@@ -85,6 +85,6 @@ public class BooleanAssignmentGroupsDimacsFormat implements IFormat<BooleanAssig
 
     @Override
     public String getName() {
-        return "BooleanAssignmentDimacs";
+        return "DIMACS";
     }
 }

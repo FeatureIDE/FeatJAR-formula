@@ -20,18 +20,12 @@
  */
 package de.featjar.formula.io;
 
-import de.featjar.base.FeatJAR;
-import de.featjar.base.io.format.AFormats;
+import de.featjar.base.io.format.IFormat;
 import de.featjar.formula.assignment.BooleanAssignmentGroups;
 
 /**
- * Extension point for {@link AFormats formats} for {@link BooleanAssignmentGroups}.
+ * Interface for format handling {@link BooleanAssignmentGroups}
  *
  * @author Sebastian Krieter
  */
-public class BooleanAssignmentGroupsFormats extends AFormats<BooleanAssignmentGroups> {
-
-    public static BooleanAssignmentGroupsFormats getInstance() {
-        return FeatJAR.extensionPoint(BooleanAssignmentGroupsFormats.class);
-    }
-}
+public interface IBooleanAssignmentGroupsFormat extends IFormat<BooleanAssignmentGroups> {}

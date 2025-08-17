@@ -27,6 +27,7 @@ import de.featjar.base.cli.OptionList;
 import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.IO;
+import de.featjar.base.io.IOMapperOptions;
 import de.featjar.base.io.format.IFormat;
 import de.featjar.base.io.graphviz.GraphVizComputationTreeFormat;
 import de.featjar.base.io.text.GenericTextFormat;
@@ -47,9 +48,9 @@ public abstract class AAnalysisCommand<T> extends ACommand {
     public static final Option<Boolean> BROWSE_CACHE_OPTION =
             Option.newFlag("browse-cache").setDescription("Show cache contents in default browser");
 
-    public static final Option<Boolean> NON_PARALLEL = Option.newFlag("non-parallel") //
+    public static final Option<Boolean> NON_PARALLEL = Option.newFlag("non-parallel")
             .setDescription(
-                    "Disable parallel computation. (Is ignored if timeout option is specified, as computations with timeout are always non-parallel.)");
+                    "Disable parallel computation. (Ignored if timeout option is specified, as computations with timeout are always non-parallel.)");
 
     public static final Option<Duration> TIMEOUT_OPTION = Option.newOption(
                     "timeout", s -> Duration.ofSeconds(Long.parseLong(s)))
@@ -63,6 +64,21 @@ public abstract class AAnalysisCommand<T> extends ACommand {
     public static final Option<Path> TIME_OPTION = Option.newOption("write-time-to-file", Option.PathParser)
             .setDescription("Path to file containig the execution time");
 
+    /**
+     * ZIP compression option for saving files.
+     */
+    public static final Option<Boolean> OUTPUT_COMPRESSION_OPTION =
+            Option.newFlag("zip-output").setDescription("Stores output as zip file. (Requires to set an output path.)");
+
+    /**
+     * ZIP compression option for reading files.
+     */
+    public static final Option<Boolean> INTPUT_COMPRESSION_OPTION =
+            Option.newFlag("zip-input").setDescription("Reads input as zip file.");
+
+    protected IOMapperOptions[] ioInputOptions = new IOMapperOptions[0];
+    protected IOMapperOptions[] ioOutputOptions = new IOMapperOptions[0];
+
     @Override
     public int run(OptionList optionParser) {
         boolean browseCache = optionParser.getResult(BROWSE_CACHE_OPTION).get();
@@ -70,13 +86,19 @@ public abstract class AAnalysisCommand<T> extends ACommand {
         Duration timeout = optionParser.getResult(TIMEOUT_OPTION).get();
         Path outputPath = optionParser.getResult(OUTPUT_OPTION).orElse(null);
         Path timePath = optionParser.getResult(TIME_OPTION).orElse(null);
+        if (optionParser.getResult(INTPUT_COMPRESSION_OPTION).get()) {
+            ioInputOptions = new IOMapperOptions[] {IOMapperOptions.ZIP_COMPRESSION};
+        }
+        if (optionParser.getResult(OUTPUT_COMPRESSION_OPTION).get()) {
+            ioOutputOptions = new IOMapperOptions[] {IOMapperOptions.ZIP_COMPRESSION};
+        }
 
         IComputation<T> computation;
         try {
             computation = newComputation(optionParser);
         } catch (Exception e) {
             FeatJAR.log().error(e);
-            FeatJAR.log().message(OptionList.getHelp(this));
+            FeatJAR.log().plainMessage(OptionList.getHelp(this));
             return FeatJAR.ERROR_COMPUTING_RESULT;
         }
         FeatJAR.log().debug("running computation %s", computation.print());
@@ -135,7 +157,7 @@ public abstract class AAnalysisCommand<T> extends ACommand {
                     }
                 } else {
                     try {
-                        IO.save(result.get(), outputPath, ouputFormat);
+                        IO.save(result.get(), outputPath, ouputFormat, ioOutputOptions);
                     } catch (IOException e) {
                         FeatJAR.log().error(e);
                         return FeatJAR.ERROR_WRITING_RESULT;

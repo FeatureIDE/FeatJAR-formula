@@ -20,9 +20,11 @@
  */
 package de.featjar.formula.io;
 
-import static de.featjar.formula.structure.Expressions.*;
+import static de.featjar.formula.structure.Expressions.and;
+import static de.featjar.formula.structure.Expressions.literal;
+import static de.featjar.formula.structure.Expressions.or;
+import static de.featjar.formula.structure.Expressions.reference;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import de.featjar.Common;
 import de.featjar.FormatTest;
@@ -127,8 +129,7 @@ public class DIMACSFormatTest extends Common {
                     try {
                         IO.save(getFormula(name), OutputStream.nullOutputStream(), new FormulaDimacsFormat());
                     } catch (IOException e) {
-                        e.printStackTrace();
-                        fail(e);
+                        throw e.getCause();
                     }
                 },
                 "Formula is not in CNF");
