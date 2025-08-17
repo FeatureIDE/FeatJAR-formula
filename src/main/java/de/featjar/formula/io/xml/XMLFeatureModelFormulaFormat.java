@@ -89,7 +89,7 @@ public class XMLFeatureModelFormulaFormat extends AXMLFeatureModelFormat<IFormul
     }
 
     @Override
-    protected Literal newFeatureLabel(
+    protected Literal newFeature(
             String name, Literal parentFeatureLabel, boolean mandatory, boolean _abstract, boolean hidden)
             throws ParseException {
         if (featureLabels.contains(name)) {
@@ -130,7 +130,7 @@ public class XMLFeatureModelFormulaFormat extends AXMLFeatureModelFormat<IFormul
     protected void addFeatureMetadata(Literal featureLabel, Element e) {}
 
     @Override
-    protected Boolean newConstraintLabel() {
+    protected Boolean newConstraint() {
         return true;
     }
 

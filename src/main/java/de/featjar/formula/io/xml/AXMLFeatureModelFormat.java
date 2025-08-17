@@ -73,7 +73,7 @@ public abstract class AXMLFeatureModelFormat<T, U, V> extends AXMLFormat<T> {
     public static final String ABSTRACT = "abstract";
     public static final String HIDDEN = "hidden";
 
-    protected abstract U newFeatureLabel(
+    protected abstract U newFeature(
             String name, U parentFeatureLabel, boolean mandatory, boolean _abstract, boolean hidden)
             throws ParseException;
 
@@ -85,7 +85,7 @@ public abstract class AXMLFeatureModelFormat<T, U, V> extends AXMLFormat<T> {
 
     protected abstract void addFeatureMetadata(U featureLabel, Element e) throws ParseException;
 
-    protected abstract V newConstraintLabel();
+    protected abstract V newConstraint();
 
     protected abstract void addConstraint(V constraintLabel, IFormula formula) throws ParseException;
 
@@ -169,7 +169,7 @@ public abstract class AXMLFeatureModelFormat<T, U, V> extends AXMLFormat<T> {
             }
         }
 
-        U featureLabel = newFeatureLabel(name, parentFeatureLabel, and && mandatory, _abstract, hidden);
+        U featureLabel = newFeature(name, parentFeatureLabel, and && mandatory, _abstract, hidden);
 
         if (e.hasChildNodes()) {
             final ArrayList<U> featureLabels = parseFeatureTree(e.getChildNodes(), featureLabel, nodeName.equals(AND));
@@ -198,7 +198,7 @@ public abstract class AXMLFeatureModelFormat<T, U, V> extends AXMLFormat<T> {
             final String nodeName = child.getNodeName();
             if (nodeName.equals(RULE)) {
                 try {
-                    V constraintLabel = newConstraintLabel();
+                    V constraintLabel = newConstraint();
                     final List<IFormula> parsedConstraints = parseConstraints(child.getChildNodes(), constraintLabel);
                     if (parsedConstraints.size() == 1) {
                         addConstraint(constraintLabel, parsedConstraints.get(0));
