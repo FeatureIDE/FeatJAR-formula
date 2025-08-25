@@ -20,6 +20,7 @@
 		<extension id="de.featjar.formula.io.dimacs.BooleanAssignmentListDimacsFormat" />
 	</point>
 	<point id="de.featjar.base.cli.Commands">
+		<extension id="de.featjar.composition.cli.PreprocessorCommand" />
 		<extension id="de.featjar.formula.cli.ConvertCNFFormatCommand" />
 		<extension id="de.featjar.formula.cli.ConvertFormatCommand" />
 		<extension id="de.featjar.formula.cli.PrintCommand" />

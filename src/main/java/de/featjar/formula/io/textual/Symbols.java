@@ -35,6 +35,7 @@ import de.featjar.formula.structure.connective.ForAll;
 import de.featjar.formula.structure.connective.Implies;
 import de.featjar.formula.structure.connective.Not;
 import de.featjar.formula.structure.connective.Or;
+import de.featjar.formula.structure.predicate.Literal;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -56,6 +57,7 @@ public class Symbols {
 
     public Symbols(boolean textual) {
         this.textual = textual;
+        setSymbol(Literal.class, "defined", 8, false);
         setSymbol(Not.class, "not", 7, false);
         setSymbol(And.class, "and", 6, true);
         setSymbol(Or.class, "or", 5, true);
