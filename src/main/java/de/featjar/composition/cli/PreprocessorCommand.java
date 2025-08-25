@@ -51,34 +51,18 @@ public class PreprocessorCommand extends ACommand {
             .setDefaultValue("process")
             .setDescription("Mode of operation");
 
-    public static final Option<Boolean> ANNOTATIONS_OPTION =
-            Option.newFlag("annotations").setDescription("Prints all annotations in the input file");
-
     public static final Option<String> PREFIX_OPTION = Option.newOption("annotation-prefix", Option.StringParser)
-            .setDefaultValue("")
-            .setDescription("The prefix that preceeds each annotation");
-
-    public static final Option<String> START_OPTION = Option.newOption("annotation-start", Option.StringParser)
-            .setDefaultValue("if")
-            .setDescription("The prefix of an annotation opening an if block");
-
-    public static final Option<String> END_OPTION = Option.newOption("annotation-end", Option.StringParser)
-            .setDefaultValue("endif")
-            .setDescription("The prefix of an annotation closing an if block");
+            .setDefaultValue("#")
+            .setDescription("The prefix that precedes each annotation");
 
     @Override
     public int run(OptionList optionParser) {
         Path in = optionParser.getResult(INPUT_OPTION).orElseThrow();
         Path out = optionParser.getResult(OUTPUT_OPTION).orElse(null);
-        Path assignmentPath = optionParser.getResult(CONFIGURATION_OPTION).orElseThrow();
-
         Charset charset = StandardCharsets.UTF_8;
         String annotationPrefix = optionParser.getResult(PREFIX_OPTION).orElseThrow();
-        String annotationStart = optionParser.getResult(START_OPTION).orElseThrow();
-        String annotationEnd = optionParser.getResult(END_OPTION).orElseThrow();
 
-        Preprocessor preprocessor =
-                new Preprocessor(annotationPrefix, annotationStart, annotationEnd, JavaSymbols.INSTANCE);
+        Preprocessor preprocessor = new Preprocessor(annotationPrefix, JavaSymbols.INSTANCE);
 
         String mode = optionParser.getResult(MODE_OPTION).orElseThrow();
 
@@ -86,7 +70,12 @@ public class PreprocessorCommand extends ACommand {
         try {
             switch (mode) {
                 case "process":
-                    stream = preprocess(in, out, assignmentPath, charset, preprocessor);
+                    stream = preprocess(
+                            in,
+                            out,
+                            optionParser.getResult(CONFIGURATION_OPTION).orElseThrow(),
+                            charset,
+                            preprocessor);
                     break;
                 case "print-variables":
                     stream = printVariableNames(in, charset, preprocessor);

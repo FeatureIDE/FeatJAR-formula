@@ -60,8 +60,7 @@ public class Preprocessor {
             lineNumber++;
             Matcher matcher = annotationPattern.matcher(line);
             if (matcher.matches()) {
-                String endGroup = matcher.group(2);
-                if (endGroup != null) {
+                if (matcher.group(2) != null) {
                     if (expressionStack.isEmpty()) {
                         FeatJAR.log().warning("Line %d: no annotation to end", lineNumber);
                     } else {
@@ -69,36 +68,75 @@ public class Preprocessor {
                         evaluationStack.pop();
                     }
                     return false;
-                } else {
-                    String startGroup = matcher.group(3);
-                    if (startGroup != null) {
-                        Result<IExpression> parse = annotationParser.parse(matcher.group(4));
-                        if (parse.isPresent()) {
-                            IExpression annotationExpression = parse.get();
-                            expressionStack.push(annotationExpression);
-                            if (evaluationStack.isEmpty() || evaluationStack.peek()) {
-                                Object evaluation = annotationExpression
-                                        .evaluate(assignment)
-                                        .orElse(null);
-                                if (evaluation instanceof Boolean) {
-                                    evaluationStack.push(Boolean.TRUE);
-                                } else {
-                                    FeatJAR.log()
-                                            .warning("Line %d: could not evaluate annotation: %s", lineNumber, line);
-                                    evaluationStack.push(Boolean.FALSE);
-                                }
+                } else if (matcher.group(3) != null) {
+                    if (expressionStack.isEmpty()) {
+                        FeatJAR.log().warning("Line %d: no annotation for else", lineNumber);
+                    } else {
+                        Boolean eval = evaluationStack.pop();
+                        if (evaluationStack.isEmpty() || evaluationStack.peek()) {
+                            evaluationStack.push(!eval);
+                        } else {
+                            evaluationStack.push(Boolean.FALSE);
+                        }
+                    }
+                    return false;
+                } else if (matcher.group(4) != null) {
+                    if (expressionStack.isEmpty()) {
+                        FeatJAR.log().warning("Line %d: no annotation for elif", lineNumber);
+                    } else {
+                        Boolean eval = evaluationStack.pop();
+                        if (evaluationStack.isEmpty() || evaluationStack.peek()) {
+                            evaluationStack.push(!eval);
+                        } else {
+                            evaluationStack.push(Boolean.FALSE);
+                        }
+                    }
+                    Result<IExpression> parse = annotationParser.parse(matcher.group(5));
+                    if (parse.isPresent()) {
+                        IExpression annotationExpression = parse.get();
+                        expressionStack.push(annotationExpression);
+                        if (evaluationStack.isEmpty() || evaluationStack.peek()) {
+                            Object evaluation =
+                                    annotationExpression.evaluate(assignment).orElse(null);
+                            if (evaluation instanceof Boolean) {
+                                evaluationStack.push(Boolean.TRUE);
                             } else {
+                                FeatJAR.log().warning("Line %d: could not evaluate annotation: %s", lineNumber, line);
                                 evaluationStack.push(Boolean.FALSE);
                             }
-                            return false;
                         } else {
-                            FeatJAR.log().warning("Line %d: could not parse annotation: %s", lineNumber, line);
-                            return true;
+                            evaluationStack.push(Boolean.FALSE);
                         }
                     } else {
-                        FeatJAR.log().warning("Line %d: syntax error: %s", lineNumber, line);
+                        FeatJAR.log().warning("Line %d: could not parse annotation: %s", lineNumber, line);
                         return true;
                     }
+                    return false;
+                } else if (matcher.group(6) != null) {
+                    Result<IExpression> parse = annotationParser.parse(matcher.group(7));
+                    if (parse.isPresent()) {
+                        IExpression annotationExpression = parse.get();
+                        expressionStack.push(annotationExpression);
+                        if (evaluationStack.isEmpty() || evaluationStack.peek()) {
+                            Object evaluation =
+                                    annotationExpression.evaluate(assignment).orElse(null);
+                            if (evaluation instanceof Boolean) {
+                                evaluationStack.push(Boolean.TRUE);
+                            } else {
+                                FeatJAR.log().warning("Line %d: could not evaluate annotation: %s", lineNumber, line);
+                                evaluationStack.push(Boolean.FALSE);
+                            }
+                        } else {
+                            evaluationStack.push(Boolean.FALSE);
+                        }
+                        return false;
+                    } else {
+                        FeatJAR.log().warning("Line %d: could not parse annotation: %s", lineNumber, line);
+                        return true;
+                    }
+                } else {
+                    FeatJAR.log().warning("Line %d: syntax error: %s", lineNumber, line);
+                    return true;
                 }
             } else {
                 return evaluationStack.isEmpty() || evaluationStack.peek();
@@ -115,7 +153,7 @@ public class Preprocessor {
             lineNumber++;
             Matcher matcher = startAnnotationPattern.matcher(line);
             if (matcher.matches()) {
-                Result<IExpression> parse = annotationParser.parse(matcher.group(1));
+                Result<IExpression> parse = annotationParser.parse(matcher.group(2));
                 if (parse.isPresent()) {
                     return parse.get().getVariableStream();
                 } else {
@@ -127,20 +165,26 @@ public class Preprocessor {
         }
     }
 
-    public Preprocessor(String annotationPrefix, String annotationStart, String annotationEnd, Symbols symbols) {
+    public Preprocessor(String annotationPrefix, Symbols symbols) {
         annotationParser = new ExpressionParser();
         annotationParser.setSymbols(symbols);
-        annotationPattern = Pattern.compile(Pattern.quote(annotationPrefix) + "\\s*(("
-                + Pattern.quote(annotationEnd)
-                + ")\\s*|("
-                + Pattern.quote(annotationStart)
-                + "\\s+(.+)))");
+        annotationPattern = Pattern.compile(
+                Pattern.quote(annotationPrefix) + "\\s*((endif\\s*)|(else\\s*)|(if\\s+(.+))|(elif\\s+(.+)))");
 
-        startAnnotationPattern = Pattern.compile(Pattern.quote(annotationPrefix) + annotationStart + "\\s+(.+)");
+        startAnnotationPattern = Pattern.compile(Pattern.quote(annotationPrefix) + "(if|elif)\\s+(.+)");
     }
 
+    /**
+     * {@return a filtered stream that contains only lines that remain after preprocessing with the given variable assignment}
+     *
+     * <b>Note</b>: The return stream is <b>not state less</b>.
+     * It is not suitable for parallel consumption.
+     *
+     * @param lines the line stream
+     * @param assignment the variable assignment
+     */
     public Stream<String> preprocess(Stream<String> lines, Assignment assignment) {
-        return lines.filter(new Filter(assignment));
+        return lines.sequential().filter(new Filter(assignment));
     }
 
     public List<String> extractVariableNames(Stream<String> lines) {
