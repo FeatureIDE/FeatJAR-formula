@@ -48,6 +48,9 @@ public class BooleanAssignmentGroupsUngroupedCSVFormat implements IBooleanAssign
     private static final String NEGATIVE_VALUE = "-";
     private static final String NULL_VALUE = "0";
 
+    /**
+     * The identifier of this format.
+     */
     public static final String ID = BooleanAssignmentGroupsUngroupedCSVFormat.class.getCanonicalName();
 
     @Override

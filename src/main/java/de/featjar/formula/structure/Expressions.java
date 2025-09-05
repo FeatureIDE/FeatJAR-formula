@@ -80,7 +80,7 @@ public class Expressions {
     }
 
     /**
-     * {@return a formula that evaluates to {@code true} iff all of the given formulas evaluate to {@code true}}
+     * {@return a formula that evaluates to true iff all of the given formulas evaluate to true}
      *
      * @param formulas the formulas
      */
@@ -89,7 +89,7 @@ public class Expressions {
     }
 
     /**
-     * {@return a formula that evaluates to {@code true} iff at least a given number of the given formulas evaluate to {@code true}}
+     * {@return a formula that evaluates to true iff at least a given number of the given formulas evaluate to true}
      *
      * @param minimum the minimum
      * @param formulas the formulas
@@ -99,7 +99,7 @@ public class Expressions {
     }
 
     /**
-     * {@return a formula that evaluates to {@code true} iff at most a given number of the given formulas evaluate to {@code true}}
+     * {@return a formula that evaluates to true iff at most a given number of the given formulas evaluate to true}
      *
      * @param maximum the maximum
      * @param formulas the formulas
@@ -109,7 +109,7 @@ public class Expressions {
     }
 
     /**
-     * {@return a formula that evaluates to {@code true} iff the number of the given formulas that evaluate to {@code true} is in a given range}
+     * {@return a formula that evaluates to true iff the number of the given formulas that evaluate to true is in a given range}
      *
      * @param minimum the minimum
      * @param formulas the formulas
@@ -119,7 +119,7 @@ public class Expressions {
     }
 
     /**
-     * {@return a formula that evaluates to {@code true} iff both given formulas evaluate to the same value}
+     * {@return a formula that evaluates to true iff both given formulas evaluate to the same value}
      *
      * @param leftFormula the left formula
      * @param rightFormula the right formula
@@ -129,7 +129,7 @@ public class Expressions {
     }
 
     /**
-     * {@return a formula that evaluates to {@code true} iff the number of the given formulas that evaluate to {@code true} is equal to a given number}
+     * {@return a formula that evaluates to true iff the number of the given formulas that evaluate to true is equal to a given number}
      *
      * @param bound the bound
      * @param formulas the formulas
@@ -139,7 +139,7 @@ public class Expressions {
     }
 
     /**
-     * {@return a formula that evaluates to {@code true} iff there is a value of the given bound variable such that the given formula evaluates to {@code true}}
+     * {@return a formula that evaluates to true iff there is a value of the given bound variable such that the given formula evaluates to true}
      *
      * @param boundVariable the bound variable
      * @param formula the formula
@@ -149,7 +149,7 @@ public class Expressions {
     }
 
     /**
-     * {@return a formula that evaluates to {@code true} iff for all values of the given bound variable, the given formula evaluates to {@code true}}
+     * {@return a formula that evaluates to true iff for all values of the given bound variable, the given formula evaluates to true}
      *
      * @param boundVariable the bound variable
      * @param formula the formula
@@ -159,8 +159,8 @@ public class Expressions {
     }
 
     /**
-     * {@return a formula that evaluates to {@code true} iff the given left formula evaluates to {@code false} or
-     * the given right formula evaluates to {@code true}}
+     * {@return a formula that evaluates to true iff the given left formula evaluates to false or
+     * the given right formula evaluates to true}
      *
      * @param leftFormula the left formula
      * @param rightFormula the right formula
@@ -170,7 +170,7 @@ public class Expressions {
     }
 
     /**
-     * {@return a formula that evaluates to {@code true} iff the given formula evaluates to {@code false}}
+     * {@return a formula that evaluates to true iff the given formula evaluates to false}
      *
      * @param formula the formula
      */
@@ -179,7 +179,7 @@ public class Expressions {
     }
 
     /**
-     * {@return a formula that evaluates to {@code true} iff at least one of the given formulas evaluate to {@code true}}
+     * {@return a formula that evaluates to true iff at least one of the given formulas evaluate to true}
      *
      * @param formulas the formulas
      */
@@ -188,7 +188,7 @@ public class Expressions {
     }
 
     /**
-     * {@return a reference to a formula that evaluates to {@code true} iff the given formula evaluates to {@code true}}
+     * {@return a reference to a formula that evaluates to true iff the given formula evaluates to true}
      *
      * @param formula the formula
      */
@@ -197,7 +197,7 @@ public class Expressions {
     }
 
     /**
-     * {@return a formula that evaluates to {@code true} iff both given terms evaluate to the same value}
+     * {@return a formula that evaluates to true iff both given terms evaluate to the same value}
      *
      * @param leftTerm the left term
      * @param rightTerm the right term
@@ -207,7 +207,7 @@ public class Expressions {
     }
 
     /**
-     * {@return a formula that evaluates to {@code true} iff the given left term evaluates to a larger or the same value as the given right term}
+     * {@return a formula that evaluates to true iff the given left term evaluates to a larger or the same value as the given right term}
      *
      * @param leftTerm the left term
      * @param rightTerm the right term
@@ -217,7 +217,7 @@ public class Expressions {
     }
 
     /**
-     * {@return a formula that evaluates to {@code true} iff the given left term evaluates to a larger value as the given right term}
+     * {@return a formula that evaluates to true iff the given left term evaluates to a larger value as the given right term}
      *
      * @param leftTerm the left term
      * @param rightTerm the right term
@@ -227,7 +227,7 @@ public class Expressions {
     }
 
     /**
-     * {@return a formula that evaluates to {@code true} iff the given left term evaluates to a smaller or the same value as the given right term}
+     * {@return a formula that evaluates to true iff the given left term evaluates to a smaller or the same value as the given right term}
      *
      * @param leftTerm the left term
      * @param rightTerm the right term
@@ -237,7 +237,7 @@ public class Expressions {
     }
 
     /**
-     * {@return a formula that evaluates to {@code true} iff the given left term evaluates to a smaller value as the given right term}
+     * {@return a formula that evaluates to true iff the given left term evaluates to a smaller value as the given right term}
      *
      * @param leftTerm the left term
      * @param rightTerm the right term
@@ -247,7 +247,7 @@ public class Expressions {
     }
 
     /**
-     * {@return a formula that evaluates to {@code true} iff the given term evaluates to the given polarity}
+     * {@return a formula that evaluates to true iff the given term evaluates to the given polarity}
      *
      * @param isPositive the polarity
      * @param value the term
@@ -257,7 +257,7 @@ public class Expressions {
     }
 
     /**
-     * {@return a formula that evaluates to {@code true} iff the given term evaluates to {@code true}}
+     * {@return a formula that evaluates to true iff the given term evaluates to true}
      *
      * @param value the term
      */
@@ -266,7 +266,7 @@ public class Expressions {
     }
 
     /**
-     * {@return a formula that evaluates to {@code true} iff the Boolean variable with the given name evaluates to the given polarity}
+     * {@return a formula that evaluates to true iff the Boolean variable with the given name evaluates to the given polarity}
      *
      * @param l1 the polarity
      * @param l2 the variable name
@@ -276,7 +276,7 @@ public class Expressions {
     }
 
     /**
-     * {@return a formula that evaluates to {@code true} iff the Boolean variable with the given name evaluates to {@code true}}
+     * {@return a formula that evaluates to true iff the Boolean variable with the given name evaluates to true}
      *
      * @param literal the variable name
      */
@@ -285,7 +285,7 @@ public class Expressions {
     }
 
     /**
-     * {@return a formula that evaluates to {@code true} iff both given terms evaluate to different values}
+     * {@return a formula that evaluates to true iff both given terms evaluate to different values}
      *
      * @param leftTerm the left term
      * @param rightTerm the right term

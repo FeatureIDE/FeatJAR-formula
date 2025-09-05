@@ -48,7 +48,7 @@ public interface IAssignmentList<T extends IAssignment<?, ?>> extends Iterable<T
     List<T> getAll();
 
     /**
-     * {@return {@code true} iff all assignments in the given list match an assignment in this list}
+     * {@return true iff all assignments in the given list match an assignment in this list}
      * @param other the other assignment
      */
     default boolean containsOtherAssignments(IAssignmentList<T> other) {
