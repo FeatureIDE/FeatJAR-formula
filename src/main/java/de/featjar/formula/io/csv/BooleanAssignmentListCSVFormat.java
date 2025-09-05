@@ -25,11 +25,14 @@ import de.featjar.base.io.NonEmptyLineIterator;
 import de.featjar.base.io.format.ParseProblem;
 import de.featjar.base.io.input.AInputMapper;
 import de.featjar.base.io.input.InputHeader;
+import de.featjar.base.io.output.AOutput;
+import de.featjar.base.io.output.AOutputMapper;
 import de.featjar.formula.VariableMap;
 import de.featjar.formula.assignment.BooleanAssignment;
 import de.featjar.formula.assignment.BooleanAssignmentList;
 import de.featjar.formula.assignment.BooleanSolution;
 import de.featjar.formula.io.IBooleanAssignmentListFormat;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 
@@ -47,7 +50,34 @@ public class BooleanAssignmentListCSVFormat implements IBooleanAssignmentListFor
     private static final String NEGATIVE_VALUE = "-";
     private static final String NULL_VALUE = "0";
 
+    /**
+     * The identifier of this format.
+     */
     public static final String ID = BooleanAssignmentListCSVFormat.class.getCanonicalName();
+
+    @Override
+    public void write(BooleanAssignmentList booleanAssignmentList, AOutputMapper outputMapper) throws IOException {
+        AOutput output = outputMapper.get();
+        output.writeText(ID_COLUMN);
+        VariableMap variableMap = booleanAssignmentList.getVariableMap();
+        final List<String> names = variableMap.getObjects(true);
+        for (final String name : names) {
+            output.writeText(VALUE_SEPARATOR);
+            output.writeText(name != null ? name : "");
+        }
+        output.writeText(LINE_SEPARATOR);
+        int configurationIndex = 0;
+        for (final BooleanAssignment configuration : booleanAssignmentList) {
+            output.writeText(Integer.toString(configurationIndex++));
+            final int[] literals =
+                    configuration.toSolution(variableMap.getVariableCount()).get();
+            for (int l : literals) {
+                output.writeText(VALUE_SEPARATOR);
+                output.writeText(l == 0 ? NULL_VALUE : l > 0 ? POSITIVE_VALUE : NEGATIVE_VALUE);
+            }
+            output.writeText(LINE_SEPARATOR);
+        }
+    }
 
     @Override
     public Result<String> serialize(BooleanAssignmentList booleanAssignmentList) {
