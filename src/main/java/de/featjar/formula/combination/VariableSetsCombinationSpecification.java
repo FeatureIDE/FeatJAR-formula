@@ -20,6 +20,7 @@
  */
 package de.featjar.formula.combination;
 
+import de.featjar.base.FeatJAR;
 import de.featjar.base.data.BinomialCalculator;
 import de.featjar.base.data.MultiLexicographicIterator;
 import de.featjar.formula.VariableMap;
@@ -72,11 +73,18 @@ public class VariableSetsCombinationSpecification extends ASetsCombinationSpecif
 
     @Override
     public long loopCount() {
-        int count = 1;
-        for (int i = 0; i < elementSets.length; i++) {
-            count *= BinomialCalculator.computeBinomial(elementSets[i].length, tValues[i]);
+        try {
+            long count = 1;
+            for (int i = 0; i < elementSets.length; i++) {
+                count = Math.multiplyExact(count, 1 << tValues[i]);
+                count = Math.multiplyExact(
+                        count, BinomialCalculator.computeBinomial(elementSets[i].length, tValues[i]));
+            }
+            return count;
+        } catch (ArithmeticException e) {
+            FeatJAR.log().warning("Long overflow for combination count. Using Long.MAX_VALUE.");
+            return Long.MAX_VALUE;
         }
-        return count;
     }
 
     @Override

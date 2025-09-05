@@ -26,23 +26,68 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+/**
+ * A generic specification of a set of literal combinations.
+ */
 public interface ICombinationSpecification {
 
+    /**
+     * {@return the number of combinations described by this specification}
+     */
     long loopCount();
 
+    /**
+     * Randomizes the elements used four building combinations.
+     * @param random the random instance to use
+     */
     void shuffleElements(Random random);
 
+    /**
+     * Adapts the literal IDs to a new variable map.
+     * @param variableMap the variable map
+     */
     void adapt(VariableMap variableMap);
 
+    /**
+     * Applies the given consumer to each combination sequentially.
+     * @param consumer the consumer function
+     */
     void forEach(Consumer<int[]> consumer);
 
+    /**
+     * Applies the given consumer to each combination sequentially.
+     * The consumer also receives an environment object for context.
+     *
+     * @param <V> the type of the environment object
+     * @param consumer the consumer function
+     * @param environmentCreator a supplier for an environment object
+     */
     <V> void forEach(BiConsumer<V, int[]> consumer, Supplier<V> environmentCreator);
 
+    /**
+     * Applies the given consumer to each combination in parallel.
+     * The consumer also receives an environment object for context.
+     *
+     * @param <V> the type of the environment object
+     * @param consumer the consumer function
+     * @param environmentCreator a supplier for an environment object
+     */
     <V> void forEachParallel(BiConsumer<V, int[]> consumer, Supplier<V> environmentCreator);
 
+    /**
+     * {@return the variable map}
+     */
     VariableMap variableMap();
 
+    /**
+     * {@return the maximum combination size among the combinations described by this specification}
+     */
     int maxT();
 
+    /**
+     * Reduces the size of each combination described by this specification to the given maxT, if the combination is larger than maxT.
+     * @param newT the new maximum combination size
+     * @return a new instance of the reduced specification
+     */
     ICombinationSpecification reduceTTo(int newT);
 }

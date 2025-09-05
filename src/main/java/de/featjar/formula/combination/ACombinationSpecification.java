@@ -27,6 +27,9 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+/**
+ * Abstract implementation of {@link ICombinationSpecification} using a single list of elements build combination with a given size.
+ */
 public abstract class ACombinationSpecification implements ICombinationSpecification {
 
     protected int t;

@@ -29,6 +29,9 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+/**
+ * Specification that describes combinations by a predefined list.
+ */
 public class BooleanAssignmentListCombinationSpecification implements ICombinationSpecification {
 
     public BooleanAssignmentList booleanAssignmentList;

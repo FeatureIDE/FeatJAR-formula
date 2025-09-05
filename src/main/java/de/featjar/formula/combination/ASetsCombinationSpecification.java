@@ -27,6 +27,10 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+/**
+ * Abstract implementation of {@link ICombinationSpecification} using multiple lists of elements and multiple size values to build combinations.
+ * To build a combination, sub-combination are build from the given lists and then concatenated.
+ */
 public abstract class ASetsCombinationSpecification implements ICombinationSpecification {
 
     protected int[] tValues;

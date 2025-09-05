@@ -20,6 +20,7 @@
  */
 package de.featjar.formula.combination;
 
+import de.featjar.base.FeatJAR;
 import de.featjar.base.data.BinomialCalculator;
 import de.featjar.base.data.SingleLexicographicIterator;
 import de.featjar.formula.VariableMap;
@@ -65,7 +66,12 @@ public class LiteralCombinationSpecification extends ACombinationSpecification {
 
     @Override
     public long loopCount() {
-        return BinomialCalculator.computeBinomial(elements.length, t);
+        try {
+            return BinomialCalculator.computeBinomial(elements.length, t);
+        } catch (ArithmeticException e) {
+            FeatJAR.log().warning("Long overflow for combination count. Using Long.MAX_VALUE.");
+            return Long.MAX_VALUE;
+        }
     }
 
     @Override

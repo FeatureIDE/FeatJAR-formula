@@ -20,7 +20,9 @@
  */
 package de.featjar.formula.combination;
 
+import de.featjar.base.FeatJAR;
 import de.featjar.formula.VariableMap;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.function.BiConsumer;
@@ -32,17 +34,26 @@ public class MultiCombinationSpecification implements ICombinationSpecification 
 
     private final List<ICombinationSpecification> combinationSets;
 
+    public MultiCombinationSpecification(ICombinationSpecification... combinationSets) {
+        this.combinationSets = Arrays.asList(combinationSets);
+    }
+
     public MultiCombinationSpecification(List<ICombinationSpecification> combinationSets) {
         this.combinationSets = combinationSets;
     }
 
     @Override
     public long loopCount() {
-        long sum = 0;
-        for (ICombinationSpecification combinationSet : combinationSets) {
-            sum += combinationSet.loopCount();
+        try {
+            long sum = 0;
+            for (ICombinationSpecification combinationSet : combinationSets) {
+                sum = Math.addExact(sum, combinationSet.loopCount());
+            }
+            return sum;
+        } catch (ArithmeticException e) {
+            FeatJAR.log().warning("Long overflow for combination count. Using Long.MAX_VALUE.");
+            return Long.MAX_VALUE;
         }
-        return sum;
     }
 
     @Override
