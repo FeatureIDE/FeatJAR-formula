@@ -98,7 +98,7 @@ public abstract class AAnalysisCommand<T> extends ACommand {
             computation = newComputation(optionParser);
         } catch (Exception e) {
             FeatJAR.log().error(e);
-            FeatJAR.log().plainMessage(OptionList.getHelp(this));
+            FeatJAR.log().plainMessage(OptionList.printHelp(this));
             return FeatJAR.ERROR_COMPUTING_RESULT;
         }
         FeatJAR.log().debug("running computation %s", computation.print());

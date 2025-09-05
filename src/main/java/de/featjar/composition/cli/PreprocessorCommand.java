@@ -42,13 +42,18 @@ import java.util.stream.Stream;
 
 public class PreprocessorCommand extends ACommand {
 
+    public static enum Mode {
+        PROCESS,
+        PRINT_VARIABLES,
+        PRINT_ANNOTATIONS
+    }
+
     public static final Option<Path> CONFIGURATION_OPTION = Option.newOption("configuration", Option.PathParser)
             .setDescription("Path to configuration file")
             .setValidator(Option.PathValidator);
 
-    public static final Option<String> MODE_OPTION = Option.newEnumOption(
-                    "mode", "process", "print-variables", "print-annotations")
-            .setDefaultValue("process")
+    public static final Option<Mode> MODE_OPTION = Option.newEnumOption("mode", Mode.class)
+            .setDefaultValue(Mode.PROCESS)
             .setDescription("Mode of operation");
 
     public static final Option<String> PREFIX_OPTION = Option.newOption("annotation-prefix", Option.StringParser)
@@ -64,12 +69,12 @@ public class PreprocessorCommand extends ACommand {
 
         Preprocessor preprocessor = new Preprocessor(annotationPrefix, JavaSymbols.INSTANCE);
 
-        String mode = optionParser.getResult(MODE_OPTION).orElseThrow();
+        Mode mode = optionParser.getResult(MODE_OPTION).orElseThrow();
 
         Stream<String> stream = null;
         try {
             switch (mode) {
-                case "process":
+                case PROCESS:
                     stream = preprocess(
                             in,
                             out,
@@ -77,10 +82,10 @@ public class PreprocessorCommand extends ACommand {
                             charset,
                             preprocessor);
                     break;
-                case "print-variables":
+                case PRINT_VARIABLES:
                     stream = printVariableNames(in, charset, preprocessor);
                     break;
-                case "print-annotations":
+                case PRINT_ANNOTATIONS:
                     stream = printAnnotations(in, charset, preprocessor);
                     break;
                 default:

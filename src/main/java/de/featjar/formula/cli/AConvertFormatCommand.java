@@ -43,9 +43,8 @@ public abstract class AConvertFormatCommand extends ACommand {
     /**
      * Specifies output format.
      */
-    public static final Option<String> FORMAT_OPTION = Option.newOption("format", Option.StringParser)
-            .setDescription("Specifies output format.")
-            .setRequired(true);
+    public static final Option<String> FORMAT_OPTION =
+            Option.newOption("format", Option.StringParser).setDescription("Specifies output format.");
 
     @Override
     public int run(OptionList optionParser) {

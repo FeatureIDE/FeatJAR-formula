@@ -24,6 +24,7 @@ import de.featjar.base.FeatJAR;
 import de.featjar.base.cli.ACommand;
 import de.featjar.base.cli.Option;
 import de.featjar.base.cli.OptionList;
+import de.featjar.base.data.Result;
 import de.featjar.base.io.IO;
 import de.featjar.base.tree.Trees;
 import de.featjar.formula.io.FormulaFormats;
@@ -130,10 +131,13 @@ public class PrintCommand extends ACommand {
         boolean ew = optionParser.getResult(ENQUOTE_WHITESPACE_OPTION).get();
 
         Path outputPath = optionParser.getResult(OUTPUT_OPTION).orElse(null);
-        IFormula formula = optionParser
-                .getResult(INPUT_OPTION)
-                .flatMap(p -> IO.load(p, FormulaFormats.getInstance()))
-                .orElseThrow();
+        Result<IFormula> formula =
+                optionParser.getResult(INPUT_OPTION).flatMap(p -> IO.load(p, FormulaFormats.getInstance()));
+
+        if (formula.isEmpty()) {
+            FeatJAR.log().problems(formula);
+            return FeatJAR.ERROR_COMPUTING_RESULT;
+        }
 
         ExpressionSerializer serializer = new ExpressionSerializer();
 
@@ -151,7 +155,7 @@ public class PrintCommand extends ACommand {
         serializer.setEnforceParentheses(ep);
         serializer.setEnquoteWhitespace(ew);
 
-        String formulaString = Trees.traverse(formula, serializer).orElse("");
+        String formulaString = Trees.traverse(formula.get(), serializer).orElse("");
         if (outputPath == null) {
             FeatJAR.log().message(formulaString);
         } else {
