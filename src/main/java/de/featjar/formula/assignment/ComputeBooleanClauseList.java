@@ -56,7 +56,7 @@ public class ComputeBooleanClauseList extends AComputation<BooleanAssignmentList
     public Result<BooleanAssignmentList> compute(List<Object> dependencyList, Progress progress) {
         IFormula vp = (IFormula) CNF.get(dependencyList);
         FeatJAR.log().debug("initializing variable map for " + vp.getClass().getName());
-        VariableMap variableMap = VariableMap.of(vp);
+        VariableMap variableMap = new VariableMap(vp);
         FeatJAR.log().debug(variableMap);
         if (vp instanceof Reference) {
             vp = (IFormula) ((Reference) vp).getExpression();
@@ -69,7 +69,7 @@ public class ComputeBooleanClauseList extends AComputation<BooleanAssignmentList
      * @param formula the formula in strict CNF
      */
     public static Result<BooleanAssignmentList> toBooleanAssignmentList(IFormula formula) {
-        VariableMap variableMap = VariableMap.of(formula);
+        VariableMap variableMap = new VariableMap(formula);
         if (formula instanceof Reference) {
             formula = ((Reference) formula).getExpression();
         }

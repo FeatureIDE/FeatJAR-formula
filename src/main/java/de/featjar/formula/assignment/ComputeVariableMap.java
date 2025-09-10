@@ -48,6 +48,6 @@ public class ComputeVariableMap extends AComputation<VariableMap> {
 
     @Override
     public Result<VariableMap> compute(List<Object> dependencyList, Progress progress) {
-        return Result.of(VariableMap.of(CNF.get(dependencyList)));
+        return Result.of(new VariableMap(CNF.get(dependencyList)));
     }
 }

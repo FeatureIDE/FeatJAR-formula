@@ -138,7 +138,7 @@ public class AnalysisTest extends Common {
                 .map(ComputeCNFFormula::new)
                 .map(mapper)
                 .compute();
-        VariableMap variableMap = VariableMap.of(formula);
+        VariableMap variableMap = new VariableMap(formula);
         Result<? extends ValueAssignment> resultOfcomputedSolution =
                 Computations.of(cnf).map(analysis).computeResult().map(VariableMap::toValue);
         assertTrue(resultOfcomputedSolution.isPresent(), resultOfcomputedSolution::printProblems);
@@ -158,7 +158,7 @@ public class AnalysisTest extends Common {
                 .map(ComputeCNFFormula::new);
         IFormula formula = formulaComputation.compute();
         T rep = formulaComputation.map(mapper).compute();
-        VariableMap variableMap = VariableMap.of(formula);
+        VariableMap variableMap = new VariableMap(formula);
         Result<Assignment> resultOfcomputedCore =
                 Computations.of(rep).map(analysis).computeResult().flatMap(variableMap::toAssignment);
         assertTrue(resultOfcomputedCore.isPresent(), resultOfcomputedCore::printProblems);

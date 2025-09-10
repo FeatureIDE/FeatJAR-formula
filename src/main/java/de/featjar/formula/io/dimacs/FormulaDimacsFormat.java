@@ -52,7 +52,7 @@ public class FormulaDimacsFormat implements IFormat<IFormula> {
         if (!cnfFormula.isCNF()) {
             return Result.empty(new IllegalArgumentException("Formula is not in CNF"));
         }
-        VariableMap variableMap = VariableMap.of(formula.getVariableMap().keySet());
+        VariableMap variableMap = new VariableMap(formula.getVariableMap().keySet());
         return Result.of(
                 DimacsSerializer.serialize(variableMap, cnfFormula.getChildren(), c -> writeClause(c, variableMap)));
     }

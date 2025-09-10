@@ -116,7 +116,7 @@ class ComputeCNFFormulaTest extends Common {
                 .get()
                 .get();
 
-        VariableMap variableMap = VariableMap.of(formula);
+        VariableMap variableMap = new VariableMap(formula);
         FormulaCreator.streamAllAssignments(formula.getVariables().size()).forEach(assignment -> {
             Object formulaEvaluate = formula.evaluate(assignment, variableMap).orElse(null);
             Object distributiveEvaluate =
