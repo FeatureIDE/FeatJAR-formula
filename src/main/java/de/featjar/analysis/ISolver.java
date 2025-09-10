@@ -51,9 +51,7 @@ public interface ISolver {
     }
 
     default <T> Result<T> createResult(Result<T> result, String timeoutExplanation) {
-        return isTimeoutOccurred()
-                ? Result.empty(getTimeoutProblem(timeoutExplanation)).merge(result)
-                : result;
+        return isTimeoutOccurred() ? result.nullify(getTimeoutProblem(timeoutExplanation)) : result;
     }
 
     static Problem getTimeoutProblem(String timeoutExplanation) {
