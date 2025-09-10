@@ -30,6 +30,7 @@ package de.featjar.formula.assignment;
  * If you need a conjunction of literals or equalities, consider using a {@link ISolution} instead.
  *
  * @param <T> the index type of the variables
+ * @param <R> the value type of the variables
  * @author Elias Kuiter
  */
 public interface IClause<T, R> extends IAssignment<T, R> {}

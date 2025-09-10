@@ -74,6 +74,11 @@ public class Expressions {
      */
     public static final False False = de.featjar.formula.structure.predicate.False.INSTANCE;
 
+    /**
+     * {@return a human-readable string of the given expression}
+     * Default print method for expressions, see {@link TreePrinter} for more options.
+     * @param expression the expression to print
+     */
     public static String print(IExpression expression) {
         return Trees.traverse(expression, new TreePrinter().setFilter(t -> !(t instanceof Variable)))
                 .get();
@@ -112,6 +117,7 @@ public class Expressions {
      * {@return a formula that evaluates to true iff the number of the given formulas that evaluate to true is in a given range}
      *
      * @param minimum the minimum
+     * @param maximum the maximum
      * @param formulas the formulas
      */
     public static Between between(int minimum, int maximum, IFormula... formulas) {
