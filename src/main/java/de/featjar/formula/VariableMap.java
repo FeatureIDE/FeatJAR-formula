@@ -118,33 +118,21 @@ public class VariableMap extends RangeMap<String> {
      * @param indices the list of indices
      */
     public List<String> getVariableNames(IntegerList indices) {
-        return indices.stream()
-                .filter(i -> isValidIndex(Math.abs(i)))
-                .mapToObj(i -> indexToObject.get(i))
-                .collect(Collectors.toUnmodifiableList());
+        return getObjects(indices);
     }
 
     /**
-     * {@return an unmodifiable list of all indices in this maps}
+     * {@return a BooleanAssignment containing all variables mapped to the given names}
+     * @param names the list of names
      */
-    public List<Integer> getVariableIndices() {
-        return entryStream().map(e -> e.getValue()).collect(Collectors.toUnmodifiableList());
-    }
-
-    public List<Integer> getVariableIndices(List<String> names) {
-        return stream(names).collect(Collectors.toList());
-    }
-
     public BooleanAssignment getVariables(Collection<String> names) {
         return new BooleanAssignment(names.stream().mapToInt(objectToIndex::get).toArray());
     }
-
+    /**
+     * {@return a BooleanAssignment containing all variables in this map}
+     */
     public BooleanAssignment getVariables() {
         return new BooleanAssignment(entryStream().mapToInt(e -> e.getValue()).toArray());
-    }
-
-    public int getVariableCount() {
-        return objectToIndex.size();
     }
 
     /**
@@ -310,54 +298,5 @@ public class VariableMap extends RangeMap<String> {
     @Override
     public VariableMap clone() {
         return new VariableMap(this);
-    }
-
-    /**
-     * Adapts each literal from {@code oldLiterals} from its index in this variable map to its index in {@code newVariableMap}.
-     * The adapted literals are stored in {@code newLiterals}.
-     * Caller must ensure that {@code newLiterals} is at least as large as {@code oldLiterals}.
-     *
-     * @param oldLiterals the literals to adapt
-     * @param newLiterals the space for the adapted literals
-     * @param newVariableMap the variable map to adapt to
-     * @param integrateOldVariables if {@code true} variables that do not occur in {@code newVariableMap} are added to it, otherwise an exception is thrown in this case.
-     */
-    public void adapt(int[] oldLiterals, int[] newLiterals, VariableMap newVariableMap, boolean integrateOldVariables) {
-        for (int i = 0; i < oldLiterals.length; i++) {
-            newLiterals[i] = adapt(oldLiterals[i], newVariableMap, integrateOldVariables);
-        }
-    }
-
-    /**
-     * Adapt {@code oldLiteral} from its index in this variable map to its index in {@code newVariableMap}.
-     *
-     * @param oldLiteral the literal to adapt
-     * @param newVariableMap the variable map to adapt to
-     * @param integrateOldVariables if {@code true} a variable that does not occur in {@code newVariableMap} is added to it, otherwise an exception is thrown in this case.
-     * @return the adapted literal
-     */
-    public int adapt(int oldLiteral, VariableMap newVariableMap, boolean integrateOldVariables) {
-        if (oldLiteral == 0) {
-            return 0;
-        } else {
-            final Result<String> name = get(Math.abs(oldLiteral));
-            if (name.isPresent()) {
-                String variableName = name.get();
-                final int newLiteral;
-                Result<Integer> index = newVariableMap.get(variableName);
-                if (index.isEmpty()) {
-                    if (integrateOldVariables) {
-                        newLiteral = newVariableMap.add(variableName);
-                    } else {
-                        throw new IllegalArgumentException("No variable named " + variableName);
-                    }
-                } else {
-                    newLiteral = index.get();
-                }
-                return oldLiteral < 0 ? -newLiteral : newLiteral;
-            } else {
-                throw new IllegalArgumentException("No variable with index " + oldLiteral);
-            }
-        }
     }
 }

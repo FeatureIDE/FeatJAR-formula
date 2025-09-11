@@ -64,7 +64,7 @@ public class SampleListIndex implements ISampleIndex {
     }
 
     public SampleListIndex(BooleanAssignmentList sample) {
-        this(sample.getVariableMap().getVariableCount(), sample.size());
+        this(sample.getVariableMap().size(), sample.size());
         sample.forEach(this::addConfiguration);
     }
 

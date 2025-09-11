@@ -69,8 +69,7 @@ public class BooleanAssignmentListCSVFormat implements IBooleanAssignmentListFor
         int configurationIndex = 0;
         for (final BooleanAssignment configuration : booleanAssignmentList) {
             output.writeText(Integer.toString(configurationIndex++));
-            final int[] literals =
-                    configuration.toSolution(variableMap.getVariableCount()).get();
+            final int[] literals = configuration.toSolution(variableMap.size()).get();
             for (int l : literals) {
                 output.writeText(VALUE_SEPARATOR);
                 output.writeText(l == 0 ? NULL_VALUE : l > 0 ? POSITIVE_VALUE : NEGATIVE_VALUE);
@@ -93,8 +92,7 @@ public class BooleanAssignmentListCSVFormat implements IBooleanAssignmentListFor
         int configurationIndex = 0;
         for (final BooleanAssignment configuration : booleanAssignmentList) {
             csv.append(configurationIndex++);
-            final int[] literals =
-                    configuration.toSolution(variableMap.getVariableCount()).get();
+            final int[] literals = configuration.toSolution(variableMap.size()).get();
             for (int l : literals) {
                 csv.append(VALUE_SEPARATOR);
                 csv.append(l == 0 ? NULL_VALUE : l > 0 ? POSITIVE_VALUE : NEGATIVE_VALUE);

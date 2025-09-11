@@ -47,7 +47,7 @@ public class BooleanAssignmentGroupsDimacsListFormat implements IBooleanAssignme
 
         final StringBuilder sb = new StringBuilder();
         DimacsSerializer.writeVariables(sb, assignmentSpace.getVariableMap());
-        int variableCount = assignmentSpace.getVariableMap().getVariableCount();
+        int variableCount = assignmentSpace.getVariableMap().size();
         for (BooleanAssignmentList booleanAssignmentList : assignmentSpace) {
             DimacsSerializer.writeProblem(sb, variableCount, booleanAssignmentList.size());
             DimacsSerializer.writeClauses(sb, booleanAssignmentList.getAll(), BooleanAssignment::get);

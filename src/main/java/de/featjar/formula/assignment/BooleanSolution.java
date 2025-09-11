@@ -204,7 +204,7 @@ public class BooleanSolution extends BooleanAssignment implements ISolution<Inte
         if (integrateOldVariables) {
             throw new IllegalArgumentException("Dynamic extension of variable map not allowed for BooleanSolution.");
         }
-        int[] newElements = new int[newVariableMap.getVariableCount()];
+        int[] newElements = new int[newVariableMap.size()];
         oldVariableMap.adapt(elements, newElements, newVariableMap, integrateOldVariables);
         return new BooleanSolution(newElements);
     }

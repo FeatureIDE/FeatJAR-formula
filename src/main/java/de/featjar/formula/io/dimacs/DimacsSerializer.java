@@ -43,7 +43,7 @@ public class DimacsSerializer {
     public static <C> String serialize(VariableMap variableMap, Collection<C> clauses, Function<C, int[]> serializer) {
         final StringBuilder sb = new StringBuilder();
         writeVariables(sb, variableMap);
-        writeProblem(sb, variableMap.getVariableCount(), clauses.size());
+        writeProblem(sb, variableMap.size(), clauses.size());
         writeClauses(sb, clauses, serializer);
         return sb.toString();
     }

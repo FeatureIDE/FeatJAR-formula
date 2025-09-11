@@ -133,9 +133,7 @@ public class BooleanAssignmentList implements IAssignmentList<BooleanAssignment>
     public BooleanAssignmentList toSolutionList() {
         return new BooleanAssignmentList(
                 variableMap,
-                assignments.stream()
-                        .map(a -> a.toSolution(variableMap.getVariableCount()))
-                        .collect(Collectors.toList()));
+                assignments.stream().map(a -> a.toSolution(variableMap.size())).collect(Collectors.toList()));
     }
 
     /**

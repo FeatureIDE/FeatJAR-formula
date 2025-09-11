@@ -67,8 +67,7 @@ public class BooleanAssignmentGroupsUngroupedCSVFormat implements IBooleanAssign
         int configurationIndex = 0;
         for (final BooleanAssignment configuration : booleanAssignmentGroups.getMergedGroups()) {
             csv.append(configurationIndex++);
-            final int[] literals =
-                    configuration.toSolution(variableMap.getVariableCount()).get();
+            final int[] literals = configuration.toSolution(variableMap.size()).get();
             for (int l : literals) {
                 csv.append(VALUE_SEPARATOR);
                 csv.append(l == 0 ? NULL_VALUE : l > 0 ? POSITIVE_VALUE : NEGATIVE_VALUE);

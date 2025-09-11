@@ -110,7 +110,7 @@ public class DimacsParser {
             }
         }
 
-        final int actualVariableCount = indexVariables.getVariableCount();
+        final int actualVariableCount = indexVariables.size();
         final int actualClauseCount = clauses.size();
         if (variableCount != actualVariableCount) {
             throw new ParseException(

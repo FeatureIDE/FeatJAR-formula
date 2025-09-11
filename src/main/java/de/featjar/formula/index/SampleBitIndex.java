@@ -41,7 +41,7 @@ public class SampleBitIndex implements ISampleIndex {
 
     public SampleBitIndex(final VariableMap variableMap) {
         this.variableMap = variableMap;
-        numberOfVariables = variableMap.getVariableCount();
+        numberOfVariables = variableMap.size();
         bitSetReference = new BitSet[2 * numberOfVariables + 1];
 
         sampleSize = 0;
@@ -52,7 +52,7 @@ public class SampleBitIndex implements ISampleIndex {
 
     public SampleBitIndex(final VariableMap variableMap, int numberOfInitialConfigs) {
         this.variableMap = variableMap;
-        numberOfVariables = variableMap.getVariableCount();
+        numberOfVariables = variableMap.size();
         bitSetReference = new BitSet[2 * numberOfVariables + 1];
 
         sampleSize = 0;
@@ -206,7 +206,7 @@ public class SampleBitIndex implements ISampleIndex {
 
     @Override
     public SampleBitIndex adapt(VariableMap newVariableMap) {
-        int newNumberOfVariables = variableMap.getVariableCount();
+        int newNumberOfVariables = variableMap.size();
         BitSet[] newBitSetReference = new BitSet[2 * newNumberOfVariables + 1];
 
         for (int i = 1; i <= numberOfVariables; i++) {
