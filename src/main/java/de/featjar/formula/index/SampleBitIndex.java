@@ -172,9 +172,7 @@ public class SampleBitIndex implements ISampleIndex {
     }
 
     public int index(int... literals) {
-        return literals.length == 1
-                ? getInternalBitSet(literals[0]).length()
-                : getBitSet(literals).length();
+        return (literals.length == 1 ? getInternalBitSet(literals[0]) : getBitSet(literals)).nextSetBit(0);
     }
 
     public int size(int... literals) {
