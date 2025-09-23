@@ -85,6 +85,13 @@ public class MultiCombinationSpecification implements ICombinationSpecification 
     }
 
     @Override
+    public void forEachParallel(Consumer<int[]> consumer) {
+        for (ICombinationSpecification combinationSet : combinationSets) {
+            combinationSet.forEachParallel(consumer);
+        }
+    }
+
+    @Override
     public <V> void forEachParallel(BiConsumer<V, int[]> consumer, Supplier<V> environmentCreator) {
         for (ICombinationSpecification combinationSet : combinationSets) {
             combinationSet.forEachParallel(consumer, environmentCreator);

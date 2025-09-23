@@ -64,6 +64,13 @@ public class LiteralSetsCombinationSpecification extends ASetsCombinationSpecifi
                 });
     }
 
+    @Override
+    public void forEachParallel(Consumer<int[]> consumer) {
+        MultiLexicographicIterator.stream(elementSets, tValues).forEach(combination -> {
+            consumer.accept(combination.select());
+        });
+    }
+
     public <V> void forEachParallel(BiConsumer<V, int[]> consumer, Supplier<V> environmentCreator) {
         MultiLexicographicIterator.stream(elementSets, tValues, environmentCreator)
                 .forEach(combination -> {

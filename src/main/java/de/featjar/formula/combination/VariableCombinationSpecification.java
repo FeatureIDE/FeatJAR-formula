@@ -85,6 +85,15 @@ public class VariableCombinationSpecification extends ACombinationSpecification 
         super(t);
     }
 
+    public VariableCombinationSpecification(VariableCombinationSpecification other) {
+        super(other);
+    }
+
+    @Override
+    public VariableCombinationSpecification copy() {
+        return new VariableCombinationSpecification(this);
+    }
+
     public void forEach(Consumer<int[]> consumer) {
         final int[] gray = Ints.grayCode(t);
         SingleLexicographicIterator.stream(elements, t).forEach(combination -> {
@@ -103,6 +112,17 @@ public class VariableCombinationSpecification extends ACombinationSpecification 
             final V environment = combination.environment();
             for (int g : gray) {
                 consumer.accept(environment, combinationLiterals);
+                combinationLiterals[g] = -combinationLiterals[g];
+            }
+        });
+    }
+
+    public void forEachParallel(Consumer<int[]> consumer) {
+        final int[] gray = Ints.grayCode(t);
+        SingleLexicographicIterator.parallelStream(elements, t).forEach(combination -> {
+            final int[] combinationLiterals = combination.select();
+            for (int g : gray) {
+                consumer.accept(combinationLiterals);
                 combinationLiterals[g] = -combinationLiterals[g];
             }
         });

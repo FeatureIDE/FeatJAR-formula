@@ -66,6 +66,12 @@ public interface ICombinationSpecification {
 
     /**
      * Applies the given consumer to each combination in parallel.
+     * @param consumer the consumer function
+     */
+    void forEachParallel(Consumer<int[]> consumer);
+
+    /**
+     * Applies the given consumer to each combination in parallel.
      * The consumer also receives an environment object for context.
      *
      * @param <V> the type of the environment object
@@ -90,4 +96,8 @@ public interface ICombinationSpecification {
      * @return a new instance of the reduced specification
      */
     ICombinationSpecification reduceTTo(int newT);
+
+    default ICombinationSpecification copy() {
+        throw new UnsupportedOperationException();
+    }
 }

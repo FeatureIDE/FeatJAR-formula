@@ -21,6 +21,7 @@
 package de.featjar.formula.combination;
 
 import de.featjar.formula.VariableMap;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Random;
 import java.util.function.BiConsumer;
@@ -43,6 +44,12 @@ public abstract class ACombinationSpecification implements ICombinationSpecifica
 
     protected ACombinationSpecification(int t) {
         setT(t);
+    }
+
+    protected ACombinationSpecification(ACombinationSpecification other) {
+        t = other.t;
+        elements = Arrays.copyOf(other.elements, other.elements.length);
+        variableMap = other.variableMap;
     }
 
     public int t() {

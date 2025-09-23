@@ -68,6 +68,11 @@ public class BooleanAssignmentListCombinationSpecification implements ICombinati
     }
 
     @Override
+    public void forEachParallel(Consumer<int[]> consumer) {
+        booleanAssignmentList.stream().parallel().map(IntegerList::get).forEach(consumer);
+    }
+
+    @Override
     public <V> void forEachParallel(BiConsumer<V, int[]> consumer, Supplier<V> environmentCreator) {
         booleanAssignmentList.stream()
                 .parallel()
