@@ -24,11 +24,9 @@ import de.featjar.formula.VariableMap;
 import de.featjar.formula.assignment.BooleanAssignment;
 import de.featjar.formula.assignment.BooleanAssignmentList;
 import java.util.BitSet;
-import java.util.List;
 
 /**
- * Calculates statistics regarding t-wise feature coverage of a set of
- * solutions.
+ * Stores assignments in a way that makes it easy to see which assignments share one or more given literals.
  *
  * @author Sebastian Krieter
  */
@@ -39,6 +37,10 @@ public class SampleBitIndex implements ISampleIndex {
     private int sampleSize;
     private VariableMap variableMap;
 
+    /**
+     * Creates a new index based on the number of variables in the given map.
+     * @param variableMap the variable map
+     */
     public SampleBitIndex(final VariableMap variableMap) {
         this.variableMap = variableMap;
         numberOfVariables = variableMap.size();
@@ -50,6 +52,15 @@ public class SampleBitIndex implements ISampleIndex {
         }
     }
 
+    /**
+     * Creates a new index based on the number of variables in the given map.
+     * Reserves space for a given number of assignments.
+     * Use this constructor, if the number of assignments is already known upon creating this index.
+     * Otherwise use {@link #SampleBitIndex(VariableMap)} instead.
+     *
+     * @param variableMap the variable map
+     * @param numberOfInitialConfigs the number of assignments
+     */
     public SampleBitIndex(final VariableMap variableMap, int numberOfInitialConfigs) {
         this.variableMap = variableMap;
         numberOfVariables = variableMap.size();
@@ -61,11 +72,12 @@ public class SampleBitIndex implements ISampleIndex {
         }
     }
 
-    public SampleBitIndex(List<? extends BooleanAssignment> sample, final VariableMap numberOfVariables) {
-        this(numberOfVariables, sample.size());
-        sample.forEach(this::addConfiguration);
-    }
-
+    /**
+     * Creates a new index based on the number of variables in the given sample's variable map.
+     * Adds all assignments of the given sample to this index.
+     *
+     * @param sample a list of assignments
+     */
     public SampleBitIndex(BooleanAssignmentList sample) {
         this(sample.getVariableMap(), sample.size());
         sample.forEach(this::addConfiguration);
@@ -85,31 +97,92 @@ public class SampleBitIndex implements ISampleIndex {
         }
     }
 
+    /**
+     * Add an empty configuration to this index.
+     * @return the id of the added configuration.
+     */
     public int addEmptyConfiguration() {
         return sampleSize++;
     }
 
-    public void clear(int index) {
-        for (int j = 0; j < bitSetReference.length; j++) {
-            bitSetReference[j].clear(index);
-        }
+    /**
+     * Updates the values for the assignment with the given id.
+     * @param id the id of the assignment to update
+     * @param config the new values
+     */
+    public void update(int id, BooleanAssignment config) {
+        update(id, config.get());
     }
 
-    public void set(int index, BooleanAssignment config) {
-        set(index, config.get());
-    }
-
-    public void set(int index, int[] config) {
+    /**
+     * Updates the values for the assignment with the given id.
+     * @param id the id of the assignment to update
+     * @param config the new values
+     */
+    public void update(int id, int[] config) {
         for (int l : config) {
-            set(index, l);
+            update(id, l);
+        }
+    }
+    /**
+     * Updates a value for the assignment with the given id.
+     * @param id the id of the assignment to update
+     * @param literal the new value
+     */
+    public void update(int id, int literal) {
+        bitSetReference[numberOfVariables - literal].clear(id);
+        bitSetReference[numberOfVariables + literal].set(id, literal != 0);
+    }
+
+    /**
+     * Defines a value for the assignment with the given id.
+     * This method assumes that the value was previously undefined.
+     * @param id the id of the assignment to update
+     * @param literal the new value
+     */
+    public void set(int id, int literal) {
+        assert !bitSetReference[numberOfVariables - literal].get(id);
+        bitSetReference[numberOfVariables + literal].set(id);
+    }
+
+    /**
+     * Removes a value for the given variable in the assignment with the given id.
+     * @param id the id of the assignment to update
+     * @param variable the variable for which to remove a value
+     */
+    public void clear(int id, int variable) {
+        bitSetReference[numberOfVariables - variable].clear(id);
+        bitSetReference[numberOfVariables + variable].clear(id);
+    }
+
+    /**
+     * Removes all values for the assignment with the given id.
+     * @param id the id of the assignment to clear
+     */
+    public void clear(int id) {
+        for (int j = 0; j < bitSetReference.length; j++) {
+            bitSetReference[j].clear(id);
         }
     }
 
-    public void set(int index, int literal) {
-        bitSetReference[numberOfVariables - literal].clear(index);
-        bitSetReference[numberOfVariables + literal].set(index, literal != 0);
+    /**
+     * {@return the value of the given variable in the assignment with the given id}
+     * @param id the id of the assignment
+     * @param variable the variable for which to get the value
+     */
+    public int get(int id, int variable) {
+        if (bitSetReference[numberOfVariables + variable].get(id)) {
+            return variable;
+        } else if (bitSetReference[numberOfVariables - variable].get(id)) {
+            return -variable;
+        }
+        return 0;
     }
 
+    /**
+     * {@return a bitset representing the ids of all assignments that contains the given values}
+     * @param literals the values
+     */
     public BitSet getBitSet(int... literals) {
         BitSet first = bitSetReference[numberOfVariables + literals[0]];
         BitSet bitSet = new BitSet(first.size());
@@ -120,6 +193,12 @@ public class SampleBitIndex implements ISampleIndex {
         return bitSet;
     }
 
+    /**
+     * Modifies a given bitset to only represent assignments that also contain the given values.
+     * @param bitSet the original bitset
+     * @param literals the values
+     * @return the modified bitset (no copy)
+     */
     public BitSet updateBitSet(BitSet bitSet, int... literals) {
         for (int k = 0; k < literals.length; k++) {
             bitSet.and(bitSetReference[numberOfVariables + literals[k]]);
@@ -127,10 +206,18 @@ public class SampleBitIndex implements ISampleIndex {
         return bitSet;
     }
 
+    /**
+     * {@return the internal bitset (no copy) for a given literal which represents all assignments containing this literal}
+     * @param literal the literal for which to get the bitset
+     */
     public BitSet getInternalBitSet(int literal) {
         return bitSetReference[numberOfVariables + literal];
     }
 
+    /**
+     * {@return a bitset representing the ids of all assignments that contain any of the given values}
+     * @param literals the values
+     */
     public BitSet getNegatedBitSet(int... literals) {
         BitSet first = bitSetReference[numberOfVariables - literals[0]];
         BitSet bitSet = new BitSet(first.size());
@@ -140,7 +227,11 @@ public class SampleBitIndex implements ISampleIndex {
         }
         return bitSet;
     }
-
+    /**
+     * {@return a bitset representing the ids of all assignments that contains the given values}
+     * @param literals the values
+     * @param n the number of values to consider
+     */
     public BitSet getBitSet(int[] literals, int n) {
         if (n <= 0) {
             return new BitSet();
@@ -190,12 +281,12 @@ public class SampleBitIndex implements ISampleIndex {
         return numberOfVariables;
     }
 
-    public int[] getConfiguration(int configurationID) {
+    public int[] getConfiguration(int id) {
         int[] model = new int[numberOfVariables];
         for (int i = 1; i <= numberOfVariables; i++) {
-            if (bitSetReference[numberOfVariables + i].get(configurationID)) {
+            if (bitSetReference[numberOfVariables + i].get(id)) {
                 model[i - 1] = i;
-            } else if (bitSetReference[numberOfVariables - i].get(configurationID)) {
+            } else if (bitSetReference[numberOfVariables - i].get(id)) {
                 model[i - 1] = -i;
             }
         }

@@ -117,7 +117,7 @@ public abstract class AComputeTWiseCoverage extends AComputation<CoverageStatist
     public Result<CoverageStatistic> compute(List<Object> dependencyList, Progress progress) {
         init(dependencyList);
 
-        SampleBitIndex sampleIndex = new SampleBitIndex(sample.getAll(), sample.getVariableMap());
+        SampleBitIndex sampleIndex = new SampleBitIndex(sample);
 
         progress.setTotalSteps(combinationSet.loopCount());
 
