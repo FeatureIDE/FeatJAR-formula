@@ -184,9 +184,7 @@ public class SampleBitIndex implements ISampleIndex {
      * @param literals the values
      */
     public BitSet getBitSet(int... literals) {
-        BitSet first = bitSetReference[numberOfVariables + literals[0]];
-        BitSet bitSet = new BitSet(first.size());
-        bitSet.xor(first);
+        BitSet bitSet = (BitSet) bitSetReference[numberOfVariables + literals[0]].clone();
         for (int k = 1; k < literals.length; k++) {
             bitSet.and(bitSetReference[numberOfVariables + literals[k]]);
         }
@@ -215,13 +213,11 @@ public class SampleBitIndex implements ISampleIndex {
     }
 
     /**
-     * {@return a bitset representing the ids of all assignments that contain any of the given values}
+     * {@return a bitset representing the ids of all assignments that contain any of the given values' complements}
      * @param literals the values
      */
     public BitSet getNegatedBitSet(int... literals) {
-        BitSet first = bitSetReference[numberOfVariables - literals[0]];
-        BitSet bitSet = new BitSet(first.size());
-        bitSet.xor(first);
+        BitSet bitSet = (BitSet) bitSetReference[numberOfVariables - literals[0]].clone();
         for (int k = 1; k < literals.length; k++) {
             bitSet.or(bitSetReference[numberOfVariables - literals[k]]);
         }
@@ -236,9 +232,7 @@ public class SampleBitIndex implements ISampleIndex {
         if (n <= 0) {
             return new BitSet();
         }
-        BitSet first = bitSetReference[numberOfVariables + literals[0]];
-        BitSet bitSet = new BitSet(first.size());
-        bitSet.xor(first);
+        BitSet bitSet = (BitSet) bitSetReference[numberOfVariables + literals[0]].clone();
         for (int k = 1; k < n; k++) {
             bitSet.and(bitSetReference[numberOfVariables + literals[k]]);
             if (bitSet.isEmpty()) {
