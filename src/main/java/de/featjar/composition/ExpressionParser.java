@@ -205,7 +205,7 @@ public class ExpressionParser {
             if (quoted) {
                 switch (curChar) {
                     case QUOTE:
-                        if (!tokenBuilder.isEmpty()) {
+                        if (tokenBuilder.length() != 0) {
                             tokens.add(new Token(TokenClass.QUOTED_IDENTIFIER, tokenBuilder.toString(), lineNumber, i));
                             tokenBuilder.delete(0, tokenBuilder.length());
                         }
@@ -243,7 +243,7 @@ public class ExpressionParser {
     }
 
     private void addToken(final List<Token> tokens, final StringBuilder tokenBuilder, int lineNumber, int position) {
-        if (!tokenBuilder.isEmpty()) {
+        if (tokenBuilder.length() != 0) {
             String tokenString = tokenBuilder.toString();
             tokenBuilder.delete(0, tokenBuilder.length());
 
