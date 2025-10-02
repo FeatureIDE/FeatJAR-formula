@@ -13,15 +13,15 @@ import java.util.Optional;
  * type {@link Boolean} and value true) will be considered.
  *
  * @author Lara Merza
- * @author Felix
+ * @author Felix Behme
  * @author Jonas Hanke
  */
 public class AttributeSum extends ATerminalExpression implements IAttributeAggregate {
 
-    private final String nameOfAttribute;
+    private final String attributeName;
 
-    public AttributeSum(String nameOfAttribute) {
-        this.nameOfAttribute = nameOfAttribute;
+    public AttributeSum(String attributeName) {
+        this.attributeName = attributeName;
     }
 
     @Override
@@ -36,12 +36,16 @@ public class AttributeSum extends ATerminalExpression implements IAttributeAggre
 
     @Override
     public Optional<?> evaluate(List<?> values) {
-        // TODO
         return Optional.empty();
     }
 
     @Override
     public ITree<IExpression> cloneNode() {
-        return new AttributeSum(nameOfAttribute);
+        return new AttributeSum(attributeName);
+    }
+
+    @Override
+    public String getAttributeName() {
+        return attributeName;
     }
 }

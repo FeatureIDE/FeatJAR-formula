@@ -14,15 +14,15 @@ import java.util.Optional;
  * type {@link Boolean} and value true) will be considered.
  *
  * @author Lara Merza
- * @author Felix
+ * @author Felix Behme
  * @author Jonas Hanke
  */
 public class AttributeAverage extends ATerminalExpression implements IAttributeAggregate {
 
-    private final String nameOfAttribute;
+    private final String attributeName;
 
-    public AttributeAverage(String nameOfAttribute) {
-        this.nameOfAttribute = nameOfAttribute;
+    public AttributeAverage(String attributeName) {
+        this.attributeName = attributeName;
     }
 
     @Override
@@ -37,12 +37,16 @@ public class AttributeAverage extends ATerminalExpression implements IAttributeA
 
     @Override
     public Optional<?> evaluate(List<?> values) {
-        // TODO
         return Optional.empty();
     }
 
     @Override
     public ITree<IExpression> cloneNode() {
-        return new AttributeAverage(nameOfAttribute);
+        return new AttributeAverage(attributeName);
+    }
+
+    @Override
+    public String getAttributeName() {
+        return attributeName;
     }
 }
