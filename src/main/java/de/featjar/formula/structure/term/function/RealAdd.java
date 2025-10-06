@@ -33,8 +33,8 @@ public class RealAdd extends AAdd {
 
     protected RealAdd() {}
 
-    public RealAdd(ITerm leftTerm, ITerm rightTerm) {
-        super(leftTerm, rightTerm);
+    public RealAdd(ITerm... terms) {
+        super(terms);
     }
 
     public RealAdd(List<ITerm> arguments) {

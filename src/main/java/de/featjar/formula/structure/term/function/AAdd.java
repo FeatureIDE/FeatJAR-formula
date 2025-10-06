@@ -30,12 +30,12 @@ import java.util.List;
  *
  * @author Sebastian Krieter
  */
-public abstract class AAdd extends ANonTerminalExpression implements IFunction, IBinaryExpression {
+public abstract class AAdd extends ANonTerminalExpression implements IFunction {
 
     protected AAdd() {}
 
-    protected AAdd(ITerm leftTerm, ITerm rightTerm) {
-        super(leftTerm, rightTerm);
+    protected AAdd(ITerm... terms) {
+        super(terms);
     }
 
     protected AAdd(List<ITerm> arguments) {

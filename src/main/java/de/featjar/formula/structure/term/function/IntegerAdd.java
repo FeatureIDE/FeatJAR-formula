@@ -33,8 +33,8 @@ public class IntegerAdd extends AAdd {
 
     protected IntegerAdd() {}
 
-    public IntegerAdd(ITerm leftTerm, ITerm rightTerm) {
-        super(leftTerm, rightTerm);
+    public IntegerAdd(ITerm... terms) {
+        super(terms);
     }
 
     public IntegerAdd(List<ITerm> arguments) {
