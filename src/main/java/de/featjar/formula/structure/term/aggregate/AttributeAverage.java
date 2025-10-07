@@ -1,9 +1,38 @@
+/*
+ * Copyright (C) 2025 FeatJAR-Development-Team
+ *
+ * This file is part of FeatJAR-formula.
+ *
+ * formula is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3.0 of the License,
+ * or (at your option) any later version.
+ *
+ * formula is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with formula. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
+ */
 package de.featjar.formula.structure.term.aggregate;
 
+import de.featjar.base.data.Problem;
+import de.featjar.base.data.Result;
 import de.featjar.base.tree.structure.ITree;
 import de.featjar.formula.structure.ATerminalExpression;
 import de.featjar.formula.structure.IExpression;
+import de.featjar.formula.structure.term.ITerm;
+import de.featjar.formula.structure.term.function.IfThenElse;
+import de.featjar.formula.structure.term.function.RealAdd;
+import de.featjar.formula.structure.term.function.RealDivide;
+import de.featjar.formula.structure.term.value.Constant;
+import de.featjar.formula.structure.term.value.Variable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,10 +48,10 @@ import java.util.Optional;
  */
 public class AttributeAverage extends ATerminalExpression implements IAttributeAggregate {
 
-    private final String attributeName;
+    private final String attributeFilter;
 
-    public AttributeAverage(String attributeName) {
-        this.attributeName = attributeName;
+    public AttributeAverage(String attributeFilter) {
+        this.attributeFilter = attributeFilter;
     }
 
     @Override
@@ -42,11 +71,37 @@ public class AttributeAverage extends ATerminalExpression implements IAttributeA
 
     @Override
     public ITree<IExpression> cloneNode() {
-        return new AttributeAverage(attributeName);
+        return new AttributeAverage(attributeFilter);
     }
 
     @Override
-    public String getAttributeName() {
-        return attributeName;
+    public String getAttributeFilter() {
+        return attributeFilter;
+    }
+
+    @Override
+    public Result<IExpression> translate(List<Variable> variables, List<?> values) {
+        if(variables == null || variables.isEmpty() || values == null || values.isEmpty()) {
+            return Result.empty(new Problem("Variables or values is null or empty"));
+        }
+
+        if(variables.size() != values.size()) {
+            return Result.empty(new Problem("Size of variables is unequal to size of values"));
+        }
+
+        var termList1 = new ArrayList<ITerm>();
+        var termList2 = new ArrayList<ITerm>();
+        var defaultValue = new Constant(0.0, Double.class);
+
+        for(int i = 0; i < values.size(); i++) {
+            if(values.get(i) instanceof Number) {
+                termList1.add(new IfThenElse(variables.get(i), new Constant(((Number) values.get(i)).doubleValue(), Double.class), defaultValue));
+                termList2.add(new IfThenElse(variables.get(i), new Constant(1.0, Double.class), defaultValue));
+            } else {
+                return Result.empty(new Problem("Unsupported type for attribute average"));
+            }
+        }
+
+        return Result.ofNullable(new RealDivide(new RealAdd(termList1), new RealAdd(termList2)));
     }
 }
