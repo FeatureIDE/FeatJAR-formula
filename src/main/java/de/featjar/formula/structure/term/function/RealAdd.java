@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Adds the values of two real terms.
+ * Adds the values of multiple real terms.
  *
  * @author Sebastian Krieter
  */

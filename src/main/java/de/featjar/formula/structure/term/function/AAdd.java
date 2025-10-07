@@ -21,12 +21,11 @@
 package de.featjar.formula.structure.term.function;
 
 import de.featjar.formula.structure.ANonTerminalExpression;
-import de.featjar.formula.structure.IBinaryExpression;
 import de.featjar.formula.structure.term.ITerm;
 import java.util.List;
 
 /**
- * Adds the values of two terms.
+ * Adds the values of multiple terms.
  *
  * @author Sebastian Krieter
  */

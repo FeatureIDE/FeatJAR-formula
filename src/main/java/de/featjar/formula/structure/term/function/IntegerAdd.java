@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Adds the values of two integer terms.
+ * Adds the values of multiple integer terms.
  *
  * @author Sebastian Krieter
  */
