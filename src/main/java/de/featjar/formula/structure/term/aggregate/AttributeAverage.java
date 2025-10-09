@@ -56,7 +56,7 @@ public class AttributeAverage extends ATerminalExpression implements IAttributeA
 
     @Override
     public String getName() {
-        return "avg";
+        return "avg(" + attributeFilter + ")";
     }
 
     @Override
