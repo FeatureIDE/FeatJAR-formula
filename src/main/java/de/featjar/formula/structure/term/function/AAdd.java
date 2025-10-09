@@ -21,21 +21,20 @@
 package de.featjar.formula.structure.term.function;
 
 import de.featjar.formula.structure.ANonTerminalExpression;
-import de.featjar.formula.structure.IBinaryExpression;
 import de.featjar.formula.structure.term.ITerm;
 import java.util.List;
 
 /**
- * Adds the values of two terms.
+ * Adds the values of multiple terms.
  *
  * @author Sebastian Krieter
  */
-public abstract class AAdd extends ANonTerminalExpression implements IFunction, IBinaryExpression {
+public abstract class AAdd extends ANonTerminalExpression implements IFunction {
 
     protected AAdd() {}
 
-    protected AAdd(ITerm leftTerm, ITerm rightTerm) {
-        super(leftTerm, rightTerm);
+    protected AAdd(ITerm... terms) {
+        super(terms);
     }
 
     protected AAdd(List<ITerm> arguments) {

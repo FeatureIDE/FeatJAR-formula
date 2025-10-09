@@ -20,44 +20,52 @@
  */
 package de.featjar.formula.structure.term.function;
 
+import de.featjar.base.tree.structure.ITree;
+import de.featjar.formula.structure.ANonTerminalExpression;
+import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.term.ITerm;
+import de.featjar.formula.structure.term.value.Variable;
+
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Adds the values of multiple real terms.
- *
- * @author Sebastian Krieter
- */
-public class RealAdd extends AAdd {
+public class IfThenElse extends ANonTerminalExpression implements IFunction {
 
-    protected RealAdd() {}
+    private final Class<?> type;
 
-    public RealAdd(ITerm... terms) {
-        super(terms);
-    }
+    public IfThenElse(Variable variable, ITerm term1, ITerm term2) {
+        super(variable, term1, term2);
 
-    public RealAdd(List<ITerm> arguments) {
-        super(arguments);
+        if(term1.getType() != term2.getType()) {
+            throw new IllegalArgumentException("Terms don't match");
+        }
+
+        this.type = term1.getType();
     }
 
     @Override
-    public Class<Double> getType() {
-        return Double.class;
+    public String getName() {
+        return "IfThenElse";
     }
 
     @Override
-    public Class<Double> getChildrenType() {
-        return Double.class;
+    public Class<?> getType() {
+        return type;
     }
 
     @Override
-    public Optional<Double> evaluate(List<?> values) {
-        return Optional.ofNullable(IFunction.reduce(values, Double::sum));
+    public Optional<?> evaluate(List<?> values) {
+        Object condition = values.get(0);
+
+        if(condition instanceof Boolean) {
+            return Optional.ofNullable((Boolean) condition ? values.get(1) : values.get(2));
+        }
+
+        return Optional.empty();
     }
 
     @Override
-    public RealAdd cloneNode() {
-        return new RealAdd();
+    public ITree<IExpression> cloneNode() {
+        return null;
     }
 }
