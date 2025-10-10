@@ -55,7 +55,7 @@ public class AttributeSum extends ATerminalExpression implements IAttributeAggre
 
     @Override
     public String getName() {
-        return "sum";
+        return "sum(" + attributeFilter + ")";
     }
 
     @Override
