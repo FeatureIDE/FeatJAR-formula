@@ -90,9 +90,6 @@ public class FormatTest {
         // serialize
         final byte[] serializeOutput = serialize(obj, format);
 
-        System.out.println(new String(parseInput));
-        System.out.println(new String(serializeOutput));
-
         assertArrayEquals(parseInput, serializeOutput);
     }
 
