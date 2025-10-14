@@ -7,8 +7,8 @@ import de.featjar.formula.assignment.BooleanAssignmentList;
 
 public class BooleanAssignmentGroupsString implements IFormat<BooleanAssignmentGroups>{
 	@Override
-	public Result<String> serialize(BooleanAssignmentGroups bag) {		
-        return Result.of(bag.toString());
+	public Result<String> serialize(BooleanAssignmentGroups booleanAssignmentGroups) {		
+        return Result.of(String.valueOf(booleanAssignmentGroups));
     }
 	
 	@Override
@@ -22,7 +22,7 @@ public class BooleanAssignmentGroupsString implements IFormat<BooleanAssignmentG
 	}
 	
     @Override
-    public boolean supportsSerialize() {
+    public boolean supportsWrite() {
         return true;
     }
 

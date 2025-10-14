@@ -6,8 +6,8 @@ import de.featjar.formula.assignment.BooleanAssignment;
 
 public class BooleanAssignmentString implements IFormat<BooleanAssignment>{
 	@Override
-	public Result<String> serialize(BooleanAssignment ba) {		
-        return Result.of(ba.toString());
+	public Result<String> serialize(BooleanAssignment booleanAssignment) {		
+        return Result.of(String.valueOf(booleanAssignment));
     }
 	
 	@Override
@@ -21,7 +21,7 @@ public class BooleanAssignmentString implements IFormat<BooleanAssignment>{
 	}
 	
     @Override
-    public boolean supportsSerialize() {
+    public boolean supportsWrite() {
         return true;
     }
 
