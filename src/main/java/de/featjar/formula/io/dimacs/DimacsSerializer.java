@@ -20,7 +20,6 @@
  */
 package de.featjar.formula.io.dimacs;
 
-import de.featjar.base.data.Result;
 import de.featjar.formula.VariableMap;
 import java.util.Collection;
 import java.util.function.Function;
@@ -37,17 +36,16 @@ public class DimacsSerializer {
     /** Token leading the problem definition. */
     public static final String PROBLEM = "p";
     /** Token identifying the problem type as CNF. */
-    public static final String CNF = "cnf";
+    public static final String TYPE = "cnf";
     /** Token denoting the end of a clause. */
     public static final String CLAUSE_END = "0";
 
-    public static <C> Result<String> serialize(
-            VariableMap variableMap, Collection<C> clauses, Function<C, int[]> serializer) {
+    public static <C> String serialize(VariableMap variableMap, Collection<C> clauses, Function<C, int[]> serializer) {
         final StringBuilder sb = new StringBuilder();
         writeVariables(sb, variableMap);
-        writeProblem(sb, variableMap.getVariableCount(), clauses.size());
+        writeProblem(sb, variableMap.size(), clauses.size());
         writeClauses(sb, clauses, serializer);
-        return Result.of(sb.toString());
+        return sb.toString();
     }
 
     public static <C> void writeClauses(final StringBuilder sb, Collection<C> clauses, Function<C, int[]> serializer) {
@@ -64,7 +62,7 @@ public class DimacsSerializer {
     public static void writeProblem(final StringBuilder sb, int variableCount, int clauseCount) {
         sb.append(PROBLEM);
         sb.append(' ');
-        sb.append(CNF);
+        sb.append(TYPE);
         sb.append(' ');
         sb.append(variableCount);
         sb.append(' ');

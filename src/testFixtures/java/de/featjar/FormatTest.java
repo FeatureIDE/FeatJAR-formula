@@ -58,7 +58,7 @@ public class FormatTest {
 
     public static <T> void testSerialize(T expression1, String name, IFormat<T> format) {
         assertEquals(format.getClass().getCanonicalName(), format.getIdentifier());
-        assertTrue(format.supportsSerialize());
+        assertTrue(format.supportsWrite());
         final byte[] serializeOutput = serialize(expression1, format);
         final byte[][] byteArrays = getByteArrays(name, 1, format);
         assertEquals(1, byteArrays.length);
@@ -69,7 +69,7 @@ public class FormatTest {
     public static <T> void testSerializeAndParse(T expression1, IFormat<T> format) {
         assertEquals(format.getClass().getCanonicalName(), format.getIdentifier());
         assertTrue(format.supportsParse());
-        assertTrue(format.supportsSerialize());
+        assertTrue(format.supportsWrite());
         final T expression2 = saveAndLoad(expression1, format);
         assertEquals(expression1, expression2);
     }
@@ -77,7 +77,7 @@ public class FormatTest {
     public static <T> void testParseAndSerialize(String name, IFormat<T> format) {
         assertEquals(format.getClass().getCanonicalName(), format.getIdentifier());
         assertTrue(format.supportsParse());
-        assertTrue(format.supportsSerialize());
+        assertTrue(format.supportsWrite());
 
         // parse
         final byte[][] byteArrays = getByteArrays(name, 1, format);
@@ -89,9 +89,6 @@ public class FormatTest {
 
         // serialize
         final byte[] serializeOutput = serialize(obj, format);
-
-        System.out.println(new String(parseInput));
-        System.out.println(new String(serializeOutput));
 
         assertArrayEquals(parseInput, serializeOutput);
     }

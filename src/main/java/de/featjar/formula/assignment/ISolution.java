@@ -31,6 +31,7 @@ package de.featjar.formula.assignment;
  * If you need a disjunction of generalized literals, consider using a {@link IClause} instead.
  *
  * @param <T> the index type of the variables
+ * @param <R> the value type of the variables
  * @author Elias Kuiter
  */
 public interface ISolution<T, R> extends IAssignment<T, R> {}

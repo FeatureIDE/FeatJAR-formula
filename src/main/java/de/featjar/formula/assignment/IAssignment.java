@@ -47,7 +47,7 @@ public interface IAssignment<T, R> {
     Map<T, R> getAll();
 
     /**
-     * {@return {@code true} iff all entries of the given assignment are also present in this assignment}
+     * {@return true iff all entries of the given assignment are also present in this assignment}
      * @param other the other assignment
      */
     default boolean containsOtherAssignment(IAssignment<?, ?> other) {

@@ -47,13 +47,14 @@ public class BooleanSolution extends BooleanAssignment implements ISolution<Inte
 
     public BooleanSolution(int[] integers, boolean sort) {
         super(integers);
-        assert Arrays.stream(integers)
-                                .map(Math::abs) //
-                                .max()
-                                .orElse(0)
-                        <= integers.length //
+        assert sort
+                        || Arrays.stream(integers)
+                                        .map(Math::abs) //
+                                        .max()
+                                        .orElse(0)
+                                <= integers.length //
                 : String.format(
-                        "max index %d is larger than number of elements %d, elements = %s",
+                        "Max index %d is larger than number of elements %d. Elements = %s",
                         Arrays.stream(integers).map(Math::abs).max().orElse(0),
                         integers.length,
                         Arrays.toString(integers));
@@ -62,7 +63,7 @@ public class BooleanSolution extends BooleanAssignment implements ISolution<Inte
                                         .map(Math::abs) //
                                         .reduce(0, (a, b) -> b == 0 ? a + 1 : a + 1 == b ? b : -2)
                                 == integers.length
-                : "unsorted: " + Arrays.toString(integers);
+                : "Unsorted: " + Arrays.toString(integers);
         if (sort) sort();
     }
 
@@ -140,8 +141,11 @@ public class BooleanSolution extends BooleanAssignment implements ISolution<Inte
 
     @Override
     public int indexOfVariable(int variable) {
+        if (variable <= 0) {
+            throw new IllegalArgumentException(String.format("Variable ID must be larger than 0. Was %d", variable));
+        }
         final int index = variable - 1;
-        return variable > 0 && index < size() && elements[index] != 0 ? index : -1;
+        return index < size() && elements[index] != 0 ? index : -1;
     }
 
     @Override
@@ -161,7 +165,7 @@ public class BooleanSolution extends BooleanAssignment implements ISolution<Inte
 
     @Override
     public String toString() {
-        return String.format("BooleanSolution[%s]", print());
+        return String.format("BooleanSolution[%s]", Arrays.toString(elements));
     }
 
     @Override
@@ -200,8 +204,8 @@ public class BooleanSolution extends BooleanAssignment implements ISolution<Inte
         if (integrateOldVariables) {
             throw new IllegalArgumentException("Dynamic extension of variable map not allowed for BooleanSolution.");
         }
-        int[] newElements = new int[newVariableMap.getVariableCount()];
-        adapt(elements, newElements, oldVariableMap, newVariableMap, integrateOldVariables);
+        int[] newElements = new int[newVariableMap.size()];
+        oldVariableMap.adapt(elements, newElements, newVariableMap, integrateOldVariables);
         return new BooleanSolution(newElements);
     }
 

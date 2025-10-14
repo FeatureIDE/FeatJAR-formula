@@ -27,8 +27,10 @@ import de.featjar.base.cli.OptionList;
 import de.featjar.base.computation.IComputation;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.IO;
+import de.featjar.base.io.IOMapperOptions;
 import de.featjar.base.io.format.IFormat;
 import de.featjar.base.io.graphviz.GraphVizComputationTreeFormat;
+import de.featjar.base.io.text.GenericTextFormat;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -46,9 +48,9 @@ public abstract class AAnalysisCommand<T> extends ACommand {
     public static final Option<Boolean> BROWSE_CACHE_OPTION =
             Option.newFlag("browse-cache").setDescription("Show cache contents in default browser");
 
-    public static final Option<Boolean> NON_PARALLEL = Option.newFlag("non-parallel") //
+    public static final Option<Boolean> NON_PARALLEL = Option.newFlag("non-parallel")
             .setDescription(
-                    "Disable parallel computation. (Is ignored if timeout option is specified, as computations with timeout are always non-parallel.)");
+                    "Disable parallel computation. (Ignored if timeout option is specified, as computations with timeout are always non-parallel.)");
 
     public static final Option<Duration> TIMEOUT_OPTION = Option.newOption(
                     "timeout", s -> Duration.ofSeconds(Long.parseLong(s)))
@@ -62,6 +64,21 @@ public abstract class AAnalysisCommand<T> extends ACommand {
     public static final Option<Path> TIME_OPTION = Option.newOption("write-time-to-file", Option.PathParser)
             .setDescription("Path to file containig the execution time");
 
+    /**
+     * ZIP compression option for saving files.
+     */
+    public static final Option<Boolean> OUTPUT_COMPRESSION_OPTION =
+            Option.newFlag("zip-output").setDescription("Stores output as zip file. (Requires to set an output path.)");
+
+    /**
+     * ZIP compression option for reading files.
+     */
+    public static final Option<Boolean> INTPUT_COMPRESSION_OPTION =
+            Option.newFlag("zip-input").setDescription("Reads input as zip file.");
+
+    protected IOMapperOptions[] ioInputOptions = new IOMapperOptions[0];
+    protected IOMapperOptions[] ioOutputOptions = new IOMapperOptions[0];
+
     @Override
     public int run(OptionList optionParser) {
         boolean browseCache = optionParser.getResult(BROWSE_CACHE_OPTION).get();
@@ -69,13 +86,19 @@ public abstract class AAnalysisCommand<T> extends ACommand {
         Duration timeout = optionParser.getResult(TIMEOUT_OPTION).get();
         Path outputPath = optionParser.getResult(OUTPUT_OPTION).orElse(null);
         Path timePath = optionParser.getResult(TIME_OPTION).orElse(null);
+        if (optionParser.getResult(INTPUT_COMPRESSION_OPTION).get()) {
+            ioInputOptions = new IOMapperOptions[] {IOMapperOptions.ZIP_COMPRESSION};
+        }
+        if (optionParser.getResult(OUTPUT_COMPRESSION_OPTION).get()) {
+            ioOutputOptions = new IOMapperOptions[] {IOMapperOptions.ZIP_COMPRESSION};
+        }
 
         IComputation<T> computation;
         try {
             computation = newComputation(optionParser);
         } catch (Exception e) {
             FeatJAR.log().error(e);
-            FeatJAR.log().message(OptionList.getHelp(this));
+            FeatJAR.log().plainMessage(OptionList.printHelp(this));
             return FeatJAR.ERROR_COMPUTING_RESULT;
         }
         FeatJAR.log().debug("running computation %s", computation.print());
@@ -106,23 +129,39 @@ public abstract class AAnalysisCommand<T> extends ACommand {
         }
 
         if (result.isPresent()) {
+            IFormat<T> ouputFormat = getOuputFormat(optionParser);
             if (outputPath == null) {
-                FeatJAR.log().message(printResult(result.get()));
+                if (ouputFormat == null || !ouputFormat.isTextual()) {
+                    FeatJAR.log().plainMessage(String.valueOf(result.get()));
+                } else {
+                    ouputFormat
+                            .serialize(result.get())
+                            .ifEmpty(FeatJAR.log()::problems)
+                            .ifPresent(FeatJAR.log()::plainMessage);
+                }
             } else {
-                try {
-                    if (!writeToOutputFile(result.get(), outputPath)) {
-                        if (Files.isDirectory(outputPath)) {
-                            FeatJAR.log().error(new IOException(outputPath.toString() + " is a directory"));
-                        }
+                if (Files.isDirectory(outputPath)) {
+                    FeatJAR.log().error(new IOException(outputPath.toString() + " is a directory"));
+                    return FeatJAR.ERROR_WRITING_RESULT;
+                } else if (ouputFormat == null) {
+                    FeatJAR.log().warning(new IOException(outputPath.toString() + " not output format specified"));
+                    try {
                         Files.write(
                                 outputPath,
-                                printResult(result.get()).getBytes(StandardCharsets.UTF_8),
+                                String.valueOf(result.get()).getBytes(StandardCharsets.UTF_8),
                                 StandardOpenOption.CREATE,
                                 StandardOpenOption.TRUNCATE_EXISTING);
+                    } catch (IOException e) {
+                        FeatJAR.log().error(e);
+                        return FeatJAR.ERROR_WRITING_RESULT;
                     }
-                } catch (IOException e) {
-                    FeatJAR.log().error(e);
-                    return FeatJAR.ERROR_WRITING_RESULT;
+                } else {
+                    try {
+                        IO.save(result.get(), outputPath, ouputFormat, ioOutputOptions);
+                    } catch (IOException e) {
+                        FeatJAR.log().error(e);
+                        return FeatJAR.ERROR_WRITING_RESULT;
+                    }
                 }
             }
         } else {
@@ -138,36 +177,7 @@ public abstract class AAnalysisCommand<T> extends ACommand {
 
     protected abstract IComputation<T> newComputation(OptionList optionParser);
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    protected boolean writeToOutputFile(T result, Path outputPath) {
-        try {
-            Object ouputObject = getOuputObject(result);
-            if (ouputObject == null) {
-                return false;
-            }
-
-            IFormat ouputFormat = getOuputFormat();
-            if (ouputFormat == null) {
-                return false;
-            }
-
-            IO.save(ouputObject, outputPath, ouputFormat);
-            return true;
-        } catch (IOException e) {
-            FeatJAR.log().error(e);
-        }
-        return false;
-    }
-
-    protected Object getOuputObject(T result) {
-        return result;
-    }
-
-    protected IFormat<?> getOuputFormat() {
-        return null;
-    }
-
-    protected String printResult(T result) {
-        return result.toString();
+    protected IFormat<T> getOuputFormat(OptionList optionParser) {
+        return new GenericTextFormat<>();
     }
 }

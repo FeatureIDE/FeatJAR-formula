@@ -41,7 +41,7 @@ public class ValueAssignmentListFormat implements IFormat<ValueAssignmentList> {
     }
 
     @Override
-    public boolean supportsSerialize() {
+    public boolean supportsWrite() {
         return true;
     }
 

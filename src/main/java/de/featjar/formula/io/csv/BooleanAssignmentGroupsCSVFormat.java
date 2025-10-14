@@ -23,15 +23,16 @@ package de.featjar.formula.io.csv;
 import de.featjar.base.data.Pair;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.NonEmptyLineIterator;
-import de.featjar.base.io.format.IFormat;
 import de.featjar.base.io.format.ParseProblem;
 import de.featjar.base.io.input.AInputMapper;
 import de.featjar.base.io.input.InputHeader;
+import de.featjar.base.io.output.AOutput;
 import de.featjar.base.io.output.AOutputMapper;
 import de.featjar.formula.VariableMap;
 import de.featjar.formula.assignment.BooleanAssignment;
 import de.featjar.formula.assignment.BooleanAssignmentGroups;
 import de.featjar.formula.assignment.BooleanAssignmentList;
+import de.featjar.formula.io.IBooleanAssignmentGroupsFormat;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ import java.util.stream.Collectors;
  *
  * @author Sebastian Krieter
  */
-public class BooleanAssignmentGroupsCSVFormat implements IFormat<BooleanAssignmentGroups> {
+public class BooleanAssignmentGroupsCSVFormat implements IBooleanAssignmentGroupsFormat {
     private static final String ASSIGNMENT_COLUMN_NAME = "ID";
     private static final String GROUP_COLUMN_NAME = "Group";
     private static final String VALUE_SEPARATOR = ";";
@@ -58,17 +59,19 @@ public class BooleanAssignmentGroupsCSVFormat implements IFormat<BooleanAssignme
         final List<Pair<Integer, String>> namePairs = variableMap.stream().collect(Collectors.toList());
         final List<BooleanAssignmentList> groups = assignmentGroups.getGroups();
 
-        outputMapper.get().write(serializeHeader(namePairs));
+        AOutput out = outputMapper.get();
+        out.writeText(serializeHeader(namePairs));
 
         int groupIndex = 0;
         int assignmentIndex = 0;
         for (BooleanAssignmentList group : groups) {
             for (final BooleanAssignment assignment : group) {
-                outputMapper.get().write(serializeAssignment(namePairs, groupIndex, assignmentIndex, assignment));
+                out.writeText(serializeAssignment(namePairs, groupIndex, assignmentIndex, assignment));
                 assignmentIndex++;
             }
             groupIndex++;
         }
+        outputMapper.close();
     }
 
     @Override
@@ -216,7 +219,7 @@ public class BooleanAssignmentGroupsCSVFormat implements IFormat<BooleanAssignme
     }
 
     @Override
-    public boolean supportsSerialize() {
+    public boolean supportsWrite() {
         return true;
     }
 
@@ -227,6 +230,6 @@ public class BooleanAssignmentGroupsCSVFormat implements IFormat<BooleanAssignme
 
     @Override
     public String getName() {
-        return "BooleanAssignmentCSV";
+        return "CSV";
     }
 }

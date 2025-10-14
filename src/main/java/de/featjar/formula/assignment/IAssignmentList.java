@@ -48,7 +48,7 @@ public interface IAssignmentList<T extends IAssignment<?, ?>> extends Iterable<T
     List<T> getAll();
 
     /**
-     * {@return {@code true} iff all assignments in the given list match an assignment in this list}
+     * {@return true iff all assignments in the given list match an assignment in this list}
      * @param other the other assignment
      */
     default boolean containsOtherAssignments(IAssignmentList<T> other) {
@@ -97,7 +97,7 @@ public interface IAssignmentList<T extends IAssignment<?, ?>> extends Iterable<T
      *
      * @param index the index
      *
-     * @throws IndexOutOfBoundsException
+     * @throws IndexOutOfBoundsException if the index was < 0 or >= {@link #size()}
      */
     default T get(int index) {
         if (index < 0 || index >= size()) throw new IndexOutOfBoundsException(index);
@@ -106,8 +106,6 @@ public interface IAssignmentList<T extends IAssignment<?, ?>> extends Iterable<T
 
     /**
      * {@return the assignment at the first index in this assignment list, if any. Return null otherwise.}
-     *
-     * @param index the index
      */
     default T getFirst() {
         return isEmpty() ? null : getAll().get(0);

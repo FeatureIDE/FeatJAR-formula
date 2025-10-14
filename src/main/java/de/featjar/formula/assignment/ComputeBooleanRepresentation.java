@@ -54,7 +54,7 @@ public class ComputeBooleanRepresentation extends AComputation<BooleanAssignment
         IFormula formula = (IFormula) CNF.get(dependencyList);
         FeatJAR.log()
                 .debug("initializing variable map for " + formula.getClass().getName());
-        VariableMap variableMap = VariableMap.of(formula);
+        VariableMap variableMap = new VariableMap(formula);
         FeatJAR.log().debug(variableMap);
         if (formula instanceof Reference) {
             formula = (IFormula) ((Reference) formula).getExpression();

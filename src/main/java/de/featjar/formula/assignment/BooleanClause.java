@@ -130,7 +130,7 @@ public class BooleanClause extends BooleanAssignment implements IClause<Integer,
 
     @Override
     public String toString() {
-        return String.format("BooleanClause[%s]", print());
+        return String.format("BooleanClause[%s]", Arrays.toString(elements));
     }
 
     @Override

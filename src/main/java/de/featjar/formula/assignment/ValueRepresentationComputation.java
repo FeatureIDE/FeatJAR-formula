@@ -25,23 +25,34 @@ import de.featjar.base.computation.Dependency;
 import de.featjar.base.computation.IComputation;
 import de.featjar.base.computation.Progress;
 import de.featjar.base.data.Result;
-import de.featjar.formula.VariableMap;
 import java.util.List;
 
 /**
- * TODO ...
- *
+ * Converts an {@link IBooleanRepresentation} to an {@link IValueRepresentation}.
+ * @param <T> the concrete type of the input IBooleanRepresentation
+ * @param <U> the concrete type of the output IValueRepresentation
  * @author Elias Kuiter
  */
 public class ValueRepresentationComputation<T extends IBooleanRepresentation, U extends IValueRepresentation>
         extends AComputation<U> {
+
+    /**
+     * The input dependency.
+     */
     protected static final Dependency<?> BOOLEAN_REPRESENTATION = Dependency.newDependency();
 
-    public ValueRepresentationComputation(
-            IComputation<T> booleanRepresentation, IComputation<VariableMap> variableMap) {
-        super(booleanRepresentation, variableMap);
+    /**
+     * Constructs a new computation with the given dependencies.
+     * @param booleanRepresentation the computation of the boolean representation
+     */
+    public ValueRepresentationComputation(IComputation<T> booleanRepresentation) {
+        super(booleanRepresentation);
     }
 
+    /**
+     * Copy constructor.
+     * @param other the computation to copy
+     */
     protected ValueRepresentationComputation(ValueRepresentationComputation<T, U> other) {
         super(other);
     }

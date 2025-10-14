@@ -24,7 +24,9 @@ import de.featjar.base.data.Problem.Severity;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.binary.ABinaryFormat;
 import de.featjar.base.io.format.ParseProblem;
+import de.featjar.base.io.input.AInput;
 import de.featjar.base.io.input.AInputMapper;
+import de.featjar.base.io.output.AOutput;
 import de.featjar.base.io.output.AOutputMapper;
 import de.featjar.formula.VariableMap;
 import de.featjar.formula.assignment.BooleanAssignment;
@@ -32,9 +34,8 @@ import de.featjar.formula.assignment.BooleanAssignmentGroups;
 import de.featjar.formula.assignment.BooleanAssignmentList;
 import de.featjar.formula.assignment.BooleanClause;
 import de.featjar.formula.assignment.BooleanSolution;
+import de.featjar.formula.io.IBooleanAssignmentGroupsFormat;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
@@ -44,7 +45,8 @@ import java.util.List;
  *
  * @author Sebastian Krieter
  */
-public class BooleanAssignmentGroupsBinaryFormat extends ABinaryFormat<BooleanAssignmentGroups> {
+public class BooleanAssignmentGroupsBinaryFormat extends ABinaryFormat<BooleanAssignmentGroups>
+        implements IBooleanAssignmentGroupsFormat {
 
     private static final byte BooleanSolutionType = 0b0000_0001;
     private static final byte BooleanClauseType = 0b0000_0010;
@@ -52,21 +54,23 @@ public class BooleanAssignmentGroupsBinaryFormat extends ABinaryFormat<BooleanAs
 
     @Override
     public void write(BooleanAssignmentGroups assignmentSpace, AOutputMapper outputMapper) throws IOException {
-        final OutputStream outputStream = outputMapper.get().getOutputStream();
         final VariableMap variableMap = assignmentSpace.getVariableMap();
         final int maxIndex = variableMap.maxIndex();
-        writeInt(outputStream, maxIndex);
+
+        AOutput out = outputMapper.get();
+
+        out.writeInt(maxIndex);
         for (int i = 1; i <= maxIndex; i++) {
-            writeString(outputStream, variableMap.get(i).orElse(""));
+            writeString(out, variableMap.get(i).orElse(""));
         }
         final List<BooleanAssignmentList> groups = assignmentSpace.getGroups();
-        writeInt(outputStream, groups.size());
+        out.writeInt(groups.size());
         for (BooleanAssignmentList group : groups) {
-            writeInt(outputStream, group.size());
+            out.writeInt(group.size());
             for (BooleanAssignment assignment : group) {
                 final int[] literals = assignment.get();
                 if (assignment instanceof BooleanSolution) {
-                    writeByte(outputStream, BooleanSolutionType);
+                    out.writeByte(BooleanSolutionType);
                     final BitSet bs = new BitSet(2 * maxIndex);
                     for (int i = 0, bsIndex = 0; i < literals.length; i++) {
                         final int l = literals[i];
@@ -78,51 +82,51 @@ public class BooleanAssignmentGroupsBinaryFormat extends ABinaryFormat<BooleanAs
                             bs.set(bsIndex++, l > 0);
                         }
                     }
-                    writeByteArray(outputStream, bs.toByteArray());
+                    writeByteArray(out, bs.toByteArray());
                 } else if (assignment instanceof BooleanClause) {
-                    writeByte(outputStream, BooleanClauseType);
-                    writeInt(outputStream, literals.length);
+                    out.writeByte(BooleanClauseType);
+                    out.writeInt(literals.length);
                     for (int l : literals) {
-                        writeInt(outputStream, l);
+                        out.writeInt(l);
                     }
                 } else if (assignment instanceof BooleanAssignment) {
-                    writeByte(outputStream, BooleanAssignmentType);
-                    writeInt(outputStream, literals.length);
+                    out.writeByte(BooleanAssignmentType);
+                    out.writeInt(literals.length);
                     for (int l : literals) {
-                        writeInt(outputStream, l);
+                        out.writeInt(l);
                     }
                 } else {
                     throw new IllegalArgumentException(assignment.getClass().toString());
                 }
             }
         }
-        outputStream.flush();
+        out.flush();
     }
 
     @Override
     public Result<BooleanAssignmentGroups> parse(AInputMapper inputMapper) {
-        final InputStream inputStream = inputMapper.get().getInputStream();
+        final AInput in = inputMapper.get();
         try {
             final VariableMap variableMap = new VariableMap();
-            final int maxIndex = readInt(inputStream);
+            final int maxIndex = in.readInt();
             for (int i = 1; i <= maxIndex; i++) {
-                final String name = readString(inputStream);
+                final String name = readString(in);
                 if (!name.isEmpty()) {
                     variableMap.add(i, name);
                 }
             }
-            final int numberOfGroups = readInt(inputStream);
+            final int numberOfGroups = in.readInt();
             final ArrayList<BooleanAssignmentList> groups = new ArrayList<>(numberOfGroups);
             for (int i = 0; i < numberOfGroups; i++) {
-                final int numberOfAssignment = readInt(inputStream);
+                final int numberOfAssignment = in.readInt();
                 final BooleanAssignmentList group = new BooleanAssignmentList(variableMap, numberOfAssignment);
                 for (int j = 0; j < numberOfAssignment; j++) {
-                    final byte type = readByte(inputStream);
+                    final byte type = in.readByte();
                     final int[] literals;
                     switch (type) {
                         case BooleanSolutionType:
                             {
-                                final BitSet bs = BitSet.valueOf(readByteArray(inputStream));
+                                final BitSet bs = BitSet.valueOf(readByteArray(in));
                                 literals = new int[maxIndex];
                                 int bsIndex = 0;
                                 for (int k = 0; k < maxIndex; k++) {
@@ -138,20 +142,20 @@ public class BooleanAssignmentGroupsBinaryFormat extends ABinaryFormat<BooleanAs
                             break;
                         case BooleanClauseType:
                             {
-                                final int numLiterals = readInt(inputStream);
+                                final int numLiterals = in.readInt();
                                 literals = new int[numLiterals];
                                 for (int k = 0; k < numLiterals; k++) {
-                                    literals[k] = readInt(inputStream);
+                                    literals[k] = in.readInt();
                                 }
                                 group.add(new BooleanClause(literals, false));
                             }
                             break;
                         case BooleanAssignmentType:
                             {
-                                final int numLiterals = readInt(inputStream);
+                                final int numLiterals = in.readInt();
                                 literals = new int[numLiterals];
                                 for (int k = 0; k < numLiterals; k++) {
-                                    literals[k] = readInt(inputStream);
+                                    literals[k] = in.readInt();
                                 }
                                 group.add(new BooleanAssignment(literals));
                             }
@@ -169,7 +173,7 @@ public class BooleanAssignmentGroupsBinaryFormat extends ABinaryFormat<BooleanAs
     }
 
     @Override
-    public boolean supportsSerialize() {
+    public boolean supportsWrite() {
         return true;
     }
 
@@ -180,7 +184,7 @@ public class BooleanAssignmentGroupsBinaryFormat extends ABinaryFormat<BooleanAs
 
     @Override
     public String getName() {
-        return "BooleanAssignmentBinary";
+        return "Binary";
     }
 
     @Override

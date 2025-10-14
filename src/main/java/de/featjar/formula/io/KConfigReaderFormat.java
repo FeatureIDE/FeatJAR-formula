@@ -94,7 +94,7 @@ public class KConfigReaderFormat implements IFormat<IExpression> {
     }
 
     @Override
-    public boolean supportsSerialize() {
+    public boolean supportsWrite() {
         return false;
     }
 

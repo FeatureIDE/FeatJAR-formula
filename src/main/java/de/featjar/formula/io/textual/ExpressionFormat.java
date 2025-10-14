@@ -44,7 +44,7 @@ public class ExpressionFormat implements IFormat<IExpression> {
     //    }
 
     @Override
-    public boolean supportsSerialize() {
+    public boolean supportsWrite() {
         return true;
     }
 

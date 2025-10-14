@@ -129,39 +129,6 @@ public class BooleanAssignment extends IntegerList implements IAssignment<Intege
         return newArray;
     }
 
-    public static void adapt(
-            int[] oldLiterals,
-            int[] newLiterals,
-            VariableMap oldVariableMap,
-            VariableMap newVariableMap,
-            boolean integrateOldVariables) {
-        for (int i = 0; i < oldLiterals.length; i++) {
-            final int oldLiteral = oldLiterals[i];
-            if (oldLiteral == 0) {
-                newLiterals[i] = 0;
-            } else {
-                final Result<String> name = oldVariableMap.get(Math.abs(oldLiteral));
-                if (name.isPresent()) {
-                    String variableName = name.get();
-                    final int newLiteral;
-                    Result<Integer> index = newVariableMap.get(variableName);
-                    if (index.isEmpty()) {
-                        if (integrateOldVariables) {
-                            newLiteral = newVariableMap.add(variableName);
-                        } else {
-                            throw new IllegalArgumentException("No variable named " + variableName);
-                        }
-                    } else {
-                        newLiteral = index.get();
-                    }
-                    newLiterals[i] = oldLiteral < 0 ? -newLiteral : newLiteral;
-                } else {
-                    throw new IllegalArgumentException("No variable with index " + oldLiteral);
-                }
-            }
-        }
-    }
-
     public BooleanAssignment(int... integers) {
         super(integers);
     }
@@ -202,7 +169,7 @@ public class BooleanAssignment extends IntegerList implements IAssignment<Intege
      */
     public BooleanAssignment adapt(
             VariableMap oldVariableMap, VariableMap newVariableMap, boolean integrateOldVariables) {
-        adapt(elements, elements, oldVariableMap, newVariableMap, integrateOldVariables);
+        oldVariableMap.adapt(elements, elements, newVariableMap, integrateOldVariables);
         return this;
     }
 

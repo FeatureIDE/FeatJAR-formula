@@ -119,7 +119,7 @@ public class ComputeCNFFormula extends AComputation<IFormula> {
                 isParallel ? Collections.synchronizedList(new ArrayList<>()) : new ArrayList<>();
         Consumer<IFormula> transformer = formula -> {
             transform(formula, clauseFormulas, substitutions, isPlaistedGreenbaum, maximumNumberOfLiterals);
-            progress.incrementCurrentStep();
+            progress.incrementCurrentStepSynchronized();
         };
 
         if (nnfFormula instanceof And) {

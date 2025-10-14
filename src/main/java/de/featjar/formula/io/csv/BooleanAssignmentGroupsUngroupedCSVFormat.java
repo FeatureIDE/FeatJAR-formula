@@ -22,7 +22,6 @@ package de.featjar.formula.io.csv;
 
 import de.featjar.base.data.Result;
 import de.featjar.base.io.NonEmptyLineIterator;
-import de.featjar.base.io.format.IFormat;
 import de.featjar.base.io.format.ParseProblem;
 import de.featjar.base.io.input.AInputMapper;
 import de.featjar.base.io.input.InputHeader;
@@ -31,6 +30,7 @@ import de.featjar.formula.assignment.BooleanAssignment;
 import de.featjar.formula.assignment.BooleanAssignmentGroups;
 import de.featjar.formula.assignment.BooleanAssignmentList;
 import de.featjar.formula.assignment.BooleanSolution;
+import de.featjar.formula.io.IBooleanAssignmentGroupsFormat;
 import java.text.ParseException;
 import java.util.List;
 
@@ -39,7 +39,7 @@ import java.util.List;
  *
  * @author Sebastian Krieter
  */
-public class BooleanSolutionListCSVFormat implements IFormat<BooleanAssignmentGroups> {
+public class BooleanAssignmentGroupsUngroupedCSVFormat implements IBooleanAssignmentGroupsFormat {
 
     private static final String ID_COLUMN = "Configuration";
     private static final String VALUE_SEPARATOR = ";";
@@ -48,22 +48,26 @@ public class BooleanSolutionListCSVFormat implements IFormat<BooleanAssignmentGr
     private static final String NEGATIVE_VALUE = "-";
     private static final String NULL_VALUE = "0";
 
-    public static final String ID = BooleanSolutionListCSVFormat.class.getCanonicalName();
+    /**
+     * The identifier of this format.
+     */
+    public static final String ID = BooleanAssignmentGroupsUngroupedCSVFormat.class.getCanonicalName();
 
     @Override
-    public Result<String> serialize(BooleanAssignmentGroups configurationList) {
+    public Result<String> serialize(BooleanAssignmentGroups booleanAssignmentGroups) {
         final StringBuilder csv = new StringBuilder();
         csv.append(ID_COLUMN);
-        final List<String> names = configurationList.getVariableMap().getObjects(true);
+        VariableMap variableMap = booleanAssignmentGroups.getVariableMap();
+        final List<String> names = variableMap.getObjects(true);
         for (final String name : names) {
             csv.append(VALUE_SEPARATOR);
             csv.append(name != null ? name : "");
         }
         csv.append(LINE_SEPARATOR);
         int configurationIndex = 0;
-        for (final BooleanAssignment configuration : configurationList.getFirstGroup()) {
+        for (final BooleanAssignment configuration : booleanAssignmentGroups.getMergedGroups()) {
             csv.append(configurationIndex++);
-            final int[] literals = configuration.toSolution().get();
+            final int[] literals = configuration.toSolution(variableMap.size()).get();
             for (int l : literals) {
                 csv.append(VALUE_SEPARATOR);
                 csv.append(l == 0 ? NULL_VALUE : l > 0 ? POSITIVE_VALUE : NEGATIVE_VALUE);
@@ -138,7 +142,7 @@ public class BooleanSolutionListCSVFormat implements IFormat<BooleanAssignmentGr
     }
 
     @Override
-    public BooleanSolutionListCSVFormat getInstance() {
+    public BooleanAssignmentGroupsUngroupedCSVFormat getInstance() {
         return this;
     }
 
@@ -156,7 +160,7 @@ public class BooleanSolutionListCSVFormat implements IFormat<BooleanAssignmentGr
     }
 
     @Override
-    public boolean supportsSerialize() {
+    public boolean supportsWrite() {
         return true;
     }
 
@@ -167,6 +171,6 @@ public class BooleanSolutionListCSVFormat implements IFormat<BooleanAssignmentGr
 
     @Override
     public String getName() {
-        return "ConfigurationList";
+        return "SimpleCSV";
     }
 }

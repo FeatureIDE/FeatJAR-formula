@@ -37,7 +37,6 @@ import de.featjar.formula.visitor.Evaluator;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -140,21 +139,21 @@ public interface IExpression extends ITree<IExpression> {
      * Thus, only the first instance of a variable with a given name will occur in this stream.
      */
     default Stream<Variable> getVariableStream() {
-        return getVariableMap().values().stream();
+        return Trees.preOrderStream(this).filter(e -> e instanceof Variable).map(v -> (Variable) v);
     }
 
     /**
      * {@return a list of all variables in this expression}
      */
     default List<Variable> getVariables() {
-        return new ArrayList<>(getVariableMap().values());
+        return getVariableStream().collect(Collectors.toList());
     }
 
     /**
      * {@return a list of all variable names in this expression}
      */
     default LinkedHashSet<String> getVariableNames() {
-        return new LinkedHashSet<>(getVariableMap().keySet());
+        return getVariableStream().map(Variable::getName).collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     /**

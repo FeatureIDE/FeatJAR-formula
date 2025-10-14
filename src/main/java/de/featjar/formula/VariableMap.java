@@ -55,87 +55,89 @@ import java.util.stream.Collectors;
  * @author Elias Kuiter
  */
 public class VariableMap extends RangeMap<String> {
+
+    /**
+     * Constructs a new empty variable map.
+     */
     public VariableMap() {}
 
-    protected VariableMap(Collection<String> variableNames) {
+    /**
+     * Constructs a new variable map with the given variable names.
+     * Indices are mapped in the order of the given collection.
+     * @param variableNames the variable names
+     */
+    public VariableMap(Collection<String> variableNames) {
         super(variableNames);
     }
 
-    protected VariableMap(IExpression valueRepresentation) {
-        super(valueRepresentation.getVariableNames());
+    /**
+     * Constructs a new variable map with all variables occurring in the given expression.
+     * Indices are mapped in the order the given by {@link IExpression#getVariableNames()}.
+     * @param expression the expression
+     */
+    public VariableMap(IExpression expression) {
+        super(expression.getVariableNames());
     }
 
-    protected VariableMap(VariableMap variableMap) {
-        super(variableMap.getObjects(true));
-    }
-
-    protected VariableMap(List<VariableMap> variableMaps) {
+    /**
+     * Creates a new variable map from the given list of maps by merging them.
+     * @param variableMaps the list of variable maps
+     */
+    public VariableMap(List<VariableMap> variableMaps) {
         super(variableMaps);
     }
 
     /**
-     * Creates a variable map from a value representation (e.g., an expression).
-     * Indices are numbered by the occurrence of variables in a preorder traversal.
-     *
-     * @param valueRepresentation the value representation
+     * Creates a new variable map from the two maps by merging them.
+     * @param firstVariableMap the first variable map
+     * @param secondVariableMap the second variable map
      */
-    public static VariableMap of(IExpression valueRepresentation) {
-        return new VariableMap(valueRepresentation);
+    public VariableMap(VariableMap firstVariableMap, VariableMap secondVariableMap) {
+        super(List.of(firstVariableMap, secondVariableMap));
     }
 
     /**
-     * Creates a merged variable map from a list of variable maps.
-     *
-     * @param variableMaps the variableMaps to merge
+     * Copy constructor.
+     * @param variableMap the other variable map
      */
-    public static VariableMap merge(VariableMap... variableMaps) {
-        return new VariableMap(List.of(variableMaps));
+    public VariableMap(VariableMap variableMap) {
+        super(variableMap.getObjects(true));
     }
 
     /**
-     * Creates a variable map from a list of variable name.
-     *
-     * @param variableNames the list of variable names
+     * {@return an unmodifiable list of all names in this maps}
+     * The names are in the same order as their index, but the list does not contain any gaps that may be present in the mapped indices.
      */
-    public static VariableMap of(Collection<String> variableNames) {
-        return new VariableMap(variableNames);
-    }
-
-    public static VariableMap empty() {
-        return new VariableMap();
-    }
-
     public List<String> getVariableNames() {
         return getObjects(false);
     }
 
+    /**
+     * {@return an unmodifiable list of the names mapped to the given list of indices}
+     * The names are in the same order as the given indices, but the list does not contain a name for any invalid index.
+     * @param indices the list of indices
+     */
     public List<String> getVariableNames(IntegerList indices) {
-        return indices.stream()
-                .filter(i -> isValidIndex(Math.abs(i)))
-                .mapToObj(i -> i > 0 ? indexToObject.get(i) : "-" + indexToObject.get(-i))
-                .collect(Collectors.toList());
+        return getObjects(indices);
     }
 
-    public List<Integer> getVariableIndices() {
-        return entryStream().map(e -> e.getValue()).collect(Collectors.toList());
-    }
-
-    public List<Integer> getVariableIndices(List<String> names) {
-        return stream(names).collect(Collectors.toList());
-    }
-
+    /**
+     * {@return a BooleanAssignment containing all variables mapped to the given names}
+     * @param names the list of names
+     */
     public BooleanAssignment getVariables(Collection<String> names) {
         return new BooleanAssignment(names.stream().mapToInt(objectToIndex::get).toArray());
     }
-
+    /**
+     * {@return a BooleanAssignment containing all variables in this map}
+     */
     public BooleanAssignment getVariables() {
         return new BooleanAssignment(entryStream().mapToInt(e -> e.getValue()).toArray());
     }
 
-    public int getVariableCount() {
-        return getVariableNames().size();
-    }
-
+    /**
+     * {@return a human readable mapping}
+     */
     public String print() {
         return stream()
                 .map(pair -> String.format("%d <-> %s", pair.getKey(), pair.getValue()))

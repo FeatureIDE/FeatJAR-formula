@@ -25,9 +25,7 @@ import de.featjar.base.data.Void;
 import de.featjar.base.tree.visitor.ITreeVisitor;
 import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.IFormula;
-import de.featjar.formula.structure.connective.And;
-import de.featjar.formula.structure.connective.IConnective;
-import de.featjar.formula.structure.connective.Or;
+import de.featjar.formula.structure.connective.*;
 import de.featjar.formula.structure.predicate.IPredicate;
 import java.util.List;
 
@@ -35,8 +33,9 @@ import java.util.List;
  * Merges nested {@link And} and {@link Or} connectives.
  *
  * @author Sebastian Krieter
+ * @author Andreas Gerasimow
  */
-public class AndOrMerger implements ITreeVisitor<IFormula, Void> {
+public class AndOrSimplifier implements ITreeVisitor<IFormula, Void> {
     @Override
     public TraversalAction firstVisit(List<IFormula> path) {
         final IFormula formula = ITreeVisitor.getCurrentNode(path);
@@ -57,11 +56,21 @@ public class AndOrMerger implements ITreeVisitor<IFormula, Void> {
         } else if (formula instanceof Or) {
             formula.flatReplaceChildren(this::mergeOr);
         }
-        formula.replaceChildren(
-                child -> child.getChildrenCount() == 1 && ((child instanceof And) || (child instanceof Or))
-                        ? child.getFirstChild().get()
-                        : null);
+        formula.replaceChildren((child) -> {
+            if (child.getChildrenCount() == 1 && ((child instanceof And) || (child instanceof Or))) {
+                return child.getFirstChild().get();
+            } else if (child instanceof Not) {
+                return simplifyNot(child);
+            }
+            return null;
+        });
         return TraversalAction.CONTINUE;
+    }
+
+    private IExpression simplifyNot(final IExpression child) {
+        return child.getFirstChild().isPresent() && child.getFirstChild().get() instanceof Not
+                ? child.getFirstChild().get().getFirstChild().get()
+                : null;
     }
 
     private List<? extends IExpression> mergeAnd(final IExpression child) {
