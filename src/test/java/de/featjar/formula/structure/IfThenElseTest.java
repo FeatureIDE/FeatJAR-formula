@@ -23,10 +23,12 @@ package de.featjar.formula.structure;
 import de.featjar.base.FeatJAR;
 import de.featjar.base.tree.Trees;
 import de.featjar.formula.assignment.Assignment;
+import de.featjar.formula.structure.connective.Implies;
+import de.featjar.formula.structure.predicate.Literal;
+import de.featjar.formula.structure.predicate.NotEquals;
 import de.featjar.formula.structure.term.ITerm;
 import de.featjar.formula.structure.term.function.IfThenElse;
 import de.featjar.formula.structure.term.function.IntegerAdd;
-import de.featjar.formula.structure.term.value.Variable;
 import de.featjar.formula.visitor.Evaluator;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -36,16 +38,22 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class IfThenElseTest {
 
-    Variable feature1;
-    Variable feature2;
+    Literal feature1;
+    Literal feature2;
+
+    IFormula feature3;
+    IFormula feature4;
 
     ITerm attribute1;
     ITerm attribute2;
     ITerm defaultValue;
 
     public IfThenElseTest() {
-        feature1 = new Variable("feature1", Boolean.class);
-        feature2 = new Variable("feature2", Boolean.class);
+        feature1 = Expressions.literal("feature1");
+        feature2 = Expressions.literal("feature2");
+
+        feature3 = new NotEquals(Expressions.variable("feature3", Double.class), Expressions.constant(3.5));
+        feature4 = new Implies(feature1, feature2);
 
         attribute1 = Expressions.constant(10L, Long.class);
         attribute2 = Expressions.constant(100L, Long.class);
@@ -75,6 +83,32 @@ public class IfThenElseTest {
         assertEquals(0L, ((long) result.get().get()));
     }
 
+    @Test
+    public void ifThenElseTest3() {
+        IfThenElse ifThenElse = new IfThenElse(feature3,  attribute1, defaultValue);
+        var result = Trees.traverse(ifThenElse, new Evaluator(new Assignment("feature3", 1.0)));
+
+        assertTrue(result.get().isPresent());
+        assertEquals(10L, ((long) result.get().get()));
+    }
+
+    @Test
+    public void ifThenElseTest4() {
+        IfThenElse ifThenElse = new IfThenElse(feature3,  attribute1, defaultValue);
+        var result = Trees.traverse(ifThenElse, new Evaluator(new Assignment("feature3", 3.5)));
+
+        assertTrue(result.get().isPresent());
+        assertEquals(0L, ((long) result.get().get()));
+    }
+
+    @Test
+    public void ifThenElseTest5() {
+        IfThenElse ifThenElse = new IfThenElse(feature4,  attribute1, defaultValue);
+        var result = Trees.traverse(ifThenElse, new Evaluator(new Assignment("feature1", true, "feature2", false)));
+
+        assertTrue(result.get().isPresent());
+        assertEquals(0L, ((long) result.get().get()));
+    }
 
     @Test
     public void ifThenElseSumTest1() {
@@ -110,11 +144,13 @@ public class IfThenElseTest {
     }
 
     @Test
-    public void ifThenElseErrorTest() {
-        var feature3 = Expressions.variable("feature3", Integer.class);
-        IfThenElse ifThenElse = new IfThenElse(feature3,  attribute1, defaultValue);
-        var result = Trees.traverse(ifThenElse, new Evaluator(new Assignment("feature3", 5)));
+    public void ifThenElseSumTest4() {
+        IntegerAdd sum = new IntegerAdd(new IfThenElse(feature3, attribute1, defaultValue),
+                new IfThenElse(feature4, attribute2, defaultValue));
 
-        assertTrue(result.get().isEmpty());
+        var result = Trees.traverse(sum, new Evaluator(new Assignment("feature1", true, "feature2", false, "feature3", 1.0)));
+
+        assertTrue(result.get().isPresent());
+        assertEquals(10L, ((long) result.get().get()));
     }
 }
