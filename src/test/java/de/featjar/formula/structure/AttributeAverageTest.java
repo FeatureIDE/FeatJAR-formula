@@ -22,13 +22,13 @@ package de.featjar.formula.structure;
 
 import de.featjar.base.FeatJAR;
 import de.featjar.base.data.Result;
+import de.featjar.formula.structure.predicate.Literal;
 import de.featjar.formula.structure.term.aggregate.AttributeAverage;
 import de.featjar.formula.structure.term.aggregate.AttributeSum;
 import de.featjar.formula.structure.term.function.IfThenElse;
 import de.featjar.formula.structure.term.function.RealAdd;
 import de.featjar.formula.structure.term.function.RealDivide;
 import de.featjar.formula.structure.term.value.Constant;
-import de.featjar.formula.structure.term.value.Variable;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -47,16 +47,15 @@ public class AttributeAverageTest {
 
     @Test
     public void average1() {
-        List<Variable> variables = List.of(new Variable("A", Boolean.class),
-                new Variable("B", Boolean.class));
+        List<IFormula> formulas = List.of(new Literal("A"), new Literal("B"));
         List<Integer> values = List.of(1, 2);
         Constant defaultValue = new Constant(0.0, Double.class);
 
         AttributeAverage attributeAverage = new AttributeAverage("key");
-        Result<IExpression> test = attributeAverage.translate(variables, values);
+        Result<IExpression> test = attributeAverage.translate(formulas, values);
 
-        IExpression comparison = new RealDivide(new RealAdd(new IfThenElse(variables.get(0), new Constant(1.0, Double.class), defaultValue), new IfThenElse(variables.get(1), new Constant(2.0, Double.class), defaultValue)),
-                new RealAdd(new IfThenElse(variables.get(0), new Constant(1.0, Double.class), defaultValue), new IfThenElse(variables.get(1), new Constant(1.0, Double.class), defaultValue)));
+        IExpression comparison = new RealDivide(new RealAdd(new IfThenElse(formulas.get(0), new Constant(1.0, Double.class), defaultValue), new IfThenElse(formulas.get(1), new Constant(2.0, Double.class), defaultValue)),
+                new RealAdd(new IfThenElse(formulas.get(0), new Constant(1.0, Double.class), defaultValue), new IfThenElse(formulas.get(1), new Constant(1.0, Double.class), defaultValue)));
 
         assertTrue(test.isPresent());
         assertTrue(test.get().equalsTree(comparison));
@@ -64,16 +63,16 @@ public class AttributeAverageTest {
 
     @Test
     public void average2() {
-        List<Variable> variables = List.of(new Variable("A", Boolean.class),
-                new Variable("B", Boolean.class), new Variable("C", Boolean.class));
+        List<IFormula> formulas = List.of(new Literal("A"), new Literal("B"),
+                new Literal("C"));
         List<Double> values = List.of(1.0, 2.0, 3.0);
         Constant defaultValue = new Constant(0.0, Double.class);
 
         AttributeAverage attributeAverage = new AttributeAverage("key");
-        Result<IExpression> test = attributeAverage.translate(variables, values);
+        Result<IExpression> test = attributeAverage.translate(formulas, values);
 
-        IExpression comparison = new RealDivide(new RealAdd(new IfThenElse(variables.get(0), new Constant(1.0, Double.class), defaultValue), new IfThenElse(variables.get(1), new Constant(2.0, Double.class), defaultValue), new IfThenElse(variables.get(2), new Constant(3.0, Double.class), defaultValue)),
-                new RealAdd(new IfThenElse(variables.get(0), new Constant(1.0, Double.class), defaultValue), new IfThenElse(variables.get(1), new Constant(1.0, Double.class), defaultValue), new IfThenElse(variables.get(2), new Constant(1.0, Double.class), defaultValue)));
+        IExpression comparison = new RealDivide(new RealAdd(new IfThenElse(formulas.get(0), new Constant(1.0, Double.class), defaultValue), new IfThenElse(formulas.get(1), new Constant(2.0, Double.class), defaultValue), new IfThenElse(formulas.get(2), new Constant(3.0, Double.class), defaultValue)),
+                new RealAdd(new IfThenElse(formulas.get(0), new Constant(1.0, Double.class), defaultValue), new IfThenElse(formulas.get(1), new Constant(1.0, Double.class), defaultValue), new IfThenElse(formulas.get(2), new Constant(1.0, Double.class), defaultValue)));
 
         assertTrue(test.isPresent());
         assertTrue(test.get().equalsTree(comparison));
@@ -81,15 +80,15 @@ public class AttributeAverageTest {
 
     @Test
     public void average3() {
-        List<Variable> variables = List.of(new Variable("A", Boolean.class));
+        List<IFormula> formulas = List.of(new Literal("A"));
         List<Float> values = List.of(1.0f);
         Constant defaultValue = new Constant(0.0, Double.class);
 
         AttributeAverage attributeAverage = new AttributeAverage("key");
-        Result<IExpression> test = attributeAverage.translate(variables, values);
+        Result<IExpression> test = attributeAverage.translate(formulas, values);
 
-        IExpression comparison = new RealDivide(new RealAdd(new IfThenElse(variables.get(0), new Constant(1.0, Double.class), defaultValue)),
-                new RealAdd(new IfThenElse(variables.get(0), new Constant(1.0, Double.class), defaultValue)));
+        IExpression comparison = new RealDivide(new RealAdd(new IfThenElse(formulas.get(0), new Constant(1.0, Double.class), defaultValue)),
+                new RealAdd(new IfThenElse(formulas.get(0), new Constant(1.0, Double.class), defaultValue)));
 
         assertTrue(test.isPresent());
         assertTrue(test.get().equalsTree(comparison));
@@ -103,30 +102,29 @@ public class AttributeAverageTest {
         Result<IExpression> test = attributeSum.translate(null, values);
 
         assertTrue(test.isEmpty());
-        assertTrue(test.getProblems().get(0).getMessage().contains("Variables or values is null or empty"));
+        assertTrue(test.getProblems().get(0).getMessage().contains("Formulas or values is null or empty"));
     }
 
     @Test
     public void sizeMismatch() {
-        List<Variable> variables = List.of(new Variable("A", Boolean.class),
-                new Variable("B", Boolean.class), new Variable("C", Boolean.class));
+        List<IFormula> formulas = List.of(new Literal("A"), new Literal("B"),
+                new Literal("C"));
         List<Double> values = List.of(1.0, 2.0);
 
         AttributeAverage attributeAverage = new AttributeAverage("key");
-        Result<IExpression> test = attributeAverage.translate(variables, values);
+        Result<IExpression> test = attributeAverage.translate(formulas, values);
 
         assertTrue(test.isEmpty());
-        assertTrue(test.getProblems().get(0).getMessage().contains("Size of variables is unequal to size of values"));
+        assertTrue(test.getProblems().get(0).getMessage().contains("Size of formulas is unequal to size of values"));
     }
 
     @Test
     public void notNumeric() {
-        List<Variable> variables = List.of(new Variable("A", Boolean.class),
-                new Variable("B", Boolean.class));
+        List<IFormula> formulas = List.of(new Literal("A"), new Literal("B"));
         List<Boolean> values = List.of(true, false);
 
         AttributeAverage attributeAverage = new AttributeAverage("key");
-        Result<IExpression> test = attributeAverage.translate(variables, values);
+        Result<IExpression> test = attributeAverage.translate(formulas, values);
 
         assertTrue(test.isEmpty());
         assertEquals("Unsupported type for attribute average", test.getProblems().get(0).getMessage());

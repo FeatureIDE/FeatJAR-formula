@@ -23,8 +23,8 @@ package de.featjar.formula.structure.term.function;
 import de.featjar.base.tree.structure.ITree;
 import de.featjar.formula.structure.ANonTerminalExpression;
 import de.featjar.formula.structure.IExpression;
+import de.featjar.formula.structure.IFormula;
 import de.featjar.formula.structure.term.ITerm;
-import de.featjar.formula.structure.term.value.Variable;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,8 +33,12 @@ public class IfThenElse extends ANonTerminalExpression implements IFunction {
 
     private final Class<?> type;
 
-    public IfThenElse(Variable variable, ITerm term1, ITerm term2) {
-        super(variable, term1, term2);
+    protected IfThenElse() {
+        type = Object.class;
+    }
+
+    public IfThenElse(IFormula formula, ITerm term1, ITerm term2) {
+        super(formula, term1, term2);
 
         if(term1.getType() != term2.getType()) {
             throw new IllegalArgumentException("Terms don't match");
@@ -55,10 +59,12 @@ public class IfThenElse extends ANonTerminalExpression implements IFunction {
 
     @Override
     public Optional<?> evaluate(List<?> values) {
-        Object condition = values.get(0);
+        if(!values.isEmpty()) {
+            Object condition = values.get(0);
 
-        if(condition instanceof Boolean) {
-            return Optional.ofNullable((Boolean) condition ? values.get(1) : values.get(2));
+            if (condition instanceof Boolean) {
+                return Optional.ofNullable((Boolean) condition ? values.get(1) : values.get(2));
+            }
         }
 
         return Optional.empty();
@@ -66,6 +72,6 @@ public class IfThenElse extends ANonTerminalExpression implements IFunction {
 
     @Override
     public ITree<IExpression> cloneNode() {
-        return null;
+        return new IfThenElse();
     }
 }

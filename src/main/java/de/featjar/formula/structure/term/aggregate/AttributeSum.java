@@ -25,6 +25,7 @@ import de.featjar.base.data.Result;
 import de.featjar.base.tree.structure.ITree;
 import de.featjar.formula.structure.ATerminalExpression;
 import de.featjar.formula.structure.IExpression;
+import de.featjar.formula.structure.IFormula;
 import de.featjar.formula.structure.term.ITerm;
 import de.featjar.formula.structure.term.function.IfThenElse;
 import de.featjar.formula.structure.term.function.IntegerAdd;
@@ -79,13 +80,13 @@ public class AttributeSum extends ATerminalExpression implements IAttributeAggre
     }
 
     @Override
-    public Result<IExpression> translate(List<Variable> variables, List<?> values) {
-        if(variables == null || variables.isEmpty() || values == null || values.isEmpty()) {
-            return Result.empty(new Problem("Variables or values is null or empty"));
+    public Result<IExpression> translate(List<IFormula> formulas, List<?> values) {
+        if(formulas == null || formulas.isEmpty() || values == null || values.isEmpty()) {
+            return Result.empty(new Problem("Formulas or values is null or empty"));
         }
 
-        if(variables.size() != values.size()) {
-            return Result.empty(new Problem("Size of variables is unequal to size of values"));
+        if(formulas.size() != values.size()) {
+            return Result.empty(new Problem("Size of formulas is unequal to size of values"));
         }
 
         Constant defaultValue;
@@ -103,15 +104,14 @@ public class AttributeSum extends ATerminalExpression implements IAttributeAggre
         }
 
         var termList = new ArrayList<ITerm>();
-        for(int i = 0; i < variables.size(); i++) {
+        for(int i = 0; i < formulas.size(); i++) {
            if((values.get(i) instanceof Double || values.get(i) instanceof Float) && type.equals(Double.class)) {
-                termList.add(new IfThenElse(variables.get(i),
+                termList.add(new IfThenElse(formulas.get(i),
                         new Constant(((Number) values.get(i)).doubleValue(), Double.class), defaultValue));
            } else if((values.get(i) instanceof Long || values.get(i) instanceof Integer ||
                    values.get(i) instanceof Short || values.get(i) instanceof Byte) && type.equals(Long.class)) {
-                termList.add(new IfThenElse(variables.get(i),
+                termList.add(new IfThenElse(formulas.get(i),
                         new Constant(((Number) values.get(i)).longValue(), Long.class), defaultValue));
-
            } else {
                return Result.empty(new Problem("All attribute types have to be equal"));
            }

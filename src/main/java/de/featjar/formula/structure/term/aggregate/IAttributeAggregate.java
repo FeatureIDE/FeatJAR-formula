@@ -22,8 +22,8 @@ package de.featjar.formula.structure.term.aggregate;
 
 import de.featjar.base.data.Result;
 import de.featjar.formula.structure.IExpression;
+import de.featjar.formula.structure.IFormula;
 import de.featjar.formula.structure.term.ITerm;
-import de.featjar.formula.structure.term.value.Variable;
 
 import java.util.List;
 
@@ -39,5 +39,5 @@ public interface IAttributeAggregate extends ITerm {
 
     String getAttributeFilter();
 
-    Result<IExpression> translate(List<Variable> variables, List<?> values);
+    Result<IExpression> translate(List<IFormula> formulas, List<?> values);
 }
