@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Adds the values of two integer terms.
+ * Adds the values of multiple integer terms.
  *
  * @author Sebastian Krieter
  */
@@ -33,8 +33,8 @@ public class IntegerAdd extends AAdd {
 
     protected IntegerAdd() {}
 
-    public IntegerAdd(ITerm leftTerm, ITerm rightTerm) {
-        super(leftTerm, rightTerm);
+    public IntegerAdd(ITerm... terms) {
+        super(terms);
     }
 
     public IntegerAdd(List<ITerm> arguments) {

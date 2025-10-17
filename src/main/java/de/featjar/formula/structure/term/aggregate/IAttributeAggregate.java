@@ -18,46 +18,26 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.structure.term.function;
+package de.featjar.formula.structure.term.aggregate;
 
+import de.featjar.base.data.Result;
+import de.featjar.formula.structure.IExpression;
+import de.featjar.formula.structure.IFormula;
 import de.featjar.formula.structure.term.ITerm;
+
 import java.util.List;
-import java.util.Optional;
 
 /**
- * Adds the values of multiple real terms.
+ * Interface for modelling attribute aggregate functionality. Attribute aggregates are placeholders which
+ * will be translated into the actual formula.
  *
- * @author Sebastian Krieter
+ * @author Lara Merza
+ * @author Felix Behme
+ * @author Jonas Hanke
  */
-public class RealAdd extends AAdd {
+public interface IAttributeAggregate extends ITerm {
 
-    protected RealAdd() {}
+    String getAttributeFilter();
 
-    public RealAdd(ITerm... terms) {
-        super(terms);
-    }
-
-    public RealAdd(List<ITerm> arguments) {
-        super(arguments);
-    }
-
-    @Override
-    public Class<Double> getType() {
-        return Double.class;
-    }
-
-    @Override
-    public Class<Double> getChildrenType() {
-        return Double.class;
-    }
-
-    @Override
-    public Optional<Double> evaluate(List<?> values) {
-        return Optional.ofNullable(IFunction.reduce(values, Double::sum));
-    }
-
-    @Override
-    public RealAdd cloneNode() {
-        return new RealAdd();
-    }
+    Result<IExpression> translate(List<IFormula> formulas, List<?> values);
 }
