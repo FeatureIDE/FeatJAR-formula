@@ -43,7 +43,7 @@ public class LessEqual extends ANonTerminalExpression implements IBinaryPredicat
 
     @Override
     public String getName() {
-        return ">=";
+        return "<=";
     }
 
     @Override
