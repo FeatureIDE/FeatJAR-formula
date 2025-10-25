@@ -22,7 +22,7 @@ package de.featjar.formula.combination;
 
 import de.featjar.base.FeatJAR;
 import de.featjar.base.data.BinomialCalculator;
-import de.featjar.base.data.MultiLexicographicIterator;
+import de.featjar.base.data.combination.CombinationStream;
 import de.featjar.formula.VariableMap;
 import de.featjar.formula.assignment.BooleanAssignment;
 import de.featjar.formula.assignment.BooleanAssignmentList;
@@ -52,27 +52,26 @@ public class LiteralSetsCombinationSpecification extends ASetsCombinationSpecifi
     }
 
     public void forEach(Consumer<int[]> consumer) {
-        MultiLexicographicIterator.stream(elementSets, tValues).forEach(combination -> {
+        CombinationStream.stream(elementSets, tValues).forEach(combination -> {
             consumer.accept(combination.select());
         });
     }
 
     public <V> void forEach(BiConsumer<V, int[]> consumer, Supplier<V> environmentCreator) {
-        MultiLexicographicIterator.stream(elementSets, tValues, environmentCreator)
-                .forEach(combination -> {
-                    consumer.accept(combination.environment(), combination.select());
-                });
+        CombinationStream.stream(elementSets, tValues, environmentCreator).forEach(combination -> {
+            consumer.accept(combination.environment(), combination.select());
+        });
     }
 
     @Override
     public void forEachParallel(Consumer<int[]> consumer) {
-        MultiLexicographicIterator.stream(elementSets, tValues).forEach(combination -> {
+        CombinationStream.stream(elementSets, tValues).forEach(combination -> {
             consumer.accept(combination.select());
         });
     }
 
     public <V> void forEachParallel(BiConsumer<V, int[]> consumer, Supplier<V> environmentCreator) {
-        MultiLexicographicIterator.stream(elementSets, tValues, environmentCreator)
+        CombinationStream.parallelStream(elementSets, tValues, environmentCreator)
                 .forEach(combination -> {
                     consumer.accept(combination.environment(), combination.select());
                 });

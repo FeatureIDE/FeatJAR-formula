@@ -22,7 +22,7 @@ package de.featjar.formula.combination;
 
 import de.featjar.base.FeatJAR;
 import de.featjar.base.data.BinomialCalculator;
-import de.featjar.base.data.SingleLexicographicIterator;
+import de.featjar.base.data.combination.CombinationStream;
 import de.featjar.formula.VariableMap;
 import de.featjar.formula.assignment.BooleanAssignment;
 import de.featjar.formula.assignment.BooleanAssignmentList;
@@ -55,29 +55,28 @@ public class LiteralCombinationSpecification extends ACombinationSpecification {
     }
 
     public void forEach(Consumer<int[]> consumer) {
-        SingleLexicographicIterator.stream(elements, t).forEach(combination -> {
+        CombinationStream.stream(elements, t).forEach(combination -> {
             consumer.accept(combination.select());
         });
     }
 
     public <V> void forEach(BiConsumer<V, int[]> consumer, Supplier<V> environmentCreator) {
-        SingleLexicographicIterator.stream(elements, t, environmentCreator).forEach(combination -> {
+        CombinationStream.stream(elements, t, environmentCreator).forEach(combination -> {
             consumer.accept(combination.environment(), combination.select());
         });
     }
 
     @Override
     public void forEachParallel(Consumer<int[]> consumer) {
-        SingleLexicographicIterator.parallelStream(elements, t).forEach(combination -> {
+        CombinationStream.parallelStream(elements, t).forEach(combination -> {
             consumer.accept(combination.select());
         });
     }
 
     public <V> void forEachParallel(BiConsumer<V, int[]> consumer, Supplier<V> environmentCreator) {
-        SingleLexicographicIterator.parallelStream(elements, t, environmentCreator)
-                .forEach(combination -> {
-                    consumer.accept(combination.environment(), combination.select());
-                });
+        CombinationStream.parallelStream(elements, t, environmentCreator).forEach(combination -> {
+            consumer.accept(combination.environment(), combination.select());
+        });
     }
 
     @Override

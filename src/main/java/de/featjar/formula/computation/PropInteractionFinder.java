@@ -22,7 +22,7 @@ package de.featjar.formula.computation;
 
 import de.featjar.analysis.IConfigurationTester;
 import de.featjar.analysis.IConfigurationUpdater;
-import de.featjar.base.data.SingleLexicographicIterator;
+import de.featjar.base.data.combination.CombinationStream;
 import de.featjar.formula.assignment.BooleanAssignment;
 import de.featjar.formula.assignment.BooleanClause;
 import de.featjar.formula.assignment.BooleanSolution;
@@ -106,9 +106,9 @@ public class PropInteractionFinder {
                     }
                     int[] literals = new int[t2];
 
-                    SingleLexicographicIterator.stream(variantLiterals, t2).forEach(combo -> {
+                    CombinationStream.stream(variantLiterals, t2).forEach(combo -> {
                         for (int k = 0; k < t2; k++) {
-                            final int l = variantLiterals[(int) combo.indexElements()[k]];
+                            final int l = variantLiterals[(int) combo.selectionIndices()[k]];
                             literals[k] = mask[k] ? l : -l;
                         }
 

@@ -29,7 +29,7 @@ import de.featjar.base.computation.Progress;
 import de.featjar.base.data.BinomialCalculator;
 import de.featjar.base.data.Ints;
 import de.featjar.base.data.Result;
-import de.featjar.base.data.SingleLexicographicIterator;
+import de.featjar.base.data.combination.CombinationStream;
 import de.featjar.formula.VariableMap;
 import de.featjar.formula.assignment.BooleanAssignment;
 import de.featjar.formula.assignment.BooleanAssignmentList;
@@ -96,7 +96,7 @@ public class VariableCombinationSpecification extends ACombinationSpecification 
 
     public void forEach(Consumer<int[]> consumer) {
         final int[] gray = Ints.grayCode(t);
-        SingleLexicographicIterator.stream(elements, t).forEach(combination -> {
+        CombinationStream.stream(elements, t).forEach(combination -> {
             final int[] combinationLiterals = combination.select();
             for (int g : gray) {
                 consumer.accept(combinationLiterals);
@@ -107,7 +107,7 @@ public class VariableCombinationSpecification extends ACombinationSpecification 
 
     public <V> void forEach(BiConsumer<V, int[]> consumer, Supplier<V> environmentCreator) {
         final int[] gray = Ints.grayCode(t);
-        SingleLexicographicIterator.stream(elements, t, environmentCreator).forEach(combination -> {
+        CombinationStream.stream(elements, t, environmentCreator).forEach(combination -> {
             final int[] combinationLiterals = combination.select();
             final V environment = combination.environment();
             for (int g : gray) {
@@ -119,7 +119,7 @@ public class VariableCombinationSpecification extends ACombinationSpecification 
 
     public void forEachParallel(Consumer<int[]> consumer) {
         final int[] gray = Ints.grayCode(t);
-        SingleLexicographicIterator.parallelStream(elements, t).forEach(combination -> {
+        CombinationStream.parallelStream(elements, t).forEach(combination -> {
             final int[] combinationLiterals = combination.select();
             for (int g : gray) {
                 consumer.accept(combinationLiterals);
@@ -130,15 +130,14 @@ public class VariableCombinationSpecification extends ACombinationSpecification 
 
     public <V> void forEachParallel(BiConsumer<V, int[]> consumer, Supplier<V> environmentCreator) {
         final int[] gray = Ints.grayCode(t);
-        SingleLexicographicIterator.parallelStream(elements, t, environmentCreator)
-                .forEach(combination -> {
-                    final int[] combinationLiterals = combination.select();
-                    final V environment = combination.environment();
-                    for (int g : gray) {
-                        consumer.accept(environment, combinationLiterals);
-                        combinationLiterals[g] = -combinationLiterals[g];
-                    }
-                });
+        CombinationStream.parallelStream(elements, t, environmentCreator).forEach(combination -> {
+            final int[] combinationLiterals = combination.select();
+            final V environment = combination.environment();
+            for (int g : gray) {
+                consumer.accept(environment, combinationLiterals);
+                combinationLiterals[g] = -combinationLiterals[g];
+            }
+        });
     }
 
     @Override

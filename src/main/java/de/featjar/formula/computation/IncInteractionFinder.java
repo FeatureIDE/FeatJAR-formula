@@ -23,7 +23,7 @@ package de.featjar.formula.computation;
 import de.featjar.analysis.IConfigurationTester;
 import de.featjar.analysis.IConfigurationUpdater;
 import de.featjar.base.data.IntegerList;
-import de.featjar.base.data.SingleLexicographicIterator;
+import de.featjar.base.data.combination.CombinationStream;
 import de.featjar.formula.assignment.BooleanAssignment;
 import de.featjar.formula.assignment.BooleanAssignmentList;
 import de.featjar.formula.assignment.BooleanSolution;
@@ -174,7 +174,7 @@ public class IncInteractionFinder {
             return List.of(commonLiterals);
         }
 
-        Stream<int[]> stream = SingleLexicographicIterator.parallelStream(commonLiterals, t) //
+        Stream<int[]> stream = CombinationStream.parallelStream(commonLiterals, t) //
                 .map(combo -> combo.select());
         List<int[]> interactions;
         if (lastMerge != null) {
