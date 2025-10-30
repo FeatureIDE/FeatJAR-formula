@@ -13,7 +13,6 @@
 		<extension id="de.featjar.formula.io.dimacs.BooleanAssignmentGroupsDimacsFormat" />
 		<extension id="de.featjar.formula.io.textual.BooleanAssignmentGroupsString" />
 		<extension id="de.featjar.formula.io.textual.BooleanAssignmentListString" />
-		<extension id="de.featjar.formula.io.textual.BooleanAssignmentString" /
 		<extension id="de.featjar.formula.io.dimacs.BooleanAssignmentGroupsDimacsListFormat" />
 	</point>
 		<point id="de.featjar.formula.io.BooleanAssignmentListFormats" priority="10">
@@ -22,6 +21,9 @@
 		<extension id="de.featjar.formula.io.textual.BooleanAssignmentListSimpleTextFormat" />
 		<extension id="de.featjar.formula.io.textual.BooleanAssignmentListTextFormat" />
 		<extension id="de.featjar.formula.io.dimacs.BooleanAssignmentListDimacsFormat" />
+	</point>
+		<point id="de.featjar.formula.io.BooleanAssignmentFormats" priority="10">
+		<extension id="de.featjar.formula.io.textual.BooleanAssignmentString" />
 	</point>
 	<point id="de.featjar.base.cli.Commands">
 		<extension id="de.featjar.composition.cli.PreprocessorCommand" />
