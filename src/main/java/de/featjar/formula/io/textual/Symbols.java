@@ -54,6 +54,8 @@ public class Symbols {
     private final Trie operatorNames = new Trie();
 
     private final boolean textual;
+    private String quoteStart = "\"";
+    private String quoteEnd = "\"";
 
     public Symbols(boolean textual) {
         this.textual = textual;
@@ -111,6 +113,14 @@ public class Symbols {
         properties.name = name;
         properties.priority = priority;
         properties.infix = infix;
+    }
+
+    public void setQuoteStart(String quoteStart) {
+        this.quoteStart = quoteStart;
+    }
+
+    public void setQuoteEnd(String quoteEnd) {
+        this.quoteEnd = quoteEnd;
     }
 
     @Override
@@ -175,5 +185,13 @@ public class Symbols {
                 .sorted(Comparator.comparing(e -> e.getValue().priority))
                 .map(e -> e.getValue().name)
                 .collect(Collectors.toList());
+    }
+
+    public String quoteStart() {
+        return quoteStart;
+    }
+
+    public String quoteEnd() {
+        return quoteEnd;
     }
 }

@@ -51,6 +51,7 @@ public class ExpressionSerializer implements IInOrderTreeVisitor<IExpression, St
     public static final Notation STANDARD_NOTATION = Notation.INFIX;
     public static final boolean STANDARD_ENFORCE_PARENTHESES = false;
     public static final boolean STANDARD_ENQUOTE_WHITESPACE = false;
+    public static final boolean STANDARD_ENQUOTE_ALWAYS = false;
     public static final String STANDARD_TAB_STRING = "\t";
     public static final String STANDARD_NEW_LINE = System.lineSeparator();
 
@@ -121,6 +122,8 @@ public class ExpressionSerializer implements IInOrderTreeVisitor<IExpression, St
     private boolean enforceParentheses = STANDARD_ENFORCE_PARENTHESES;
     /** If true, this writer will enquote variables if they contain whitespace. */
     private boolean enquoteWhitespace = STANDARD_ENQUOTE_WHITESPACE;
+    /** If true, this writer will enquote all variables. */
+    private boolean enquoteAlways = STANDARD_ENQUOTE_ALWAYS;
 
     private String tab = STANDARD_TAB_STRING;
     private String newLine = STANDARD_NEW_LINE;
@@ -228,6 +231,26 @@ public class ExpressionSerializer implements IInOrderTreeVisitor<IExpression, St
      */
     protected boolean isEnquoteWhitespace() {
         return enquoteWhitespace;
+    }
+
+    /**
+     * Sets the enquoting always flag. If {@code true}, this writer will enquote
+     * all variables.
+     *
+     * @param enquoteAlways if {@code true} the writer will enquote all variable
+     *                      names.
+     */
+    public void setEnquoteAlways(boolean enquoteAlways) {
+        this.enquoteAlways = enquoteAlways;
+    }
+
+    /**
+     * Returns the enquoting always flag.
+     *
+     * @return the enquoting always flag
+     */
+    protected boolean isEnquoteAlways() {
+        return enquoteAlways;
     }
 
     private StringBuilder sb = new StringBuilder();
@@ -352,7 +375,7 @@ public class ExpressionSerializer implements IInOrderTreeVisitor<IExpression, St
                 || symbols.getPriority(node).orElse(-1)
                         <= ITreeVisitor.getParentNode(path)
                                 .flatMap(symbols::getPriority)
-                                .orElse(-2);
+                                .orElse(-1);
     }
 
     @Override
@@ -373,7 +396,9 @@ public class ExpressionSerializer implements IInOrderTreeVisitor<IExpression, St
      */
     private String variableToString(IExpression variable) {
         final String name = variable.getName();
-        return (enquoteWhitespace && (containsWhitespace(name) || equalsSymbol(name))) ? '"' + name + '"' : name;
+        return enquoteAlways || (enquoteWhitespace && (containsWhitespace(name) || equalsSymbol(name)))
+                ? symbols.quoteStart() + name + symbols.quoteEnd()
+                : name;
     }
 
     private void alignLine(int depth) {
