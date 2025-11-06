@@ -26,7 +26,6 @@ import de.featjar.base.cli.Option;
 import de.featjar.base.cli.OptionList;
 import de.featjar.base.data.Result;
 import de.featjar.base.io.IO;
-import de.featjar.base.shell.ShellSession;
 import de.featjar.base.tree.Trees;
 import de.featjar.formula.io.FormulaFormats;
 import de.featjar.formula.io.textual.ExpressionSerializer;
@@ -38,7 +37,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
