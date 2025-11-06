@@ -18,14 +18,16 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.structure.term.function;
+package de.featjar.formula.structure.term.function.real;
 
 import de.featjar.formula.structure.term.ITerm;
+import de.featjar.formula.structure.term.function.AAdd;
+import de.featjar.formula.structure.term.function.IFunction;
 import java.util.List;
 import java.util.Optional;
 
 /**
- * Adds the values of two real terms.
+ * Adds the values of multiple real terms.
  *
  * @author Sebastian Krieter
  */
@@ -33,8 +35,8 @@ public class RealAdd extends AAdd {
 
     protected RealAdd() {}
 
-    public RealAdd(ITerm leftTerm, ITerm rightTerm) {
-        super(leftTerm, rightTerm);
+    public RealAdd(ITerm... terms) {
+        super(terms);
     }
 
     public RealAdd(List<ITerm> arguments) {

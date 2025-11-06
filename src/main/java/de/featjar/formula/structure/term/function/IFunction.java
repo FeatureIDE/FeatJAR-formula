@@ -28,7 +28,7 @@ import java.util.function.BinaryOperator;
 
 /**
  * A function.
- * Functions (i.e., n-ary terms for n > 1) can be applied to terms
+ * Functions (i.e., n-ary terms for n >= 1) can be applied to terms
  * (i.e., another {@link IFunction} or a {@link IValue}).
  *
  * @author Sebastian Krieter

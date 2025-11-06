@@ -18,46 +18,48 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.structure.term.function;
+package de.featjar.formula.structure.term.function.integer;
 
 import de.featjar.formula.structure.term.ITerm;
+import de.featjar.formula.structure.term.function.AMultiply;
+import de.featjar.formula.structure.term.function.IFunction;
 import java.util.List;
 import java.util.Optional;
 
 /**
- * Divides the values of two real terms.
+ * Multiplies the values of two integer terms.
  *
  * @author Sebastian Krieter
  */
-public class RealDivide extends ADivide {
+public class IntegerMultiply extends AMultiply {
 
-    protected RealDivide() {}
+    protected IntegerMultiply() {}
 
-    public RealDivide(ITerm leftTerm, ITerm rightTerm) {
+    public IntegerMultiply(ITerm leftTerm, ITerm rightTerm) {
         super(leftTerm, rightTerm);
     }
 
-    public RealDivide(List<ITerm> arguments) {
+    public IntegerMultiply(List<ITerm> arguments) {
         super(arguments);
     }
 
     @Override
-    public Class<Double> getType() {
-        return Double.class;
+    public Class<Long> getType() {
+        return Long.class;
     }
 
     @Override
-    public Class<Double> getChildrenType() {
-        return Double.class;
+    public Class<Long> getChildrenType() {
+        return Long.class;
     }
 
     @Override
-    public Optional<Double> evaluate(List<?> values) {
-        return Optional.ofNullable(IFunction.reduce(values, (a, b) -> a / b));
+    public Optional<Long> evaluate(List<?> values) {
+        return Optional.ofNullable(IFunction.reduce(values, (a, b) -> a * b));
     }
 
     @Override
-    public RealDivide cloneNode() {
-        return new RealDivide();
+    public IntegerMultiply cloneNode() {
+        return new IntegerMultiply();
     }
 }

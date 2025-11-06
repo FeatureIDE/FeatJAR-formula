@@ -18,46 +18,48 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.structure.term.function;
+package de.featjar.formula.structure.term.function.real;
 
 import de.featjar.formula.structure.term.ITerm;
+import de.featjar.formula.structure.term.function.AMultiply;
+import de.featjar.formula.structure.term.function.IFunction;
 import java.util.List;
 import java.util.Optional;
 
 /**
- * Adds the values of two integer terms.
+ * Multiplies the values of two real terms.
  *
  * @author Sebastian Krieter
  */
-public class IntegerAdd extends AAdd {
+public class RealMultiply extends AMultiply {
 
-    protected IntegerAdd() {}
+    protected RealMultiply() {}
 
-    public IntegerAdd(ITerm leftTerm, ITerm rightTerm) {
+    public RealMultiply(ITerm leftTerm, ITerm rightTerm) {
         super(leftTerm, rightTerm);
     }
 
-    public IntegerAdd(List<ITerm> arguments) {
+    public RealMultiply(List<ITerm> arguments) {
         super(arguments);
     }
 
     @Override
-    public Class<Long> getType() {
-        return Long.class; // TODO: unintuitive that IntegerAdd requires Long, not Integer (same for real)
+    public Class<Double> getType() {
+        return Double.class;
     }
 
     @Override
-    public Class<Long> getChildrenType() {
-        return Long.class;
+    public Class<Double> getChildrenType() {
+        return Double.class;
     }
 
     @Override
-    public Optional<Long> evaluate(List<?> values) {
-        return Optional.ofNullable(IFunction.reduce(values, Long::sum));
+    public Optional<Double> evaluate(List<?> values) {
+        return Optional.ofNullable(IFunction.reduce(values, (a, b) -> a * b));
     }
 
     @Override
-    public IntegerAdd cloneNode() {
-        return new IntegerAdd();
+    public RealMultiply cloneNode() {
+        return new RealMultiply();
     }
 }

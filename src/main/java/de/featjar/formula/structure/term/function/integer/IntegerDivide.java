@@ -18,9 +18,11 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.structure.term.function;
+package de.featjar.formula.structure.term.function.integer;
 
 import de.featjar.formula.structure.term.ITerm;
+import de.featjar.formula.structure.term.function.ADivide;
+import de.featjar.formula.structure.term.function.IFunction;
 import java.util.List;
 import java.util.Optional;
 

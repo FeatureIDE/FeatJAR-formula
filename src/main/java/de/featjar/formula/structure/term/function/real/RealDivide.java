@@ -18,26 +18,28 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.structure.term.function;
+package de.featjar.formula.structure.term.function.real;
 
 import de.featjar.formula.structure.term.ITerm;
+import de.featjar.formula.structure.term.function.ADivide;
+import de.featjar.formula.structure.term.function.IFunction;
 import java.util.List;
 import java.util.Optional;
 
 /**
- * Multiplies the values of two real terms.
+ * Divides the values of two real terms.
  *
  * @author Sebastian Krieter
  */
-public class RealMultiply extends AMultiply {
+public class RealDivide extends ADivide {
 
-    protected RealMultiply() {}
+    protected RealDivide() {}
 
-    public RealMultiply(ITerm leftTerm, ITerm rightTerm) {
+    public RealDivide(ITerm leftTerm, ITerm rightTerm) {
         super(leftTerm, rightTerm);
     }
 
-    public RealMultiply(List<ITerm> arguments) {
+    public RealDivide(List<ITerm> arguments) {
         super(arguments);
     }
 
@@ -53,11 +55,11 @@ public class RealMultiply extends AMultiply {
 
     @Override
     public Optional<Double> evaluate(List<?> values) {
-        return Optional.ofNullable(IFunction.reduce(values, (a, b) -> a * b));
+        return Optional.ofNullable(IFunction.reduce(values, (a, b) -> a / b));
     }
 
     @Override
-    public RealMultiply cloneNode() {
-        return new RealMultiply();
+    public RealDivide cloneNode() {
+        return new RealDivide();
     }
 }

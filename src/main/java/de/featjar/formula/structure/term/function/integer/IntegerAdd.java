@@ -18,32 +18,34 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.structure.term.function;
+package de.featjar.formula.structure.term.function.integer;
 
 import de.featjar.formula.structure.term.ITerm;
+import de.featjar.formula.structure.term.function.AAdd;
+import de.featjar.formula.structure.term.function.IFunction;
 import java.util.List;
 import java.util.Optional;
 
 /**
- * Multiplies the values of two integer terms.
+ * Adds the values of multiple integer terms.
  *
  * @author Sebastian Krieter
  */
-public class IntegerMultiply extends AMultiply {
+public class IntegerAdd extends AAdd {
 
-    protected IntegerMultiply() {}
+    protected IntegerAdd() {}
 
-    public IntegerMultiply(ITerm leftTerm, ITerm rightTerm) {
-        super(leftTerm, rightTerm);
+    public IntegerAdd(ITerm... terms) {
+        super(terms);
     }
 
-    public IntegerMultiply(List<ITerm> arguments) {
+    public IntegerAdd(List<ITerm> arguments) {
         super(arguments);
     }
 
     @Override
     public Class<Long> getType() {
-        return Long.class;
+        return Long.class; // TODO: unintuitive that IntegerAdd requires Long, not Integer (same for real)
     }
 
     @Override
@@ -53,11 +55,11 @@ public class IntegerMultiply extends AMultiply {
 
     @Override
     public Optional<Long> evaluate(List<?> values) {
-        return Optional.ofNullable(IFunction.reduce(values, (a, b) -> a * b));
+        return Optional.ofNullable(IFunction.reduce(values, Long::sum));
     }
 
     @Override
-    public IntegerMultiply cloneNode() {
-        return new IntegerMultiply();
+    public IntegerAdd cloneNode() {
+        return new IntegerAdd();
     }
 }
