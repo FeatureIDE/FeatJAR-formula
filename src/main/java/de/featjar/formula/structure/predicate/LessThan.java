@@ -43,7 +43,7 @@ public class LessThan extends ANonTerminalExpression implements IBinaryPredicate
 
     @Override
     public String getName() {
-        return ">";
+        return "<";
     }
 
     @Override
