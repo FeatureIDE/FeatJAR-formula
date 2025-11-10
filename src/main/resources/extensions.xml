@@ -5,7 +5,6 @@
 		<extension id="de.featjar.formula.io.dimacs.FormulaCNFDimacsFormat" />
 	    <extension id="de.featjar.formula.io.xml.XMLFeatureModelFormulaFormat" />
 	    <extension id="de.featjar.formula.io.KConfigReaderFormat" />
-	    <extension id="de.featjar.formula.io.textual.FormulaStringFormat" />
 	</point>
 	<point id="de.featjar.formula.io.BooleanAssignmentGroupsFormats" priority="10">
 		<extension id="de.featjar.formula.io.binary.BooleanAssignmentGroupsBinaryFormat" />
