@@ -24,6 +24,12 @@ import de.featjar.base.data.Result;
 import de.featjar.base.io.format.IFormat;
 import de.featjar.formula.assignment.BooleanAssignment;
 
+/**
+ * Proof of concept format for {@link BooleanAssignment}.
+ * 
+ * @author Niclas Kleinert
+ */
+
 public class BooleanAssignmentString implements IFormat<BooleanAssignment> {
     @Override
     public Result<String> serialize(BooleanAssignment booleanAssignment) {
