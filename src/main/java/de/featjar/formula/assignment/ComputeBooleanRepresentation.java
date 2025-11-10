@@ -41,7 +41,7 @@ public class ComputeBooleanRepresentation extends AComputation<BooleanAssignment
 
     protected static final Dependency<Object> CNF = Dependency.newDependency();
 
-    public ComputeBooleanRepresentation(IComputation<IFormula> cnfFormula) {
+    public ComputeBooleanRepresentation(IComputation<? extends IFormula> cnfFormula) {
         super(cnfFormula);
     }
 

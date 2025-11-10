@@ -56,7 +56,7 @@ class ComputeCNFFormulaTest extends Common {
         FeatJAR.deinitialize();
     }
 
-    IComputation<IFormula> toCNF(IComputation<IFormula> formula) {
+    IComputation<? extends IFormula> toCNF(IComputation<IFormula> formula) {
         return formula.map(ComputeNNFFormula::new).map(ComputeCNFFormula::new);
     }
 
