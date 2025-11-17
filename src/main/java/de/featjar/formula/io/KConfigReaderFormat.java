@@ -42,8 +42,24 @@ import java.util.stream.Collectors;
  *
  * @author Elias Kuiter
  * @author Andreas Gerasimow
+ * @see <a href="https://github.com/ekuiter/torte-FeatJAR/blob/main/src/main/java/KConfigReaderFormat.java">KConfigReaderFormat</a>
  */
 public class KConfigReaderFormat implements IFormat<IExpression> {
+    private static final Pattern equivalencePattern = Pattern.compile("def\\(([^()]*?)==CONFIG_(.*?)\\)");
+
+    private static String fixNonBooleanConstraints(String l) {
+        Matcher matcher = equivalencePattern.matcher(l);
+        l = matcher.replaceAll(matchResult -> String.format("(%s<eq>%s)", matchResult.group(1), matchResult.group(2)));
+        return l.replace("=", "_")
+                .replace("<eq>", "==")
+                .replace(":", "_")
+                .replace(".", "_")
+                .replace(",", "_")
+                .replace("/", "_")
+                .replace("\\", "_")
+                .replace(" ", "_")
+                .replace("-", "_");
+    }
 
     @Override
     public Result<IExpression> parse(AInputMapper inputMapper) {
@@ -57,17 +73,7 @@ public class KConfigReaderFormat implements IFormat<IExpression> {
                 .map(String::trim)
                 .filter(l -> !l.isEmpty())
                 .filter(l -> !l.startsWith("#"))
-                .filter(l -> containsDef(l, problems))
-                // "convert" non-boolean constraints into boolean constraints
-                // TODO: parse as proper first-order formulas
-                .map(l -> l.replace("=", "_"))
-                .map(l -> l.replace(":", "_"))
-                .map(l -> l.replace(".", "_"))
-                .map(l -> l.replace(",", "_"))
-                .map(l -> l.replace("/", "_"))
-                .map(l -> l.replace("\\", "_"))
-                .map(l -> l.replace(" ", "_"))
-                .map(l -> l.replace("-", "_"))
+                .map(KConfigReaderFormat::fixNonBooleanConstraints)
                 .map(l -> l.replaceAll("def\\((\\w+)\\)", "$1"))
                 .map(expressionParser::parse)
                 .peek(r -> problems.addAll(r.getProblems()))
@@ -76,16 +82,6 @@ public class KConfigReaderFormat implements IFormat<IExpression> {
                 .collect(Collectors.toList());
 
         return Result.of(new Reference(subformulas.size() == 1 ? subformulas.get(0) : new And(subformulas)), problems);
-    }
-
-    public boolean containsDef(String line, ArrayList<Problem> problems) {
-        Pattern pattern = Pattern.compile("def\\(.+\\)");
-        Matcher matcher = pattern.matcher(line);
-        boolean found = matcher.find();
-        if (!found) {
-            problems.add(new Problem("Line contains no def(...)"));
-        }
-        return found;
     }
 
     @Override
