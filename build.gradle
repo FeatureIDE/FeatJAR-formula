@@ -6,7 +6,8 @@ plugins {
 
 dependencies {
     api 'de.featjar:base'
-    testFixturesImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
+    testFixturesImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
 }
 
 license {

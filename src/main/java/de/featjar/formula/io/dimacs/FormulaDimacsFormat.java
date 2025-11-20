@@ -26,6 +26,7 @@ import de.featjar.base.io.format.IFormat;
 import de.featjar.base.io.format.ParseProblem;
 import de.featjar.base.io.input.AInputMapper;
 import de.featjar.formula.VariableMap;
+import de.featjar.formula.structure.FormulaNormalForm;
 import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.IFormula;
 import de.featjar.formula.structure.connective.And;
@@ -49,7 +50,7 @@ public class FormulaDimacsFormat implements IFormat<IFormula> {
     @Override
     public Result<String> serialize(IFormula formula) {
         IFormula cnfFormula = (formula instanceof Reference) ? ((Reference) formula).getExpression() : formula;
-        if (!cnfFormula.isCNF()) {
+        if (!cnfFormula.isStrictNormalForm(FormulaNormalForm.CNF)) {
             return Result.empty(new IllegalArgumentException("Formula is not in CNF"));
         }
         VariableMap variableMap = new VariableMap(formula.getVariableMap().keySet());

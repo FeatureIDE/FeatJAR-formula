@@ -2,6 +2,7 @@
 <extensions>
 	<point id="de.featjar.formula.io.FormulaFormats" priority="10">
 		<extension id="de.featjar.formula.io.dimacs.FormulaDimacsFormat" />
+		<extension id="de.featjar.formula.io.dimacs.FormulaCNFDimacsFormat" />
 	    <extension id="de.featjar.formula.io.xml.XMLFeatureModelFormulaFormat" />
 	    <extension id="de.featjar.formula.io.KConfigReaderFormat" />
 	</point>
@@ -18,6 +19,9 @@
 		<extension id="de.featjar.formula.io.textual.BooleanAssignmentListSimpleTextFormat" />
 		<extension id="de.featjar.formula.io.textual.BooleanAssignmentListTextFormat" />
 		<extension id="de.featjar.formula.io.dimacs.BooleanAssignmentListDimacsFormat" />
+	</point>
+		<point id="de.featjar.formula.io.BooleanAssignmentFormats" priority="10">
+		<extension id="de.featjar.formula.io.textual.BooleanAssignmentString" />
 	</point>
 	<point id="de.featjar.base.cli.Commands">
 		<extension id="de.featjar.composition.cli.PreprocessorCommand" />

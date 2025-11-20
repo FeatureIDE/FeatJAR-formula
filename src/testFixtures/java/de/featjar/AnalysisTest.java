@@ -38,6 +38,7 @@ import de.featjar.formula.assignment.ValueAssignment;
 import de.featjar.formula.computation.ComputeCNFFormula;
 import de.featjar.formula.computation.ComputeNNFFormula;
 import de.featjar.formula.structure.IFormula;
+import de.featjar.formula.structure.connective.Reference;
 import java.math.BigInteger;
 import java.util.function.Function;
 import org.junit.jupiter.api.AfterAll;
@@ -56,25 +57,25 @@ public class AnalysisTest extends Common {
     }
 
     public static <T> void testSatisfiability(
-            Function<IComputation<IFormula>, IComputation<T>> mapper,
+            Function<IComputation<Reference>, IComputation<T>> mapper,
             Function<IComputation<T>, IComputation<Boolean>> analysis) {
         assertEquals(Boolean.TRUE, compute("GPL/model.xml", mapper, analysis));
     }
 
     public static <T> void testSolutionCount(
-            Function<IComputation<IFormula>, IComputation<T>> mapper,
+            Function<IComputation<Reference>, IComputation<T>> mapper,
             Function<IComputation<T>, IComputation<BigInteger>> analysis) {
         assertEquals(BigInteger.valueOf(960), compute("GPL/model.xml", mapper, analysis));
     }
 
     public static <T> void testSolution(
-            Function<IComputation<IFormula>, IComputation<T>> mapper,
+            Function<IComputation<Reference>, IComputation<T>> mapper,
             Function<IComputation<T>, IComputation<BooleanSolution>> analysis) {
         computeAndTestSolution("GPL/model.xml", mapper, analysis);
     }
 
     public static <T> void testCore(
-            Function<IComputation<IFormula>, IComputation<T>> mapper,
+            Function<IComputation<Reference>, IComputation<T>> mapper,
             Function<IComputation<T>, IComputation<BooleanAssignment>> analysis) {
         computeAndCompareCore(
                 "GPL/model.xml",
@@ -96,27 +97,27 @@ public class AnalysisTest extends Common {
     }
 
     public static <T> void testAtomicSets(
-            Function<IComputation<IFormula>, IComputation<Pair<T, VariableMap>>> mapper,
+            Function<IComputation<Reference>, IComputation<Pair<T, VariableMap>>> mapper,
             Function<IComputation<T>, IComputation<BooleanAssignmentList>> analysis) {
         computeAndCompareAtomicSets("GPL/model.xml", new AssignmentList(), mapper, analysis);
     }
 
     public static <T> void testIndeterminate(
-            Function<IComputation<IFormula>, IComputation<T>> mapper,
+            Function<IComputation<Reference>, IComputation<T>> mapper,
             Function<IComputation<T>, IComputation<Boolean>> analysis) {
         assertEquals(Boolean.TRUE, compute("GPL/model.xml", mapper, analysis));
     }
 
     private static <R, T> R compute(
             String modelPath,
-            Function<IComputation<IFormula>, IComputation<T>> mapper,
+            Function<IComputation<Reference>, IComputation<T>> mapper,
             Function<IComputation<T>, IComputation<R>> analysis) {
         return compute(loadFormula(modelPath), mapper, analysis);
     }
 
     private static <R, T> R compute(
             IFormula loadFormula,
-            Function<IComputation<IFormula>, IComputation<T>> mapper,
+            Function<IComputation<Reference>, IComputation<T>> mapper,
             Function<IComputation<T>, IComputation<R>> analysis) {
         Result<R> result = Computations.of(loadFormula)
                 .map(ComputeNNFFormula::new)
@@ -130,7 +131,7 @@ public class AnalysisTest extends Common {
 
     private static <T> void computeAndTestSolution(
             String modelPath,
-            Function<IComputation<IFormula>, IComputation<T>> mapper,
+            Function<IComputation<Reference>, IComputation<T>> mapper,
             Function<IComputation<T>, IComputation<BooleanSolution>> analysis) {
         IFormula formula = loadFormula(modelPath);
         T cnf = Computations.of(formula)
@@ -151,7 +152,7 @@ public class AnalysisTest extends Common {
     private static <T> void computeAndCompareCore(
             String modelPath,
             Assignment expectedCore,
-            Function<IComputation<IFormula>, IComputation<T>> mapper,
+            Function<IComputation<Reference>, IComputation<T>> mapper,
             Function<IComputation<T>, IComputation<BooleanAssignment>> analysis) {
         ComputeCNFFormula formulaComputation = Computations.of(loadFormula(modelPath))
                 .map(ComputeNNFFormula::new)
@@ -172,7 +173,7 @@ public class AnalysisTest extends Common {
     private static <T> void computeAndCompareAtomicSets(
             String modelPath,
             AssignmentList expectedAtomicSets,
-            Function<IComputation<IFormula>, IComputation<Pair<T, VariableMap>>> mapper,
+            Function<IComputation<Reference>, IComputation<Pair<T, VariableMap>>> mapper,
             Function<IComputation<T>, IComputation<BooleanAssignmentList>> analysis) {
         Pair<T, VariableMap> rep = Computations.of(loadFormula(modelPath))
                 .map(ComputeNNFFormula::new)

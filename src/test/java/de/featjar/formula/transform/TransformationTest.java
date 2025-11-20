@@ -31,8 +31,9 @@ import java.util.function.Function;
 
 class TransformationTest {
     public static void traverseAndAssertSameFormula(
-            IFormula oldFormula, Function<IComputation<IFormula>, IComputation<IFormula>> formulaComputationFunction) {
-        Result<IFormula> result =
+            IFormula oldFormula,
+            Function<IComputation<IFormula>, IComputation<? extends IFormula>> formulaComputationFunction) {
+        Result<? extends IFormula> result =
                 formulaComputationFunction.apply(Computations.of(oldFormula)).get();
         assertTrue(result.isPresent());
         assertEquals(oldFormula, result.get());
@@ -40,9 +41,9 @@ class TransformationTest {
 
     public static void traverseAndAssertFormulaEquals(
             IFormula oldFormula,
-            Function<IComputation<IFormula>, IComputation<IFormula>> formulaComputationFunction,
+            Function<IComputation<IFormula>, IComputation<? extends IFormula>> formulaComputationFunction,
             IFormula assertFormula) {
-        Result<IFormula> result =
+        Result<? extends IFormula> result =
                 formulaComputationFunction.apply(Computations.of(oldFormula)).get();
         assertTrue(result.isPresent());
         assertNotEquals(

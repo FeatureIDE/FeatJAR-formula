@@ -50,25 +50,24 @@ import java.util.LinkedHashSet;
  */
 public interface IFormula extends IExpression {
 
-    private static Result<IFormula> toNormalForm(
+    private static Result<? extends IFormula> toNormalForm(
             IFormula formula, FormulaNormalForm formulaNormalForm, boolean isStrict) {
         IComputation<IFormula> computation = async(formula);
         switch (formulaNormalForm) {
             case NNF:
-                computation = computation.map(ComputeNNFFormula::new);
-                break;
+                return computation.map(ComputeNNFFormula::new).computeResult();
             case CNF:
-                computation = computation
+                return computation
                         .map(ComputeNNFFormula::new)
                         .map(ComputeCNFFormula::new)
-                        .set(ComputeCNFFormula.IS_STRICT, isStrict);
-                break;
+                        .set(ComputeCNFFormula.IS_STRICT, isStrict)
+                        .computeResult();
             case DNF:
-                computation = computation
+                return computation
                         .map(ComputeNNFFormula::new)
                         .map(ComputeDNFFormula::new)
-                        .set(ComputeDNFFormula.IS_STRICT, isStrict);
-                break;
+                        .set(ComputeDNFFormula.IS_STRICT, isStrict)
+                        .computeResult();
         }
         return computation.computeResult();
     }
@@ -129,7 +128,7 @@ public interface IFormula extends IExpression {
      * @param formulaNormalForm the {@link FormulaNormalForm normal form}
      */
     // TODO: use computations
-    default Result<IFormula> toNormalForm(FormulaNormalForm formulaNormalForm) {
+    default Result<? extends IFormula> toNormalForm(FormulaNormalForm formulaNormalForm) {
         return toNormalForm(this, formulaNormalForm, false);
     }
 
@@ -138,28 +137,28 @@ public interface IFormula extends IExpression {
      *
      * @param formulaNormalForm the {@link FormulaNormalForm normal form}
      */
-    default Result<IFormula> toStrictNormalForm(FormulaNormalForm formulaNormalForm) {
+    default Result<? extends IFormula> toStrictNormalForm(FormulaNormalForm formulaNormalForm) {
         return toNormalForm(this, formulaNormalForm, true);
     }
 
     /**
      * {@return a formula in strict negation normal form that is equivalent to this formula}
      */
-    default Result<IFormula> toNNF() {
+    default Result<? extends IFormula> toNNF() {
         return toStrictNormalForm(FormulaNormalForm.NNF);
     }
 
     /**
      * {@return a formula in strict conjunctive normal form that is equivalent to this formula}
      */
-    default Result<IFormula> toCNF() {
+    default Result<? extends IFormula> toCNF() {
         return toStrictNormalForm(FormulaNormalForm.CNF);
     }
 
     /**
      * {@return a formula in strict disjunctive normal form that is equivalent to this formula}
      */
-    default Result<IFormula> toDNF() {
+    default Result<? extends IFormula> toDNF() {
         return toStrictNormalForm(FormulaNormalForm.DNF);
     }
 

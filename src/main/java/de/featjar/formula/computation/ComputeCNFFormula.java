@@ -45,7 +45,7 @@ import java.util.function.Consumer;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class ComputeCNFFormula extends AComputation<IFormula> {
+public class ComputeCNFFormula extends AComputation<Reference> {
     public static final Dependency<IFormula> NNF_FORMULA = Dependency.newDependency(IFormula.class);
     /**
      * Determines whether this computation uses the Plaisted-Greenbaum optimization.
@@ -98,7 +98,7 @@ public class ComputeCNFFormula extends AComputation<IFormula> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public Result<IFormula> compute(List<Object> dependencyList, Progress progress) {
+    public Result<Reference> compute(List<Object> dependencyList, Progress progress) {
         IFormula nnfFormula = NNF_FORMULA.get(dependencyList);
         Reference referenceFormula = null;
         if (nnfFormula instanceof Reference) {
@@ -145,7 +145,7 @@ public class ComputeCNFFormula extends AComputation<IFormula> {
         if (referenceFormula != null) {
             cnf = referenceFormula.setFormula(cnf);
         }
-        return Result.of(cnf);
+        return Result.of((Reference) cnf);
     }
 
     @SuppressWarnings("unchecked")
