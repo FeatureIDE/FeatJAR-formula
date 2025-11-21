@@ -18,13 +18,15 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.assignment;
+package de.featjar.formula.assignment.conversion;
 
 import de.featjar.base.computation.AComputation;
 import de.featjar.base.computation.Dependency;
 import de.featjar.base.computation.IComputation;
 import de.featjar.base.computation.Progress;
 import de.featjar.base.data.Result;
+import de.featjar.formula.assignment.IBooleanRepresentation;
+import de.featjar.formula.assignment.IValueRepresentation;
 import java.util.List;
 
 /**

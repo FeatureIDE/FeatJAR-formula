@@ -69,8 +69,9 @@ public class Reference extends ANonTerminalExpression implements IConnective, IU
         super(formula);
     }
 
-    public Reference(List<? extends IFormula> formulas) {
-        super(formulas);
+    public Reference(IFormula formula, Collection<Variable> freeVariables) {
+        super(formula);
+        setFreeVariables(freeVariables);
     }
 
     public Collection<Variable> getFreeVariables() {

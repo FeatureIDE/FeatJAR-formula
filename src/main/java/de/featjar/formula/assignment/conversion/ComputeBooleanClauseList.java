@@ -18,7 +18,7 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.assignment;
+package de.featjar.formula.assignment.conversion;
 
 import de.featjar.base.FeatJAR;
 import de.featjar.base.computation.AComputation;
@@ -27,6 +27,8 @@ import de.featjar.base.computation.IComputation;
 import de.featjar.base.computation.Progress;
 import de.featjar.base.data.Result;
 import de.featjar.formula.VariableMap;
+import de.featjar.formula.assignment.BooleanAssignmentList;
+import de.featjar.formula.assignment.BooleanClause;
 import de.featjar.formula.structure.Expressions;
 import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.IFormula;

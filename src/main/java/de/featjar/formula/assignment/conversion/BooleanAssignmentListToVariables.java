@@ -18,7 +18,7 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.assignment;
+package de.featjar.formula.assignment.conversion;
 
 import de.featjar.base.computation.AComputation;
 import de.featjar.base.computation.Dependency;
@@ -26,33 +26,30 @@ import de.featjar.base.computation.IComputation;
 import de.featjar.base.computation.Progress;
 import de.featjar.base.data.Result;
 import de.featjar.formula.VariableMap;
-import de.featjar.formula.structure.IFormula;
-import de.featjar.formula.structure.connective.Reference;
+import de.featjar.formula.assignment.BooleanAssignment;
+import de.featjar.formula.assignment.BooleanAssignmentList;
 import java.util.List;
 
 /**
- * Transforms a {@link IFormula} into a formula and a corresponding {@link VariableMap}.
+ * Transforms a {@link BooleanAssignmentList} into a {@link VariableMap}.
  *
  * @author Sebastian Krieter
  */
-public class ComputeFormulaVariableMap extends AComputation<IFormula> {
+public class BooleanAssignmentListToVariables extends AComputation<BooleanAssignment> {
 
-    protected static final Dependency<IFormula> CNF = Dependency.newDependency(IFormula.class);
+    protected static final Dependency<BooleanAssignmentList> CNF =
+            Dependency.newDependency(BooleanAssignmentList.class);
 
-    public ComputeFormulaVariableMap(IComputation<IFormula> cnfFormula) {
-        super(cnfFormula);
+    public BooleanAssignmentListToVariables(IComputation<BooleanAssignmentList> cnf) {
+        super(cnf);
     }
 
-    protected ComputeFormulaVariableMap(ComputeFormulaVariableMap other) {
+    protected BooleanAssignmentListToVariables(BooleanAssignmentListToVariables other) {
         super(other);
     }
 
     @Override
-    public Result<IFormula> compute(List<Object> dependencyList, Progress progress) {
-        IFormula vp = CNF.get(dependencyList);
-        if (vp instanceof Reference) {
-            vp = (IFormula) ((Reference) vp).getExpression();
-        }
-        return Result.of(vp);
+    public Result<BooleanAssignment> compute(List<Object> dependencyList, Progress progress) {
+        return Result.of(CNF.get(dependencyList).getVariableMap().getVariables());
     }
 }

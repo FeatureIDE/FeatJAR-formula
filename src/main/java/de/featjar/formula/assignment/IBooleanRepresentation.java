@@ -21,6 +21,7 @@
 package de.featjar.formula.assignment;
 
 import de.featjar.base.computation.Computations;
+import de.featjar.formula.assignment.conversion.ComputeBooleanClauseList;
 import de.featjar.formula.computation.ComputeCNFFormula;
 import de.featjar.formula.computation.ComputeDNFFormula;
 import de.featjar.formula.computation.ComputeNNFFormula;

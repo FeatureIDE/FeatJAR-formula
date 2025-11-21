@@ -18,7 +18,7 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.assignment;
+package de.featjar.formula.assignment.conversion;
 
 import de.featjar.base.computation.AComputation;
 import de.featjar.base.computation.Dependency;
@@ -26,28 +26,29 @@ import de.featjar.base.computation.IComputation;
 import de.featjar.base.computation.Progress;
 import de.featjar.base.data.Result;
 import de.featjar.formula.VariableMap;
-import de.featjar.formula.structure.IFormula;
+import de.featjar.formula.assignment.BooleanAssignmentList;
 import java.util.List;
 
 /**
- * Transforms a {@link IFormula} into a {@link VariableMap}.
+ * Transforms a {@link BooleanAssignmentList} into a {@link VariableMap}.
  *
  * @author Sebastian Krieter
  */
-public class ComputeVariableMap extends AComputation<VariableMap> {
+public class BooleanAssignmentListToVariableMap extends AComputation<VariableMap> {
 
-    protected static final Dependency<IFormula> CNF = Dependency.newDependency(IFormula.class);
+    protected static final Dependency<BooleanAssignmentList> CNF =
+            Dependency.newDependency(BooleanAssignmentList.class);
 
-    public ComputeVariableMap(IComputation<IFormula> cnfFormula) {
-        super(cnfFormula);
+    public BooleanAssignmentListToVariableMap(IComputation<BooleanAssignmentList> cnf) {
+        super(cnf);
     }
 
-    protected ComputeVariableMap(ComputeVariableMap other) {
+    protected BooleanAssignmentListToVariableMap(BooleanAssignmentListToVariableMap other) {
         super(other);
     }
 
     @Override
     public Result<VariableMap> compute(List<Object> dependencyList, Progress progress) {
-        return Result.of(new VariableMap(CNF.get(dependencyList)));
+        return Result.of(CNF.get(dependencyList).getVariableMap());
     }
 }

@@ -378,6 +378,10 @@ public class BooleanAssignment extends IntegerList implements IAssignment<Intege
         return new BooleanSolution(IntStream.of(elements).map(Math::abs).max().orElse(0), elements);
     }
 
+    public BooleanAssignment toVariables() {
+        return new BooleanAssignment(IntStream.of(elements).map(Math::abs).toArray());
+    }
+
     public BooleanSolution toSolution(int variableCount) {
         if (variableCount < 0) {
             throw new IllegalArgumentException(

@@ -18,9 +18,8 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.assignment;
+package de.featjar.formula.assignment.conversion;
 
-import de.featjar.base.FeatJAR;
 import de.featjar.base.computation.AComputation;
 import de.featjar.base.computation.Dependency;
 import de.featjar.base.computation.IComputation;
@@ -28,38 +27,27 @@ import de.featjar.base.computation.Progress;
 import de.featjar.base.data.Result;
 import de.featjar.formula.VariableMap;
 import de.featjar.formula.structure.IFormula;
-import de.featjar.formula.structure.connective.Reference;
 import java.util.List;
 
 /**
- * Transforms a formula, which is assumed to be in strict conjunctive normal form, into an indexed CNF representation.
+ * Transforms a {@link IFormula} into a {@link VariableMap}.
  *
  * @author Sebastian Krieter
- * @author Elias Kuiter
  */
-public class ComputeBooleanRepresentation extends AComputation<BooleanAssignmentGroups> {
+public class ComputeVariableMap extends AComputation<VariableMap> {
 
-    protected static final Dependency<Object> CNF = Dependency.newDependency();
+    protected static final Dependency<IFormula> CNF = Dependency.newDependency(IFormula.class);
 
-    public ComputeBooleanRepresentation(IComputation<IFormula> cnfFormula) {
+    public ComputeVariableMap(IComputation<IFormula> cnfFormula) {
         super(cnfFormula);
     }
 
-    protected ComputeBooleanRepresentation(ComputeBooleanRepresentation other) {
+    protected ComputeVariableMap(ComputeVariableMap other) {
         super(other);
     }
 
     @Override
-    public Result<BooleanAssignmentGroups> compute(List<Object> dependencyList, Progress progress) {
-        IFormula formula = (IFormula) CNF.get(dependencyList);
-        FeatJAR.log()
-                .debug("initializing variable map for " + formula.getClass().getName());
-        VariableMap variableMap = new VariableMap(formula);
-        FeatJAR.log().debug(variableMap);
-        if (formula instanceof Reference) {
-            formula = (IFormula) ((Reference) formula).getExpression();
-        }
-        return ComputeBooleanClauseList.toBooleanAssignmentList(formula, variableMap)
-                .map(BooleanAssignmentGroups::new);
+    public Result<VariableMap> compute(List<Object> dependencyList, Progress progress) {
+        return Result.of(new VariableMap(CNF.get(dependencyList)));
     }
 }
