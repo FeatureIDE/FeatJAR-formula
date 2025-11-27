@@ -43,15 +43,16 @@ public class Constant extends ATerminalExpression implements IValue {
     }
 
     public Constant(Object value, Class<?> type) {
-        if (!type.isInstance(value))
+        this.type = Objects.requireNonNull(type);
+        if (value != null && !type.isInstance(value)) {
             throw new IllegalArgumentException(
                     String.format("expected value of type %s, got %s", getType(), value.getClass()));
+        }
         this.value = value;
-        this.type = type;
     }
 
     public Constant(Object value) {
-        this.value = value;
+        this.value = Objects.requireNonNull(value);
         this.type = value.getClass();
     }
 
