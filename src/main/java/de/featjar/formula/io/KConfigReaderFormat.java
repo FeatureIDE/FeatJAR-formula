@@ -32,6 +32,7 @@ import de.featjar.formula.structure.connective.And;
 import de.featjar.formula.structure.connective.Reference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -45,7 +46,8 @@ import java.util.stream.Collectors;
  * @see <a href="https://github.com/ekuiter/torte-FeatJAR/blob/main/src/main/java/KConfigReaderFormat.java">KConfigReaderFormat</a>
  */
 public class KConfigReaderFormat implements IFormat<IExpression> {
-    private static final Pattern equivalencePattern = Pattern.compile("def\\(([^()]*?)==CONFIG_(.*?)\\)");
+    private static final Pattern equivalencePattern = Pattern.compile("(?<!\\w)def\\(([^()]*?)==CONFIG_(.*?)\\)");
+    private static final Pattern definePattern = Pattern.compile("(?<!\\w)def\\(([^()]+)\\)");
 
     private static String fixNonBooleanConstraints(String l) {
         Matcher matcher = equivalencePattern.matcher(l);
@@ -61,6 +63,11 @@ public class KConfigReaderFormat implements IFormat<IExpression> {
                 .replace("-", "_");
     }
 
+    private static String findDef(String l) {
+        Matcher matcher = definePattern.matcher(l);
+        return matcher.find() ? matcher.replaceAll("$1") : null;
+    }
+
     @Override
     public Result<IExpression> parse(AInputMapper inputMapper) {
         final ArrayList<Problem> problems = new ArrayList<>();
@@ -74,7 +81,8 @@ public class KConfigReaderFormat implements IFormat<IExpression> {
                 .filter(l -> !l.isEmpty())
                 .filter(l -> !l.startsWith("#"))
                 .map(KConfigReaderFormat::fixNonBooleanConstraints)
-                .map(l -> l.replaceAll("def\\((\\w+)\\)", "$1"))
+                .map(KConfigReaderFormat::findDef)
+                .filter(Objects::nonNull)
                 .map(expressionParser::parse)
                 .peek(r -> problems.addAll(r.getProblems()))
                 .filter(Result::isPresent)
