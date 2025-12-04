@@ -21,6 +21,7 @@
 package de.featjar.formula.assignment;
 
 import de.featjar.analysis.ISolver;
+import de.featjar.base.data.IntegerList;
 import de.featjar.formula.VariableMap;
 import java.util.Arrays;
 import java.util.Collection;
@@ -210,8 +211,56 @@ public class BooleanSolution extends BooleanAssignment implements ISolution<Inte
     }
 
     @Override
-    public BooleanSolution inverse() {
-        return new BooleanSolution(negate(), false);
+    public BooleanSolution negate() {
+        return new BooleanSolution(negateInts(), false);
+    }
+
+    public BooleanSolution addAll(IntegerList integers) {
+        return addAll(integers.get());
+    }
+
+    public BooleanSolution retainAll(IntegerList integers) {
+        return retainAll(integers.get());
+    }
+
+    public BooleanSolution retainAllNegated(IntegerList integers) {
+        return retainAllNegated(integers.get());
+    }
+
+    public BooleanSolution retainAllVariables(IntegerList integers) {
+        return retainAllVariables(integers.get());
+    }
+
+    public BooleanSolution removeAll(IntegerList integers) {
+        return removeAll(integers.get());
+    }
+
+    public BooleanSolution removeAllVariables(IntegerList integers) {
+        return removeAllVariables(integers.get());
+    }
+
+    public BooleanSolution addAll(int... integers) {
+        return new BooleanSolution(addAllInts(integers));
+    }
+
+    public BooleanSolution retainAll(int... integers) {
+        return new BooleanSolution(retainAllInts(integers));
+    }
+
+    public BooleanSolution retainAllNegated(int... integers) {
+        return new BooleanSolution(retainAllNegatedInts(integers));
+    }
+
+    public BooleanSolution retainAllVariables(int... integers) {
+        return new BooleanSolution(retainAllVariablesInts(integers));
+    }
+
+    public BooleanSolution removeAll(int... integers) {
+        return new BooleanSolution(removeAllInts(integers));
+    }
+
+    public BooleanSolution removeAllVariables(int... integers) {
+        return new BooleanSolution(removeAllVariablesInts(integers));
     }
 
     /**

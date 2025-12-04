@@ -21,6 +21,7 @@
 package de.featjar.formula.assignment;
 
 import de.featjar.analysis.ISolver;
+import de.featjar.base.data.IntegerList;
 import de.featjar.formula.VariableMap;
 import java.util.Arrays;
 import java.util.Collection;
@@ -72,9 +73,9 @@ public class BooleanClause extends BooleanAssignment implements IClause<Integer,
     }
 
     @Override
-    public int[] getNonZeroValues() {
+    public int[] getNonZeroValuesInts() {
         assert Arrays.stream(elements).noneMatch(a -> a == 0) : "contains zero: " + Arrays.toString(elements);
-        return copy();
+        return copyInts();
     }
 
     @Override
@@ -94,12 +95,12 @@ public class BooleanClause extends BooleanAssignment implements IClause<Integer,
     }
 
     @Override
-    public int[] getPositiveValues() {
+    public int[] getPositiveValuesInts() {
         return Arrays.copyOfRange(elements, elements.length - countPositives(), elements.length);
     }
 
     @Override
-    public int[] getNegativeValues() {
+    public int[] getNegativeValuesInts() {
         return Arrays.copyOfRange(elements, 0, countNegatives());
     }
 
@@ -114,13 +115,18 @@ public class BooleanClause extends BooleanAssignment implements IClause<Integer,
     }
 
     @Override
-    public BooleanClause inverse() {
+    public int[] negateInts() {
         final int[] inverse = new int[elements.length];
         final int highestIndex = inverse.length - 1;
         for (int i = 0; i < inverse.length; i++) {
             inverse[highestIndex - i] = -elements[i];
         }
-        return new BooleanClause(inverse, false);
+        return inverse;
+    }
+
+    @Override
+    public BooleanClause negate() {
+        return new BooleanClause(negateInts(), false);
     }
 
     @Override
@@ -159,27 +165,27 @@ public class BooleanClause extends BooleanAssignment implements IClause<Integer,
     }
 
     @Override
-    public BooleanClause addAll(BooleanAssignment integers) {
-        return new BooleanClause(addAll(integers.get()));
+    public BooleanClause addAll(IntegerList integers) {
+        return new BooleanClause(addAllInts(integers.get()));
     }
 
     @Override
-    public BooleanClause retainAll(BooleanAssignment integers) {
-        return new BooleanClause(retainAll(integers.get()));
+    public BooleanClause retainAll(IntegerList integers) {
+        return new BooleanClause(retainAllInts(integers.get()));
     }
 
     @Override
-    public BooleanClause retainAllVariables(BooleanAssignment integers) {
-        return new BooleanClause(retainAllVariables(integers.get()));
+    public BooleanClause retainAllVariables(IntegerList integers) {
+        return new BooleanClause(retainAllVariablesInts(integers.get()));
     }
 
     @Override
-    public BooleanClause removeAll(BooleanAssignment integers) {
-        return new BooleanClause(removeAll(integers.get()));
+    public BooleanClause removeAll(IntegerList integers) {
+        return new BooleanClause(removeAllInts(integers.get()));
     }
 
     @Override
-    public BooleanClause removeAllVariables(BooleanAssignment integers) {
-        return new BooleanClause(removeAllVariables(integers.get()));
+    public BooleanClause removeAllVariables(IntegerList integers) {
+        return new BooleanClause(removeAllVariablesInts(integers.get()));
     }
 }

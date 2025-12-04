@@ -31,7 +31,6 @@ import de.featjar.base.data.Result;
 import de.featjar.formula.VariableMap;
 import de.featjar.formula.assignment.Assignment;
 import de.featjar.formula.assignment.AssignmentList;
-import de.featjar.formula.assignment.BooleanAssignment;
 import de.featjar.formula.assignment.BooleanAssignmentList;
 import de.featjar.formula.assignment.BooleanSolution;
 import de.featjar.formula.assignment.ValueAssignment;
@@ -75,7 +74,7 @@ public class AnalysisTest extends Common {
 
     public static <T> void testCore(
             Function<IComputation<IFormula>, IComputation<T>> mapper,
-            Function<IComputation<T>, IComputation<BooleanAssignment>> analysis) {
+            Function<IComputation<T>, IComputation<BooleanAssignmentList>> analysis) {
         computeAndCompareCore(
                 "GPL/model.xml",
                 new Assignment(
@@ -152,7 +151,7 @@ public class AnalysisTest extends Common {
             String modelPath,
             Assignment expectedCore,
             Function<IComputation<IFormula>, IComputation<T>> mapper,
-            Function<IComputation<T>, IComputation<BooleanAssignment>> analysis) {
+            Function<IComputation<T>, IComputation<BooleanAssignmentList>> analysis) {
         ComputeCNFFormula formulaComputation = Computations.of(loadFormula(modelPath))
                 .map(ComputeNNFFormula::new)
                 .map(ComputeCNFFormula::new);
@@ -160,7 +159,7 @@ public class AnalysisTest extends Common {
         T rep = formulaComputation.map(mapper).compute();
         VariableMap variableMap = new VariableMap(formula);
         Result<Assignment> resultOfcomputedCore =
-                Computations.of(rep).map(analysis).computeResult().flatMap(variableMap::toAssignment);
+                Computations.of(rep).map(analysis).computeResult().flatMap(l -> variableMap.toAssignment(l.getFirst()));
         assertTrue(resultOfcomputedCore.isPresent(), resultOfcomputedCore::printProblems);
 
         Assignment computedCore = resultOfcomputedCore.get();

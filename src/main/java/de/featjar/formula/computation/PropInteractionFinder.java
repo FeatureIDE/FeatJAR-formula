@@ -199,7 +199,7 @@ public class PropInteractionFinder {
             collect.set(
                     i,
                     updater.update(collect.get(i))
-                            .map(l -> new BooleanClause(l.removeAll(core.get())))
+                            .map(l -> l.toClause().removeAll(core))
                             .orElse(null));
         }
 
@@ -295,7 +295,7 @@ public class PropInteractionFinder {
 
     private boolean verify(BooleanSolution solution) {
         verifyCounter++;
-        BooleanSolution nonCore = new BooleanSolution(solution.removeAll(core.get()));
+        BooleanSolution nonCore = solution.removeAll(core);
         if (verifier.test(solution).valueEquals(0)) {
             succeedingConfs.add(nonCore);
             return true;

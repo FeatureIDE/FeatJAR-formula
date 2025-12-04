@@ -217,7 +217,7 @@ public class BooleanAssignment extends IntegerList implements IAssignment<Intege
      *
      * @param integers the integers
      */
-    public final int[] retainAllVariables(int... integers) {
+    public int[] retainAllVariablesInts(int... integers) {
         boolean[] intersectionMarker = new boolean[elements.length];
         int count = 0;
         for (int integer : integers) {
@@ -249,7 +249,7 @@ public class BooleanAssignment extends IntegerList implements IAssignment<Intege
      *
      * @param integers the integers
      */
-    public final int[] retainAllNegated(int... integers) {
+    public int[] retainAllNegatedInts(int... integers) {
         boolean[] intersectionMarker = new boolean[elements.length];
         int count = 0;
         for (int integer : integers) {
@@ -281,7 +281,7 @@ public class BooleanAssignment extends IntegerList implements IAssignment<Intege
      *
      * @param integers the integers
      */
-    public final int[] removeAllVariables(int... integers) {
+    public int[] removeAllVariablesInts(int... integers) {
         boolean[] intersectionMarker = new boolean[elements.length];
         int count = 0;
         for (int integer : integers) {
@@ -390,31 +390,56 @@ public class BooleanAssignment extends IntegerList implements IAssignment<Intege
         return new BooleanSolution(variableCount, elements);
     }
 
-    public BooleanAssignment inverse() {
-        return new BooleanAssignment(negate());
+    @Override
+    public BooleanAssignment negate() {
+        return new BooleanAssignment(negateInts());
     }
 
-    public BooleanAssignment addAll(BooleanAssignment integers) {
-        return new BooleanAssignment(addAll(integers.get()));
+    public BooleanAssignment addAll(IntegerList integers) {
+        return addAll(integers.get());
     }
 
-    public BooleanAssignment retainAll(BooleanAssignment integers) {
-        return new BooleanAssignment(retainAll(integers.get()));
+    public BooleanAssignment retainAll(IntegerList integers) {
+        return retainAll(integers.get());
     }
 
-    public BooleanAssignment retainAllNegated(BooleanAssignment integers) {
-        return new BooleanAssignment(retainAllNegated(integers.get()));
+    public BooleanAssignment retainAllNegated(IntegerList integers) {
+        return retainAllNegated(integers.get());
     }
 
-    public BooleanAssignment retainAllVariables(BooleanAssignment integers) {
-        return new BooleanAssignment(retainAllVariables(integers.get()));
+    public BooleanAssignment retainAllVariables(IntegerList integers) {
+        return retainAllVariables(integers.get());
     }
 
-    public BooleanAssignment removeAll(BooleanAssignment integers) {
-        return new BooleanAssignment(removeAll(integers.get()));
+    public BooleanAssignment removeAll(IntegerList integers) {
+        return removeAll(integers.get());
     }
 
-    public BooleanAssignment removeAllVariables(BooleanAssignment integers) {
-        return new BooleanAssignment(removeAllVariables(integers.get()));
+    public BooleanAssignment removeAllVariables(IntegerList integers) {
+        return removeAllVariables(integers.get());
+    }
+
+    public BooleanAssignment addAll(int... integers) {
+        return new BooleanAssignment(addAllInts(integers));
+    }
+
+    public BooleanAssignment retainAll(int... integers) {
+        return new BooleanAssignment(retainAllInts(integers));
+    }
+
+    public BooleanAssignment retainAllNegated(int... integers) {
+        return new BooleanAssignment(retainAllNegatedInts(integers));
+    }
+
+    public BooleanAssignment retainAllVariables(int... integers) {
+        return new BooleanAssignment(retainAllVariablesInts(integers));
+    }
+
+    public BooleanAssignment removeAll(int... integers) {
+        return new BooleanAssignment(removeAllInts(integers));
+    }
+
+    public BooleanAssignment removeAllVariables(int... integers) {
+        return new BooleanAssignment(removeAllVariablesInts(integers));
     }
 }
