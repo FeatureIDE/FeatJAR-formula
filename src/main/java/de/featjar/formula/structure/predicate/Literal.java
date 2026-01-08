@@ -36,7 +36,7 @@ import java.util.Optional;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class Literal extends ANonTerminalExpression implements IUnaryExpression, IPolarPredicate {
+public class Literal extends ANonTerminalExpression implements IUnaryExpression, ILiteral {
 
     private boolean isPositive;
 
