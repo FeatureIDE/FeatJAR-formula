@@ -80,7 +80,9 @@ public class Expressions {
      * @param expression the expression to print
      */
     public static String print(IExpression expression) {
-        return Trees.traverse(expression, new TreePrinter().setFilter(t -> !(t instanceof Variable)))
+        return Trees.traverse(
+                        expression,
+                        new TreePrinter().setFilter(t -> !(t instanceof Variable) && !(t instanceof Constant)))
                 .get();
     }
 

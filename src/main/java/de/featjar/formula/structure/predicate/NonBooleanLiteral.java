@@ -109,4 +109,8 @@ public class NonBooleanLiteral extends ANonTerminalExpression implements ILitera
     public void setPositive(boolean isPositive) {
         this.isPositive = isPositive;
     }
+
+    public Constant getConstant() {
+        return (Constant) getChildren().get(1);
+    }
 }
