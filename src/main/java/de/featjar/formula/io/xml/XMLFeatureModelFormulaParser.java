@@ -77,7 +77,7 @@ public class XMLFeatureModelFormulaParser extends AXMLFeatureModelParser<IFormul
             String name, Literal parentFeature, boolean mandatory, boolean _abstract, boolean hidden)
             throws ParseException {
         if (feature.contains(name)) {
-            throw new ParseException("Duplicate feature name!");
+            throw new ParseException("Duplicate feature name: " + name);
         } else {
             feature.add(name);
         }
