@@ -64,7 +64,7 @@ public class ComputeRelativeTWiseCoverage extends AComputeTWiseCoverage {
     @Override
     protected void adaptToMergedVariableMap(VariableMap mergedVariableMap) {
         super.adaptToMergedVariableMap(mergedVariableMap);
-        referenceSample.adapt(mergedVariableMap);
+        referenceSample = referenceSample.remap(mergedVariableMap);
     }
 
     @Override

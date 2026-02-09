@@ -90,7 +90,7 @@ public abstract class AComputeTWiseCoverage extends AComputation<CoverageStatist
             VariableMap mergedVariableMap = new VariableMap(sampleVariableMap, referenceVariableMap);
             adaptToMergedVariableMap(mergedVariableMap);
         }
-        combinationSet.adapt(sample.getVariableMap());
+        combinationSet.remap(sample.getVariableMap());
 
         adaptVariableMap(dependencyList);
     }
@@ -101,12 +101,12 @@ public abstract class AComputeTWiseCoverage extends AComputation<CoverageStatist
     }
 
     protected void adaptVariableMap(List<Object> dependencyList) {
-        excludeFilter = EXCLUDE_INTERACTIONS.get(dependencyList).adapt(sample.getVariableMap());
-        includeFilter = INCLUDE_INTERACTIONS.get(dependencyList).adapt(sample.getVariableMap());
+        excludeFilter = EXCLUDE_INTERACTIONS.get(dependencyList).remap(sample.getVariableMap());
+        includeFilter = INCLUDE_INTERACTIONS.get(dependencyList).remap(sample.getVariableMap());
     }
 
     protected void adaptToMergedVariableMap(VariableMap mergedVariableMap) {
-        sample.adapt(mergedVariableMap);
+        sample = sample.remap(mergedVariableMap);
     }
 
     protected VariableMap getReferenceVariableMap() {

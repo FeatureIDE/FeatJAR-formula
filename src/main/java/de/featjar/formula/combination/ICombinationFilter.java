@@ -39,7 +39,7 @@ public interface ICombinationFilter {
 
     boolean test(int... literals);
 
-    default ICombinationFilter adapt(VariableMap variableMap) {
+    default ICombinationFilter remap(VariableMap variableMap) {
         return this;
     }
 }

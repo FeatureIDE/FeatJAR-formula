@@ -166,7 +166,7 @@ public class BooleanSolution extends BooleanAssignment implements ISolution<Inte
 
     @Override
     public String toString() {
-        return String.format("BooleanSolution[%s]", Arrays.toString(elements));
+        return String.format("BooleanSolution%s", Arrays.toString(elements));
     }
 
     @Override
@@ -195,18 +195,22 @@ public class BooleanSolution extends BooleanAssignment implements ISolution<Inte
     }
 
     @Override
-    public BooleanSolution adapt(VariableMap oldVariableMap, VariableMap newVariableMap) {
-        return adapt(oldVariableMap, newVariableMap, false);
+    public BooleanSolution remap(VariableMap oldVariableMap, VariableMap newVariableMap) {
+        return remap(oldVariableMap, newVariableMap, false);
     }
 
     @Override
-    public BooleanSolution adapt(
+    public BooleanSolution remap(
             VariableMap oldVariableMap, VariableMap newVariableMap, boolean integrateOldVariables) {
         if (integrateOldVariables) {
             throw new IllegalArgumentException("Dynamic extension of variable map not allowed for BooleanSolution.");
         }
         int[] newElements = new int[newVariableMap.size()];
-        oldVariableMap.adapt(elements, newElements, newVariableMap, integrateOldVariables);
+        for (int i = 0; i < elements.length; i++) {
+            int newLiteral = oldVariableMap.adapt(i + 1, newVariableMap, false);
+            int oldLiteral = elements[i];
+            newElements[newLiteral - 1] = oldLiteral == 0 ? 0 : oldLiteral > 0 ? newLiteral : -newLiteral;
+        }
         return new BooleanSolution(newElements);
     }
 

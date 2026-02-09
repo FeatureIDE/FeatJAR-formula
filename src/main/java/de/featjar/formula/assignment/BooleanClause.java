@@ -136,7 +136,7 @@ public class BooleanClause extends BooleanAssignment implements IClause<Integer,
 
     @Override
     public String toString() {
-        return String.format("BooleanClause[%s]", Arrays.toString(elements));
+        return String.format("BooleanClause%s", Arrays.toString(elements));
     }
 
     @Override
@@ -155,13 +155,15 @@ public class BooleanClause extends BooleanAssignment implements IClause<Integer,
     }
 
     @Override
-    public BooleanClause adapt(VariableMap oldVariableMap, VariableMap newVariableMap) {
-        return (BooleanClause) super.adapt(oldVariableMap, newVariableMap);
+    public BooleanClause remap(VariableMap oldVariableMap, VariableMap newVariableMap) {
+        return (BooleanClause) super.remap(oldVariableMap, newVariableMap);
     }
 
     @Override
-    public BooleanClause adapt(VariableMap oldVariableMap, VariableMap newVariableMap, boolean integrateOldVariables) {
-        return (BooleanClause) super.adapt(oldVariableMap, newVariableMap, integrateOldVariables);
+    public BooleanClause remap(VariableMap oldVariableMap, VariableMap newVariableMap, boolean integrateOldVariables) {
+        final int[] newElements = new int[elements.length];
+        oldVariableMap.adapt(elements, newElements, newVariableMap, integrateOldVariables);
+        return new BooleanClause(newElements);
     }
 
     @Override

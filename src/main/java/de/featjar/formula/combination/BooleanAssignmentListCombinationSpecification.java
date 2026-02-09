@@ -51,8 +51,8 @@ public class BooleanAssignmentListCombinationSpecification implements ICombinati
     }
 
     @Override
-    public void adapt(VariableMap variableMap) {
-        booleanAssignmentList.adapt(variableMap);
+    public void remap(VariableMap variableMap) {
+        booleanAssignmentList = booleanAssignmentList.remap(variableMap);
     }
 
     @Override

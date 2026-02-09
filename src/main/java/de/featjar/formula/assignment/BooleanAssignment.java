@@ -147,30 +147,31 @@ public class BooleanAssignment extends IntegerList implements IAssignment<Intege
 
     /**
      * Changes the literals in this assignment to a new mapping.
-     * This does not create a copy of this assignment, but directly changes it.
+     * This creates a copy of this assignment.
      * A call of this method is equivalent to a call of {@link #adapt(VariableMap, VariableMap, boolean) adapt(newVariables, false);}.
      *
      * @param oldVariableMap the old variable map
      * @param newVariableMap the new variable map
-     * @return this assignment
+     * @return the new assignment with changed mapping
      */
-    public BooleanAssignment adapt(VariableMap oldVariableMap, VariableMap newVariableMap) {
-        return adapt(oldVariableMap, newVariableMap, false);
+    public BooleanAssignment remap(VariableMap oldVariableMap, VariableMap newVariableMap) {
+        return remap(oldVariableMap, newVariableMap, false);
     }
 
     /**
      * Changes the literals in this assignment to a new mapping.
-     * This does not create a copy of this assignment, but directly changes it.
+     * This creates a copy of this assignment.
      *
      * @param oldVariableMap the old variable map
      * @param newVariableMap the new variable map
      * @param integrateOldVariables whether variable names from the old variable map are added to the new variable map, if missing
-     * @return this assignment
+     * @return the new assignment with changed mapping
      */
-    public BooleanAssignment adapt(
+    public BooleanAssignment remap(
             VariableMap oldVariableMap, VariableMap newVariableMap, boolean integrateOldVariables) {
-        oldVariableMap.adapt(elements, elements, newVariableMap, integrateOldVariables);
-        return this;
+        final int[] newElements = new int[elements.length];
+        oldVariableMap.adapt(elements, newElements, newVariableMap, integrateOldVariables);
+        return new BooleanAssignment(newElements);
     }
 
     public BooleanAssignment shuffle(Random random) {
@@ -355,7 +356,7 @@ public class BooleanAssignment extends IntegerList implements IAssignment<Intege
 
     @Override
     public String toString() {
-        return String.format("BooleanAssignment[%s]", Arrays.toString(elements));
+        return String.format("BooleanAssignment%s", Arrays.toString(elements));
     }
 
     @Override

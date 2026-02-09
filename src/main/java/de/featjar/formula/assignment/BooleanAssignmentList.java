@@ -144,22 +144,24 @@ public class BooleanAssignmentList implements IAssignmentList<BooleanAssignment>
      * @param newVariables the new variable map
      * @return this list
      */
-    public BooleanAssignmentList adapt(VariableMap newVariables) {
-        return adapt(newVariables, false);
+    public BooleanAssignmentList remap(VariableMap newVariables) {
+        return remap(newVariables, false);
     }
 
     /**
-     * Changes the {@link VariableMap variable map} and calls {@link BooleanAssignment#adapt(VariableMap, VariableMap, boolean)} for every assignment in this list.
-     * This does not create a copy of this list, but directly changes each assignment.
+     * Changes the {@link VariableMap variable map} and calls {@link BooleanAssignment#remap(VariableMap, VariableMap, boolean)} for every assignment in this list.
+     * This creates a copy of this list.
      *
      * @param newVariables the new variable map
      * @param integrateOldVariables whether variable names from the old variable map are added to the new variable map, if missing
-     * @return this list
+     * @return the new list
      */
-    public BooleanAssignmentList adapt(VariableMap newVariables, boolean integrateOldVariables) {
-        assignments.forEach(assignment -> assignment.adapt(variableMap, newVariables, integrateOldVariables));
-        variableMap = newVariables;
-        return this;
+    public BooleanAssignmentList remap(VariableMap newVariables, boolean integrateOldVariables) {
+        BooleanAssignmentList newList = new BooleanAssignmentList(newVariables);
+        for (BooleanAssignment assignment : assignments) {
+            newList.add(assignment.remap(variableMap, newVariables, integrateOldVariables));
+        }
+        return newList;
     }
 
     @Override

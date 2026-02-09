@@ -46,7 +46,7 @@ public interface ICombinationSpecification {
      * Adapts the literal IDs to a new variable map.
      * @param variableMap the variable map
      */
-    void adapt(VariableMap variableMap);
+    void remap(VariableMap variableMap);
 
     /**
      * Applies the given consumer to each combination sequentially.

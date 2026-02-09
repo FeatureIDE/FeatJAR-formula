@@ -64,9 +64,9 @@ public class MultiCombinationSpecification implements ICombinationSpecification 
     }
 
     @Override
-    public void adapt(VariableMap variableMap) {
+    public void remap(VariableMap variableMap) {
         for (ICombinationSpecification combinationSet : combinationSets) {
-            combinationSet.adapt(variableMap);
+            combinationSet.remap(variableMap);
         }
     }
 

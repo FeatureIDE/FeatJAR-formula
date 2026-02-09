@@ -99,7 +99,7 @@ public abstract class ACombinationSpecification implements ICombinationSpecifica
     }
 
     @Override
-    public void adapt(VariableMap newVariableMap) {
+    public void remap(VariableMap newVariableMap) {
         Objects.requireNonNull(newVariableMap);
         if (elements == null) {
             setElements(newVariableMap.getVariables().get(), newVariableMap);

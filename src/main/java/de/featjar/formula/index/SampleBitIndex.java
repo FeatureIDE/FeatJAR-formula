@@ -288,7 +288,7 @@ public class SampleBitIndex implements ISampleIndex {
     }
 
     @Override
-    public SampleBitIndex adapt(VariableMap newVariableMap) {
+    public SampleBitIndex remap(VariableMap newVariableMap) {
         int newNumberOfVariables = variableMap.size();
         BitSet[] newBitSetReference = new BitSet[2 * newNumberOfVariables + 1];
 
