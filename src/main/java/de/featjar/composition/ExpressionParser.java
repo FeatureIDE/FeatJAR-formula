@@ -141,10 +141,14 @@ public class ExpressionParser {
         return (IExpression) parseSubExpression(stack.pop()).value;
     }
 
-    @SuppressWarnings("unchecked")
     private Token parseSubExpression(List<Token> tokenList) {
-        IExpression expression = null;
         ListIterator<Token> iterator = tokenList.listIterator();
+        return parseSubExpression(iterator);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Token parseSubExpression(ListIterator<Token> iterator) {
+        IExpression expression = null;
         while (iterator.hasNext()) {
             Token token = iterator.next();
             switch (token.type) {
@@ -165,17 +169,14 @@ public class ExpressionParser {
                     } else if (value == Not.class) {
                         expression = new Not((IFormula) iterator.next().value);
                     } else if (value == And.class) {
-                        expression = new And((IFormula) expression, (IFormula)
-                                parseSubExpression(tokenList.subList(iterator.nextIndex(), tokenList.size())).value);
+                        expression = new And((IFormula) expression, (IFormula) parseSubExpression(iterator).value);
                     } else if (value == Or.class) {
-                        expression = new Or((IFormula) expression, (IFormula)
-                                parseSubExpression(tokenList.subList(iterator.nextIndex(), tokenList.size())).value);
+                        expression = new Or((IFormula) expression, (IFormula) parseSubExpression(iterator).value);
                     } else if (value == Implies.class) {
-                        expression = new Implies((IFormula) expression, (IFormula)
-                                parseSubExpression(tokenList.subList(iterator.nextIndex(), tokenList.size())).value);
+                        expression = new Implies((IFormula) expression, (IFormula) parseSubExpression(iterator).value);
                     } else if (value == BiImplies.class) {
-                        expression = new BiImplies((IFormula) expression, (IFormula)
-                                parseSubExpression(tokenList.subList(iterator.nextIndex(), tokenList.size())).value);
+                        expression =
+                                new BiImplies((IFormula) expression, (IFormula) parseSubExpression(iterator).value);
                     } else {
                         throw new IllegalStateException();
                     }
