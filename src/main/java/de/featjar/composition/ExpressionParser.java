@@ -239,6 +239,7 @@ public class ExpressionParser {
                     tokenBuilder.append(curChar);
             }
         }
+        addToken(tokens, tokenBuilder, lineNumber, chars.length);
         return tokens;
     }
 

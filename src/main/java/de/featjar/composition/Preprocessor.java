@@ -80,7 +80,7 @@ public class Preprocessor {
                         }
                     }
                     return false;
-                } else if (matcher.group(4) != null) {
+                } else if (matcher.group(6) != null) {
                     if (expressionStack.isEmpty()) {
                         FeatJAR.log().warning("Line %d: no annotation for elif", lineNumber);
                     } else {
@@ -91,7 +91,7 @@ public class Preprocessor {
                             evaluationStack.push(Boolean.FALSE);
                         }
                     }
-                    Result<IExpression> parse = annotationParser.parse(matcher.group(5));
+                    Result<IExpression> parse = annotationParser.parse(matcher.group(7));
                     if (parse.isPresent()) {
                         IExpression annotationExpression = parse.get();
                         expressionStack.push(annotationExpression);
@@ -112,8 +112,8 @@ public class Preprocessor {
                         return true;
                     }
                     return false;
-                } else if (matcher.group(6) != null) {
-                    Result<IExpression> parse = annotationParser.parse(matcher.group(7));
+                } else if (matcher.group(4) != null) {
+                    Result<IExpression> parse = annotationParser.parse(matcher.group(5));
                     if (parse.isPresent()) {
                         IExpression annotationExpression = parse.get();
                         expressionStack.push(annotationExpression);
@@ -168,10 +168,10 @@ public class Preprocessor {
     public Preprocessor(String annotationPrefix, Symbols symbols) {
         annotationParser = new ExpressionParser();
         annotationParser.setSymbols(symbols);
-        annotationPattern = Pattern.compile(
-                Pattern.quote(annotationPrefix) + "\\s*((endif\\s*)|(else\\s*)|(if\\s+(.+))|(elif\\s+(.+)))");
+        String prefix = Pattern.quote(annotationPrefix);
+        annotationPattern = Pattern.compile(prefix + "\\s*((endif\\s*)|(else\\s*)|(if\\s+(.+))|(elif\\s+(.+)))");
 
-        startAnnotationPattern = Pattern.compile(Pattern.quote(annotationPrefix) + "(if|elif)\\s+(.+)");
+        startAnnotationPattern = Pattern.compile(prefix + "\\s*(if|elif)\\s+(.+)");
     }
 
     /**
