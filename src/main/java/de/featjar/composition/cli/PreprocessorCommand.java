@@ -37,6 +37,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -48,6 +50,12 @@ public class PreprocessorCommand extends ACommand {
         PRINT_ANNOTATIONS
     }
 
+    public static enum MissingVariables {
+        IGNORE,
+        TRUE,
+        FALSE
+    }
+
     public static final Option<Path> CONFIGURATION_OPTION = Option.newOption("configuration", Option.PathParser)
             .setDescription("Path to configuration file")
             .setValidator(Option.PathValidator);
@@ -55,6 +63,11 @@ public class PreprocessorCommand extends ACommand {
     public static final Option<Mode> MODE_OPTION = Option.newEnumOption("mode", Mode.class)
             .setDefaultValue(Mode.PROCESS)
             .setDescription("Mode of operation");
+
+    public static final Option<MissingVariables> MISSING_VARIABLES_OPTION = Option.newEnumOption(
+                    "missing-variables", MissingVariables.class)
+            .setDefaultValue(MissingVariables.IGNORE)
+            .setDescription("How to deal with variables in the processed file that do not appear in the given config");
 
     public static final Option<String> PREFIX_OPTION = Option.newOption("annotation-prefix", Option.StringParser)
             .setDefaultValue("#")
@@ -79,6 +92,7 @@ public class PreprocessorCommand extends ACommand {
                             in,
                             out,
                             optionParser.getResult(CONFIGURATION_OPTION).orElseThrow(),
+                            optionParser.getResult(MISSING_VARIABLES_OPTION).orElseThrow(),
                             charset,
                             preprocessor);
                     break;
@@ -119,9 +133,53 @@ public class PreprocessorCommand extends ACommand {
     }
 
     private Stream<String> preprocess(
-            Path in, Path out, Path assignmentPath, Charset charset, Preprocessor preprocessor) throws IOException {
+            Path in,
+            Path out,
+            Path assignmentPath,
+            MissingVariables missingVariables,
+            Charset charset,
+            Preprocessor preprocessor)
+            throws IOException {
         Result<Assignment> parsedAssignment = IO.load(assignmentPath, new CPPAssignmentFormat());
-        return preprocessor.preprocess(Files.lines(in, charset), parsedAssignment.get());
+        if (parsedAssignment.isEmpty()) {
+            FeatJAR.log().problems(parsedAssignment);
+            return Stream.empty();
+        }
+
+        final Assignment assignment;
+        switch (missingVariables) {
+            case FALSE:
+                assignment = addMissingVariablesToAssignment(
+                        parsedAssignment.get(),
+                        preprocessor.extractVariableNames(Files.lines(in, charset)),
+                        Boolean.FALSE);
+                break;
+            case IGNORE:
+                assignment = addMissingVariablesToAssignment(
+                        parsedAssignment.get(), preprocessor.extractVariableNames(Files.lines(in, charset)), null);
+                break;
+            case TRUE:
+                assignment = addMissingVariablesToAssignment(
+                        parsedAssignment.get(),
+                        preprocessor.extractVariableNames(Files.lines(in, charset)),
+                        Boolean.TRUE);
+                break;
+            default:
+                throw new IllegalStateException(String.valueOf(missingVariables));
+        }
+
+        return preprocessor.preprocess(Files.lines(in, charset), assignment);
+    }
+
+    private Assignment addMissingVariablesToAssignment(
+            Assignment orgAssignment, List<String> extractVariableNames, Object value) throws IOException {
+        LinkedHashMap<String, Object> variableValuePairs = new LinkedHashMap<>(orgAssignment.getAll());
+        for (String variableName : extractVariableNames) {
+            if (!variableValuePairs.containsKey(variableName)) {
+                variableValuePairs.put(variableName, value);
+            }
+        }
+        return new Assignment(variableValuePairs);
     }
 
     private Stream<String> printVariableNames(Path in, Charset charset, Preprocessor preprocessor) throws IOException {
