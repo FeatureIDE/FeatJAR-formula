@@ -99,7 +99,7 @@ public class Preprocessor {
                             Object evaluation =
                                     annotationExpression.evaluate(assignment).orElse(null);
                             if (evaluation instanceof Boolean) {
-                                evaluationStack.push(Boolean.TRUE);
+                                evaluationStack.push((Boolean) evaluation);
                             } else {
                                 FeatJAR.log().warning("Line %d: could not evaluate annotation: %s", lineNumber, line);
                                 evaluationStack.push(Boolean.FALSE);
@@ -121,7 +121,7 @@ public class Preprocessor {
                             Object evaluation =
                                     annotationExpression.evaluate(assignment).orElse(null);
                             if (evaluation instanceof Boolean) {
-                                evaluationStack.push(Boolean.TRUE);
+                                evaluationStack.push((Boolean) evaluation);
                             } else {
                                 FeatJAR.log().warning("Line %d: could not evaluate annotation: %s", lineNumber, line);
                                 evaluationStack.push(Boolean.FALSE);
