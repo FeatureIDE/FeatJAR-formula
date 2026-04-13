@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
  */
 public class CPPAssignmentFormat implements IFormat<Assignment> {
 
-    private static final Pattern cs = Pattern.compile("#define\\s+(.+)");
+    private static final Pattern cs = Pattern.compile("#define\\s+(\\S+)(\\s+(.*))?");
 
     @Override
     public Result<String> serialize(Assignment valueAssignment) {
