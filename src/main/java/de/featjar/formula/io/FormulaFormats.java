@@ -34,4 +34,9 @@ public class FormulaFormats extends AFormats<IFormula> {
     public static FormulaFormats getInstance() {
         return FeatJAR.extensionPoint(FormulaFormats.class);
     }
+
+    @Override
+    public Class<IFormula> getType() {
+        return IFormula.class;
+    }
 }

@@ -35,4 +35,9 @@ public class BooleanAssignmentListFormats extends AFormats<BooleanAssignmentList
     public static BooleanAssignmentListFormats getInstance() {
         return FeatJAR.extensionPoint(BooleanAssignmentListFormats.class);
     }
+
+    @Override
+    public Class<BooleanAssignmentList> getType() {
+        return BooleanAssignmentList.class;
+    }
 }
