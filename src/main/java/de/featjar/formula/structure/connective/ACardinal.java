@@ -24,7 +24,6 @@ import de.featjar.base.data.Range;
 import de.featjar.formula.structure.ANonTerminalExpression;
 import de.featjar.formula.structure.IExpression;
 import de.featjar.formula.structure.IFormula;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -37,18 +36,16 @@ import java.util.Optional;
  * @author Sebastian Krieter
  */
 public abstract class ACardinal extends ANonTerminalExpression implements IConnective {
-    protected Range range;
+    protected Range range = Range.open();
 
     protected ACardinal(Range range, IFormula... formulas) {
-        super();
-        this.range = range;
-        if (formulas.length > 0) super.setChildren(Arrays.asList(formulas));
+        super(formulas);
+        setRange(range);
     }
 
     protected ACardinal(Range range, List<? extends IFormula> formulas) {
-        super();
-        this.range = range;
-        if (formulas.size() > 0) super.setChildren(formulas);
+        super(formulas);
+        setRange(range);
     }
 
     protected ACardinal(ACardinal cardinal) {
@@ -60,17 +57,12 @@ public abstract class ACardinal extends ANonTerminalExpression implements IConne
     }
 
     public void setRange(Range range) {
-        assertChildrenCountInRange(getChildrenCount());
         this.range = range;
-    }
-
-    private Range atLeastTheLargerBound(Range range) {
-        return Range.atLeast(range.getLargerBound());
     }
 
     @Override
     public Range getChildrenCountRange() {
-        return atLeastTheLargerBound(range);
+        return Range.open();
     }
 
     @Override
