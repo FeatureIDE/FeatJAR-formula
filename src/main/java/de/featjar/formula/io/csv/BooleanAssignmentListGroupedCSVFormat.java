@@ -77,7 +77,7 @@ public class BooleanAssignmentListGroupedCSVFormat extends AGroupedAssignmentCSV
 
         int assignmentIndex = 0;
         for (final BooleanAssignment assignment : assignmentList) {
-            writeAssignment(out, 0, assignmentIndex++, assignment.toSolution(variableMap.size()));
+            writeAssignment(out, 0, assignmentIndex++, assignment.toSolution(variableMap.maxIndex()));
         }
         outputMapper.close();
     }
@@ -91,7 +91,7 @@ public class BooleanAssignmentListGroupedCSVFormat extends AGroupedAssignmentCSV
 
         int assignmentIndex = 0;
         for (final BooleanAssignment assignment : assignmentList) {
-            serializeAssignment(csv, 0, assignmentIndex++, assignment.toSolution(variableMap.size()));
+            serializeAssignment(csv, 0, assignmentIndex++, assignment.toSolution(variableMap.maxIndex()));
         }
 
         return Result.of(csv.toString());

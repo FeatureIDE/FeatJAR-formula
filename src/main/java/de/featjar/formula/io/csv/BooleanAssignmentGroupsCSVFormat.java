@@ -76,7 +76,7 @@ public class BooleanAssignmentGroupsCSVFormat extends ASimpleAssignmentCSVFormat
 
         int configurationIndex = 0;
         for (final BooleanAssignment configuration : booleanAssignmentGroups.getMergedGroups()) {
-            writeAssignment(output, configurationIndex++, configuration.toSolution(variableMap.size()));
+            writeAssignment(output, configurationIndex++, configuration.toSolution(variableMap.maxIndex()));
         }
     }
 
@@ -87,7 +87,7 @@ public class BooleanAssignmentGroupsCSVFormat extends ASimpleAssignmentCSVFormat
         serializeHeader(csv, variableMap);
         int configurationIndex = 0;
         for (final BooleanAssignment configuration : booleanAssignmentGroups.getMergedGroups()) {
-            serializeAssignment(csv, configurationIndex++, configuration.toSolution(variableMap.size()));
+            serializeAssignment(csv, configurationIndex++, configuration.toSolution(variableMap.maxIndex()));
         }
         return Result.of(csv.toString());
     }

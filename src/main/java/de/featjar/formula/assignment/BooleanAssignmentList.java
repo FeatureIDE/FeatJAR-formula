@@ -133,13 +133,15 @@ public class BooleanAssignmentList implements IAssignmentList<BooleanAssignment>
     public BooleanAssignmentList toSolutionList() {
         return new BooleanAssignmentList(
                 variableMap,
-                assignments.stream().map(a -> a.toSolution(variableMap.size())).collect(Collectors.toList()));
+                assignments.stream()
+                        .map(a -> a.toSolution(variableMap.maxIndex()))
+                        .collect(Collectors.toList()));
     }
 
     /**
-     * Changes the {@link VariableMap variable map} and calls {@link BooleanAssignment#adapt(VariableMap, VariableMap, boolean)} for every assignment in this list.
+     * Changes the {@link VariableMap variable map} and calls {@link BooleanAssignment#remap(VariableMap, VariableMap, boolean)} for every assignment in this list.
      * This does not create a copy of this list, but directly changes each assignment.
-     * A call of this method is equivalent to a call of {@link #adapt(VariableMap, boolean) adapt(newVariables, false);}.
+     * A call of this method is equivalent to a call of {@link #remap(VariableMap, boolean) remap(newVariables, false);}.
      *
      * @param newVariables the new variable map
      * @return this list
