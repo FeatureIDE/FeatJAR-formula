@@ -97,7 +97,7 @@ public interface IAssignmentList<T extends IAssignment<?, ?>> extends Iterable<T
      *
      * @param index the index
      *
-     * @throws IndexOutOfBoundsException if the index was < 0 or >= {@link #size()}
+     * @throws IndexOutOfBoundsException if the index was {@code < 0} or {@code >= {@link #size()}}
      */
     default T get(int index) {
         if (index < 0 || index >= size()) throw new IndexOutOfBoundsException(index);

@@ -148,7 +148,7 @@ public class BooleanAssignment extends IntegerList implements IAssignment<Intege
     /**
      * Changes the literals in this assignment to a new mapping.
      * This creates a copy of this assignment.
-     * A call of this method is equivalent to a call of {@link #adapt(VariableMap, VariableMap, boolean) adapt(newVariables, false);}.
+     * A call of this method is equivalent to a call of {@link #remap(VariableMap, VariableMap, boolean) remap(newVariables, false);}.
      *
      * @param oldVariableMap the old variable map
      * @param newVariableMap the new variable map
