@@ -18,37 +18,45 @@
  *
  * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
  */
-package de.featjar.formula.io.textual;
+package de.featjar.formula.structure.term.function.string;
 
-import de.featjar.base.data.Result;
-import de.featjar.base.io.format.IFormat;
-import de.featjar.base.io.input.AInputMapper;
-import de.featjar.formula.assignment.BooleanAssignmentValueMap;
+import de.featjar.formula.structure.ANonTerminalExpression;
+import de.featjar.formula.structure.IUnaryExpression;
+import de.featjar.formula.structure.term.ITerm;
+import de.featjar.formula.structure.term.function.IFunction;
+import java.util.List;
+import java.util.Optional;
 
-public class BooleanAssignmentValueMapFormat implements IFormat<BooleanAssignmentValueMap> {
+public class StringLength extends ANonTerminalExpression implements IFunction, IUnaryExpression {
 
-    @Override
-    public boolean supportsParse() {
-        return true;
-    }
+    protected StringLength() {}
 
-    @Override
-    public boolean supportsWrite() {
-        return true;
-    }
-
-    @Override
-    public Result<BooleanAssignmentValueMap> parse(AInputMapper inputMapper) {
-        return new BooleanAssignmentValueMapParser().parse(inputMapper);
-    }
-
-    @Override
-    public Result<String> serialize(BooleanAssignmentValueMap object) {
-        return new BooleanAssignmentValueMapParser().serialize(object);
+    public StringLength(ITerm variable) {
+        super(variable);
     }
 
     @Override
     public String getName() {
-        return "BooleanAssignmentValueMap";
+        return "len";
+    }
+
+    @Override
+    public Class<Long> getType() {
+        return Long.class;
+    }
+
+    @Override
+    public Class<String> getChildrenType() {
+        return String.class;
+    }
+
+    @Override
+    public Optional<Integer> evaluate(List<?> values) {
+        return getChildren().get(0).evaluate(values).map(v -> ((String) v).length());
+    }
+
+    @Override
+    public StringLength cloneNode() {
+        return new StringLength();
     }
 }

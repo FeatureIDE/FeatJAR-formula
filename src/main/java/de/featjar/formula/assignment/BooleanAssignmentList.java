@@ -159,6 +159,9 @@ public class BooleanAssignmentList implements IAssignmentList<BooleanAssignment>
      * @return the new list
      */
     public BooleanAssignmentList remap(VariableMap newVariables, boolean integrateOldVariables) {
+        if (variableMap == newVariables) {
+            return this;
+        }
         BooleanAssignmentList newList = new BooleanAssignmentList(newVariables);
         for (BooleanAssignment assignment : assignments) {
             newList.add(assignment.remap(variableMap, newVariables, integrateOldVariables));
